@@ -5,7 +5,7 @@ export default defineConfig({
     tasks: {
       compile: {
         command:
-          "esbuild src/index.ts --bundle --platform=node --outdir=dist --format=esm --packages=external --external:fs --external:path --external:crypto --external:os --external:util --external:stream --external:buffer --external:events --external:url --external:querystring --external:http --external:https --external:net --external:tls --external:zlib --external:@modelcontextprotocol/sdk",
+          "esbuild index=src/index.ts seed-local-admin=scripts/seed-local-admin.ts seed-products=scripts/seed-products.ts --bundle --platform=node --outdir=dist --format=esm --packages=external --external:fs --external:path --external:crypto --external:os --external:util --external:stream --external:buffer --external:events --external:url --external:querystring --external:http --external:https --external:net --external:tls --external:zlib --external:@modelcontextprotocol/sdk",
         dependsOn: [
           { task: "build", from: ["dependencies", "devDependencies"] },
         ],
@@ -15,6 +15,7 @@ export default defineConfig({
           input: [
             { auto: true },
             "src/**",
+            "scripts/**",
             "tsconfig.json",
             {
               pattern: "packages/typescript-config/base.json",

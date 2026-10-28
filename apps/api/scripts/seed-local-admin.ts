@@ -2,15 +2,13 @@
 // spec R-006). The password is short on purpose and lives only as a bcrypt
 // hash in the database, never in env. Sign-up enforces 8+ characters, so the
 // account is written directly. Idempotent; refuses to run in cloud mode.
-// The web login field maps "admin" to this email
-// (apps/web/src/components/auth/local-admin-login.ts).
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import db, { getDatabasePool, schema } from "../src/database";
 import { promoteInitialAdministrator } from "../src/utils/instance-bootstrap";
 import { isCloud } from "../src/utils/is-cloud";
+import { LOCAL_ADMIN_EMAIL } from "./local-admin";
 
-const LOCAL_ADMIN_EMAIL = "admin@t-boards.local";
 const LOCAL_ADMIN_PASSWORD = "admin";
 
 if (isCloud()) {

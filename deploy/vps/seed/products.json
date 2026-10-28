@@ -1,0 +1,353 @@
+{
+	"version": "2026-10-28",
+	"products": [
+		{
+			"slug": "hr-helper-lavaeon",
+			"name": "HR Helper / Lavaeon",
+			"description": "HR-платформа полного цикла: подбор, онбординг, развитие, C&B, оффбординг. Сюда приходит зеркало Notion «Задачи» и «Ошибки»; до перехода канон — Notion.",
+			"projects": [
+				{
+					"key": "HRH",
+					"name": "HR Helper v2",
+					"icon": "Briefcase",
+					"cards": []
+				}
+			]
+		},
+		{
+			"slug": "aiboards-eval",
+			"name": "aiBoards&eval",
+			"description": "t-boards — доски для ИИ-сессий с дешёвым MCP, и supertick-eval — пайплайн экономии токенов. Цель: команда сессий тратит меньше токенов без потери скорости и качества.",
+			"projects": [
+				{
+					"key": "TB",
+					"name": "t-boards",
+					"icon": "FolderKanban",
+					"cards": [
+						{
+							"key": "TB-001",
+							"title": "Блокнот: страница в интерфейсе — чат, источники, статус",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "API блокнота готово (R-050–R-053): источники, эмбеддинги на Mac, гибридный поиск, чат с цитатами [n].\n\nОсталось: страница `/dashboard/workspace/$id/notebook` — треды, вопрос, ответ с раскрываемыми источниками, список источников, статус воркера и лимита облачных вызовов. Строки — в `i18n/en-US.json`, RU по умолчанию."
+						},
+						{
+							"key": "TB-002",
+							"title": "Блокнот: источники из карточек, PR GitHub и ссылок",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Срез 3 блокнота. Виды источников `card`, `pr`, `link` рядом с `repo-doc`. Обновление при правке карточки. Ссылки — только по явному добавлению, с лимитом размера."
+						},
+						{
+							"key": "TB-003",
+							"title": "Блокнот: MCP-инструмент notebook_search и GLM-бриф по кнопке",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Агент ищет по блокноту тем же гибридным поиском, ответ — в бюджете токенов (R-031). Бриф GOAL/CONSTRAINTS/ACCEPTANCE по кнопке из треда."
+						},
+						{
+							"key": "TB-004",
+							"title": "Граница продукта: ключ продукта A не видит данные B",
+							"status": "to-do",
+							"priority": "high",
+							"description": "R-002, AC-011. Сейчас ключи better-auth привязаны к пользователю, а не к пространству. Нужна привязка ключа к пространству-продукту и тест: ключ A запрашивает данные B — пусто или отказ."
+						},
+						{
+							"key": "TB-005",
+							"title": "Бенчмарк MCP: 10 реальных карточек вдвое дешевле Notion",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-001. После импорта: те же 10 карточек через Notion MCP и через t-boards MCP, счётчик o200k, отчёт в `t-boards/`."
+						},
+						{
+							"key": "TB-006",
+							"title": "Импорт Notion сверен по количеству на реальной базе",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-002. Зеркало на VPS (пункт `s-tb-mirror`), сверка количества по базам «Задачи» и «Ошибки»."
+						},
+						{
+							"key": "TB-007",
+							"title": "Серия чистых прогонов зеркала Notion (12 подряд)",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-003, длина серии 12 (`d-tb-ac003-streak`). Прогон каждые 2 ч, отчёт — вкладка «Лес → Зеркало Notion»."
+						},
+						{
+							"key": "TB-008",
+							"title": "Правила и скиллы переписать с Notion на t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Критерий перехода AC-005. Правка `.claude/**` основного репозитория — только в момент перехода, с «да» владельца."
+						},
+						{
+							"key": "TB-009",
+							"title": "Ключ на сессию автоматически и подпись агента",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-010. Сейчас есть только метка сессии в заголовке. Нужно: ключ выдаётся на сессию, агент подписан ролью, ключом, именем, id и номером сессии по роли."
+						},
+						{
+							"key": "TB-010",
+							"title": "Наследник: пакет передачи и проверка приёма",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-011, Q-104. t-boards собирает пакет наследника (капсула, ссылки, «не делать») и отмечает, что новая сессия его прочитала."
+						},
+						{
+							"key": "TB-011",
+							"title": "Диалог связанных сессий в карточке с архивом",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-026, AC-010. Лента сообщений сессий, работавших над карточкой, с архивом закрытых."
+						},
+						{
+							"key": "TB-012",
+							"title": "MCP-инструмент памяти карточки и work_state на доске",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Хвост K-5 и R-037. Наблюдения claude-mem, привязанные к карточке, — через MCP; списки work_state — видны на доске."
+						},
+						{
+							"key": "TB-013",
+							"title": "Вычистка секретов в транскриптах",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-036, AC-023. Фильтр K-2 уже подключён к журналу MCP; подключить к приёму транскриптов."
+						},
+						{
+							"key": "TB-014",
+							"title": "Панели: граф связей, лента агентов, «что горит», ⌘K",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-090. ⌘K в kaneo не проверен."
+						},
+						{
+							"key": "TB-015",
+							"title": "Замеры: 400 px, 3G, вес JS, память процесса",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "AC-016, AC-018 (K-6). На VPS в первые сутки — `docker stats`, затем правка лимитов памяти в `compose.yml`."
+						},
+						{
+							"key": "TB-016",
+							"title": "Память агентов: что видно владельцу и агентам",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-041. Интерфейс видимости наблюдений."
+						},
+						{
+							"key": "TB-017",
+							"title": "Эпики, вехи, чек-листы, страницы-документы — сверить с kaneo",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-020. Частично есть в kaneo, не сверено со спекой."
+						},
+						{
+							"key": "TB-018",
+							"title": "Счётчик токенов o200k с закреплённой версией",
+							"status": "to-do",
+							"priority": "low",
+							"description": "D-018. Сейчас gpt-tokenizer 4.1.0, временно."
+						},
+						{
+							"key": "TB-019",
+							"title": "Каналы уведомлений с секретами: ключ шифрования файлом",
+							"status": "to-do",
+							"priority": "low",
+							"description": "`NOTIFICATION_SECRET_ENCRYPTION_KEY` читается только из env. Нужен вариант `_FILE` (N-007), до этого каналы с секретами выключены."
+						},
+						{
+							"key": "TB-020",
+							"title": "Вложения: хранилище файлов на VPS",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Загрузки требуют S3. Нужен проверенный бэкап тома до включения."
+						},
+						{
+							"key": "TB-021",
+							"title": "Сжатие памяти через 92 дня и удаление через 9 месяцев",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-043, AC-024. Не раньше 2027-01: первые наблюдения ещё молодые."
+						},
+						{
+							"key": "TB-022",
+							"title": "Этап 2: библиотека скиллов",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-060, R-061. После перехода."
+						},
+						{
+							"key": "TB-023",
+							"title": "Этап 2: ревью и abide",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-070–R-074. После перехода."
+						},
+						{
+							"key": "TB-024",
+							"title": "Этап 2: hetty, конструктор форм, облачные сессии, очередь владельца",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-075, R-027, R-035, R-083. После перехода."
+						}
+					]
+				},
+				{
+					"key": "SE",
+					"name": "supertick-eval",
+					"icon": "FlaskConical",
+					"cards": [
+						{
+							"key": "SE-001",
+							"title": "Замер пилотного дня 28.10 и вывод в PIPELINE.md",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "А8. `tools/context_audit.py` за окно пилота → `pipeline/data/audit-pilot-2810.json`; раздел «Пилот 28.10» в `pipeline/PIPELINE.md`; итог владельцу в заметках d1–d3. Ворота: $/единицу работы, средний контекст ≤ 120K, база ≤ 55K против Т3 26.10."
+						},
+						{
+							"key": "SE-002",
+							"title": "Геном роли: ворота первого вызова ≤ 55K и skill_listing ≤ 2K",
+							"status": "to-do",
+							"priority": "high",
+							"description": "П1 + П3, `pipeline/genome/author.json`. Проверить на пилоте; при провале — сузить плагины и скиллы роли."
+						},
+						{
+							"key": "SE-003",
+							"title": "Усилие по роли: coord и control на medium",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П4. Профили `genome/coord.json`, `genome/control.json` — на следующем запуске команды. Проверить `/effort` на 2.1.311."
+						},
+						{
+							"key": "SE-004",
+							"title": "Рефлексы: дедуп DAMS-вставок и пропуск сообщений агентов",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П5. Требует правки `.claude/scripts` основного репозитория — отдельный PR с «да» владельца."
+						},
+						{
+							"key": "SE-005",
+							"title": "Капсула и наследник: неделя пилота на авторе t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П6. Единица работы — шаг трека; после неё капсула ≤ 2K токенов и новая сессия. Наблюдать возвраты работы и повторные вопросы владельцу."
+						},
+						{
+							"key": "SE-006",
+							"title": "Нерв: журнал, стигмергия, кворум — наблюдение после запуска",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П7. LaunchAgent одобрен d4. Проверить журнал за сутки и ложные срабатывания."
+						},
+						{
+							"key": "SE-007",
+							"title": "Сторож",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П8 (задание B)."
+						},
+						{
+							"key": "SE-008",
+							"title": "Рой: ключи OpenRouter и первый прогон",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П9. Ждёт пункт владельца `c-swarm-openrouter-keys`. Ключи только файлами."
+						},
+						{
+							"key": "SE-009",
+							"title": "Циркадный бюджет",
+							"status": "to-do",
+							"priority": "low",
+							"description": "П10."
+						},
+						{
+							"key": "SE-010",
+							"title": "Обновление Claude Code CLI после пилота",
+							"status": "to-do",
+							"priority": "low",
+							"description": "П11. Терминальный CLI 2.1.237, расширение VS Code 2.1.311. Обновлять после итогов пилота."
+						},
+						{
+							"key": "SE-011",
+							"title": "Итог: стоимость PR против Т3",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Цель пайплайна ≈ $20 на PR против ≈ $37 у Т3 и $68 у Т2. Отчёт по неделе пилота."
+						}
+					]
+				},
+				{
+					"key": "OPS",
+					"name": "Инфраструктура",
+					"icon": "Shield",
+					"cards": [
+						{
+							"key": "OPS-001",
+							"title": "WireGuard: раздельный и полный туннель через VPS",
+							"status": "in-progress",
+							"priority": "urgent",
+							"description": "Один ключ устройства, два профиля: раздельный (только сеть t-boards) и полный (весь трафик и выход в интернет с IP сервера). Скрипт `deploy/vps/wg-setup.sh`, пункт владельца `s-tb-wg`."
+						},
+						{
+							"key": "OPS-002",
+							"title": "Субдомен d4dev.admin.hrhelper.space только через VPN",
+							"status": "in-progress",
+							"priority": "urgent",
+							"description": "Схема А: публичная A-запись — только для сертификата; t-boards слушает адрес туннеля. Остальные поддомены — без VPN, как раньше. Пункт `s-tb-install`."
+						},
+						{
+							"key": "OPS-003",
+							"title": "Бэкап на Mac каждые 2 часа и проверка восстановлением",
+							"status": "to-do",
+							"priority": "high",
+							"description": "AC-004. Пункт `s-tb-backup`: ключ забора, LaunchAgent, восстановление дампа в чистый Postgres."
+						},
+						{
+							"key": "OPS-004",
+							"title": "Связка Mac ↔ сервер для блокнота",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Воркер эмбеддингов (Ollama, строго последовательно) и синк документов репозитория — по туннелю, только исходящие соединения с Mac. `deploy/vps/mac/notebook-agent.sh`."
+						},
+						{
+							"key": "OPS-005",
+							"title": "Облачная модель блокнота: ключ файлом и дневной лимит",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-052, R-053. `NOTEBOOK_LLM_MODEL`, `NOTEBOOK_LLM_KEY_FILE`, `NOTEBOOK_LLM_DAILY_MAX`. Без ключа блокнот отвечает только источниками."
+						},
+						{
+							"key": "OPS-006",
+							"title": "Удалённый git для форка t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Сейчас коммиты только локальные: единственный remote — upstream kaneo, туда не пушим. Решение владельца: приватный репозиторий или зеркало на VPS."
+						},
+						{
+							"key": "OPS-007",
+							"title": "Второе устройство в VPN",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Телефон или второй ноутбук: `wg-setup.sh <ключ> <имя>`, те же два профиля."
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "financial-terminal",
+			"name": "Financial terminal",
+			"description": "Финансовый терминал. Задачи появятся после постановки.",
+			"projects": [
+				{
+					"key": "FT",
+					"name": "Financial terminal",
+					"icon": "PieChart",
+					"cards": []
+				}
+			]
+		}
+	]
+}
