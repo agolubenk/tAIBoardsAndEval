@@ -6,6 +6,7 @@ import { fellRoutes } from "./routes/fell-routes";
 import { historyRoutes } from "./routes/history-routes";
 import { leaseRoutes } from "./routes/lease-routes";
 import { memoryRoutes } from "./routes/memory-routes";
+import { mirrorRoutes } from "./routes/mirror-routes";
 import { readRoutes } from "./routes/read-routes";
 import { treeRoutes } from "./routes/tree-routes";
 
@@ -23,6 +24,7 @@ const forest = apiRouter<BaseVariables & { workspaceId: string }>()
   .route("/", historyRoutes)
   .route("/", contextRoutes)
   .route("/", memoryRoutes)
+  .route("/", mirrorRoutes)
   .route("/", treeRoutes);
 
 export default forest;

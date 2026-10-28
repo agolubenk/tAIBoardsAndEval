@@ -5,6 +5,7 @@ import { ApprovalsTab } from "./approvals-tab";
 import { FOREST_TABS, type ForestTab, isForestTab } from "./forest-types";
 import { LeasesTab } from "./leases-tab";
 import { LogsTab } from "./logs-tab";
+import { MirrorTab } from "./mirror-tab";
 import { SectorsTab } from "./sectors-tab";
 import { TreesTab } from "./trees-tab";
 
@@ -15,7 +16,8 @@ type ForestPageProps = {
 };
 
 // Trees, sectors, felled logs with their seeds, «да» requests and leases of a
-// workspace in one place (R-028, R-029, N-011).
+// workspace in one place (R-028, R-029, N-011), and the Notion mirror's
+// reconciliation runs (AC-002, AC-003).
 export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
   const { t } = useTranslation();
   const { data: pending } = useApprovals(workspaceId, "pending");
@@ -57,6 +59,9 @@ export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
       </TabsPanel>
       <TabsPanel value="leases">
         <LeasesTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="mirror">
+        <MirrorTab workspaceId={workspaceId} />
       </TabsPanel>
     </Tabs>
   );

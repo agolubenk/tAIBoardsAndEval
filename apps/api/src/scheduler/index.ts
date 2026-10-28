@@ -3,6 +3,8 @@ import { cleanupDraftUploads } from "./draft-upload-cleanup";
 import { replayDeferredIssueEdits } from "../plugins/github/services/deferred-issue-edits";
 import * as Sentry from "@sentry/node";
 import { Cron } from "croner";
+import { readMirrorConfig } from "../import/notion-mirror/mirror-config";
+import { runScheduledNotionMirror } from "../import/notion-mirror/run-notion-mirror";
 import { checkDueDateReminders } from "./due-date-reminders";
 import { checkProjectWebhookReminders } from "./project-webhook-reminders";
 import { reconcileWorkspaceSeats } from "./seat-reconciliation";
@@ -89,6 +91,18 @@ export function initializeScheduler(): void {
   jobs.push(
     new Cron("23 * * * *", withCheckIn("trial-reminders", checkTrialReminders)),
   );
+  // Off unless the mirror is configured; the job itself re-reads the config so
+  // a missing token file shows up as a failed run, not a silent skip.
+  const mirror = readMirrorConfig();
+  if (mirror) {
+    jobs.push(
+      new Cron(
+        mirror.cron,
+        { protect: true },
+        withCheckIn("notion-mirror", runScheduledNotionMirror),
+      ),
+    );
+  }
   console.log(
     "⏰ Scheduler started (deferred integration edits every minute, reminders every 5 minutes, seat reconciliation and trial reminders hourly)",
   );

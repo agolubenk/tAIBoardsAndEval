@@ -5220,6 +5220,294 @@
           "items"
         ]
       },
+      "ForestMirrorRuns": {
+        "type": "object",
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "description": "true when this workspace is the one the scheduled mirror writes to."
+          },
+          "cron": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "maxGapHours": {
+            "type": "number"
+          },
+          "streak": {
+            "type": "object",
+            "properties": {
+              "runs": {
+                "type": "integer"
+              },
+              "since": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "hours": {
+                "type": "number"
+              },
+              "brokenBy": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "discrepancies",
+                  "failed",
+                  "gap",
+                  null
+                ]
+              }
+            },
+            "required": [
+              "runs",
+              "since",
+              "hours",
+              "brokenBy"
+            ],
+            "description": "Clean runs in a row, newest first, with no gap longer than maxGapHours (AC-003)."
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "trigger": {
+                  "type": "string",
+                  "enum": [
+                    "schedule",
+                    "manual"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "running",
+                    "clean",
+                    "discrepancies",
+                    "failed"
+                  ]
+                },
+                "discrepancyCount": {
+                  "type": "integer"
+                },
+                "startedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "finishedAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "trigger",
+                "status",
+                "discrepancyCount",
+                "startedAt",
+                "finishedAt"
+              ]
+            }
+          },
+          "latest": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "report": {
+                "type": "object",
+                "properties": {
+                  "databases": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "databaseId": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "read": {
+                          "type": "object",
+                          "properties": {
+                            "pages": {
+                              "type": "integer"
+                            },
+                            "fresh": {
+                              "type": "integer"
+                            },
+                            "changed": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "pages",
+                            "fresh",
+                            "changed"
+                          ],
+                          "description": "Pages Notion returned; of them, pages without a card and pages Notion edited since the last run."
+                        },
+                        "totals": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "source": {
+                              "type": "integer"
+                            },
+                            "imported": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "source",
+                            "imported"
+                          ]
+                        },
+                        "byStatus": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "integer"
+                              },
+                              "imported": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "imported"
+                            ]
+                          }
+                        },
+                        "byType": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "integer"
+                              },
+                              "imported": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "imported"
+                            ]
+                          }
+                        },
+                        "discrepancyCount": {
+                          "type": "integer"
+                        },
+                        "discrepancies": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pageId": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "missing-in-import",
+                                  "missing-in-source",
+                                  "status-mismatch",
+                                  "archive-mismatch"
+                                ]
+                              },
+                              "detail": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "pageId",
+                              "title",
+                              "kind",
+                              "detail"
+                            ]
+                          },
+                          "description": "The first 200 discrepancies; discrepancyCount has them all."
+                        },
+                        "error": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "databaseId",
+                        "name",
+                        "read",
+                        "totals",
+                        "byStatus",
+                        "byType",
+                        "discrepancyCount",
+                        "discrepancies",
+                        "error"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "databases"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "report"
+            ],
+            "description": "The newest finished run's full report."
+          }
+        },
+        "required": [
+          "configured",
+          "cron",
+          "maxGapHours",
+          "streak",
+          "runs",
+          "latest"
+        ]
+      },
+      "ForestMirrorRunStarted": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "runId"
+        ]
+      },
       "ForestTrees": {
         "type": "object",
         "properties": {
@@ -24372,6 +24660,134 @@
           },
           "404": {
             "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/forest/{workspaceId}/mirror/runs": {
+      "get": {
+        "operationId": "listForestMirrorRuns",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "List Notion mirror runs",
+        "description": "The scheduled Notion mirror's recent runs, the newest finished run's reconciliation report, and the current streak of clean runs.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mirror runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestMirrorRuns"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "post": {
+        "operationId": "startForestMirrorRun",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "Run the Notion mirror now",
+        "description": "Starts one mirror run outside the schedule and returns its id; the run finishes in the background.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Run started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestMirrorRunStarted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The mirror is not configured for this workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A mirror run is already in progress",
             "content": {
               "application/json": {
                 "schema": {

@@ -38,6 +38,11 @@ export {
   type MappedPage,
 } from "./mapping.js";
 export {
+  type NotionMirrorRead,
+  type ReadNotionMirrorOptions,
+  readNotionMirror,
+} from "./mirror.js";
+export {
   reconcile,
   type ReconcileDiscrepancy,
   type ReconcileDiscrepancyKind,

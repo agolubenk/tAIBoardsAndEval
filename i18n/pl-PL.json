@@ -1045,7 +1045,8 @@
 				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
-				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished."
+				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
+				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs."
 			},
 			"leases": {
 				"empty": "Nobody holds a card right now.",
@@ -1083,7 +1084,8 @@
 				"leases": "Leases",
 				"logs": "Logs and seeds",
 				"sectors": "Sectors",
-				"trees": "Trees"
+				"trees": "Trees",
+				"mirror": "Notion mirror"
 			},
 			"trees": {
 				"allProjects": "All projects",
@@ -1096,6 +1098,56 @@
 				"sector": "Sector: {{name}}",
 				"toggle": "Show branches",
 				"truncated": "Only the newest trees are shown. Pick a project to see the rest."
+			},
+			"mirror": {
+				"inProgress": "Running…",
+				"kind": {
+					"archive-mismatch": "Archive differs",
+					"missing-in-import": "No card",
+					"missing-in-source": "Gone from Notion",
+					"status-mismatch": "Status differs"
+				},
+				"notConfigured": "The scheduled mirror is not set up for this workspace. Runs appear here once the server has the NOTION_MIRROR_* settings.",
+				"report": {
+					"agree": "Notion and the board agree.",
+					"more": "Showing {{shown}} of {{count}}.",
+					"read": "read {{pages}}: {{fresh}} new, {{changed}} edited",
+					"totals": "Notion {{source}} · board {{imported}}"
+				},
+				"runNow": "Run now",
+				"runs": {
+					"discrepancies_few": "{{count}} discrepancies",
+					"discrepancies_many": "{{count}} discrepancies",
+					"discrepancies_one": "{{count}} discrepancy",
+					"discrepancies_other": "{{count}} discrepancies",
+					"empty": "No runs yet.",
+					"title": "Recent runs"
+				},
+				"schedule": "Schedule (cron, UTC): {{cron}}",
+				"status": {
+					"clean": "Clean",
+					"discrepancies": "Discrepancies",
+					"failed": "Failed",
+					"running": "Running"
+				},
+				"streak": {
+					"brokenBy": {
+						"discrepancies": "Before them: a run with discrepancies",
+						"failed": "Before them: a failed run",
+						"gap": "Before them: more than {{hours}} h without a run"
+					},
+					"none": "No clean runs yet",
+					"since": "since {{since}}, {{hours}} h",
+					"title": "Clean runs in a row"
+				},
+				"toast": {
+					"error": "Could not start the mirror run",
+					"started": "Mirror run started"
+				},
+				"trigger": {
+					"manual": "Manual",
+					"schedule": "Scheduled"
+				}
 			}
 		}
 	},

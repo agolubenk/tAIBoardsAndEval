@@ -6,10 +6,9 @@ import type {
   SourceProject,
 } from "../types.js";
 import { plainText } from "./api-types.js";
-import { blocksToMarkdown } from "./body.js";
 import { NotionClient } from "./client.js";
 import { DEFAULT_PRODUCT } from "./idempotency.js";
-import { mapDatabase } from "./mapping.js";
+import { readNotionMirror } from "./mirror.js";
 
 export type NotionCredentials = {
   token: string;
@@ -66,27 +65,12 @@ export async function connectNotion(
       databaseId: string,
       readOptions: ReadProjectOptions,
     ): Promise<ImportedProject> {
-      const scoped = client.withSignal(readOptions.signal);
-      const onProgress = readOptions.onProgress;
-
-      onProgress?.("Reading database");
-      const database = await scoped.getDatabase(databaseId);
-
-      onProgress?.("Reading pages");
-      const pages = await scoped.queryDatabase(databaseId, (count) =>
-        onProgress?.(`Reading pages (${count} so far)`),
+      const { project } = await readNotionMirror(
+        client.withSignal(readOptions.signal),
+        databaseId,
+        { product, onProgress: readOptions.onProgress },
       );
-
-      const bodies = new Map<string, string>();
-      let read = 0;
-      for (const page of pages) {
-        read += 1;
-        onProgress?.(`Reading page bodies (${read}/${pages.length})`);
-        const blocks = await scoped.readBlockTree(page.id);
-        bodies.set(page.id, blocksToMarkdown(blocks));
-      }
-
-      return mapDatabase(database, pages, bodies, product);
+      return project;
     },
   };
 }

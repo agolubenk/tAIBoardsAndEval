@@ -16,6 +16,10 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import type {
+  MirrorRunReport,
+  MirrorRunStatus,
+} from "../import/notion-mirror/mirror-report";
 import { taskTable, userTable, workspaceTable } from "./schema";
 
 const utcNow = sql`(now() AT TIME ZONE 'utc')`;
@@ -429,5 +433,41 @@ export const mcpToolGrantTable = pgTable(
   (table) => [
     primaryKey({ columns: [table.sessionKey, table.tool] }),
     index("mcp_tool_grant_created_at_idx").on(table.createdAt),
+  ],
+);
+
+// One row per run of the Notion mirror (AC-002, AC-003): the sync of every
+// configured database, then a reconciliation of Notion against the board.
+// The report names each discrepancy by page; the streak of clean runs is what
+// the owner reads before the transition.
+export const notionMirrorRunTable = pgTable(
+  "notion_mirror_run",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    trigger: text("trigger").$type<"schedule" | "manual">().notNull(),
+    status: text("status").$type<MirrorRunStatus>().notNull(),
+    discrepancyCount: integer("discrepancy_count").notNull().default(0),
+    report: jsonb("report")
+      .$type<MirrorRunReport>()
+      .notNull()
+      .default({ databases: [] }),
+    startedAt: timestamp("started_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+    finishedAt: timestamp("finished_at", { mode: "date" }),
+  },
+  (table) => [
+    index("notion_mirror_run_workspace_started_idx").on(
+      table.workspaceId,
+      table.startedAt,
+    ),
   ],
 );

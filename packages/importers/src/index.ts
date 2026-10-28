@@ -10,9 +10,18 @@ import type { ConnectOptions, ImportSource } from "./types.js";
 export { normalizeBaseUrl, SourceHttpError } from "./http.js";
 export { type JiraSite, parseJiraUrl } from "./jira/index.js";
 export {
+  DEFAULT_PRODUCT as NOTION_DEFAULT_PRODUCT,
+  NotionClient,
+  type NotionDatabase,
+  type NotionMirrorRead,
+  type NotionPage,
   notionIdempotencyKey,
+  readNotionMirror,
   reconcile as reconcileNotion,
+  type ReconcileDiscrepancy as NotionReconcileDiscrepancy,
   type ReconcileReport as NotionReconcileReport,
+  type ReconcileSide as NotionReconcileSide,
+  typeNameOf as notionTypeNameOf,
 } from "./notion/index.js";
 export {
   SOURCE_PROJECT_KEY_MAX,

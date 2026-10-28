@@ -14690,9 +14690,19 @@
 								},
 								"leases": {
 									"type": "string"
+								},
+								"mirror": {
+									"type": "string"
 								}
 							},
-							"required": ["trees", "sectors", "logs", "approvals", "leases"]
+							"required": [
+								"trees",
+								"sectors",
+								"logs",
+								"approvals",
+								"leases",
+								"mirror"
+							]
 						},
 						"hints": {
 							"type": "object",
@@ -14712,9 +14722,19 @@
 								},
 								"leases": {
 									"type": "string"
+								},
+								"mirror": {
+									"type": "string"
 								}
 							},
-							"required": ["trees", "sectors", "logs", "approvals", "leases"]
+							"required": [
+								"trees",
+								"sectors",
+								"logs",
+								"approvals",
+								"leases",
+								"mirror"
+							]
 						},
 						"trees": {
 							"type": "object",
@@ -15078,6 +15098,206 @@
 								}
 							},
 							"required": ["empty", "group", "window"]
+						},
+						"mirror": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"notConfigured": {
+									"type": "string"
+								},
+								"schedule": {
+									"type": "string"
+								},
+								"runNow": {
+									"type": "string"
+								},
+								"inProgress": {
+									"type": "string"
+								},
+								"streak": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"title": {
+											"type": "string"
+										},
+										"since": {
+											"type": "string"
+										},
+										"none": {
+											"type": "string"
+										},
+										"brokenBy": {
+											"type": "object",
+											"additionalProperties": false,
+											"properties": {
+												"discrepancies": {
+													"type": "string"
+												},
+												"failed": {
+													"type": "string"
+												},
+												"gap": {
+													"type": "string"
+												}
+											},
+											"required": ["discrepancies", "failed", "gap"]
+										}
+									},
+									"required": ["title", "since", "none", "brokenBy"]
+								},
+								"status": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"running": {
+											"type": "string"
+										},
+										"clean": {
+											"type": "string"
+										},
+										"discrepancies": {
+											"type": "string"
+										},
+										"failed": {
+											"type": "string"
+										}
+									},
+									"required": ["running", "clean", "discrepancies", "failed"]
+								},
+								"trigger": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"schedule": {
+											"type": "string"
+										},
+										"manual": {
+											"type": "string"
+										}
+									},
+									"required": ["schedule", "manual"]
+								},
+								"runs": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"title": {
+											"type": "string"
+										},
+										"empty": {
+											"type": "string"
+										},
+										"discrepancies_one": {
+											"type": "string"
+										},
+										"discrepancies_zero": {
+											"type": "string"
+										},
+										"discrepancies_two": {
+											"type": "string"
+										},
+										"discrepancies_few": {
+											"type": "string"
+										},
+										"discrepancies_many": {
+											"type": "string"
+										},
+										"discrepancies_other": {
+											"type": "string"
+										}
+									},
+									"required": ["title", "empty"]
+								},
+								"report": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"totals": {
+											"type": "string"
+										},
+										"read": {
+											"type": "string"
+										},
+										"agree": {
+											"type": "string"
+										},
+										"more": {
+											"type": "string"
+										},
+										"more_zero": {
+											"type": "string"
+										},
+										"more_one": {
+											"type": "string"
+										},
+										"more_two": {
+											"type": "string"
+										},
+										"more_few": {
+											"type": "string"
+										},
+										"more_many": {
+											"type": "string"
+										},
+										"more_other": {
+											"type": "string"
+										}
+									},
+									"required": ["totals", "read", "agree"]
+								},
+								"kind": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"missing-in-import": {
+											"type": "string"
+										},
+										"missing-in-source": {
+											"type": "string"
+										},
+										"status-mismatch": {
+											"type": "string"
+										},
+										"archive-mismatch": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"missing-in-import",
+										"missing-in-source",
+										"status-mismatch",
+										"archive-mismatch"
+									]
+								},
+								"toast": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"started": {
+											"type": "string"
+										},
+										"error": {
+											"type": "string"
+										}
+									},
+									"required": ["started", "error"]
+								}
+							},
+							"required": [
+								"notConfigured",
+								"schedule",
+								"runNow",
+								"inProgress",
+								"streak",
+								"status",
+								"trigger",
+								"runs",
+								"report",
+								"kind",
+								"toast"
+							]
 						}
 					},
 					"required": [
@@ -15091,7 +15311,8 @@
 						"fell",
 						"grow",
 						"approvals",
-						"leases"
+						"leases",
+						"mirror"
 					]
 				}
 			},
