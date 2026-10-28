@@ -82,6 +82,7 @@ import { descriptionPageQuery, listTasksQuery } from "./task/schema";
 import taskRelation from "./task-relation";
 // t-boards
 import forest from "./forest";
+import notebook from "./notebook";
 import {
   agentProjectDeleteGuard,
   agentWorkspaceDeleteGuard,
@@ -881,6 +882,7 @@ export function createApp() {
   );
   const taskRelationApi = api.route("/task-relation", taskRelation);
   const forestApi = api.route("/forest", forest);
+  const notebookApi = api.route("/notebook", notebook);
   const externalLinkApi = api.route("/external-link", externalLink);
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
   const invitationApi = api.route("/invitation", invitation);
@@ -1012,6 +1014,7 @@ export function createApp() {
     taskApi,
     taskRelationApi,
     forestApi,
+    notebookApi,
     telegramIntegrationApi,
     timeEntryApi,
     userApi,
@@ -1146,6 +1149,7 @@ const {
   taskApi,
   taskRelationApi,
   forestApi,
+  notebookApi,
   telegramIntegrationApi,
   timeEntryApi,
   userApi,
@@ -1192,6 +1196,7 @@ export type AppType =
   | typeof telegramIntegrationApi
   | typeof taskRelationApi
   | typeof forestApi
+  | typeof notebookApi
   | typeof externalLinkApi
   | typeof workflowRuleApi
   | typeof invitationApi

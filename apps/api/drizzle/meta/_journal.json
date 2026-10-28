@@ -512,6 +512,20 @@
       "when": 1793195188670,
       "tag": "0072_t_boards_notion_mirror_run",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1793213412718,
+      "tag": "0073_t_boards_notebook",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1793214520785,
+      "tag": "0074_t_boards_notebook_chat",
+      "breakpoints": true
     }
   ]
 }

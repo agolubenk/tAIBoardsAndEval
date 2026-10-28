@@ -6,7 +6,11 @@ config();
 
 export default defineConfig({
   out: "./drizzle",
-  schema: ["./src/database/schema.ts", "./src/database/forest-schema.ts"],
+  schema: [
+    "./src/database/schema.ts",
+    "./src/database/forest-schema.ts",
+    "./src/database/notebook-schema.ts",
+  ],
   dialect: "postgresql",
   dbCredentials: {
     url: resolveDatabaseConnectionString(),
