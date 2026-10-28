@@ -48,17 +48,18 @@ export function registerForestWriteTools(
     "forest_request_approval",
     {
       description:
-        "Ask the owner for a «да»: fell a tree (root task with its subtasks) or a sector, close a task (move it to a final column or archived) or change its priority. Only the owner answers, in the t-boards UI; there is no tool for it. Pass the approved id as approvalId to the task write.",
+        "Ask the owner for a «да»: fell a tree (root task with its subtasks) or a sector, close a task (move it to a final column or archived), reopen a closed one or change its priority. Only the owner answers, in the t-boards UI; there is no tool for it. Pass the approved id as approvalId to the task write.",
       inputSchema: z.object({
         workspaceId: id,
         action: z.enum([
           "fell_tree",
           "fell_sector",
           "close_task",
+          "reopen_task",
           "set_priority",
         ]),
         targetId: id.describe(
-          "Root task id, sector id, or the task to close or reprioritize.",
+          "Root task id, sector id, or the task to close, reopen or reprioritize.",
         ),
         value: z
           .string()
@@ -67,7 +68,7 @@ export function registerForestWriteTools(
           .max(64)
           .optional()
           .describe(
-            "close_task: the closing status; set_priority: the new priority. The «да» covers only this value.",
+            "close_task: the closing status; reopen_task: the open status the closed task returns to; set_priority: the new priority. The «да» covers only this value.",
           ),
         reason,
         session: sessionField.optional(),

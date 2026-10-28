@@ -22927,6 +22927,7 @@
                       "fell_tree",
                       "fell_sector",
                       "close_task",
+                      "reopen_task",
                       "set_priority"
                     ]
                   },
@@ -22937,7 +22938,7 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 64,
-                    "description": "close_task: the closing status; set_priority: the new priority. Part of what the owner approves."
+                    "description": "close_task: the closing status; reopen_task: the open status a closed card returns to; set_priority: the new priority. Part of what the owner approves."
                   },
                   "reason": {
                     "type": "string",

@@ -11,6 +11,8 @@ export type CurrentTask = {
 export type WriteFacts = {
   // The status the card would land in closes it (final column, archived).
   closes: boolean;
+  // The card is closed now and the new status opens it again.
+  reopens: boolean;
   // An agent created this card, so its text is not the owner's statement.
   authoredByAgent: boolean;
 };
@@ -23,7 +25,8 @@ export type WriteDecision =
     };
 
 // R-022 and N-004 for one agent edit: the owner's text stays the owner's,
-// closing and reprioritising wait for the owner's «да», the rest goes.
+// closing, reopening and reprioritising wait for the owner's «да», the
+// rest goes.
 export function changesText(changes: TaskChanges, current: CurrentTask) {
   return (
     (changes.title !== undefined && changes.title !== current.title) ||
@@ -45,23 +48,27 @@ export function decideTaskWrite(
     };
   }
 
-  const closing =
-    changes.status !== undefined &&
-    changes.status !== current.status &&
-    facts.closes;
+  const statusChanged =
+    changes.status !== undefined && changes.status !== current.status;
+  const statusAction = !statusChanged
+    ? null
+    : facts.closes
+      ? "close_task"
+      : facts.reopens
+        ? "reopen_task"
+        : null;
   const priorityChanged =
     changes.priority !== undefined && changes.priority !== current.priority;
-  if (closing && priorityChanged) {
+  if (statusAction && priorityChanged) {
     return {
       kind: "deny",
-      reason:
-        "closing and a priority change need separate approvals; send them one at a time",
+      reason: `${statusAction === "close_task" ? "closing" : "reopening"} and a priority change need separate approvals; send them one at a time`,
     };
   }
-  if (closing && changes.status) {
+  if (statusAction && changes.status) {
     return {
       kind: "allow",
-      approval: { action: "close_task", value: changes.status },
+      approval: { action: statusAction, value: changes.status },
     };
   }
   if (priorityChanged && changes.priority) {

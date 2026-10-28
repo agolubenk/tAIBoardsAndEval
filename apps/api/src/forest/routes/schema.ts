@@ -45,7 +45,7 @@ export const requestApprovalBody = z.object({
   targetId: z.string(),
   value: z.string().min(1).max(64).optional().openapi({
     description:
-      "close_task: the closing status; set_priority: the new priority. Part of what the owner approves.",
+      "close_task: the closing status; reopen_task: the open status a closed card returns to; set_priority: the new priority. Part of what the owner approves.",
   }),
   reason: z.string().min(1).max(2000),
 });

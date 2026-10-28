@@ -114,13 +114,20 @@ async function guardEdit(
     targetId: task.id,
   };
   const { changes } = request;
+  const statusChanged =
+    changes.status !== undefined && changes.status !== task.status;
+  const closes =
+    statusChanged && changes.status
+      ? await isClosingStatus(
+          changes.projectId ?? task.projectId,
+          changes.status,
+        )
+      : false;
   const decision = decideTaskWrite(changes, task, {
-    closes:
-      changes.status !== undefined && changes.status !== task.status
-        ? await isClosingStatus(
-            changes.projectId ?? task.projectId,
-            changes.status,
-          )
+    closes,
+    reopens:
+      statusChanged && !closes
+        ? await isClosingStatus(task.projectId, task.status)
         : false,
     authoredByAgent: changesText(changes, task)
       ? await isAgentAuthored(task.id)

@@ -3624,6 +3624,7 @@
 				"targetUnknown": "The card is gone or you cannot open its project.",
 				"action": {
 					"closeTask": "Close the card as «{{status}}»",
+					"reopenTask": "Reopen the card as «{{status}}»",
 					"setPriority": "Set priority «{{priority}}»",
 					"fellTree": "Fell the tree",
 					"fellSector": "Fell the sector"

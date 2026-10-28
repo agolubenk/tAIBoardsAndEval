@@ -3485,7 +3485,8 @@
 					"closeTask": "Close the card as «{{status}}»",
 					"fellSector": "Fell the sector",
 					"fellTree": "Fell the tree",
-					"setPriority": "Set priority «{{priority}}»"
+					"setPriority": "Set priority «{{priority}}»",
+					"reopenTask": "Reopen the card as «{{status}}»"
 				},
 				"approve": "Approve",
 				"empty": "No requests here.",

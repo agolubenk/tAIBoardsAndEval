@@ -7,7 +7,7 @@ const current = {
   status: "to-do",
   priority: "low",
 };
-const open = { closes: false, authoredByAgent: false };
+const open = { closes: false, reopens: false, authoredByAgent: false };
 
 describe("decideTaskWrite", () => {
   it("lets an agent move open statuses and touch nothing else", () => {
@@ -86,5 +86,23 @@ describe("decideTaskWrite", () => {
         closes: true,
       }).kind,
     ).toBe("deny");
+  });
+
+  // d-tb-reopen, owner 28.10: reopening a closed card needs a «да» too.
+  it("asks for the owner's «да» to reopen a closed card", () => {
+    const closed = { ...current, status: "done" };
+    const reopens = { ...open, reopens: true };
+    expect(decideTaskWrite({ status: "to-do" }, closed, reopens)).toEqual({
+      kind: "allow",
+      approval: { action: "reopen_task", value: "to-do" },
+    });
+    expect(
+      decideTaskWrite({ status: "to-do", priority: "high" }, closed, reopens)
+        .kind,
+    ).toBe("deny");
+    expect(decideTaskWrite({ status: "done" }, closed, reopens)).toEqual({
+      kind: "allow",
+      approval: null,
+    });
   });
 });

@@ -3792,6 +3792,7 @@
 				"targetUnknown": "Карточки нет или её проект вам недоступен.",
 				"action": {
 					"closeTask": "Закрыть карточку как «{{status}}»",
+					"reopenTask": "Вернуть карточку в работу как «{{status}}»",
 					"setPriority": "Поставить приоритет «{{priority}}»",
 					"fellTree": "Срубить дерево",
 					"fellSector": "Срубить сектор"

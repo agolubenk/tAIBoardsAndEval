@@ -19,6 +19,7 @@ export async function assertTaskInWorkspace(
   const [task] = await reader
     .select({
       projectId: taskTable.projectId,
+      status: taskTable.status,
       workspaceId: projectTable.workspaceId,
     })
     .from(taskTable)

@@ -60,7 +60,7 @@ export const agentWriteShape = {
     .max(200)
     .optional()
     .describe(
-      "An approved forest_request_approval (close_task or set_priority) for this exact status or priority; spent on success.",
+      "An approved forest_request_approval (close_task, reopen_task or set_priority) for this exact status or priority; spent on success.",
     ),
 };
 

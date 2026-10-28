@@ -15,7 +15,7 @@ export async function taskApprovalTarget(
 ): Promise<{ items: string[]; params: Record<string, string> }> {
   if (!value) {
     throw new HTTPException(400, {
-      message: `${action} needs a value: the closing status or the new priority`,
+      message: `${action} needs a value: the target status or the new priority`,
     });
   }
   const task = await assertTaskInWorkspace(taskId, workspaceId, userId);
@@ -23,6 +23,19 @@ export async function taskApprovalTarget(
     if (!(await isClosingStatus(task.projectId, value))) {
       throw new HTTPException(400, {
         message: `"${value}" does not close a card in this project; agents move open statuses without approval`,
+      });
+    }
+    return { items: [value], params: { status: value } };
+  }
+  if (action === "reopen_task") {
+    if (!(await isClosingStatus(task.projectId, task.status))) {
+      throw new HTTPException(400, {
+        message: "the card is open; reopen_task is for closed cards",
+      });
+    }
+    if (await isClosingStatus(task.projectId, value)) {
+      throw new HTTPException(400, {
+        message: `"${value}" keeps the card closed; name an open status`,
       });
     }
     return { items: [value], params: { status: value } };

@@ -14980,6 +14980,9 @@
 										"closeTask": {
 											"type": "string"
 										},
+										"reopenTask": {
+											"type": "string"
+										},
 										"setPriority": {
 											"type": "string"
 										},
@@ -14992,6 +14995,7 @@
 									},
 									"required": [
 										"closeTask",
+										"reopenTask",
 										"setPriority",
 										"fellTree",
 										"fellSector"

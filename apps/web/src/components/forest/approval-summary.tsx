@@ -17,6 +17,14 @@ export function ApprovalSummary({ action, params }: ApprovalSummaryProps) {
           })}
         </>
       );
+    case "reopen_task":
+      return (
+        <>
+          {t("workspace:forest.approvals.action.reopenTask", {
+            status: params?.status ?? "—",
+          })}
+        </>
+      );
     case "set_priority":
       return (
         <>

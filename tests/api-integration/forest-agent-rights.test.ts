@@ -18,7 +18,7 @@ async function lease(forest: Forest, taskId: string, session = "dev-1") {
 
 async function approve(
   forest: Forest,
-  action: "close_task" | "set_priority",
+  action: "close_task" | "reopen_task" | "set_priority",
   targetId: string,
   value: string,
 ) {
@@ -30,7 +30,7 @@ async function approve(
   });
   expect(requested.status).toBe(200);
   expect(requested.body.params).toEqual(
-    action === "close_task" ? { status: value } : { priority: value },
+    action === "set_priority" ? { priority: value } : { status: value },
   );
   const decided = await forest.owner(`/approvals/${requested.body.id}/decide`, {
     decision: "approved",
@@ -212,6 +212,54 @@ describe("API integration: agent rights on kaneo routes", () => {
       .where(eq(ownerApprovalTable.id, approvalId));
     expect(spent?.status).toBe("consumed");
     expect(await journal("task.status:close_task", task.id)).toHaveLength(1);
+  });
+
+  // d-tb-reopen, owner 28.10: reopening is approved like closing.
+  it("reopens a closed card only with the owner's «да» for that status", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    await db
+      .update(schema.taskTable)
+      .set({ status: "done" })
+      .where(eq(schema.taskTable.id, task.id));
+    const token = await lease(forest, task.id);
+    const move = (status: string, approvalId?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status },
+        {
+          "x-t-boards-fence": token,
+          ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
+        },
+        "dev-1",
+      );
+
+    const unapproved = await move("to-do");
+    expect(unapproved.status).toBe(403);
+    expect(unapproved.body.message).toContain("reopen_task");
+
+    const stillClosed = await forest.agent("/approvals", {
+      action: "reopen_task",
+      targetId: task.id,
+      value: "archived",
+      reason: "agent asks",
+    });
+    expect(stillClosed.status).toBe(400);
+
+    const approvalId = await approve(forest, "reopen_task", task.id, "to-do");
+    const reopened = await move("to-do", approvalId);
+    expect(reopened.status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("to-do");
+    expect(await journal("task.status:reopen_task", task.id)).toHaveLength(1);
+
+    const openAlready = await forest.agent("/approvals", {
+      action: "reopen_task",
+      targetId: task.id,
+      value: "in-progress",
+      reason: "agent asks",
+    });
+    expect(openAlready.status).toBe(400);
   });
 
   it("changes priority only with a «да» and hands it back if the write fails", async () => {
