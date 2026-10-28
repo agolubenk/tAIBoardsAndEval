@@ -46,6 +46,12 @@ services:
       NOTION_MIRROR_DATABASES: ${NOTION_MIRROR_DATABASES:-}
       NOTION_MIRROR_PRODUCT: ${NOTION_MIRROR_PRODUCT:-}
       NOTION_MIRROR_TOKEN_FILE: /run/tb-secrets/notion_token
+      # The notebook writes answers only with a model and its key file; without
+      # them it returns the sources it found. The key is read on every call.
+      NOTEBOOK_LLM_BASE_URL: ${NOTEBOOK_LLM_BASE_URL:-}
+      NOTEBOOK_LLM_MODEL: ${NOTEBOOK_LLM_MODEL:-}
+      NOTEBOOK_LLM_DAILY_MAX: ${NOTEBOOK_LLM_DAILY_MAX:-}
+      NOTEBOOK_LLM_KEY_FILE: /run/tb-secrets/notebook_llm_key
     volumes:
       - ./secrets:/run/tb-secrets:ro
     ports:

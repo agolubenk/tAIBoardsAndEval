@@ -103,6 +103,9 @@ export const embedSavedSchema = z
   .object({ saved: z.number().int(), rejected: z.number().int() })
   .openapi("NotebookEmbedSaved");
 
+// A 500-character query is at most ~3 KB even with every character escaped.
+export const SEARCH_BODY_BYTES = 8 * 1024;
+
 export const searchBody = z.object({
   query: z.string().trim().min(1).max(500),
   limit: z.number().int().min(1).max(SEARCH_LIMIT_MAX).optional(),

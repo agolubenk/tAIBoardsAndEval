@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vite-plus/test";
 import { encodeEmbedding } from "../embed/embedding-codec";
-import { buildVectorIndex, nearestChunks } from "./vector-index";
+import {
+  buildVectorIndex,
+  evictOverBudget,
+  nearestChunks,
+  VECTOR_BYTES_MAX,
+  type VectorIndex,
+  vectorRowsMax,
+} from "./vector-index";
 
 const row = (id: string, vector: number[]) => ({
   id,
@@ -29,5 +36,33 @@ describe("vector index", () => {
     expect(index?.ids).toEqual(["a"]);
     expect(nearestChunks(index!, new Float32Array([1, 0, 0]), 5)).toEqual([]);
     expect(buildVectorIndex("s", [{ id: "x", embedding: null }])).toBeNull();
+  });
+
+  it("fits the row limit to the vector width", () => {
+    expect(vectorRowsMax(768 * 4)).toBe(10_922);
+    expect(vectorRowsMax(4096 * 4)).toBe(2048);
+    expect(vectorRowsMax(4096 * 4) * 4096 * 4).toBeLessThanOrEqual(
+      VECTOR_BYTES_MAX,
+    );
+    expect(vectorRowsMax(0)).toBeGreaterThan(0);
+    expect(vectorRowsMax(VECTOR_BYTES_MAX * 2)).toBe(1);
+  });
+
+  it("drops the oldest indexes past the byte budget and keeps the newest", () => {
+    const sized = (floats: number): VectorIndex => ({
+      stamp: "s",
+      dims: 1,
+      ids: [],
+      matrix: new Float32Array(floats),
+    });
+    const indexes = new Map([
+      ["a", sized(10)],
+      ["b", sized(10)],
+      ["c", sized(10)],
+    ]);
+    evictOverBudget(indexes, 80);
+    expect([...indexes.keys()]).toEqual(["b", "c"]);
+    evictOverBudget(indexes, 0);
+    expect([...indexes.keys()]).toEqual(["c"]);
   });
 });

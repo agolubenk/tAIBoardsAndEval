@@ -5,8 +5,11 @@ import { decodeEmbedding, dot, normalize } from "../embed/embedding-codec";
 
 // One normalized matrix per workspace, rebuilt when the embedded set changes:
 // 3k chunks of 768 dims are ~9 MB and a full scan is a few milliseconds.
-export const VECTOR_ROWS_MAX = 20_000;
-const CACHED_WORKSPACES_MAX = 8;
+// Budgets are in bytes, not rows: a 4096-dim model is five times wider than
+// nomic's 768. One index holds up to ~10.9k chunks of 768 dims; the cache
+// drops the least recently used workspaces past its total.
+export const VECTOR_BYTES_MAX = 32 * 1024 * 1024;
+export const CACHE_BYTES_MAX = 64 * 1024 * 1024;
 
 export type VectorIndex = {
   stamp: string;
@@ -33,6 +36,7 @@ export async function loadVectorIndex(
     .select({
       count: sql<number>`count(*)::int`,
       latest: sql<string | null>`max(${notebookChunkTable.embeddedAt})::text`,
+      width: sql<number>`max(octet_length(${notebookChunkTable.embedding}))::int`,
     })
     .from(notebookChunkTable)
     .where(scope);
@@ -40,7 +44,11 @@ export async function loadVectorIndex(
   const stamp = `${state.count}:${state.latest}`;
   const key = cacheKey(workspaceId, model);
   const cached = cache.get(key);
-  if (cached?.stamp === stamp) return cached;
+  if (cached?.stamp === stamp) {
+    cache.delete(key);
+    cache.set(key, cached);
+    return cached;
+  }
 
   const rows = await db
     .select({
@@ -49,16 +57,32 @@ export async function loadVectorIndex(
     })
     .from(notebookChunkTable)
     .where(scope)
-    .limit(VECTOR_ROWS_MAX);
+    .limit(vectorRowsMax(state.width));
   const index = buildVectorIndex(stamp, rows);
   if (!index) return null;
   cache.delete(key);
   cache.set(key, index);
-  if (cache.size > CACHED_WORKSPACES_MAX) {
-    const oldest = cache.keys().next().value;
-    if (oldest !== undefined) cache.delete(oldest);
-  }
+  evictOverBudget(cache, CACHE_BYTES_MAX);
   return index;
+}
+
+// The widest row decides, so a half-finished model switch cannot overrun.
+export function vectorRowsMax(widthBytes: number): number {
+  return Math.max(1, Math.floor(VECTOR_BYTES_MAX / Math.max(4, widthBytes)));
+}
+
+// Oldest first (Map keeps insertion order); the newest index always stays.
+export function evictOverBudget(
+  indexes: Map<string, VectorIndex>,
+  budgetBytes: number,
+) {
+  let total = 0;
+  for (const index of indexes.values()) total += index.matrix.byteLength;
+  for (const [key, index] of indexes) {
+    if (total <= budgetBytes || indexes.size === 1) break;
+    indexes.delete(key);
+    total -= index.matrix.byteLength;
+  }
 }
 
 // Rows of another width (a half-finished model switch) are left out.

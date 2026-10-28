@@ -90,10 +90,12 @@ ensure_secrets() {
   chmod 0440 "$ROOT/secrets/postgres_password"
   chown 1001:1001 "$ROOT/secrets/auth_secret"
   chmod 0400 "$ROOT/secrets/auth_secret"
-  if [ -f "$ROOT/secrets/notion_token" ]; then
-    chown 1001:1001 "$ROOT/secrets/notion_token"
-    chmod 0400 "$ROOT/secrets/notion_token"
-  fi
+  for optional in notion_token notebook_llm_key; do
+    if [ -f "$ROOT/secrets/$optional" ]; then
+      chown 1001:1001 "$ROOT/secrets/$optional"
+      chmod 0400 "$ROOT/secrets/$optional"
+    fi
+  done
 }
 
 write_files() {
@@ -110,18 +112,20 @@ write_files() {
     "$here/tls.conf.template" >"$ROOT/tls.conf"
   if grep -q '\${TLS_' "$ROOT/tls.conf"; then die "tls.conf не отрендерился"; fi
 
-  # Keep the mirror settings the owner already filled in.
+  # Keep the mirror and notebook settings the owner already filled in.
   [ -f "$ROOT/.env" ] && cp -a "$ROOT/.env" "$ROOT/.env.prev"
+  local kept=""
+  if [ -f "$ROOT/.env.prev" ]; then
+    kept="$(grep -E '^(NOTION_MIRROR|NOTEBOOK_LLM)_' "$ROOT/.env.prev" || true)"
+  fi
   {
     echo "TB_IMAGE=t-boards:$TB_TAG"
     echo "TB_DOMAIN=$DOMAIN"
     echo "TB_LE_VOLUME=$LE_VOLUME"
-    if [ -f "$ROOT/.env.prev" ] && grep -q '^NOTION_MIRROR_' "$ROOT/.env.prev"; then
-      grep '^NOTION_MIRROR_' "$ROOT/.env.prev"
-    else
-      echo "NOTION_MIRROR_WORKSPACE_ID="
-      echo "NOTION_MIRROR_DATABASES="
-    fi
+    if [ -n "$kept" ]; then printf '%s\n' "$kept"; fi
+    for var in NOTION_MIRROR_WORKSPACE_ID NOTION_MIRROR_DATABASES; do
+      grep -q "^$var=" <<<"$kept" || echo "$var="
+    done
   } >"$ROOT/.env"
   chmod 0600 "$ROOT/.env"
 }
@@ -189,7 +193,7 @@ smoke() {
     "https://$DOMAIN:$TLS_PORT/api/health" 2>&1 || true)"
   tls_state="$(docker inspect -f '{{.State.Status}}' "$("${compose[@]}" ps -q tls)" 2>&1)"
   log "tls: $tls_state; https://$DOMAIN/api/health через туннель: $health"
-  [ -n "$health" ] && [[ "$health" != curl:* ]] || die "TLS не отвечает: docker compose -p t-boards logs tls"
+  if [ -z "$health" ] || [[ "$health" == curl:* ]]; then die "TLS не отвечает: docker compose -p t-boards logs tls"; fi
   log "кто слушает $TLS_PORT: $(ss -ltnH "sport = :$TLS_PORT" | awk '{print $4}' | tr '\n' ' ')"
 }
 

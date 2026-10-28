@@ -5,7 +5,7 @@ import {
   notebookSourceTable,
 } from "../../database/notebook-schema";
 import { isWorkerOnline, workerLastSeen } from "../embed/embed-queue";
-import { cloudCallsToday } from "../chat/ask-notebook";
+import { cloudCallsToday } from "../chat/call-budget";
 import { notebookLlmConfig, readLlmKey } from "../llm/llm-config";
 import { notebookEmbedModel } from "../notebook-config";
 

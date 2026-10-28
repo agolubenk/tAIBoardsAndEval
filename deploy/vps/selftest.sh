@@ -55,7 +55,8 @@ docker run --rm -v "$le_volume:/le" -v "$root/cert:/src:ro" --entrypoint sh ngin
 
 "${compose[@]}" config --quiet || fail "compose config"
 log "compose config: ok"
-"${compose[@]}" up -d postgres app backup 2>&1 | tail -3 || true
+# backup starts after the seeds, so its first dump carries the seeded data.
+"${compose[@]}" up -d postgres app 2>&1 | tail -3 || true
 
 app_id="$("${compose[@]}" ps -q app)"
 status=starting
@@ -123,6 +124,7 @@ hsts="$(curl -skI --resolve "$domain:18443:127.0.0.1" "https://$domain:18443/" |
 [ "$hsts" -ge 1 ] || fail "no HSTS header"
 log "tls proxy: $health, HSTS present"
 
+"${compose[@]}" up -d backup 2>&1 | tail -1 || true
 for _ in $(seq 1 30); do
   [ -s "$root/backups/latest.dump" ] && break
   sleep 2
@@ -132,6 +134,10 @@ log "backup: $(wc -c <"$root/backups/latest.dump" | tr -d ' ') bytes"
 restored="$(sh "$vps/mac/restore-check.sh" "$root/backups/latest.dump")" || fail "restore-check"
 printf '%s\n' "$restored"
 printf '%s\n' "$restored" | grep -qx "migrations $journal" || fail "restored dump lacks $journal migrations"
-log "restore: $journal migrations back"
+cards="$(grep -c -E '"key": "[A-Z]{2,5}-[0-9]{3}"' "$vps/seed/products.json")"
+for row in "users 1" "workspaces 3" "tasks $cards"; do
+  printf '%s\n' "$restored" | grep -qx "$row" || fail "restored dump lacks $row"
+done
+log "restore: $journal migrations, the admin, 3 products and $cards cards back"
 
 log "selftest: all checks passed"

@@ -1,4 +1,4 @@
-import { and, asc, eq, isNotNull, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {
@@ -15,6 +15,7 @@ import {
 } from "../llm/llm-config";
 import { type NotebookHit, searchNotebook } from "../search/search-notebook";
 import { buildPrompt, HISTORY_MESSAGES } from "./build-prompt";
+import { releaseCall, reserveCall } from "./call-budget";
 
 export const ANSWER_SOURCES = 6;
 // R-053: a rate-limited call waits for the window instead of moving to
@@ -23,16 +24,6 @@ export const RATE_LIMIT_WAIT_MAX_MS = 20_000;
 
 const titleOf = (question: string) =>
   question.length > 120 ? `${question.slice(0, 119)}…` : question;
-
-export async function cloudCallsToday(): Promise<number> {
-  return db.$count(
-    notebookMessageTable,
-    and(
-      isNotNull(notebookMessageTable.model),
-      sql`${notebookMessageTable.createdAt} >= date_trunc('day', now() AT TIME ZONE 'utc')`,
-    ),
-  );
-}
 
 export async function findThread(workspaceId: string, threadId: string) {
   const [thread] = await db
@@ -84,10 +75,12 @@ async function writeAnswer(
   if (!config || !key || !hits.length) {
     return { status: "retrieval-only", content: "", model: null };
   }
-  if ((await cloudCallsToday()) >= config.dailyMax) {
+  const messages = buildPrompt(question, hits, history);
+  // Holds a place under the daily cap; askNotebook releases it once the
+  // answer is stored. Nothing below throws, so every place is released.
+  if (!(await reserveCall(config.dailyMax))) {
     return { status: "capped", content: "", model: null };
   }
-  const messages = buildPrompt(question, hits, history);
   for (let attempt = 0; ; attempt++) {
     try {
       const content = await chatCompletion(config, key, messages);
@@ -167,6 +160,7 @@ export async function askNotebook(input: {
     hits,
     history,
   );
+  // Only a model call carries a model, and only a model call holds a place.
   const [answer] = await db
     .insert(notebookMessageTable)
     .values({
@@ -176,7 +170,8 @@ export async function askNotebook(input: {
       citations,
       ...outcome,
     })
-    .returning();
+    .returning()
+    .finally(() => (outcome.model ? releaseCall() : undefined));
   const [touched] = await db
     .update(notebookThreadTable)
     .set({ updatedAt: sql`(now() AT TIME ZONE 'utc')` })

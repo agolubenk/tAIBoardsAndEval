@@ -5,12 +5,14 @@ import {
   errorResponse,
   jsonResponse,
 } from "../../openapi";
+import { boundedRequestBody } from "../../utils/bounded-request-body";
 import { requireWorkspacePermission } from "../../utils/require-workspace-permission";
 import { workspaceAccess } from "../../utils/workspace-access-middleware";
 import { searchNotebook } from "../search/search-notebook";
 import { notebookStatus } from "../status/notebook-status";
 import {
   notebookStatusSchema,
+  SEARCH_BODY_BYTES,
   searchBody,
   searchResultsSchema,
   workspaceParam,
@@ -27,6 +29,7 @@ const searchRoute = createRoute({
   middleware: [
     workspaceAccess.fromParam(),
     requireWorkspacePermission({ workspace: ["read"] }),
+    boundedRequestBody(SEARCH_BODY_BYTES),
   ] as const,
   request: {
     params: workspaceParam,

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
 import { encodeEmbedding } from "../../apps/api/src/notebook/embed/embedding-codec";
 import { resetEmbedQueueForTests } from "../../apps/api/src/notebook/embed/embed-queue";
+import { SEARCH_BODY_BYTES } from "../../apps/api/src/notebook/routes/schema";
 import { clearVectorCacheForTests } from "../../apps/api/src/notebook/search/vector-index";
 import { createApp } from "../../apps/api/src/index";
 import { mockAuthenticatedSession } from "./helpers/auth";
@@ -103,6 +104,13 @@ describe("API integration: notebook", () => {
     expect(
       english.body.results.map((r: { heading: string }) => r.heading),
     ).toEqual(["Лес › Аренда"]);
+
+    // The size bound runs before the JSON is parsed.
+    const padded = await nb.owner("POST", "/search", {
+      query: "аренда",
+      padding: "x".repeat(SEARCH_BODY_BYTES),
+    });
+    expect(padded.status).toBe(413);
   });
 
   it("embeds chunks through the worker and ranks a query by meaning", async () => {

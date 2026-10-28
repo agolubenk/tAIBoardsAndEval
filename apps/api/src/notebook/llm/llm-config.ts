@@ -17,7 +17,10 @@ export function notebookLlmConfig(): LlmConfig | null {
   const model = process.env.NOTEBOOK_LLM_MODEL?.trim();
   const keyFile = process.env.NOTEBOOK_LLM_KEY_FILE?.trim();
   if (!model || !keyFile) return null;
-  const dailyMax = Number(process.env.NOTEBOOK_LLM_DAILY_MAX);
+  // compose passes an unset variable as "", and Number("") is 0: every call
+  // would be capped. Only a written number counts; "0" turns calls off.
+  const rawMax = process.env.NOTEBOOK_LLM_DAILY_MAX?.trim();
+  const dailyMax = rawMax ? Number(rawMax) : Number.NaN;
   return {
     baseUrl: (
       process.env.NOTEBOOK_LLM_BASE_URL?.trim() || DEFAULT_LLM_BASE_URL

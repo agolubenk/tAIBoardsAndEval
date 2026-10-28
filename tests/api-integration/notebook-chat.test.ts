@@ -37,7 +37,12 @@ const LEASE_DOC = [
 ].join("\n");
 const KEY = "sk-test-notebook";
 
-type Reply = { status: number; content?: string; retryAfter?: string };
+type Reply = {
+  status: number;
+  content?: string;
+  retryAfter?: string;
+  delayMs?: number;
+};
 type Seen = {
   authorization?: string;
   messages: { role: string; content: string }[];
@@ -63,17 +68,19 @@ beforeAll(async () => {
         messages: JSON.parse(raw).messages,
       });
       const next = script.shift() ?? { status: 200, content: "Ответ [1]." };
-      res.writeHead(next.status, {
-        "content-type": "application/json",
-        ...(next.retryAfter ? { "retry-after": next.retryAfter } : {}),
-      });
-      res.end(
-        JSON.stringify(
-          next.status === 200
-            ? { choices: [{ message: { content: next.content } }] }
-            : { error: "nope" },
-        ),
-      );
+      setTimeout(() => {
+        res.writeHead(next.status, {
+          "content-type": "application/json",
+          ...(next.retryAfter ? { "retry-after": next.retryAfter } : {}),
+        });
+        res.end(
+          JSON.stringify(
+            next.status === 200
+              ? { choices: [{ message: { content: next.content } }] }
+              : { error: "nope" },
+          ),
+        );
+      }, next.delayMs ?? 0);
     });
   });
   await new Promise<void>((resolve) => llm.listen(0, "127.0.0.1", resolve));
@@ -241,6 +248,29 @@ describe("API integration: notebook chat", () => {
       model: null,
     });
     expect(seen).toHaveLength(1);
+  });
+
+  it("holds the daily cap when questions arrive together", async () => {
+    useLlm(2);
+    script = Array.from({ length: 6 }, () => ({
+      status: 200,
+      content: "Ответ [1].",
+      delayMs: 150,
+    }));
+    const nb = await chatFixture();
+
+    const asked = await Promise.all(
+      Array.from({ length: 6 }, () =>
+        nb.owner("POST", "/threads", { question: "аренда" }),
+      ),
+    );
+    const statuses = asked.map((reply) => reply.body.messages[1].status);
+    expect(statuses.filter((status) => status === "answered")).toHaveLength(2);
+    expect(statuses.filter((status) => status === "capped")).toHaveLength(4);
+    expect(seen).toHaveLength(2);
+
+    const later = await nb.owner("POST", "/threads", { question: "аренда" });
+    expect(later.body.messages[1].status).toBe("capped");
   });
 
   it("keeps earlier turns in a follow-up and takes sources from the new question", async () => {
