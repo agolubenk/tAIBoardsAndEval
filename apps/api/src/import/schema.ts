@@ -106,6 +106,30 @@ const kaneoConnection = z
   })
   .openapi("KaneoImportConnection");
 
+const notionConnection = z
+  .object({
+    source: z.literal("notion"),
+    token: secret(
+      "A Notion internal integration token, shared with the databases to import.",
+    ),
+    databaseIds: z
+      .array(z.string().trim().min(1).max(64))
+      .min(1)
+      .max(20)
+      .refine((ids) => new Set(ids).size === ids.length, {
+        message: "Database IDs must be unique",
+      })
+      .openapi({
+        description:
+          "IDs of the Notion databases to import, each becoming one project.",
+      }),
+    product: z.string().trim().min(1).max(64).optional().openapi({
+      description:
+        "Product slug the imported tasks belong to; it scopes their idempotency keys. Defaults to `default`.",
+    }),
+  })
+  .openapi("NotionImportConnection");
+
 export const importConnectionSchema = z
   .discriminatedUnion("source", [
     plankaConnection,
@@ -114,6 +138,7 @@ export const importConnectionSchema = z
     jiraConnection,
     trelloConnection,
     kaneoConnection,
+    notionConnection,
   ])
   .openapi("ImportConnection", {
     description: `Where to import from and how to sign in. Credentials are used only for this request and the import it starts; they are never stored, logged, or returned.`,

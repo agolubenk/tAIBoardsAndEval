@@ -16,6 +16,7 @@ import {
   registerMcpClient,
 } from "./controllers/oauth-consent";
 import { createModernMcpHandler } from "./modern";
+import { isMcpRole, MCP_ROLES, ROLE_HEADER } from "./tool-scope/roles";
 import { exchangeCode } from "./oauth";
 import { oauthRequestBounds } from "./request-bounds";
 import {
@@ -28,7 +29,7 @@ import {
   clientRegistrationSchema,
   oauthErrorSchema,
 } from "./schemas";
-import { registerMcpTools, toMcpToolRegistrar } from "./tools";
+import { type McpSession, registerMcpTools, toMcpToolRegistrar } from "./tools";
 
 const publicApiUrl = (process.env.KANEO_API_URL || "http://localhost:1337")
   .replace(/\/api\/?$/, "")
@@ -39,12 +40,14 @@ const internalApiUrl = (
   .replace(/\/api\/?$/, "")
   .replace(/\/+$/, "");
 
-function createMcpServerForUser(token: string): LegacyMcpServer {
+async function createMcpServerForUser(
+  session: McpSession,
+): Promise<LegacyMcpServer> {
   const server = new LegacyMcpServer({
     name: "kaneo-mcp",
     version: "1.0.0",
   });
-  registerMcpTools(toMcpToolRegistrar(server), internalApiUrl, token);
+  await registerMcpTools(toMcpToolRegistrar(server), internalApiUrl, session);
   return server;
 }
 
@@ -325,8 +328,21 @@ mcp.all("/mcp", async (c) => {
     return c.json({ error: "Unsupported Media Type" }, 415);
   }
 
+  // R-034: a typo in the role must not silently widen the set to everything.
+  const role = c.req.header(ROLE_HEADER);
+  if (role !== undefined && !isMcpRole(role)) {
+    return c.json(
+      {
+        error: "unknown_role",
+        error_description: `Known roles: ${MCP_ROLES.join(", ")}`,
+      },
+      400,
+    );
+  }
+  const session: McpSession = { ...authResult, role };
+
   if (!(await isLegacyRequest(c.req.raw.clone()))) {
-    const modern = createModernMcpHandler(authResult.token, internalApiUrl);
+    const modern = createModernMcpHandler(session, internalApiUrl);
     return modern.fetch(c.req.raw);
   }
 
@@ -335,7 +351,7 @@ mcp.all("/mcp", async (c) => {
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
   });
-  const server = createMcpServerForUser(authResult.token);
+  const server = await createMcpServerForUser(session);
   await server.connect(transport);
   return transport.handleRequest(c.req.raw);
 });

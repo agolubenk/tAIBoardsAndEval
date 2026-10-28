@@ -62,3 +62,6 @@ apps/web/.tanstack/
 # TypeScript incremental build state
 *.tsbuildinfo
 .vitest/
+
+# t-boards: local secret files (AUTH_SECRET_FILE, POSTGRES_PASSWORD_FILE)
+.secrets/

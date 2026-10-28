@@ -21,7 +21,10 @@ function collectTools() {
   const registrar: McpToolRegistrar = {
     registerTool: (name, _config, callback) => tools.set(name, callback),
   };
-  registerMcpTools(registrar, "http://api.test", "test-token");
+  registerMcpTools(registrar, "http://api.test", {
+    token: "test-token",
+    userId: "user-1",
+  });
   return tools;
 }
 

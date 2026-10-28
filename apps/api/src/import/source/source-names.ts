@@ -7,4 +7,5 @@ export const IMPORT_SOURCE_NAMES: Record<ImportSourceId, string> = {
   jira: "Jira",
   trello: "Trello",
   kaneo: "Kaneo",
+  notion: "Notion",
 };

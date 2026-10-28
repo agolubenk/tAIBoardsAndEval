@@ -64,6 +64,7 @@
 		"test:watch": "vp test --config vitest.config.ts"
 	},
 	"dependencies": {
+		"@kaneo/agent-format": "workspace:*",
 		"@modelcontextprotocol/sdk": "^1.31.0",
 		"open": "^11.0.4",
 		"prompts": "^2.4.2",

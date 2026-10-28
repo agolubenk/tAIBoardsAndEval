@@ -47,6 +47,19 @@ export type ImportedTask = {
   assignee?: ImportedPerson;
   labelKeys: string[];
   comments: ImportedComment[];
+  // Where the task came from, for sources that are mirrored rather than
+  // imported once (Notion, R-080): the writer upserts by `lastEditedTime`.
+  sourceRef?: ImportedSourceRef;
+  // Source fields with no kaneo column, kept verbatim (R-024).
+  extraFields?: Record<string, string | number | boolean | null>;
+  // Why an archived task left the board in the source, when it says so.
+  terminalReason?: string;
+};
+
+export type ImportedSourceRef = {
+  system: "notion";
+  pageId: string;
+  lastEditedTime: string;
 };
 
 export type ImportedRelationType = "subtask" | "blocks" | "related";

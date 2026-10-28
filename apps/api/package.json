@@ -23,6 +23,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
+    "seed:local-admin": "tsx scripts/seed-local-admin.ts",
     "openapi:export": "tsx scripts/export-openapi.ts"
   },
   "dependencies": {
@@ -33,10 +34,12 @@
     "@hono/node-server": "^2.1.3",
     "@hono/node-ws": "^1.3.1",
     "@hono/zod-openapi": "^1.6.3",
+    "@kaneo/claude-mem-reader": "workspace:*",
     "@kaneo/email": "workspace:*",
     "@kaneo/importers": "workspace:*",
     "@kaneo/mcp": "workspace:*",
     "@kaneo/permissions": "workspace:*",
+    "@kaneo/redact": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.31.0",
     "@modelcontextprotocol/server": "2.2.0",
     "@octokit/webhooks": "^14.2.0",

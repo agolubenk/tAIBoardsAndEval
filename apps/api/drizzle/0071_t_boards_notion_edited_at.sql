@@ -1,0 +1,1 @@
+ALTER TABLE "card_meta" ADD COLUMN "notion_edited_at" timestamp;

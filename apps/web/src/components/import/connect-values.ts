@@ -8,6 +8,7 @@ export type ImportConnectValues = {
   email: string;
   password: string;
   plankaSignIn: PlankaSignIn;
+  databaseIds: string;
 };
 
 export const EMPTY_CONNECT_VALUES: ImportConnectValues = {
@@ -18,4 +19,5 @@ export const EMPTY_CONNECT_VALUES: ImportConnectValues = {
   email: "",
   password: "",
   plankaSignIn: "apiKey",
+  databaseIds: "",
 };

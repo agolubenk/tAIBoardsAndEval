@@ -3,6 +3,7 @@ import type { ConnectFormProps } from "@/components/import/connect-forms/connect
 import { JiraConnectForm } from "@/components/import/connect-forms/jira-connect-form";
 import { KaneoConnectForm } from "@/components/import/connect-forms/kaneo-connect-form";
 import { LinearConnectForm } from "@/components/import/connect-forms/linear-connect-form";
+import { NotionConnectForm } from "@/components/import/connect-forms/notion-connect-form";
 import { PlaneConnectForm } from "@/components/import/connect-forms/plane-connect-form";
 import { PlankaConnectForm } from "@/components/import/connect-forms/planka-connect-form";
 import { TrelloConnectForm } from "@/components/import/connect-forms/trello-connect-form";
@@ -18,4 +19,5 @@ export const CONNECT_FORMS: Record<
   plane: PlaneConnectForm,
   planka: PlankaConnectForm,
   kaneo: KaneoConnectForm,
+  notion: NotionConnectForm,
 };

@@ -1,4 +1,4 @@
-import { ArrowRight, Calendar, CalendarDays } from "lucide-react";
+import { Calendar, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import icons from "@/constants/project-icons";
 import { getColumnIcon } from "@/lib/column";
@@ -112,37 +112,35 @@ export function PropertiesRail({
           </TaskLabelsPopover>
         </PropertyRow>
 
-        <PropertyRow label={t("tasks:properties.dates")}>
-          <div className="flex min-w-0 items-center gap-0.5">
-            <TaskStartDatePopover task={task}>
-              <PropertyValue className="flex-none">
-                <CalendarDays className="text-muted-foreground" />
-                <span
-                  className={cn(!task.startDate && "text-muted-foreground")}
-                >
-                  {task.startDate
-                    ? formatDateShort(task.startDate)
-                    : t("tasks:properties.start")}
-                </span>
-              </PropertyValue>
-            </TaskStartDatePopover>
-            <ArrowRight className="size-3 shrink-0 text-muted-foreground/60" />
-            <TaskDueDatePopover task={task}>
-              <PropertyValue
-                data-task-action="dueDate"
-                className={cn("flex-none", dueDateTextClass[dueStatus])}
-              >
-                <Calendar
-                  className={cn(!task.dueDate && "text-muted-foreground")}
-                />
-                <span className={cn(!task.dueDate && "text-muted-foreground")}>
-                  {task.dueDate
-                    ? formatDateShort(task.dueDate)
-                    : t("tasks:dueDate.label")}
-                </span>
-              </PropertyValue>
-            </TaskDueDatePopover>
-          </div>
+        <PropertyRow label={t("tasks:properties.start")}>
+          <TaskStartDatePopover task={task}>
+            <PropertyValue>
+              <CalendarDays className="text-muted-foreground" />
+              <span className={cn(!task.startDate && "text-muted-foreground")}>
+                {task.startDate
+                  ? formatDateShort(task.startDate)
+                  : t("tasks:properties.noDate")}
+              </span>
+            </PropertyValue>
+          </TaskStartDatePopover>
+        </PropertyRow>
+
+        <PropertyRow label={t("tasks:properties.due")}>
+          <TaskDueDatePopover task={task}>
+            <PropertyValue
+              data-task-action="dueDate"
+              className={dueDateTextClass[dueStatus]}
+            >
+              <Calendar
+                className={cn(!task.dueDate && "text-muted-foreground")}
+              />
+              <span className={cn(!task.dueDate && "text-muted-foreground")}>
+                {task.dueDate
+                  ? formatDateShort(task.dueDate)
+                  : t("tasks:properties.noDate")}
+              </span>
+            </PropertyValue>
+          </TaskDueDatePopover>
         </PropertyRow>
 
         <PropertyRow label={t("tasks:properties.project")}>

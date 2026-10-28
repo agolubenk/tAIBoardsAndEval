@@ -65,6 +65,13 @@ export function resolveImportConnection(
         secrets: [input.apiKey],
         credentialHint: "Check the API key.",
       };
+    case "notion":
+      return {
+        connection: input,
+        secrets: [input.token],
+        credentialHint:
+          "Check the integration token and that the databases are shared with it.",
+      };
   }
 }
 

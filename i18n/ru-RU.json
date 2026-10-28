@@ -56,27 +56,27 @@
 			"tryAgain": "Попробовать снова",
 			"viewDeploymentGuide": "Руководство по развёртыванию",
 			"refreshPage": "Обновить страницу",
-			"description": "The page crashed unexpectedly. Refreshing usually fixes it.",
+			"description": "Страница неожиданно завершилась с ошибкой. Обычно помогает обновление.",
 			"messages": {
-				"auth": "Authentication failed. Please sign in again.",
-				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
-				"network": "Network error. Please check your internet connection and try again.",
-				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"auth": "Ошибка аутентификации. Войдите снова.",
+				"cors": "Не удаётся подключиться к серверу. Возможно, дело в настройках CORS.",
+				"network": "Ошибка сети. Проверьте подключение к интернету и попробуйте снова.",
+				"server": "Ошибка сервера. Попробуйте позже.",
+				"unknown": "Произошла непредвиденная ошибка."
 			},
 			"troubleshootingSteps": {
 				"cors": {
-					"checkAccessibility": "Check that your API server is accessible from your browser",
-					"checkApiRunning": "Make sure your API server is running",
-					"checkApiUrl": "Check that VITE_API_URL in your frontend .env matches your API server URL",
-					"checkProtocol": "Ensure both frontend and API are using the same protocol (http/https)",
-					"verifyCorsOrigins": "Verify CORS_ORIGINS in your API .env includes your frontend URL"
+					"checkAccessibility": "Проверьте, что сервер API доступен из вашего браузера",
+					"checkApiRunning": "Убедитесь, что сервер API запущен",
+					"checkApiUrl": "Проверьте, что VITE_API_URL в .env фронтенда совпадает с URL сервера API",
+					"checkProtocol": "Убедитесь, что фронтенд и API используют один и тот же протокол (http/https)",
+					"verifyCorsOrigins": "Убедитесь, что CORS_ORIGINS в .env API включает URL фронтенда"
 				},
 				"network": {
-					"checkConnection": "Check your internet connection",
-					"checkFirewall": "Check if there are any firewall or proxy issues",
-					"tryRefresh": "Try refreshing the page",
-					"verifyApiRunning": "Verify the API server is running and accessible"
+					"checkConnection": "Проверьте подключение к интернету",
+					"checkFirewall": "Проверьте, нет ли проблем с файрволом или прокси",
+					"tryRefresh": "Попробуйте обновить страницу",
+					"verifyApiRunning": "Убедитесь, что сервер API запущен и доступен"
 				}
 			}
 		},
@@ -150,7 +150,7 @@
 					"rose": "Роза",
 					"crimson": "Малиновый"
 				},
-				"statusLoadError": "Project statuses couldn’t be loaded."
+				"statusLoadError": "Не удалось загрузить статусы проекта."
 			}
 		},
 		"editor": {
@@ -339,28 +339,28 @@
 			"restrictedTitle": "Нужно приглашение",
 			"cloud": {
 				"invite": {
-					"addAnother": "Add another",
-					"emailLabel": "Teammate email {{index}}",
+					"addAnother": "Добавить ещё",
+					"emailLabel": "Email коллеги {{index}}",
 					"emailPlaceholder": "teammate@company.com",
-					"failed": "Couldn't invite {{email}}: {{message}}",
-					"invalidEmail": "Enter a valid email address",
-					"remove": "Remove email {{index}}",
-					"sent_few": "{{count}} invitations sent",
-					"sent_many": "{{count}} invitations sent",
-					"sent_one": "Invitation sent",
-					"sent_other": "{{count}} invitations sent",
-					"skip": "Skip for now"
+					"failed": "Не удалось пригласить {{email}}: {{message}}",
+					"invalidEmail": "Введите корректный email-адрес",
+					"remove": "Удалить email {{index}}",
+					"sent_few": "Отправлено {{count}} приглашения",
+					"sent_many": "Отправлено {{count}} приглашений",
+					"sent_one": "Приглашение отправлено",
+					"sent_other": "Отправлено {{count}} приглашения",
+					"skip": "Пропустить"
 				},
 				"plan": {
-					"continueTrial": "Start free trial",
-					"recommended": "Recommended",
-					"trialUsed": "You've already used your free trial. Pick a plan to start creating projects and tasks."
+					"continueTrial": "Начать бесплатный пробный период",
+					"recommended": "Рекомендуем",
+					"trialUsed": "Вы уже использовали бесплатный пробный период. Выберите тариф, чтобы начать создавать проекты и задачи."
 				},
-				"usageLabel": "Who will use this workspace?",
-				"usageSolo": "Just me",
-				"usageSoloDescription": "Keep track of your own work",
-				"usageTeam": "My team",
-				"usageTeamDescription": "Plan and ship work together"
+				"usageLabel": "Кто будет пользоваться этой рабочей областью?",
+				"usageSolo": "Только я",
+				"usageSoloDescription": "Следите за своей работой",
+				"usageTeam": "Моя команда",
+				"usageTeamDescription": "Планируйте и выпускайте работу вместе"
 			},
 			"projectNameDefault": "Мой первый проект",
 			"starterTasks": {
@@ -477,23 +477,23 @@
 			}
 		},
 		"passwordReset": {
-			"forgotPassword": "Forgot password?",
-			"requestTitle": "Reset your password",
-			"requestSubtitle": "Enter your email and we’ll send you a password reset link.",
-			"sendLink": "Send reset link",
-			"requestError": "Could not request a reset link. Please try again.",
-			"unavailable": "Password reset is unavailable. Contact your instance administrator.",
-			"configError": "Could not reach the server. Please reload the page to try again.",
-			"resetTitle": "Choose a new password",
-			"newPassword": "New password",
-			"confirmPassword": "Confirm new password",
-			"passwordMismatch": "The passwords do not match.",
-			"passwordLength": "Use between 8 and 128 characters.",
-			"invalidLink": "This reset link is invalid or has expired. Request a new link to continue.",
-			"requestNewLink": "Request a new link",
-			"resetError": "Could not reset your password. Please try again.",
-			"success": "Your password has been reset. Sign in with your new password.",
-			"backToSignIn": "Back to sign in",
+			"forgotPassword": "Забыли пароль?",
+			"requestTitle": "Сброс пароля",
+			"requestSubtitle": "Введите свой email, и мы отправим вам ссылку для сброса пароля.",
+			"sendLink": "Отправить ссылку для сброса",
+			"requestError": "Не удалось запросить ссылку для сброса. Попробуйте ещё раз.",
+			"unavailable": "Сброс пароля недоступен. Обратитесь к администратору инстанса.",
+			"configError": "Не удалось связаться с сервером. Перезагрузите страницу, чтобы попробовать снова.",
+			"resetTitle": "Придумайте новый пароль",
+			"newPassword": "Новый пароль",
+			"confirmPassword": "Подтвердите новый пароль",
+			"passwordMismatch": "Пароли не совпадают.",
+			"passwordLength": "Используйте от 8 до 128 символов.",
+			"invalidLink": "Эта ссылка для сброса недействительна или устарела. Запросите новую ссылку, чтобы продолжить.",
+			"requestNewLink": "Запросить новую ссылку",
+			"resetError": "Не удалось сбросить пароль. Попробуйте ещё раз.",
+			"success": "Ваш пароль сброшен. Войдите с новым паролем.",
+			"backToSignIn": "Назад ко входу",
 			"sentTitle": "Проверьте почтовый ящик",
 			"sentDescription": "Если аккаунт для {{email}} существует, на эту почту уже отправлена ссылка для сброса пароля. Она действует 1 час.",
 			"sentHelpTitle": "Письмо не пришло?",
@@ -595,23 +595,23 @@
 			"avatar": {
 				"hint": "Лучше всего смотрятся квадратные изображения.",
 				"remove": "Удалить",
-				"removeError": "Failed to remove profile picture",
-				"removeSuccess": "Profile picture removed",
-				"updateError": "Failed to update profile picture",
-				"updateSuccess": "Profile picture updated",
+				"removeError": "Не удалось удалить фото профиля",
+				"removeSuccess": "Фото профиля удалено",
+				"updateError": "Не удалось обновить фото профиля",
+				"updateSuccess": "Фото профиля обновлено",
 				"upload": "Загрузить"
 			},
 			"deleteAccount": {
-				"confirm": "Delete account",
+				"confirm": "Удалить аккаунт",
 				"confirmLabel": "Confirm your email address",
-				"description": "Workspaces only you belong to are deleted with your account. Elsewhere, your tasks stay and become unassigned, and your comments are removed.",
-				"error": "Failed to delete account",
+				"description": "Рабочие области, участником которых являетесь только вы, удаляются вместе с аккаунтом. В остальных ваши задачи остаются и становятся неназначенными, а ваши комментарии удаляются.",
+				"error": "Не удалось удалить аккаунт",
 				"modalDescription": "This cannot be undone. Type {{email}} to confirm.",
-				"modalTitle": "Delete your account?",
-				"sectionTitle": "Danger zone",
-				"success": "Your account has been deleted",
-				"title": "Delete account",
-				"sessionTooOld": "For security, sign out and sign back in before deleting your account."
+				"modalTitle": "Удалить ваш аккаунт?",
+				"sectionTitle": "Опасная зона",
+				"success": "Ваш аккаунт удалён",
+				"title": "Удалить аккаунт",
+				"sessionTooOld": "В целях безопасности выйдите из аккаунта и войдите снова перед удалением аккаунта."
 			},
 			"emailHint": "Вы входите с этим адресом."
 		},
@@ -774,7 +774,7 @@
 			"dueDates": "Сроки выполнения",
 			"labels": "Метки",
 			"priority": "Приоритет",
-			"projectBackgrounds": "Project backgrounds",
+			"projectBackgrounds": "Фоны проектов",
 			"projectBackgroundsDescription": "Показывать изображение, которое проект задаёт за своей доской.",
 			"advancedTitle": "Дополнительно"
 		},
@@ -908,14 +908,14 @@
 			},
 			"backgroundHint": "Изображение за доской. Каждый может отключить фоны у себя.",
 			"backgroundUnavailable": "Загрузка изображений не настроена на этом экземпляре.",
-			"backgroundLabel": "Board background",
-			"backgroundRemove": "Remove image",
-			"backgroundRemoveError": "Failed to remove project background",
-			"backgroundRemoveSuccess": "Project background removed",
+			"backgroundLabel": "Фон доски",
+			"backgroundRemove": "Удалить изображение",
+			"backgroundRemoveError": "Не удалось удалить фон проекта",
+			"backgroundRemoveSuccess": "Фон проекта удалён",
 			"backgroundReplace": "Заменить",
 			"backgroundUpload": "Загрузить",
-			"backgroundUploadError": "Failed to update project background",
-			"backgroundUploadSuccess": "Project background updated",
+			"backgroundUploadError": "Не удалось обновить фон проекта",
+			"backgroundUploadSuccess": "Фон проекта обновлён",
 			"moveModalConfirm": "Переместить проект",
 			"moveProject": "Переместить в другую рабочую область",
 			"moveProjectAction": "Переместить",
@@ -947,8 +947,8 @@
 			"slackSectionSubtitle": "Отправка обновлений по задачам проекта в канал Slack через входящий вебхук.",
 			"telegramSectionTitle": "Интеграция с Telegram",
 			"telegramSectionSubtitle": "Отправка обновлений по задачам проекта в чат или тему Telegram через бота.",
-			"mattermostSectionSubtitle": "Send project task updates into a Mattermost channel with an incoming webhook.",
-			"mattermostSectionTitle": "Mattermost Integration",
+			"mattermostSectionSubtitle": "Отправляйте обновления задач проекта в канал Mattermost через входящий вебхук.",
+			"mattermostSectionTitle": "Интеграция Mattermost",
 			"gitlabSectionSubtitle": "Синхронизация задач с GitLab.com или собственным экземпляром.",
 			"gitlabSectionTitle": "Интеграция с GitLab",
 			"codeHostingTitle": "Хостинг кода",
@@ -1037,9 +1037,9 @@
 			"accountVerificationHint": "Подключите аккаунт GitHub, чтобы подтвердить права администратора этого репозитория.",
 			"enableGithubSignInHint": "Попросите администратора вашего сервера включить вход через GitHub.",
 			"reverifyHint": "Подключите репозиторий повторно, чтобы подтвердить доступ и возобновить синхронизацию.",
-			"resumeImport": "Resume import",
-			"importPaused": "This import has saved progress. You can resume it.",
-			"importSummary": "Created: {{imported}} · Updated: {{updated}} · Skipped: {{skipped}}",
+			"resumeImport": "Продолжить импорт",
+			"importPaused": "У этого импорта сохранён прогресс. Его можно продолжить.",
+			"importSummary": "Создано: {{imported}} · Обновлено: {{updated}} · Пропущено: {{skipped}}",
 			"chooseRepositoryDescription": "Его issues и pull requests будут связаны с задачами здесь.",
 			"linkAccountDescription": "Подтверждает, что вы можете администрировать репозиторий.",
 			"linkAccountTitle": "Привяжите аккаунт GitHub",
@@ -1265,14 +1265,14 @@
 			"merged": "Влит",
 			"draft": "Черновик",
 			"open": "Открыт",
-			"adding": "Adding...",
-			"addResource": "Add resource",
-			"cancel": "Cancel",
-			"empty": "No resources linked to this task.",
-			"titleOptional": "Title (optional)",
+			"adding": "Добавление...",
+			"addResource": "Добавить ресурс",
+			"cancel": "Отмена",
+			"empty": "К этой задаче не привязано ни одного ресурса.",
+			"titleOptional": "Название (необязательно)",
 			"url": "URL",
-			"remove": "Remove {{title}}",
-			"removeError": "Failed to remove the resource link."
+			"remove": "Удалить {{title}}",
+			"removeError": "Не удалось удалить ссылку на ресурс."
 		},
 		"workspaceRoles": {
 			"pageTitle": "Роли",
@@ -1312,11 +1312,11 @@
 				"task": "Задачи",
 				"label": "Метки",
 				"workspace": "Рабочая область",
-				"organization": "Workspace administration",
-				"member": "Members",
-				"invitation": "Invitations",
-				"team": "Teams",
-				"ac": "Roles and permissions"
+				"organization": "Администрирование рабочей области",
+				"member": "Участники",
+				"invitation": "Приглашения",
+				"team": "Команды",
+				"ac": "Роли и разрешения"
 			},
 			"permissions": {
 				"project": {
@@ -1401,68 +1401,68 @@
 				},
 				"organization": {
 					"update": {
-						"label": "Edit workspace administration",
-						"description": "Change workspace settings through the account service."
+						"label": "Редактировать администрирование рабочей области",
+						"description": "Изменять настройки рабочей области через сервис аккаунтов."
 					},
 					"delete": {
-						"label": "Delete workspace",
-						"description": "Permanently delete the workspace through the account service."
+						"label": "Удалить рабочую область",
+						"description": "Навсегда удалить рабочую область через сервис аккаунтов."
 					}
 				},
 				"member": {
 					"create": {
-						"label": "Add members",
-						"description": "Add users to this workspace."
+						"label": "Добавлять участников",
+						"description": "Добавлять пользователей в эту рабочую область."
 					},
 					"update": {
-						"label": "Change member roles",
-						"description": "Change the roles assigned to workspace members."
+						"label": "Менять роли участников",
+						"description": "Изменять роли, назначенные участникам рабочей области."
 					},
 					"delete": {
-						"label": "Remove members",
-						"description": "Remove users from this workspace."
+						"label": "Удалять участников",
+						"description": "Удалять пользователей из этой рабочей области."
 					}
 				},
 				"invitation": {
 					"create": {
-						"label": "Invite members",
-						"description": "Send workspace invitations."
+						"label": "Приглашать участников",
+						"description": "Отправлять приглашения в рабочую область."
 					},
 					"cancel": {
-						"label": "Cancel invitations",
-						"description": "Revoke pending workspace invitations."
+						"label": "Отменять приглашения",
+						"description": "Отзывать ожидающие приглашения в рабочую область."
 					}
 				},
 				"team": {
 					"create": {
-						"label": "Create teams",
-						"description": "Create teams in this workspace."
+						"label": "Создавать команды",
+						"description": "Создавать команды в этой рабочей области."
 					},
 					"update": {
-						"label": "Edit teams",
-						"description": "Change teams and team membership."
+						"label": "Редактировать команды",
+						"description": "Изменять команды и состав команд."
 					},
 					"delete": {
-						"label": "Delete teams",
-						"description": "Delete teams in this workspace."
+						"label": "Удалять команды",
+						"description": "Удалять команды в этой рабочей области."
 					}
 				},
 				"ac": {
 					"create": {
-						"label": "Create roles",
-						"description": "Create workspace roles and assign their permissions."
+						"label": "Создавать роли",
+						"description": "Создавать роли рабочей области и назначать их разрешения."
 					},
 					"read": {
-						"label": "View roles",
-						"description": "Read the workspace roles and their permissions."
+						"label": "Просматривать роли",
+						"description": "Читать роли рабочей области и их разрешения."
 					},
 					"update": {
-						"label": "Change role permissions",
-						"description": "Change role permissions, including administrative access."
+						"label": "Менять разрешения ролей",
+						"description": "Изменять разрешения ролей, включая административный доступ."
 					},
 					"delete": {
-						"label": "Delete roles",
-						"description": "Delete custom workspace roles."
+						"label": "Удалять роли",
+						"description": "Удалять пользовательские роли рабочей области."
 					}
 				}
 			},
@@ -1507,7 +1507,7 @@
 			"deleteError": "Не удалось удалить метку",
 			"nameRequired": "Название метки обязательно",
 			"deletionPending": "Удаление из задач…",
-			"resumeDeletion": "Resume deletion",
+			"resumeDeletion": "Продолжить удаление",
 			"editNamed": "Изменить {{name}}",
 			"emptyDescription": "Добавляйте метки, чтобы сортировать и фильтровать задачи во всех проектах.",
 			"emptyTitle": "Меток пока нет",
@@ -1522,45 +1522,45 @@
 			"subtitleWithWorkspace": "Метки общие для всех проектов в {{workspaceName}}."
 		},
 		"mattermostIntegration": {
-			"connect": "Connect Mattermost",
+			"connect": "Подключить Mattermost",
 			"toast": {
-				"disabled": "Mattermost notifications paused",
-				"enabled": "Mattermost notifications enabled",
-				"removed": "Mattermost integration removed successfully",
-				"removeError": "Failed to remove Mattermost integration",
-				"saved": "Mattermost integration saved successfully",
-				"saveError": "Failed to save Mattermost integration",
-				"updateError": "Failed to update Mattermost integration"
+				"disabled": "Уведомления Mattermost приостановлены",
+				"enabled": "Уведомления Mattermost включены",
+				"removed": "Интеграция Mattermost успешно удалена",
+				"removeError": "Не удалось удалить интеграцию Mattermost",
+				"saved": "Интеграция Mattermost успешно сохранена",
+				"saveError": "Не удалось сохранить интеграцию Mattermost",
+				"updateError": "Не удалось обновить интеграцию Mattermost"
 			},
-			"update": "Update Mattermost",
+			"update": "Обновить Mattermost",
 			"validation": {
-				"webhookInvalid": "Enter a valid Mattermost webhook URL"
+				"webhookInvalid": "Введите корректный URL вебхука Mattermost"
 			},
 			"webhookHint": "Создайте входящий вебхук в Mattermost и вставьте его сюда.",
 			"webhookPlaceholder": "https://your-mattermost-server.com/hooks/..."
 		},
 		"customFields": {
-			"createError": "Failed to create custom field.",
-			"createSuccess": "Custom field created.",
-			"creating": "Creating...",
-			"defaultLabel": "Default",
-			"deleteError": "Failed to delete custom field.",
-			"deleteSuccess": "Custom field deleted.",
-			"deleting": "Deleting...",
-			"namePlaceholder": "Field name",
-			"required": "Required",
+			"createError": "Не удалось создать пользовательское поле.",
+			"createSuccess": "Пользовательское поле создано.",
+			"creating": "Создание...",
+			"defaultLabel": "По умолчанию",
+			"deleteError": "Не удалось удалить пользовательское поле.",
+			"deleteSuccess": "Пользовательское поле удалено.",
+			"deleting": "Удаление...",
+			"namePlaceholder": "Название поля",
+			"required": "Обязательное",
 			"types": {
 				"boolean": "Флажок",
-				"date": "Date",
-				"dropdown": "Dropdown",
-				"number": "Number",
-				"text": "Text",
+				"date": "Дата",
+				"dropdown": "Выпадающий список",
+				"number": "Число",
+				"text": "Текст",
 				"multiselect": "Выпадающий список, несколько значений"
 			},
 			"clearDefault": "Очистить значение по умолчанию",
-			"moreOptions": "+{{hiddenCount}} more",
-			"reorderError": "Failed to reorder fields",
-			"selectPlaceholder": "Select option(s)",
+			"moreOptions": "+ ещё {{hiddenCount}}",
+			"reorderError": "Не удалось изменить порядок полей",
+			"selectPlaceholder": "Выберите вариант(ы)",
 			"actionsAria": "Действия для {{name}}",
 			"addOption": "Добавить вариант",
 			"allowSeveral": "Разрешить несколько",
@@ -1604,111 +1604,111 @@
 			"updateError": "Не удалось сохранить пользовательское поле.",
 			"updateSuccess": "Пользовательское поле сохранено."
 		},
-		"administration": "Administration",
+		"administration": "Администрирование",
 		"adminUsers": {
 			"actions": {
 				"deactivate": "Деактивировать",
 				"edit": "Изменить",
-				"open": "Actions for {{name}}",
+				"open": "Действия для {{name}}",
 				"reactivate": "Активировать снова"
 			},
-			"clearSearch": "Clear search",
+			"clearSearch": "Очистить поиск",
 			"columns": {
-				"actions": "Actions",
-				"joined": "Joined",
+				"actions": "Действия",
+				"joined": "Присоединился",
 				"role": "Роль",
-				"status": "Status",
-				"user": "User"
+				"status": "Статус",
+				"user": "Пользователь"
 			},
 			"confirm": {
 				"deactivate": {
-					"action": "Deactivate account",
-					"description": "{{name}} will be signed out and unable to sign in until an administrator reactivates the account.",
-					"title": "Deactivate this account?"
+					"action": "Деактивировать аккаунт",
+					"description": "{{name}} будет выведен из системы и не сможет войти, пока администратор не активирует аккаунт повторно.",
+					"title": "Деактивировать этот аккаунт?"
 				},
 				"delete": {
-					"action": "Delete permanently",
-					"description": "This permanently deletes {{name}}, their sessions, memberships, and associated data. This cannot be undone.",
-					"title": "Permanently delete this account?"
+					"action": "Удалить навсегда",
+					"description": "Это навсегда удалит {{name}}, его сессии, членства и связанные данные. Действие необратимо.",
+					"title": "Удалить этот аккаунт навсегда?"
 				},
 				"reactivate": {
-					"action": "Reactivate account",
-					"description": "{{name}} will be able to sign in and access their workspaces again.",
-					"title": "Reactivate this account?"
+					"action": "Активировать аккаунт",
+					"description": "{{name}} снова сможет войти и получить доступ к своим рабочим областям.",
+					"title": "Активировать этот аккаунт повторно?"
 				},
-				"working": "Working…"
+				"working": "Выполняется…"
 			},
 			"directoryTitle": "Все пользователи",
 			"edit": {
-				"description": "Update this account's identity and instance-wide access.",
-				"email": "Email address",
-				"name": "Full name",
-				"role": "Global role",
-				"save": "Save changes",
-				"saving": "Saving…",
-				"selfRoleHint": "You cannot change your own global role.",
-				"title": "Edit user"
+				"description": "Обновите данные этого аккаунта и доступ на уровне инстанса.",
+				"email": "Email-адрес",
+				"name": "Полное имя",
+				"role": "Глобальная роль",
+				"save": "Сохранить изменения",
+				"saving": "Сохранение…",
+				"selfRoleHint": "Вы не можете изменить свою собственную глобальную роль.",
+				"title": "Редактировать пользователя"
 			},
-			"emptyDescription": "Try another name or email address.",
-			"emptyTitle": "No users found",
-			"loadError": "Users could not be loaded.",
-			"next": "Next",
-			"pagination": "Page {{current}} of {{total}}",
-			"previous": "Previous",
-			"refreshing": "Refreshing users",
-			"retry": "Retry",
+			"emptyDescription": "Попробуйте другое имя или email-адрес.",
+			"emptyTitle": "Пользователи не найдены",
+			"loadError": "Не удалось загрузить пользователей.",
+			"next": "Далее",
+			"pagination": "Страница {{current}} из {{total}}",
+			"previous": "Назад",
+			"refreshing": "Обновление пользователей",
+			"retry": "Повторить",
 			"roles": {
 				"admin": "Администратор",
-				"user": "User"
+				"user": "Пользователь"
 			},
-			"searchCount_few": "{{count}} matching users",
-			"searchCount_many": "{{count}} matching users",
-			"searchCount_one": "{{count}} matching user",
-			"searchCount_other": "{{count}} matching users",
-			"searchLabel": "Search users",
+			"searchCount_few": "{{count}} подходящих пользователя",
+			"searchCount_many": "{{count}} подходящих пользователей",
+			"searchCount_one": "{{count}} подходящий пользователь",
+			"searchCount_other": "{{count}} подходящих пользователя",
+			"searchLabel": "Поиск пользователей",
 			"searchPlaceholder": "Поиск по имени или электронной почте",
 			"status": {
-				"active": "Active",
-				"deactivated": "Deactivated"
+				"active": "Активен",
+				"deactivated": "Деактивирован"
 			},
 			"subtitle": "Все, у кого есть аккаунт в этом экземпляре Kaneo.",
 			"title": "Пользователи",
 			"toast": {
-				"actionError": "Failed to update user status",
-				"deactivated": "User deactivated",
-				"deleted": "User deleted",
-				"reactivated": "User reactivated",
-				"updated": "User updated",
-				"updateError": "Failed to update user"
+				"actionError": "Не удалось обновить статус пользователя",
+				"deactivated": "Пользователь деактивирован",
+				"deleted": "Пользователь удалён",
+				"reactivated": "Пользователь активирован повторно",
+				"updated": "Пользователь обновлён",
+				"updateError": "Не удалось обновить пользователя"
 			},
 			"you": "Вы"
 		},
-		"security": "Security",
+		"security": "Безопасность",
 		"securityPage": {
-			"confirmPassword": "Confirm new password",
-			"confirmPasswordPlaceholder": "Re-enter your new password",
-			"currentPassword": "Current password",
-			"currentPasswordPlaceholder": "Enter your current password",
-			"newPassword": "New password",
-			"newPasswordPlaceholder": "Enter a new password",
+			"confirmPassword": "Подтвердите новый пароль",
+			"confirmPasswordPlaceholder": "Повторно введите новый пароль",
+			"currentPassword": "Текущий пароль",
+			"currentPasswordPlaceholder": "Введите текущий пароль",
+			"newPassword": "Новый пароль",
+			"newPasswordPlaceholder": "Введите новый пароль",
 			"noPassword": {
-				"description": "Your account signs in with a different method, so there is no password to change.",
-				"title": "Password change isn't available"
+				"description": "В ваш аккаунт выполняется вход другим способом, поэтому пароль менять не требуется.",
+				"title": "Смена пароля недоступна"
 			},
-			"pageTitle": "Security",
+			"pageTitle": "Безопасность",
 			"sectionTitle": "Вход",
 			"submit": "Сменить пароль",
 			"submitting": "Смена...",
 			"subtitle": "Как вы входите в Kaneo.",
-			"title": "Security",
-			"updateError": "Failed to update password.",
-			"updateSuccess": "Password updated.",
+			"title": "Безопасность",
+			"updateError": "Не удалось обновить пароль.",
+			"updateSuccess": "Пароль обновлён.",
 			"validation": {
-				"confirmRequired": "Confirm your new password.",
-				"currentRequired": "Enter your current password.",
-				"mismatch": "Passwords do not match.",
-				"tooShort": "New password must be at least 8 characters.",
-				"sameAsCurrent": "New password must be different from your current password."
+				"confirmRequired": "Подтвердите новый пароль.",
+				"currentRequired": "Введите текущий пароль.",
+				"mismatch": "Пароли не совпадают.",
+				"tooShort": "Новый пароль должен содержать не менее 8 символов.",
+				"sameAsCurrent": "Новый пароль должен отличаться от текущего."
 			},
 			"changePassword": "Сменить пароль",
 			"dialogDescription": "Не менее 8 символов, отличный от текущего.",
@@ -1752,7 +1752,7 @@
 				"pathInvalid": "Введите полный путь, например group/project"
 			},
 			"webhookHint": "Добавьте этот вебхук в настройках проекта, чтобы изменения возвращались в Kaneo.",
-			"importPermissionHint": "Importing requires permission to create and update tasks.",
+			"importPermissionHint": "Для импорта требуется разрешение на создание и обновление задач.",
 			"browseEmpty": "Этот токен не состоит ни в одном проекте.",
 			"chooseProjectDescription": "Введите его путь или выберите из списка.",
 			"noSearchMatchTitle": "Подходящих проектов нет",
@@ -1760,28 +1760,28 @@
 			"webhookEvents": "Включите события push, issue, comment и merge request."
 		},
 		"calendarFeeds": {
-			"title": "Calendar feeds",
-			"subtitle": "Subscribe to scheduled project tasks in your calendar app.",
+			"title": "Календарные ленты",
+			"subtitle": "Подпишитесь на запланированные задачи проекта в вашем календарном приложении.",
 			"labels": "Только с метками",
 			"selectLabels": "Добавить метку",
-			"noLabels": "No labels found.",
-			"timeZoneHint": "All-day dates use {{timeZone}}.",
-			"accessHint": "Anyone with a feed link can read the matching task titles, descriptions, and dates. Revoke a link to stop future access.",
-			"create": "Create feed",
-			"creating": "Creating…",
-			"created": "Calendar feed created.",
-			"createError": "Could not create the calendar feed.",
+			"noLabels": "Метки не найдены.",
+			"timeZoneHint": "Даты на весь день используют часовой пояс {{timeZone}}.",
+			"accessHint": "Любой, у кого есть ссылка на ленту, может читать названия, описания и даты подходящих задач. Отзовите ссылку, чтобы прекратить доступ.",
+			"create": "Создать ленту",
+			"creating": "Создание…",
+			"created": "Календарная лента создана.",
+			"createError": "Не удалось создать календарную ленту.",
 			"activeFeeds": "Фиды",
 			"allScheduledTasks": "Все запланированные задачи",
 			"subscribeHint": "Добавьте ссылку в приложение календаря как подписку. Обновления появляются, когда приложение обновляет фид.",
-			"copy": "Copy link",
-			"copyError": "Could not copy the link. Select the URL and copy it manually.",
-			"revoke": "Revoke",
-			"revoked": "Calendar feed revoked.",
-			"revokeError": "Could not revoke the calendar feed.",
-			"loadError": "Could not load calendar feeds or labels. Please try again.",
-			"deletedLabel": "Deleted label",
-			"permissionRequired": "You need project-sharing permission to manage calendar feeds.",
+			"copy": "Скопировать ссылку",
+			"copyError": "Не удалось скопировать ссылку. Выделите URL и скопируйте его вручную.",
+			"revoke": "Отозвать",
+			"revoked": "Календарная лента отозвана.",
+			"revokeError": "Не удалось отозвать календарную ленту.",
+			"loadError": "Не удалось загрузить календарные ленты или метки. Попробуйте ещё раз.",
+			"deletedLabel": "Удалённая метка",
+			"permissionRequired": "Для управления календарными лентами требуется разрешение на публикацию проектов.",
 			"copiedLabel": "Скопировано",
 			"dialogDescription": "Задачи с датой начала или сроком выполнения появятся в фиде.",
 			"dialogTitle": "Новый фид календаря",
@@ -1795,166 +1795,166 @@
 			"revokeConfirmTitle": "Отозвать этот фид?",
 			"revoking": "Отзыв…"
 		},
-		"invitationEmailFailed": "Invitation saved, but email delivery failed. Check SMTP settings and resend the invitation.",
+		"invitationEmailFailed": "Приглашение сохранено, но отправка письма не удалась. Проверьте настройки SMTP и отправьте приглашение повторно.",
 		"billing": {
-			"accessEnds": "Access ends",
-			"adminsOnly": "Only workspace owners and admins can manage billing.",
-			"choose": "Choose {{plan}}",
+			"accessEnds": "Доступ заканчивается",
+			"adminsOnly": "Только владельцы и администраторы рабочей области могут управлять оплатой.",
+			"choose": "Выбрать {{plan}}",
 			"choosePlan": {
-				"subtitle": "Switch anytime. Cancel whenever you like.",
-				"title": "Choose a plan"
+				"subtitle": "Переключайтесь в любое время. Отменяйте когда угодно.",
+				"title": "Выберите тариф"
 			},
 			"currentPlan": {
-				"title": "Current plan"
+				"title": "Текущий тариф"
 			},
-			"disabled": "Billing isn't enabled on this instance. Self-hosted Kaneo includes every feature, free forever.",
+			"disabled": "На этом инстансе оплата не включена. Self-hosted Kaneo включает все функции, бесплатно навсегда.",
 			"expiredCallout": {
-				"action": "Choose a plan",
-				"adminDescription": "You can still view everything, but creating and editing are paused until you choose a plan. Nothing has been deleted.",
-				"memberDescription": "You can still view everything, but creating and editing are paused until a workspace owner or admin chooses a plan.",
-				"title": "Your free trial has ended"
+				"action": "Выбрать тариф",
+				"adminDescription": "Вы по-прежнему можете всё просматривать, но создание и редактирование приостановлены, пока вы не выберете тариф. Ничего не было удалено.",
+				"memberDescription": "Вы по-прежнему можете всё просматривать, но создание и редактирование приостановлены, пока владелец или администратор рабочей области не выберет тариф.",
+				"title": "Ваш бесплатный пробный период закончился"
 			},
 			"features": {
-				"backups": "Automatic backups and updates",
-				"emailSupport": "Email support",
-				"prioritySupport": "Priority email support",
-				"roles": "Workspace roles and permissions",
-				"singleUser": "Single user",
-				"unlimitedMembers": "Unlimited team members",
-				"unlimitedProjects": "Unlimited projects and tasks"
+				"backups": "Автоматические резервные копии и обновления",
+				"emailSupport": "Поддержка по email",
+				"prioritySupport": "Приоритетная поддержка по email",
+				"roles": "Роли и разрешения рабочей области",
+				"singleUser": "Один пользователь",
+				"unlimitedMembers": "Неограниченное число участников команды",
+				"unlimitedProjects": "Неограниченное число проектов и задач"
 			},
 			"foundingFree": {
-				"badge": "Free",
-				"description": "This workspace has free access to Kaneo Cloud as an early supporter. Thank you for being here from the start.",
+				"badge": "Бесплатно",
+				"description": "У этой рабочей области бесплатный доступ к Kaneo Cloud как у раннего сторонника. Спасибо, что вы с нами с самого начала.",
 				"title": "Founding Free"
 			},
 			"interval": {
-				"annual": "Annual",
-				"annualBadge": "2 months free",
-				"monthly": "Monthly"
+				"annual": "Ежегодно",
+				"annualBadge": "2 месяца бесплатно",
+				"monthly": "Ежемесячно"
 			},
-			"manage": "Manage billing",
-			"mostPopular": "Most popular",
-			"opening": "Opening...",
-			"pageTitle": "Billing",
+			"manage": "Управление оплатой",
+			"mostPopular": "Самый популярный",
+			"opening": "Открытие...",
+			"pageTitle": "Оплата",
 			"plans": {
 				"personal": {
-					"name": "Personal",
-					"tagline": "For individuals"
+					"name": "Персональный",
+					"tagline": "Для одного человека"
 				},
 				"team": {
-					"name": "Team",
-					"tagline": "For teams working together"
+					"name": "Команда",
+					"tagline": "Для команд, работающих вместе"
 				}
 			},
 			"portalHint": "Счета, способ оплаты и отмена подписки управляются в Creem.",
 			"price": {
-				"billedMonthly": "Billed monthly",
-				"billedYearly": "{{price}} / month, billed yearly",
-				"billedYearlyPerUser": "{{price}} / user / month, billed yearly",
-				"perMonth": "/ month",
-				"perUserMonth": "/ user / month",
-				"perUserYear": "/ user / year",
-				"perYear": "/ year"
+				"billedMonthly": "Оплата ежемесячно",
+				"billedYearly": "{{price}} / месяц, оплата за год",
+				"billedYearlyPerUser": "{{price}} / пользователь / месяц, оплата за год",
+				"perMonth": "/ месяц",
+				"perUserMonth": "/ пользователь / месяц",
+				"perUserYear": "/ пользователь / год",
+				"perYear": "/ год"
 			},
-			"processedBy": "Payments are securely processed by Creem. Prices exclude tax where applicable.",
-			"renews": "Renews",
-			"seats_few": "{{count}} seats",
-			"seats_many": "{{count}} seats",
-			"seats_one": "{{count}} seat",
-			"seats_other": "{{count}} seats",
-			"starting": "Starting...",
+			"processedBy": "Платежи безопасно обрабатываются Creem. Цены указаны без учёта налогов, где это применимо.",
+			"renews": "Продление",
+			"seats_few": "{{count}} места",
+			"seats_many": "{{count}} мест",
+			"seats_one": "{{count}} место",
+			"seats_other": "{{count}} места",
+			"starting": "Запуск...",
 			"status": {
-				"active": "Active",
-				"canceled": "Canceled",
-				"expired": "Expired",
-				"past_due": "Payment past due",
-				"paused": "Paused",
-				"scheduled_cancel": "Cancels soon",
-				"trialing": "Trial"
+				"active": "Активна",
+				"canceled": "Отменена",
+				"expired": "Истекла",
+				"past_due": "Платёж просрочен",
+				"paused": "Приостановлена",
+				"scheduled_cancel": "Скоро отменится",
+				"trialing": "Пробный период"
 			},
 			"subtitle": "Ваш тариф для {{workspace}}.",
 			"trial": {
-				"activeTitle": "Free trial",
-				"expiredDescription": "Subscribe to a plan below to keep creating and editing. Your data stays safe and exportable in the meantime.",
-				"expiredTitle": "Your trial has ended",
-				"noDate": "Choose a plan below to continue after your trial.",
+				"activeTitle": "Бесплатный пробный период",
+				"expiredDescription": "Оформите подписку на тариф ниже, чтобы продолжить создавать и редактировать. Ваши данные остаются в безопасности и доступны для экспорта.",
+				"expiredTitle": "Ваш пробный период закончился",
+				"noDate": "Выберите тариф ниже, чтобы продолжить после пробного периода.",
 				"badgeDaysLeft_few": "Осталось {{count}} дня",
 				"badgeDaysLeft_many": "Осталось {{count}} дней",
 				"badgeDaysLeft_one": "Остался {{count}} день",
 				"badgeDaysLeft_other": "Осталось {{count}} дня"
 			},
 			"trialCard": {
-				"activeDescription": "Upgrade anytime to keep your workspace after the trial.",
-				"choosePlan": "Choose a plan",
-				"daysLeft_few": "{{count}} days left in trial",
-				"daysLeft_many": "{{count}} days left in trial",
-				"daysLeft_one": "{{count}} day left in trial",
-				"daysLeft_other": "{{count}} days left in trial",
-				"dismiss": "Dismiss",
-				"ended": "Trial ended",
-				"endingDescription": "Pick a plan now so your team isn't interrupted.",
-				"expiredDescription": "Subscribe to keep creating and editing.",
-				"viewPlans": "View plans"
+				"activeDescription": "Обновите тариф в любое время, чтобы сохранить рабочую область после пробного периода.",
+				"choosePlan": "Выбрать тариф",
+				"daysLeft_few": "Осталось {{count}} дня пробного периода",
+				"daysLeft_many": "Осталось {{count}} дней пробного периода",
+				"daysLeft_one": "Остался {{count}} день пробного периода",
+				"daysLeft_other": "Осталось {{count}} дня пробного периода",
+				"dismiss": "Скрыть",
+				"ended": "Пробный период закончился",
+				"endingDescription": "Выберите тариф сейчас, чтобы работа вашей команды не прерывалась.",
+				"expiredDescription": "Оформите подписку, чтобы продолжить создавать и редактировать.",
+				"viewPlans": "Посмотреть тарифы"
 			},
-			"openFailed": "Couldn't open billing for this workspace",
+			"openFailed": "Не удалось открыть оплату для этой рабочей области",
 			"checkoutSuccess": {
 				"title": "Спасибо за подписку",
 				"description": "Платёж получен. План ниже обновится, как только он будет подтверждён."
 			}
 		},
 		"syncRules": {
-			"addLabel": "Add label",
-			"advancedHint": "Enable Advanced settings in Preferences to edit these rules.",
-			"all": "All tasks and issues",
-			"any": "Any selected label",
-			"apply": "Apply sync rules",
-			"closed": "Closed",
-			"every": "All selected labels",
-			"excluded": "Outside the current rule",
-			"filtered": "Only matching labels",
+			"addLabel": "Добавить метку",
+			"advancedHint": "Включите расширенные настройки в разделе «Предпочтения», чтобы редактировать эти правила.",
+			"all": "Все задачи и issue",
+			"any": "Любая выбранная метка",
+			"apply": "Применить правила синхронизации",
+			"closed": "Закрыто",
+			"every": "Все выбранные метки",
+			"excluded": "Вне текущего правила",
+			"filtered": "Только подходящие метки",
 			"impact": "{{matching}} of {{total}} tasks match. {{create}} tasks will be exported, {{pause}} links will pause, and {{review}} links need review to resume.",
-			"impactTitle": "What will change",
-			"incoming": "Repository → Kaneo",
-			"incomingHint": "Choose which issues can be imported or create tasks. Use exact repository label names. Existing links follow the Kaneo task rule.",
-			"loadError": "Sync rules could not be loaded.",
-			"loading": "Loading sync rules…",
-			"matchLabels": "Label matching",
-			"missingLabels": "A selected workspace label is unavailable. Sync stays paused until the rule is repaired.",
+			"impactTitle": "Что изменится",
+			"incoming": "Репозиторий → Kaneo",
+			"incomingHint": "Выберите, какие issue могут импортироваться или создавать задачи. Используйте точные названия меток репозитория. Существующие связи следуют правилу задачи Kaneo.",
+			"loadError": "Не удалось загрузить правила синхронизации.",
+			"loading": "Загрузка правил синхронизации…",
+			"matchLabels": "Совпадение меток",
+			"missingLabels": "Выбранная метка рабочей области недоступна. Синхронизация остаётся на паузе, пока правило не будет исправлено.",
 			"removeMissingLabels": "Удалить недоступные метки",
-			"next": "Next",
-			"noDescription": "No description",
-			"noLabels": "Create workspace labels before configuring a task filter.",
-			"open": "Open",
-			"outgoing": "Kaneo → repository",
-			"outgoingHint": "Choose which Kaneo tasks can sync. Losing a matching label pauses both directions for an existing task.",
-			"paused": "Sync paused",
-			"pausedHint": "Records and links are preserved. Tasks that match again need review before syncing resumes.",
-			"preserveHint": "Pausing keeps both records and their link. Resuming requires a comparison; historical comments are never replayed.",
-			"previewing": "Checking sync impact…",
-			"previous": "Previous",
-			"refreshComparison": "Refresh comparison",
-			"refreshPreview": "Refresh preview",
-			"removeLabel": "Remove {{name}}",
-			"repository": "Repository",
-			"repositoryLabel": "Repository label name",
-			"resumeError": "Could not resume. The task, issue or rule may have changed, or the provider is unavailable. Sync remains paused; refresh the comparison.",
-			"review": "Review and resume",
-			"reviewHint": "Compare the current title, description and open/closed state. Choose which side to keep for these fields. Labels and historical comments remain unchanged.",
-			"reviewRequired": "Matches the rule · review required",
-			"reviewTitle": "Review before resuming sync",
-			"saved": "Sync rules saved",
-			"saveError": "Could not apply these rules. The integration or task scope may have changed. Refresh the preview and try again.",
-			"selectLabel": "Select at least one label to preview this rule.",
-			"sharedHint": "These rules apply to everyone using this project. Hiding advanced settings does not disable them.",
+			"next": "Далее",
+			"noDescription": "Нет описания",
+			"noLabels": "Создайте метки рабочей области перед настройкой фильтра задач.",
+			"open": "Открыто",
+			"outgoing": "Kaneo → репозиторий",
+			"outgoingHint": "Выберите, какие задачи Kaneo могут синхронизироваться. Потеря подходящей метки приостанавливает оба направления для существующей задачи.",
+			"paused": "Синхронизация приостановлена",
+			"pausedHint": "Записи и связи сохранены. Задачи, которые снова соответствуют правилу, требуют проверки перед возобновлением синхронизации.",
+			"preserveHint": "Пауза сохраняет обе записи и их связь. Возобновление требует сравнения; исторические комментарии никогда не воспроизводятся повторно.",
+			"previewing": "Проверка влияния синхронизации…",
+			"previous": "Назад",
+			"refreshComparison": "Обновить сравнение",
+			"refreshPreview": "Обновить предпросмотр",
+			"removeLabel": "Удалить {{name}}",
+			"repository": "Репозиторий",
+			"repositoryLabel": "Название метки репозитория",
+			"resumeError": "Не удалось возобновить. Задача, issue или правило могли измениться, либо провайдер недоступен. Синхронизация остаётся на паузе; обновите сравнение.",
+			"review": "Проверить и возобновить",
+			"reviewHint": "Сравните текущий заголовок, описание и состояние «открыто/закрыто». Выберите, чьи значения сохранить для этих полей. Метки и исторические комментарии остаются без изменений.",
+			"reviewRequired": "Соответствует правилу · требуется проверка",
+			"reviewTitle": "Проверка перед возобновлением синхронизации",
+			"saved": "Правила синхронизации сохранены",
+			"saveError": "Не удалось применить эти правила. Интеграция или область задач могли измениться. Обновите предпросмотр и попробуйте снова.",
+			"selectLabel": "Выберите хотя бы одну метку, чтобы увидеть предпросмотр этого правила.",
+			"sharedHint": "Эти правила действуют для всех, кто пользуется этим проектом. Скрытие расширенных настроек не отключает их.",
 			"title": "Что синхронизируется",
-			"unavailableLabel": "Unavailable label",
-			"useKaneo": "Keep Kaneo values",
-			"useRepository": "Keep repository values",
-			"exportPending": "Export matching tasks",
-			"inactiveHint": "This integration is paused. No tasks will be exported until it is reactivated.",
-			"loadSavedRules": "Load saved rules",
-			"rulesChanged": "The saved rules changed while you were editing. Your draft is preserved. Review the current rules above before applying it, or load the saved rules.",
+			"unavailableLabel": "Недоступная метка",
+			"useKaneo": "Оставить значения Kaneo",
+			"useRepository": "Оставить значения репозитория",
+			"exportPending": "Экспортировать подходящие задачи",
+			"inactiveHint": "Эта интеграция приостановлена. Задачи не будут экспортироваться, пока она не активируется снова.",
+			"loadSavedRules": "Загрузить сохранённые правила",
+			"rulesChanged": "Сохранённые правила изменились, пока вы редактировали. Ваш черновик сохранён. Просмотрите текущие правила выше перед применением или загрузите сохранённые правила.",
 			"allIssues": "Все issues",
 			"allTasks": "Все задачи",
 			"edit": "Изменить",
@@ -1974,401 +1974,415 @@
 		"advancedSettingsDescription": "Показывает дополнительные настройки, например правила синхронизации интеграций. Только в этом браузере.",
 		"adminWorkspaces": {
 			"addMember": {
-				"adding": "Adding…",
-				"alreadyMember": "Already a member",
-				"description": "Add an existing user to {{name}}. They can access every project until you limit them.",
-				"noUsers": "No users found",
-				"role": "Role",
-				"searching": "Searching users…",
-				"submit": "Add member",
-				"title": "Add member",
-				"user": "User",
-				"userPlaceholder": "Search name or email…",
-				"usersError": "Users could not be loaded."
+				"adding": "Добавление…",
+				"alreadyMember": "Уже участник",
+				"description": "Добавьте существующего пользователя в {{name}}. У него будет доступ ко всем проектам, пока вы его не ограничите.",
+				"noUsers": "Пользователи не найдены",
+				"role": "Роль",
+				"searching": "Поиск пользователей…",
+				"submit": "Добавить участника",
+				"title": "Добавить участника",
+				"user": "Пользователь",
+				"userPlaceholder": "Поиск по имени или email…",
+				"usersError": "Не удалось загрузить пользователей."
 			},
-			"clearSearch": "Clear search",
+			"clearSearch": "Очистить поиск",
 			"columns": {
-				"actions": "Actions",
-				"created": "Created",
-				"members": "Members",
-				"owners": "Owners",
-				"projects": "Projects",
-				"workspace": "Workspace"
+				"actions": "Действия",
+				"created": "Создана",
+				"members": "Участники",
+				"owners": "Владельцы",
+				"projects": "Проекты",
+				"workspace": "Рабочая область"
 			},
 			"confirm": {
 				"remove": {
-					"action": "Remove member",
-					"description": "{{name}} loses access to {{workspace}} and its projects. Their account stays on this instance.",
-					"title": "Remove {{name}}?"
+					"action": "Удалить участника",
+					"description": "{{name}} потеряет доступ к {{workspace}} и её проектам. Его аккаунт останется на этом инстансе.",
+					"title": "Удалить {{name}}?"
 				},
 				"transfer": {
-					"action": "Make owner",
-					"description": "{{name}} becomes the only owner of {{workspace}}. Anyone who owns it now becomes an admin.",
-					"title": "Make {{name}} the owner?"
+					"action": "Сделать владельцем",
+					"description": "{{name}} станет единственным владельцем {{workspace}}. Те, кто владеет ей сейчас, станут администраторами.",
+					"title": "Сделать {{name}} владельцем?"
 				},
-				"working": "Working…"
+				"working": "Выполняется…"
 			},
 			"directoryTitle": "Все рабочие области",
-			"emptyDescription": "Try another name or slug.",
-			"emptyTitle": "No workspaces found",
-			"loadError": "Workspaces could not be loaded.",
-			"manage": "Manage",
-			"manageLabel": "Manage {{name}}",
+			"emptyDescription": "Попробуйте другое название или slug.",
+			"emptyTitle": "Рабочие области не найдены",
+			"loadError": "Не удалось загрузить рабочие области.",
+			"manage": "Управлять",
+			"manageLabel": "Управление {{name}}",
 			"members": {
-				"actions": "Actions for {{name}}",
-				"add": "Add member",
-				"count_few": "{{count}} members",
-				"count_many": "{{count}} members",
-				"count_one": "{{count}} member",
-				"count_other": "{{count}} members",
-				"description": "Change roles, project access, and ownership, even if you aren't a member of this workspace.",
-				"editAccess": "Change project access for {{name}} ({{access}})",
-				"empty": "This workspace has no members.",
-				"loadError": "Members could not be loaded.",
-				"makeOwner": "Make owner",
-				"remove": "Remove from workspace",
-				"roleLabel": "Role for {{name}}",
-				"title": "Members of {{name}}"
+				"actions": "Действия для {{name}}",
+				"add": "Добавить участника",
+				"count_few": "{{count}} участника",
+				"count_many": "{{count}} участников",
+				"count_one": "{{count}} участник",
+				"count_other": "{{count}} участника",
+				"description": "Меняйте роли, доступ к проектам и владение, даже если вы не участник этой рабочей области.",
+				"editAccess": "Изменить доступ к проектам для {{name}} ({{access}})",
+				"empty": "В этой рабочей области нет участников.",
+				"loadError": "Не удалось загрузить участников.",
+				"makeOwner": "Сделать владельцем",
+				"remove": "Удалить из рабочей области",
+				"roleLabel": "Роль для {{name}}",
+				"title": "Участники {{name}}"
 			},
-			"next": "Next",
-			"noOwner": "No owner",
-			"pagination": "Page {{current}} of {{total}}",
-			"previous": "Previous",
-			"refreshing": "Refreshing workspaces",
-			"retry": "Retry",
-			"searchCount_few": "{{count}} matching workspaces",
-			"searchCount_many": "{{count}} matching workspaces",
-			"searchCount_one": "{{count}} matching workspace",
-			"searchCount_other": "{{count}} matching workspaces",
-			"searchLabel": "Search workspaces",
+			"next": "Далее",
+			"noOwner": "Нет владельца",
+			"pagination": "Страница {{current}} из {{total}}",
+			"previous": "Назад",
+			"refreshing": "Обновление рабочих областей",
+			"retry": "Повторить",
+			"searchCount_few": "{{count}} подходящие рабочие области",
+			"searchCount_many": "{{count}} подходящих рабочих областей",
+			"searchCount_one": "{{count}} подходящая рабочая область",
+			"searchCount_other": "{{count}} подходящей рабочей области",
+			"searchLabel": "Поиск рабочих областей",
 			"searchPlaceholder": "Поиск по названию или slug",
 			"subtitle": "Все рабочие области этого экземпляра Kaneo, включая те, в которых вы не состоите.",
 			"title": "Рабочие области",
 			"toast": {
-				"added": "Member added",
-				"addError": "Failed to add member",
-				"ownershipTransferred": "Ownership transferred",
-				"removed": "Member removed",
-				"removeError": "Failed to remove member",
-				"roleError": "Failed to update role",
-				"roleUpdated": "Role updated",
-				"transferError": "Failed to transfer ownership"
+				"added": "Участник добавлен",
+				"addError": "Не удалось добавить участника",
+				"ownershipTransferred": "Владение передано",
+				"removed": "Участник удалён",
+				"removeError": "Не удалось удалить участника",
+				"roleError": "Не удалось обновить роль",
+				"roleUpdated": "Роль обновлена",
+				"transferError": "Не удалось передать владение"
 			}
 		},
 		"workspaceImport": {
 			"back": {
-				"allSources": "All sources",
-				"changeKey": "Change key",
-				"overview": "Import overview"
+				"allSources": "Все источники",
+				"changeKey": "Сменить ключ",
+				"overview": "Обзор импорта"
 			},
 			"connect": {
-				"cancel": "Cancel",
-				"continue": "Continue",
-				"hideSecret": "Hide {{field}}",
-				"sectionDescription": "Kaneo only reads from {{source}}. The key is used for this import and never stored.",
-				"sectionTitle": "Connect",
-				"showSecret": "Show {{field}}",
-				"title": "Import from {{source}}",
-				"whereToFind": "Where to find it"
+				"cancel": "Отмена",
+				"continue": "Продолжить",
+				"hideSecret": "Скрыть {{field}}",
+				"sectionDescription": "Kaneo только читает из {{source}}. Ключ используется для этого импорта и никогда не сохраняется.",
+				"sectionTitle": "Подключение",
+				"showSecret": "Показать {{field}}",
+				"title": "Импорт из {{source}}",
+				"whereToFind": "Где его найти"
 			},
 			"counts": {
-				"columns_few": "{{count, number}} columns",
-				"columns_many": "{{count, number}} columns",
-				"columns_one": "{{count, number}} column",
-				"columns_other": "{{count, number}} columns",
-				"comments_few": "{{count, number}} comments",
-				"comments_many": "{{count, number}} comments",
-				"comments_one": "{{count, number}} comment",
-				"comments_other": "{{count, number}} comments",
-				"labels_few": "{{count, number}} labels",
-				"labels_many": "{{count, number}} labels",
-				"labels_one": "{{count, number}} label",
-				"labels_other": "{{count, number}} labels",
-				"tasks_few": "{{count, number}} tasks",
-				"tasks_many": "{{count, number}} tasks",
-				"tasks_one": "{{count, number}} task",
-				"tasks_other": "{{count, number}} tasks"
+				"columns_few": "{{count, number}} колонки",
+				"columns_many": "{{count, number}} колонок",
+				"columns_one": "{{count, number}} колонка",
+				"columns_other": "{{count, number}} колонки",
+				"comments_few": "{{count, number}} комментария",
+				"comments_many": "{{count, number}} комментариев",
+				"comments_one": "{{count, number}} комментарий",
+				"comments_other": "{{count, number}} комментария",
+				"labels_few": "{{count, number}} метки",
+				"labels_many": "{{count, number}} меток",
+				"labels_one": "{{count, number}} метка",
+				"labels_other": "{{count, number}} метки",
+				"tasks_few": "{{count, number}} задачи",
+				"tasks_many": "{{count, number}} задач",
+				"tasks_one": "{{count, number}} задача",
+				"tasks_other": "{{count, number}} задачи"
 			},
 			"entry": {
-				"createProjectLink": "Import your projects",
-				"createProjectPrompt": "Moving from Jira, Linear, Trello or Plane?",
-				"projectsEmpty": "Import from another tool"
+				"createProjectLink": "Импортируйте свои проекты",
+				"createProjectPrompt": "Переходите с Jira, Linear, Trello или Plane?",
+				"projectsEmpty": "Импортировать из другого инструмента"
 			},
 			"history": {
-				"description": "Imports keep running on the server if you leave this page.",
-				"empty": "No imports yet. Imports you start show up here.",
-				"loadError": "Recent imports could not be loaded.",
-				"started": "Started {{time}}",
-				"title": "Recent imports"
+				"description": "Импорты продолжают выполняться на сервере, даже если вы покинете эту страницу.",
+				"empty": "Импортов пока нет. Запущенные вами импорты появятся здесь.",
+				"loadError": "Не удалось загрузить недавние импорты.",
+				"started": "Запущен {{time}}",
+				"title": "Недавние импорты"
 			},
 			"kaneo": {
-				"apiKeyDescription": "In that Kaneo, open Settings, then API Keys.",
-				"apiKeyLabel": "API key",
-				"apiKeyPlaceholder": "Paste API key",
-				"urlDescription": "The instance you are moving from.",
-				"urlLabel": "Kaneo URL"
+				"apiKeyDescription": "В том Kaneo откройте Settings, затем API Keys.",
+				"apiKeyLabel": "Ключ API",
+				"apiKeyPlaceholder": "Вставьте ключ API",
+				"urlDescription": "Инстанс, с которого вы переходите.",
+				"urlLabel": "URL Kaneo"
 			},
 			"linear": {
-				"apiKeyDescription": "Read access is enough. You can revoke it after the import.",
-				"apiKeyLabel": "Personal API key",
-				"openSettings": "Open Linear settings",
-				"stepCreate": "Under Personal API keys, create a key with Read access.",
-				"stepOpen": "In Linear, open Settings, then Security and access.",
-				"stepPaste": "Copy it and paste it above."
+				"apiKeyDescription": "Достаточно доступа на чтение. Его можно отозвать после импорта.",
+				"apiKeyLabel": "Персональный ключ API",
+				"openSettings": "Открыть настройки Linear",
+				"stepCreate": "В разделе Personal API keys создайте ключ с доступом на чтение.",
+				"stepOpen": "В Linear откройте Settings, затем Security and access.",
+				"stepPaste": "Скопируйте его и вставьте выше."
 			},
 			"notAllowed": {
-				"description": "Importing creates projects, so it needs permission to manage workspace settings and create projects. Ask a workspace admin to run it.",
-				"title": "Only workspace admins can import"
+				"description": "Импорт создаёт проекты, поэтому требует разрешения на управление настройками рабочей области и создание проектов. Попросите администратора рабочей области выполнить его.",
+				"title": "Импортировать могут только администраторы рабочей области"
 			},
-			"opensInNewTab": "(opens in a new tab)",
-			"pageTitle": "Import",
+			"opensInNewTab": "(откроется в новой вкладке)",
+			"pageTitle": "Импорт",
 			"plane": {
-				"tokenDescription": "Profile settings, Developer, then Personal Access Tokens.",
-				"tokenLabel": "Personal access token",
-				"urlDescription": "Copy it from your browser while in Plane. Self-hosted works too.",
-				"urlLabel": "Workspace URL",
+				"tokenDescription": "Настройки профиля, Developer, затем Personal Access Tokens.",
+				"tokenLabel": "Персональный токен доступа",
+				"urlDescription": "Скопируйте его из браузера, находясь в Plane. Self-hosted тоже поддерживается.",
+				"urlLabel": "URL рабочей области",
 				"urlPlaceholder": "https://app.plane.so/your-workspace"
 			},
 			"planka": {
-				"adminTip": "Use a PLANKA admin account. PLANKA only shows email addresses to admins, and card members are matched to people here by email.",
-				"apiKeyDescription": "Created in PLANKA under your account settings.",
-				"apiKeyLabel": "API key",
-				"apiKeyPlaceholder": "Paste API key",
-				"passwordDescription": "Used only to sign in for this import.",
-				"passwordLabel": "Password",
-				"signInApiKey": "API key",
-				"signInDescription": "Use an API key if your account signs in through SSO.",
-				"signInLabel": "Sign in with",
-				"signInPassword": "Email and password",
-				"urlDescription": "The address you open PLANKA at.",
-				"urlLabel": "PLANKA URL",
-				"usernameDescription": "The account you sign in to PLANKA with.",
-				"usernameLabel": "Email or username"
+				"adminTip": "Используйте аккаунт администратора PLANKA. PLANKA показывает email-адреса только администраторам, а участники карточек сопоставляются с людьми здесь по email.",
+				"apiKeyDescription": "Создаётся в PLANKA в настройках вашего аккаунта.",
+				"apiKeyLabel": "Ключ API",
+				"apiKeyPlaceholder": "Вставьте ключ API",
+				"passwordDescription": "Используется только для входа для этого импорта.",
+				"passwordLabel": "Пароль",
+				"signInApiKey": "Ключ API",
+				"signInDescription": "Используйте ключ API, если вход в ваш аккаунт выполняется через SSO.",
+				"signInLabel": "Войти с помощью",
+				"signInPassword": "Email и пароль",
+				"urlDescription": "Адрес, по которому вы открываете PLANKA.",
+				"urlLabel": "URL PLANKA",
+				"usernameDescription": "Аккаунт, с которым вы входите в PLANKA.",
+				"usernameLabel": "Email или имя пользователя"
 			},
-			"retry": "Try again",
+			"retry": "Попробовать снова",
 			"run": {
-				"failedBadge": "Failed",
-				"failedNames_few": "{{names, list}} failed, so nothing was created for them.",
-				"failedNames_many": "{{names, list}} failed, so nothing was created for them.",
-				"failedNames_one": "{{names, list}} failed, so nothing was created for it.",
-				"failedNames_other": "{{names, list}} failed, so nothing was created for them.",
-				"failedTitle": "Import failed",
-				"finishedNote": "Imported tasks did not send notifications. Comments keep their original author and date.",
-				"finishedNoteNoComments": "Imported tasks did not send notifications.",
-				"finishedTitle": "Import finished",
-				"goToProjects": "Go to projects",
-				"importingBadge": "Importing",
-				"importingTitle": "Importing from {{source}}",
-				"importMore": "Import more",
-				"keyInMemory": "Your {{source}} key is only kept in memory until this import finishes.",
-				"leavePage": "You can leave this page. The import keeps running on the server.",
-				"loadError": "This import could not be loaded",
-				"noTasks": "No tasks",
-				"nothingImported": "Nothing was imported",
-				"notImported": "Not imported",
-				"open": "Open",
-				"openProject": "Open {{name}}",
-				"queued": "Queued",
-				"started": "Started {{time}}",
-				"starting": "Starting",
-				"took_few": "Took {{count}} minutes",
-				"took_many": "Took {{count}} minutes",
-				"took_one": "Took {{count}} minute",
-				"took_other": "Took {{count}} minutes",
-				"tookUnderMinute": "Took less than a minute",
-				"totals": "{{parts, list}} imported",
-				"waiting": "Waiting",
-				"warnings_few": "{{count}} warnings",
-				"warnings_many": "{{count}} warnings",
-				"warnings_one": "{{count}} warning",
-				"warnings_other": "{{count}} warnings"
+				"failedBadge": "Ошибка",
+				"failedNames_few": "Сбой: {{names, list}} — для них ничего не создано.",
+				"failedNames_many": "Сбой: {{names, list}} — для них ничего не создано.",
+				"failedNames_one": "Сбой: {{names, list}} — для него ничего не создано.",
+				"failedNames_other": "Сбой: {{names, list}} — для них ничего не создано.",
+				"failedTitle": "Импорт не удался",
+				"finishedNote": "Импортированные задачи не отправляли уведомлений. Комментарии сохраняют исходного автора и дату.",
+				"finishedNoteNoComments": "Импортированные задачи не отправляли уведомлений.",
+				"finishedTitle": "Импорт завершён",
+				"goToProjects": "Перейти к проектам",
+				"importingBadge": "Импортируется",
+				"importingTitle": "Импорт из {{source}}",
+				"importMore": "Импортировать ещё",
+				"keyInMemory": "Ваш ключ {{source}} хранится только в памяти, пока не завершится этот импорт.",
+				"leavePage": "Вы можете покинуть эту страницу. Импорт продолжит выполняться на сервере.",
+				"loadError": "Не удалось загрузить этот импорт",
+				"noTasks": "Нет задач",
+				"nothingImported": "Ничего не импортировано",
+				"notImported": "Не импортировано",
+				"open": "Открыть",
+				"openProject": "Открыть {{name}}",
+				"queued": "В очереди",
+				"started": "Запущен {{time}}",
+				"starting": "Запуск",
+				"took_few": "Заняло {{count}} минуты",
+				"took_many": "Заняло {{count}} минут",
+				"took_one": "Заняла {{count}} минута",
+				"took_other": "Заняло {{count}} минуты",
+				"tookUnderMinute": "Заняло меньше минуты",
+				"totals": "Импортировано: {{parts, list}}",
+				"waiting": "Ожидание",
+				"warnings_few": "{{count}} предупреждения",
+				"warnings_many": "{{count}} предупреждений",
+				"warnings_one": "{{count}} предупреждение",
+				"warnings_other": "{{count}} предупреждения"
 			},
 			"select": {
-				"back": "Back",
-				"clear": "Clear",
-				"commentsDescription": "Keeps each comment's original author and date.",
-				"commentsLabel": "Import comments",
-				"inviteMembers": "Invite members",
-				"membersNote": "Assignees are matched to members of {{workspace}} by email. Invite your team first so their tasks stay assigned.",
-				"membersNoteTrello": "Assignees are matched to members of {{workspace}} by email, or by full name for Trello. Invite your team first so their tasks stay assigned.",
-				"selectAll": "Select all",
-				"membersNoteJira": "Assignees are matched to members of {{workspace}} by email, or by full name when Jira hides the email. Invite your team first so their tasks stay assigned."
+				"back": "Назад",
+				"clear": "Очистить",
+				"commentsDescription": "Сохраняет исходного автора и дату каждого комментария.",
+				"commentsLabel": "Импортировать комментарии",
+				"inviteMembers": "Пригласить участников",
+				"membersNote": "Исполнители сопоставляются с участниками {{workspace}} по email. Сначала пригласите свою команду, чтобы их задачи остались назначенными.",
+				"membersNoteTrello": "Исполнители сопоставляются с участниками {{workspace}} по email, а для Trello — по полному имени. Сначала пригласите свою команду, чтобы их задачи остались назначенными.",
+				"selectAll": "Выбрать все",
+				"membersNoteJira": "Исполнители сопоставляются с участниками {{workspace}} по email или по полному имени, когда Jira скрывает email. Сначала пригласите свою команду, чтобы их задачи остались назначенными."
 			},
 			"sources": {
-				"connect": "Connect",
-				"connectTo": "Connect {{source}}",
-				"description": "Pick the tool you are moving from. Each project you choose becomes a new project here.",
+				"connect": "Подключить",
+				"connectTo": "Подключить {{source}}",
+				"description": "Выберите инструмент, из которого вы переходите. Каждый выбранный проект станет новым проектом здесь.",
 				"kaneo": {
-					"description": "Move projects between Kaneo Cloud and a self-hosted instance.",
-					"intro": "Projects from every workspace the key can see. Each one you pick is copied here.",
-					"pickerName": "Another Kaneo"
+					"description": "Переносите проекты между Kaneo Cloud и self-hosted инстансом.",
+					"intro": "Проекты из всех рабочих областей, которые видит ключ. Каждый выбранный копируется сюда.",
+					"pickerName": "Другой Kaneo"
 				},
 				"linear": {
-					"description": "Teams, issues, labels, sub-issues and comments. Paste a personal API key.",
-					"intro": "Each Linear team becomes a project, with its workflow as columns."
+					"description": "Команды, issue, метки, подзадачи и комментарии. Вставьте персональный ключ API.",
+					"intro": "Каждая команда Linear становится проектом, её рабочий процесс — колонками."
 				},
 				"plane": {
-					"description": "Projects, work items, sub-issues and comments. Cloud or self-hosted.",
-					"intro": "Each Plane project becomes a project here, with its states as columns."
+					"description": "Проекты, рабочие элементы, подзадачи и комментарии. Cloud или self-hosted.",
+					"intro": "Каждый проект Plane становится проектом здесь, его состояния — колонками."
 				},
 				"planka": {
-					"description": "Boards, lists, cards, checklists and comments from your PLANKA instance.",
-					"intro": "Each PLANKA board becomes a project, with its lists as columns."
+					"description": "Доски, списки, карточки, чек-листы и комментарии с вашего инстанса PLANKA.",
+					"intro": "Каждая доска PLANKA становится проектом, её списки — колонками."
 				},
-				"title": "Choose a source",
+				"title": "Выберите источник",
 				"trello": {
-					"description": "Boards, lists, cards, checklists and comments. Authorize with one click.",
-					"intro": "Each Trello board becomes a project, with its lists as columns."
+					"description": "Доски, списки, карточки, чек-листы и комментарии. Авторизация в один клик.",
+					"intro": "Каждая доска Trello становится проектом, её списки — колонками."
 				},
 				"jira": {
-					"description": "Projects, issues, sub-tasks, links and comments. Cloud or Data Center.",
-					"intro": "Each Jira project becomes a project here, with its workflow as columns."
+					"description": "Проекты, issue, подзадачи, связи и комментарии. Cloud или Data Center.",
+					"intro": "Каждый проект Jira становится проектом здесь, его рабочий процесс — колонками."
+				},
+				"notion": {
+					"description": "Базы, страницы, статусы, связи и тексты страниц. Вставьте токен интеграции.",
+					"intro": "Каждая база Notion становится проектом, варианты её статуса — колонками."
 				}
 			},
 			"status": {
-				"failed": "Failed",
-				"imported": "Imported",
-				"importing": "Importing {{current}} of {{total}}",
-				"partial": "{{done}} of {{total}} imported",
-				"warnings_few": "Done with {{count}} warnings",
-				"warnings_many": "Done with {{count}} warnings",
-				"warnings_one": "Done with {{count}} warning",
-				"warnings_other": "Done with {{count}} warnings"
+				"failed": "Ошибка",
+				"imported": "Импортировано",
+				"importing": "Импортируется {{current}} из {{total}}",
+				"partial": "Импортировано {{done}} из {{total}}",
+				"warnings_few": "Готово с {{count}} предупреждениями",
+				"warnings_many": "Готово с {{count}} предупреждениями",
+				"warnings_one": "Готово с {{count}} предупреждением",
+				"warnings_other": "Готово с {{count}} предупреждениями"
 			},
 			"steps": {
-				"connect": "Connect",
-				"done": "(completed)",
-				"import": "Import",
-				"label": "Import steps"
+				"connect": "Подключение",
+				"done": "(завершено)",
+				"import": "Импорт",
+				"label": "Шаги импорта"
 			},
-			"subtitle": "Bring your projects from another tool into {{workspace}}. Kaneo only reads from the source.",
-			"title": "Import",
+			"subtitle": "Перенесите свои проекты из другого инструмента в {{workspace}}. Kaneo только читает из источника.",
+			"title": "Импорт",
 			"toast": {
-				"failed": "Import from {{source}} failed",
-				"finished": "Import from {{source}} finished",
-				"partial": "Import from {{source}} finished with errors"
+				"failed": "Импорт из {{source}} не удался",
+				"finished": "Импорт из {{source}} завершён",
+				"partial": "Импорт из {{source}} завершён с ошибками"
 			},
 			"trello": {
-				"apiKeyDescription": "In a Power-Up you own, open the Trello Auth tab and generate an API key (not the OAuth 2.0 tab) at",
-				"apiKeyLabel": "API key",
-				"apiKeyPlaceholder": "Paste API key",
-				"authorizeButton": "Authorize on Trello",
-				"authorizeDescription": "Opens Trello in a new tab. Read only, expires after a day.",
-				"authorizeLabel": "Authorize Kaneo",
-				"authorizeNeedsKey": "Enter the API key first. Read only, expires after a day.",
-				"tokenDescription": "Click Allow on Trello, then paste the token it shows you.",
-				"tokenLabel": "Token",
-				"tokenPlaceholder": "Paste token"
+				"apiKeyDescription": "В Power-Up, которым вы владеете, откройте вкладку Trello Auth и сгенерируйте ключ API (не вкладку OAuth 2.0) на",
+				"apiKeyLabel": "Ключ API",
+				"apiKeyPlaceholder": "Вставьте ключ API",
+				"authorizeButton": "Авторизоваться в Trello",
+				"authorizeDescription": "Открывает Trello в новой вкладке. Только чтение, действует один день.",
+				"authorizeLabel": "Авторизовать Kaneo",
+				"authorizeNeedsKey": "Сначала введите ключ API. Только чтение, действует один день.",
+				"tokenDescription": "Нажмите Allow в Trello, затем вставьте показанный токен.",
+				"tokenLabel": "Токен",
+				"tokenPlaceholder": "Вставьте токен"
 			},
 			"units": {
 				"board": {
-					"allImported_few": "All {{count}} boards imported.",
-					"allImported_many": "All {{count}} boards imported.",
-					"allImported_one": "{{count}} board imported.",
-					"allImported_other": "All {{count}} boards imported.",
-					"empty": "No boards found. Check that this key can see the boards you want to import.",
-					"found_few": "{{count}} boards found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_many": "{{count}} boards found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_one": "{{count}} board found. If you pick it, it becomes a new project in {{workspace}}.",
-					"found_other": "{{count}} boards found. Each one you pick becomes a new project in {{workspace}}.",
-					"importButton_few": "Import {{count}} boards",
-					"importButton_many": "Import {{count}} boards",
-					"importButton_one": "Import {{count}} board",
-					"importButton_other": "Import {{count}} boards",
-					"limit": "Pick up to {{max}} boards per import.",
-					"pick": "Pick the boards to bring over.",
-					"progress_few": "{{done}} of {{count}} boards imported",
-					"progress_many": "{{done}} of {{count}} boards imported",
-					"progress_one": "{{done}} of {{count}} board imported",
-					"progress_other": "{{done}} of {{count}} boards imported",
-					"runTitle_few": "{{source}}, {{count}} boards",
-					"runTitle_many": "{{source}}, {{count}} boards",
-					"runTitle_one": "{{source}}, {{count}} board",
-					"runTitle_other": "{{source}}, {{count}} boards",
-					"section": "Boards",
-					"someImported_few": "{{done}} of {{count}} boards imported.",
-					"someImported_many": "{{done}} of {{count}} boards imported.",
-					"someImported_one": "{{done}} of {{count}} board imported.",
-					"someImported_other": "{{done}} of {{count}} boards imported.",
-					"step": "Choose boards"
+					"allImported_few": "Все {{count}} доски импортированы.",
+					"allImported_many": "Все {{count}} досок импортированы.",
+					"allImported_one": "{{count}} доска импортирована.",
+					"allImported_other": "Все {{count}} доски импортированы.",
+					"empty": "Доски не найдены. Проверьте, что этот ключ видит доски, которые вы хотите импортировать.",
+					"found_few": "Найдены {{count}} доски. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"found_many": "Найдено {{count}} досок. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"found_one": "Найдена {{count}} доска. Если вы её выберете, она станет новым проектом в {{workspace}}.",
+					"found_other": "Найдены {{count}} доски. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"importButton_few": "Импортировать {{count}} доски",
+					"importButton_many": "Импортировать {{count}} досок",
+					"importButton_one": "Импортировать {{count}} доску",
+					"importButton_other": "Импортировать {{count}} доски",
+					"limit": "Выбирайте до {{max}} досок за один импорт.",
+					"pick": "Выберите доски для переноса.",
+					"progress_few": "Импортировано {{done}} из {{count}} досок",
+					"progress_many": "Импортировано {{done}} из {{count}} досок",
+					"progress_one": "Импортирована {{done}} из {{count}} доски",
+					"progress_other": "Импортировано {{done}} из {{count}} досок",
+					"runTitle_few": "{{source}}, {{count}} доски",
+					"runTitle_many": "{{source}}, {{count}} досок",
+					"runTitle_one": "{{source}}, {{count}} доска",
+					"runTitle_other": "{{source}}, {{count}} доски",
+					"section": "Доски",
+					"someImported_few": "Импортировано {{done}} из {{count}} досок.",
+					"someImported_many": "Импортировано {{done}} из {{count}} досок.",
+					"someImported_one": "Импортирована {{done}} из {{count}} доски.",
+					"someImported_other": "Импортировано {{done}} из {{count}} досок.",
+					"step": "Выбор досок"
 				},
 				"project": {
-					"allImported_few": "All {{count}} projects imported.",
-					"allImported_many": "All {{count}} projects imported.",
-					"allImported_one": "{{count}} project imported.",
-					"allImported_other": "All {{count}} projects imported.",
-					"empty": "No projects found. Check that this key can see the projects you want to import.",
-					"found_few": "{{count}} projects found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_many": "{{count}} projects found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_one": "{{count}} project found. If you pick it, it becomes a new project in {{workspace}}.",
-					"found_other": "{{count}} projects found. Each one you pick becomes a new project in {{workspace}}.",
-					"importButton_few": "Import {{count}} projects",
-					"importButton_many": "Import {{count}} projects",
-					"importButton_one": "Import {{count}} project",
-					"importButton_other": "Import {{count}} projects",
-					"limit": "Pick up to {{max}} projects per import.",
-					"pick": "Pick the projects to bring over.",
-					"progress_few": "{{done}} of {{count}} projects imported",
-					"progress_many": "{{done}} of {{count}} projects imported",
-					"progress_one": "{{done}} of {{count}} project imported",
-					"progress_other": "{{done}} of {{count}} projects imported",
-					"runTitle_few": "{{source}}, {{count}} projects",
-					"runTitle_many": "{{source}}, {{count}} projects",
-					"runTitle_one": "{{source}}, {{count}} project",
-					"runTitle_other": "{{source}}, {{count}} projects",
-					"section": "Projects",
-					"someImported_few": "{{done}} of {{count}} projects imported.",
-					"someImported_many": "{{done}} of {{count}} projects imported.",
-					"someImported_one": "{{done}} of {{count}} project imported.",
-					"someImported_other": "{{done}} of {{count}} projects imported.",
-					"step": "Choose projects"
+					"allImported_few": "Все {{count}} проекта импортированы.",
+					"allImported_many": "Все {{count}} проектов импортированы.",
+					"allImported_one": "{{count}} проект импортирован.",
+					"allImported_other": "Все {{count}} проекта импортированы.",
+					"empty": "Проекты не найдены. Проверьте, что этот ключ видит проекты, которые вы хотите импортировать.",
+					"found_few": "Найдены {{count}} проекта. Каждый выбранный станет новым проектом в {{workspace}}.",
+					"found_many": "Найдено {{count}} проектов. Каждый выбранный станет новым проектом в {{workspace}}.",
+					"found_one": "Найден {{count}} проект. Если вы его выберете, он станет новым проектом в {{workspace}}.",
+					"found_other": "Найдены {{count}} проекта. Каждый выбранный станет новым проектом в {{workspace}}.",
+					"importButton_few": "Импортировать {{count}} проекта",
+					"importButton_many": "Импортировать {{count}} проектов",
+					"importButton_one": "Импортировать {{count}} проект",
+					"importButton_other": "Импортировать {{count}} проекта",
+					"limit": "Выбирайте до {{max}} проектов за один импорт.",
+					"pick": "Выберите проекты для переноса.",
+					"progress_few": "Импортировано {{done}} из {{count}} проектов",
+					"progress_many": "Импортировано {{done}} из {{count}} проектов",
+					"progress_one": "Импортирован {{done}} из {{count}} проекта",
+					"progress_other": "Импортировано {{done}} из {{count}} проектов",
+					"runTitle_few": "{{source}}, {{count}} проекта",
+					"runTitle_many": "{{source}}, {{count}} проектов",
+					"runTitle_one": "{{source}}, {{count}} проект",
+					"runTitle_other": "{{source}}, {{count}} проекта",
+					"section": "Проекты",
+					"someImported_few": "Импортировано {{done}} из {{count}} проектов.",
+					"someImported_many": "Импортировано {{done}} из {{count}} проектов.",
+					"someImported_one": "Импортирован {{done}} из {{count}} проекта.",
+					"someImported_other": "Импортировано {{done}} из {{count}} проектов.",
+					"step": "Выбор проектов"
 				},
 				"team": {
-					"allImported_few": "All {{count}} teams imported.",
-					"allImported_many": "All {{count}} teams imported.",
-					"allImported_one": "{{count}} team imported.",
-					"allImported_other": "All {{count}} teams imported.",
-					"empty": "No teams found. Check that this key can see the teams you want to import.",
-					"found_few": "{{count}} teams found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_many": "{{count}} teams found. Each one you pick becomes a new project in {{workspace}}.",
-					"found_one": "{{count}} team found. If you pick it, it becomes a new project in {{workspace}}.",
-					"found_other": "{{count}} teams found. Each one you pick becomes a new project in {{workspace}}.",
-					"importButton_few": "Import {{count}} teams",
-					"importButton_many": "Import {{count}} teams",
-					"importButton_one": "Import {{count}} team",
-					"importButton_other": "Import {{count}} teams",
-					"limit": "Pick up to {{max}} teams per import.",
-					"pick": "Pick the teams to bring over.",
-					"progress_few": "{{done}} of {{count}} teams imported",
-					"progress_many": "{{done}} of {{count}} teams imported",
-					"progress_one": "{{done}} of {{count}} team imported",
-					"progress_other": "{{done}} of {{count}} teams imported",
-					"runTitle_few": "{{source}}, {{count}} teams",
-					"runTitle_many": "{{source}}, {{count}} teams",
-					"runTitle_one": "{{source}}, {{count}} team",
-					"runTitle_other": "{{source}}, {{count}} teams",
-					"section": "Teams",
-					"someImported_few": "{{done}} of {{count}} teams imported.",
-					"someImported_many": "{{done}} of {{count}} teams imported.",
-					"someImported_one": "{{done}} of {{count}} team imported.",
-					"someImported_other": "{{done}} of {{count}} teams imported.",
-					"step": "Choose teams"
+					"allImported_few": "Все {{count}} команды импортированы.",
+					"allImported_many": "Все {{count}} команд импортированы.",
+					"allImported_one": "{{count}} команда импортирована.",
+					"allImported_other": "Все {{count}} команды импортированы.",
+					"empty": "Команды не найдены. Проверьте, что этот ключ видит команды, которые вы хотите импортировать.",
+					"found_few": "Найдены {{count}} команды. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"found_many": "Найдено {{count}} команд. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"found_one": "Найдена {{count}} команда. Если вы её выберете, она станет новым проектом в {{workspace}}.",
+					"found_other": "Найдены {{count}} команды. Каждая выбранная станет новым проектом в {{workspace}}.",
+					"importButton_few": "Импортировать {{count}} команды",
+					"importButton_many": "Импортировать {{count}} команд",
+					"importButton_one": "Импортировать {{count}} команду",
+					"importButton_other": "Импортировать {{count}} команды",
+					"limit": "Выбирайте до {{max}} команд за один импорт.",
+					"pick": "Выберите команды для переноса.",
+					"progress_few": "Импортировано {{done}} из {{count}} команд",
+					"progress_many": "Импортировано {{done}} из {{count}} команд",
+					"progress_one": "Импортирована {{done}} из {{count}} команды",
+					"progress_other": "Импортировано {{done}} из {{count}} команд",
+					"runTitle_few": "{{source}}, {{count}} команды",
+					"runTitle_many": "{{source}}, {{count}} команд",
+					"runTitle_one": "{{source}}, {{count}} команда",
+					"runTitle_other": "{{source}}, {{count}} команды",
+					"section": "Команды",
+					"someImported_few": "Импортировано {{done}} из {{count}} команд.",
+					"someImported_many": "Импортировано {{done}} из {{count}} команд.",
+					"someImported_one": "Импортирована {{done}} из {{count}} команды.",
+					"someImported_other": "Импортировано {{done}} из {{count}} команд.",
+					"step": "Выбор команд"
 				}
 			},
 			"jira": {
-				"emailDescription": "The email of your Atlassian account. Leave it empty for Jira Data Center.",
+				"emailDescription": "Email вашего аккаунта Atlassian. Оставьте пустым для Jira Data Center.",
 				"emailLabel": "Email",
-				"nameMatchTip": "Jira often hides email addresses, so assignees may be matched to people here by full name.",
-				"openSettings": "Open Atlassian API tokens",
-				"stepCreate": "Create an API token and copy it.",
-				"stepOpen": "Open id.atlassian.com, then Security, then API tokens.",
-				"stepPaste": "Paste it with the email you sign in to Jira with.",
-				"tokenDescription": "Cloud: create one at id.atlassian.com. Data Center: use a personal access token.",
-				"tokenLabel": "API token",
-				"tokenPlaceholder": "Paste token",
-				"urlDescription": "Copy it from your browser. Data Center works too.",
-				"urlLabel": "Jira site URL",
+				"nameMatchTip": "Jira часто скрывает email-адреса, поэтому исполнители могут сопоставляться с людьми здесь по полному имени.",
+				"openSettings": "Открыть токены API Atlassian",
+				"stepCreate": "Создайте токен API и скопируйте его.",
+				"stepOpen": "Откройте id.atlassian.com, затем Security, затем API tokens.",
+				"stepPaste": "Вставьте его вместе с email, с которым вы входите в Jira.",
+				"tokenDescription": "Cloud: создайте на id.atlassian.com. Data Center: используйте персональный токен доступа.",
+				"tokenLabel": "Токен API",
+				"tokenPlaceholder": "Вставьте токен",
+				"urlDescription": "Скопируйте его из браузера. Data Center тоже поддерживается.",
+				"urlLabel": "URL сайта Jira",
 				"urlPlaceholder": "https://your-site.atlassian.net"
+			},
+			"notion": {
+				"tokenLabel": "Токен интеграции",
+				"tokenDescription": "Токен внутренней интеграции. Достаточно права на чтение.",
+				"databasesLabel": "Базы данных",
+				"databasesDescription": "Вставьте ссылки или ID баз, по одной на строку. Каждая база станет проектом.",
+				"openSettings": "Открыть интеграции Notion",
+				"stepCreate": "В Notion создайте внутреннюю интеграцию с правом Read content.",
+				"stepShare": "Откройте каждую базу, затем ⋯ › Connections и добавьте интеграцию.",
+				"stepPaste": "Скопируйте токен и ссылки на базы и вставьте их выше."
 			}
 		},
 		"chatIntegrations": {
@@ -2478,10 +2492,11 @@
 			"invitations": "Приглашения",
 			"more": "Ещё",
 			"backToBoard": "Назад к доске",
-			"home": "Home",
-			"inbox": "Inbox",
-			"invitePeople": "Invite people",
-			"myTasks": "My tasks"
+			"home": "Главная",
+			"inbox": "Входящие",
+			"invitePeople": "Пригласить людей",
+			"myTasks": "Мои задачи",
+			"forest": "Лес"
 		},
 		"projectList": {
 			"viewProject": "Открыть проект",
@@ -2718,24 +2733,24 @@
 			"days_other": "{{count}} дней"
 		},
 		"inbox": {
-			"back": "Inbox",
-			"earlier": "Earlier",
-			"emptyFilter": "Nothing here",
+			"back": "Входящие",
+			"earlier": "Ранее",
+			"emptyFilter": "Здесь пусто",
 			"filters": {
-				"all": "All",
-				"label": "Filter notifications",
-				"mentions": "Mentions",
-				"unread": "Unread"
+				"all": "Все",
+				"label": "Фильтр уведомлений",
+				"mentions": "Упоминания",
+				"unread": "Непрочитанные"
 			},
-			"openTask": "Open task",
-			"pageTitle": "Inbox",
-			"recentActivity": "Recent activity",
-			"selectPrompt": "Select a notification to read it",
-			"taskUnavailable": "This task is no longer available.",
-			"today": "Today",
-			"unread": "Unread",
-			"loadError": "Notifications couldn't be loaded.",
-			"taskLoadError": "This task couldn’t be loaded.",
+			"openTask": "Открыть задачу",
+			"pageTitle": "Входящие",
+			"recentActivity": "Недавняя активность",
+			"selectPrompt": "Выберите уведомление, чтобы прочитать его",
+			"taskUnavailable": "Эта задача больше недоступна.",
+			"today": "Сегодня",
+			"unread": "Непрочитанные",
+			"loadError": "Не удалось загрузить уведомления.",
+			"taskLoadError": "Не удалось загрузить эту задачу.",
 			"actionError": "Не удалось обновить входящие. Попробуйте ещё раз.",
 			"readCleared": "Прочитанные уведомления удалены"
 		}
@@ -2846,13 +2861,13 @@
 					"renderFailed": "Не удалось отобразить диаграмму Mermaid"
 				}
 			},
-			"importedFrom": "Imported from {{source}}",
-			"importedBy": "Imported by {{name}}",
+			"importedFrom": "Импортировано из {{source}}",
+			"importedBy": "Импортировал(а) {{name}}",
 			"commentedOnForge": "прокомментировал на {{forge}}"
 		},
 		"moved": "переместил задачу из «{{from}}» в «{{to}}»",
 		"created": "создал эту задачу",
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "перенёс(ла) задачу из другого проекта в «{{to}}»"
 	},
 	"tasks": {
 		"title": "Задачи",
@@ -2888,7 +2903,7 @@
 			"ticketAmbiguous": "Идентификатор соответствует нескольким задачам",
 			"ticketAmbiguousDescription": "{{ticketId}} соответствует задачам в нескольких проектах этой рабочей области. Задайте одному из этих проектов другой ключ, чтобы ссылка заработала.",
 			"ticketNotFoundDescription": "В этой рабочей области нет задачи с идентификатором {{ticketId}}, или у вас нет к ней доступа.",
-			"customFields": "Custom Fields"
+			"customFields": "Пользовательские поля"
 		},
 		"detail": {
 			"subtaskOf": "Подзадача",
@@ -2994,16 +3009,16 @@
 					"renderFailed": "Не удалось отобразить диаграмму Mermaid"
 				},
 				"image": {
-					"large": "Large",
-					"medium": "Medium",
-					"reset": "Reset size",
-					"resizeHandle": "Resize image",
-					"small": "Small"
+					"large": "Большое",
+					"medium": "Среднее",
+					"reset": "Сбросить размер",
+					"resizeHandle": "Изменить размер изображения",
+					"small": "Маленькое"
 				},
-				"saved": "Saved",
-				"saving": "Saving…",
-				"saveFailed": "Changes could not be saved",
-				"retrySave": "Retry"
+				"saved": "Сохранено",
+				"saving": "Сохранение…",
+				"saveFailed": "Не удалось сохранить изменения",
+				"retrySave": "Повторить"
 			}
 		},
 		"entity": {
@@ -3042,7 +3057,7 @@
 			"deleteAction": "Удалить задачу",
 			"completeAria": "Отметить подзадачу выполненной",
 			"progress": "Выполнено подзадач: {{completed}} из {{total}}",
-			"noCompletionColumn": "This project has no matching column for completing or reopening this subtask."
+			"noCompletionColumn": "В этом проекте нет подходящей колонки для завершения или повторного открытия этой подзадачи."
 		},
 		"properties": {
 			"title": "Свойства",
@@ -3056,7 +3071,8 @@
 			"startDate": "Дата начала",
 			"noDate": "Без даты",
 			"dates": "Даты",
-			"project": "Проект"
+			"project": "Проект",
+			"due": "Срок"
 		},
 		"move": {
 			"title": "Переместить задачу",
@@ -3169,9 +3185,9 @@
 				"exclude": "исключает"
 			},
 			"selectedCount": "{{count}} выбрано",
-			"allCustomFieldValues": "All values",
-			"noCustomFieldValues": "No custom field values",
-			"noValuesUsedYet": "No values used yet"
+			"allCustomFieldValues": "Все значения",
+			"noCustomFieldValues": "Нет значений пользовательских полей",
+			"noValuesUsedYet": "Значения пока не используются"
 		},
 		"gantt": {
 			"searchPlaceholder": "Поиск запланированных задач...",
@@ -3187,11 +3203,11 @@
 			"resizeStart": "Изменить дату начала",
 			"resizeDue": "Изменить срок выполнения",
 			"taskAriaLabel": "{{title}}: откройте или перетащите для перемещения",
-			"jumpToToday": "Jump to today",
-			"previousPeriod": "Previous period",
-			"nextPeriod": "Next period",
-			"periodStart": "Timeline start date",
-			"showTaskDates": "Show task dates"
+			"jumpToToday": "Перейти к сегодняшнему дню",
+			"previousPeriod": "Предыдущий период",
+			"nextPeriod": "Следующий период",
+			"periodStart": "Дата начала шкалы времени",
+			"showTaskDates": "Показать даты задач"
 		},
 		"delete": {
 			"title": "Удалить задачу?",
@@ -3362,11 +3378,11 @@
 			"loadError": "Не удалось загрузить задачи.",
 			"noTasksThisMonth": "В этом месяце ничего не запланировано"
 		},
-		"descriptionSearchLoading": "Searching full descriptions…",
-		"descriptionSearchError": "Description search failed. Results may be incomplete.",
-		"descriptionRetry": "Retry",
-		"descriptionLoading": "Loading description…",
-		"descriptionLoadError": "The description could not be loaded. Retry to load the current version.",
+		"descriptionSearchLoading": "Поиск по полным описаниям…",
+		"descriptionSearchError": "Ошибка поиска по описаниям. Результаты могут быть неполными.",
+		"descriptionRetry": "Повторить",
+		"descriptionLoading": "Загрузка описания…",
+		"descriptionLoadError": "Не удалось загрузить описание. Повторите, чтобы загрузить актуальную версию.",
 		"checklistProgress": "Выполнено пунктов списка: {{completed}} из {{total}}",
 		"customFields": {
 			"fields": "Поля",
@@ -3390,7 +3406,7 @@
 			"manage": "Управлять полями"
 		},
 		"board": {
-			"reorderFailed": "Could not move task. Please try again.",
+			"reorderFailed": "Не удалось переместить задачу. Попробуйте ещё раз.",
 			"keyboardInstructions": "Нажмите Пробел для предпросмотра и Enter, чтобы открыть эту задачу. Используйте Alt или Option со стрелками, чтобы переместить её."
 		},
 		"toolbar": {
@@ -3431,6 +3447,100 @@
 			"markdownCopied": "Скопировано как Markdown",
 			"copyFailed": "Не удалось скопировать в буфер обмена.",
 			"pageUrlCopied": "URL страницы скопирован"
+		},
+		"card": {
+			"loadError": "Не удалось загрузить поля карточки.",
+			"showMore": "Показать полностью",
+			"showLess": "Свернуть",
+			"showAll": "Показать все ({{total}})",
+			"sections": {
+				"approvals": "Ждут «да»",
+				"lease": "Аренда",
+				"notion": "Поля Notion",
+				"agent": "Отчёт агента",
+				"history": "История",
+				"memory": "Память"
+			},
+			"lease": {
+				"free": "Сейчас никто не работает",
+				"holder": "Держит",
+				"until": "До"
+			},
+			"actor": {
+				"agent": "Агент",
+				"person": "Человек",
+				"ownerSession": "Владелец"
+			},
+			"fields": {
+				"kind": "Тип",
+				"severity": "Серьёзность",
+				"backlogId": "ID бэклога",
+				"halfBaked": "Сырая идея",
+				"notion": "Notion",
+				"report": "Отчёт",
+				"executor": "Исполнитель",
+				"branch": "Ветка",
+				"pullRequests": "Пулл-реквесты",
+				"files": "Файлы",
+				"tokens": "Токены",
+				"cost": "Стоимость",
+				"contextPack": "Пакет контекста"
+			},
+			"kind": {
+				"task": "Задача",
+				"bug": "Ошибка"
+			},
+			"halfBaked": {
+				"yes": "Да — нужен ОК владельца",
+				"no": "Нет"
+			},
+			"notion": {
+				"open": "Открыть в Notion"
+			},
+			"agent": {
+				"empty": "Агенты по этой карточке ещё не отчитывались."
+			},
+			"edit": {
+				"open": "Изменить",
+				"title": "Поля карточки",
+				"description": "Поля Notion и отчёт агента. Пустое поле очищается.",
+				"mirrored": "Карточка — зеркало страницы Notion: её поля Notion меняются только в Notion. Отчёт агента можно править.",
+				"halfBakedHint": "Агенты не берут сырые идеи без ОК владельца.",
+				"onePerLine": "По одному в строке.",
+				"save": "Сохранить"
+			},
+			"history": {
+				"undo": "Откатить это изменение",
+				"confirmUndo": "Откатить?",
+				"loadError": "Не удалось загрузить историю.",
+				"empty": "Изменений пока нет."
+			},
+			"memory": {
+				"unavailable": "claude-mem недоступен, и прочитать из него ещё ничего не удалось.",
+				"stale": "claude-mem недоступен: копия от {{time}}.",
+				"empty": "Среди последних {{total}} наблюдений нет ни одного об этой карточке.",
+				"loadError": "Не удалось загрузить память.",
+				"matched": {
+					"task-id": "упоминает {{value}}",
+					"branch": "ветка {{value}}"
+				}
+			},
+			"historyField": {
+				"title": "Название",
+				"description": "Описание",
+				"status": "Статус",
+				"column": "Колонка",
+				"priority": "Приоритет",
+				"assignee": "Исполнитель",
+				"startDate": "Начало",
+				"dueDate": "Срок"
+			},
+			"toast": {
+				"saved": "Поля карточки сохранены",
+				"saveError": "Не удалось сохранить поля карточки",
+				"rolledBack": "Изменение откачено",
+				"rollbackError": "Не удалось откатить изменение"
+			}
 		}
 	},
 	"invitations": {
@@ -3491,11 +3601,11 @@
 			"reorderError": "Не удалось изменить порядок проектов",
 			"emptyDescriptionReadOnly": "В этой рабочей области пока нет проектов. Попросите администратора создать проект.",
 			"unavailable": {
-				"backToWorkspace": "Back to workspace",
-				"noAccessDescription": "Ask a workspace admin to give you access.",
-				"noAccessTitle": "You don't have access to this project",
-				"notFoundDescription": "This project doesn't exist or has been deleted.",
-				"notFoundTitle": "Project not found"
+				"backToWorkspace": "Назад к рабочей области",
+				"noAccessDescription": "Попросите администратора рабочей области предоставить вам доступ.",
+				"noAccessTitle": "У вас нет доступа к этому проекту",
+				"notFoundDescription": "Этот проект не существует или был удалён.",
+				"notFoundTitle": "Проект не найден"
 			}
 		},
 		"search": {
@@ -3535,65 +3645,176 @@
 		},
 		"home": {
 			"activity": {
-				"commented": "commented",
-				"empty": "Nothing has happened in the last 30 days.",
-				"loadError": "Activity couldn't be loaded.",
-				"title": "Activity",
-				"updated": "updated the task"
+				"commented": "прокомментировал(а)",
+				"empty": "За последние 30 дней ничего не произошло.",
+				"loadError": "Не удалось загрузить активность.",
+				"title": "Активность",
+				"updated": "обновил(а) задачу"
 			},
 			"greeting": {
-				"afternoon": "Good afternoon",
-				"evening": "Good evening",
-				"morning": "Good morning"
+				"afternoon": "Добрый день",
+				"evening": "Добрый вечер",
+				"morning": "Доброе утро"
 			},
-			"newTask": "New task",
-			"pageTitle": "Home",
+			"newTask": "Новая задача",
+			"pageTitle": "Главная",
 			"projects": {
-				"all": "All projects",
-				"tasks_few": "{{count}} tasks",
-				"tasks_many": "{{count}} tasks",
-				"tasks_one": "{{count}} task",
-				"tasks_other": "{{count}} tasks",
-				"title": "Your projects",
-				"loadError": "Projects couldn't be loaded."
+				"all": "Все проекты",
+				"tasks_few": "{{count}} задачи",
+				"tasks_many": "{{count}} задач",
+				"tasks_one": "{{count}} задача",
+				"tasks_other": "{{count}} задачи",
+				"title": "Ваши проекты",
+				"loadError": "Не удалось загрузить проекты."
 			},
 			"upNext": {
-				"assigned_few": "{{count}} assigned to you",
-				"assigned_many": "{{count}} assigned to you",
-				"assigned_one": "{{count}} assigned to you",
-				"assigned_other": "{{count}} assigned to you",
-				"title": "Up next",
-				"viewAll": "View all"
+				"assigned_few": "{{count}} назначены вам",
+				"assigned_many": "{{count}} назначены вам",
+				"assigned_one": "{{count}} назначена вам",
+				"assigned_other": "{{count}} назначены вам",
+				"title": "Далее",
+				"viewAll": "Показать все"
 			},
 			"week": {
-				"more_few": "+{{count}} more",
-				"more_many": "+{{count}} more",
-				"more_one": "+{{count}} more",
-				"more_other": "+{{count}} more",
-				"truncated": "The week preview includes only the first {{shown}} of {{total}} assigned tasks."
+				"more_few": "+ ещё {{count}}",
+				"more_many": "+ ещё {{count}}",
+				"more_one": "+ ещё {{count}}",
+				"more_other": "+ ещё {{count}}",
+				"truncated": "В предпросмотр недели включены только первые {{shown}} из {{total}} назначенных задач."
 			}
 		},
 		"myTasks": {
-			"emptyDescription": "Tasks assigned to you across this workspace show up here.",
+			"emptyDescription": "Здесь отображаются назначенные вам задачи по всей рабочей области.",
 			"groupBy": {
-				"dueDate": "Due date",
-				"label": "Group by",
-				"project": "Project"
+				"dueDate": "Сроку выполнения",
+				"label": "Группировать по",
+				"project": "Проекту"
 			},
-			"pageTitle": "My tasks",
-			"truncated": "Showing the first {{shown}} of {{total}} tasks."
+			"pageTitle": "Мои задачи",
+			"truncated": "Показаны первые {{shown}} из {{total}} задач."
 		},
 		"myWork": {
 			"due": {
-				"later": "Later",
-				"noDueDate": "No due date",
-				"overdue": "Overdue",
-				"thisWeek": "This week",
-				"today": "Today",
-				"tomorrow": "Tomorrow"
+				"later": "Позже",
+				"noDueDate": "Без срока",
+				"overdue": "Просрочено",
+				"thisWeek": "На этой неделе",
+				"today": "Сегодня",
+				"tomorrow": "Завтра"
 			},
-			"empty": "Nothing assigned to you",
-			"loadError": "Your tasks couldn't be loaded."
+			"empty": "Вам ничего не назначено",
+			"loadError": "Не удалось загрузить ваши задачи."
+		},
+		"forest": {
+			"pageTitle": "Лес",
+			"loadError": "Не удалось загрузить список. Попробуйте чуть позже.",
+			"tabs": {
+				"trees": "Деревья",
+				"sectors": "Секторы",
+				"logs": "Брёвна и семена",
+				"approvals": "Запросы «да»",
+				"leases": "Аренды"
+			},
+			"hints": {
+				"trees": "Дерево — задача с подзадачами (ветками), проект — лес. Раскройте дерево, чтобы увидеть ветки; срубите его, когда работа закончена.",
+				"sectors": "Сектор объединяет деревья, связанные между собой. Найдите секторы после того, как связали задачи, и рубите сектор целиком.",
+				"logs": "Срубленное дерево становится бревном; бревно хранит семена — короткую суть работы. Выберите семена из любых брёвен, чтобы вырастить новый лес.",
+				"approvals": "Агенты просят «да», прежде чем закрыть карточку, сменить приоритет или срубить дерево или сектор. Ответить может только владелец.",
+				"leases": "Кто сейчас работает над какой карточкой. Аренда заканчивается сама, если держатель перестал её продлевать."
+			},
+			"trees": {
+				"project": "Проект",
+				"allProjects": "Все проекты",
+				"toggle": "Показать ветки",
+				"branches": "Ветки: {{branches}}",
+				"leasedBy": "{{name}}, до {{time}}",
+				"sector": "Сектор: {{name}}",
+				"empty": "Деревьев пока нет.",
+				"truncated": "Показаны только новые деревья. Выберите проект, чтобы увидеть остальные.",
+				"noBranches": "У дерева нет веток.",
+				"branchesTruncated": "Показаны только первые ветки."
+			},
+			"sectors": {
+				"detect": "Найти секторы",
+				"empty": "Секторов нет. Свяжите задачи разных деревьев и найдите секторы.",
+				"trees": "Деревья: {{trees}}",
+				"detectedBy": "{{by}}, {{date}}",
+				"hidden": "Недоступные вам деревья: {{hidden}}",
+				"toast": {
+					"detected": "Новые секторы: {{created}}",
+					"detectError": "Не удалось найти секторы"
+				}
+			},
+			"logs": {
+				"search": "Поиск по брёвнам",
+				"empty": "Брёвен пока нет: срубите законченное дерево, чтобы сохранить его семена.",
+				"felledAt": "срублено {{time}}",
+				"noSeeds": "Бревно не оставило семян.",
+				"loadMore": "Загрузить ещё",
+				"selected": "Выбрано семян: {{seeds}}",
+				"clear": "Сбросить",
+				"seedKind": {
+					"branch": "Ветка",
+					"links": "Связи"
+				}
+			},
+			"fell": {
+				"titleTree": "Срубить дерево",
+				"titleSector": "Срубить сектор",
+				"description": "Задачи уйдут с доски и сохранятся брёвнами с семенами. С доски это не отменить.",
+				"reason": "Причина",
+				"reasonPlaceholder": "Почему работа закончена?",
+				"submit": "Срубить",
+				"toast": {
+					"done": "Срублено: задач {{tasks}}, семян {{seeds}}",
+					"error": "Не удалось срубить"
+				}
+			},
+			"grow": {
+				"open": "Вырастить лес",
+				"title": "Вырастить лес",
+				"description": "Новый проект, по задаче на каждое выбранное семя. Выбрано семян: {{seeds}}.",
+				"name": "Название проекта",
+				"slug": "Ключ",
+				"submit": "Вырастить",
+				"toast": {
+					"done": "Лес выращен: задач {{tasks}}",
+					"error": "Не удалось вырастить лес"
+				}
+			},
+			"approvals": {
+				"empty": "Запросов нет.",
+				"approve": "Да",
+				"reject": "Нет",
+				"requestedBy": "Просит {{name}}",
+				"expires": "истекает {{time}}",
+				"sector": "Сектор: {{name}}",
+				"targetUnknown": "Карточки нет или её проект вам недоступен.",
+				"action": {
+					"closeTask": "Закрыть карточку как «{{status}}»",
+					"setPriority": "Поставить приоритет «{{priority}}»",
+					"fellTree": "Срубить дерево",
+					"fellSector": "Срубить сектор"
+				},
+				"status": {
+					"pending": "Ждут",
+					"approved": "Одобрены",
+					"rejected": "Отклонены",
+					"consumed": "Исполнены",
+					"expired": "Истёк",
+					"all": "Все"
+				},
+				"toast": {
+					"approved": "Одобрено",
+					"rejected": "Отклонено",
+					"decideError": "Не удалось ответить на запрос"
+				}
+			},
+			"leases": {
+				"empty": "Сейчас никто не держит карточки.",
+				"group": "Группа: {{group}}",
+				"window": "взята {{taken}}, истекает {{expires}}"
+			}
 		}
 	},
 	"team": {
@@ -3635,7 +3856,7 @@
 				"role": "Роль",
 				"joined": "Присоединился",
 				"actions": "Действия",
-				"projects": "Projects"
+				"projects": "Проекты"
 			},
 			"memberRolePending": "{{role}} (Ожидает)",
 			"ariaCancelInvitation": "Отменить приглашение",
@@ -3655,27 +3876,27 @@
 			"roleUpdateError": "Не удалось обновить роль"
 		},
 		"projectAccess": {
-			"allProjects": "All projects",
-			"allProjectsDescription": "Access every project in this workspace, including new ones.",
-			"description": "Choose which projects this person can see.",
-			"dialogDescription": "Choose which projects {{name}} can access.",
-			"dialogTitle": "Project access",
-			"editAria": "Change project access for {{name}} ({{access}})",
-			"label": "Project access",
-			"noProjects": "No projects in this workspace yet.",
-			"projectCount_few": "{{count}} projects",
-			"projectCount_many": "{{count}} projects",
-			"projectCount_one": "{{count}} project",
-			"projectCount_other": "{{count}} projects",
-			"projectsLabel": "Projects",
-			"save": "Save",
-			"selectAtLeastOne": "Choose at least one project.",
-			"selectedProjects": "Selected projects",
-			"selectedProjectsDescription": "Only access the projects you choose.",
-			"updateError": "Failed to update project access",
-			"updateSuccess": "Project access updated",
-			"archived": "Archived",
-			"allProjectsUnavailable": "Your own access is limited, so you can only give access to selected projects."
+			"allProjects": "Все проекты",
+			"allProjectsDescription": "Доступ ко всем проектам этой рабочей области, включая новые.",
+			"description": "Выберите, какие проекты видит этот человек.",
+			"dialogDescription": "Выберите, к каким проектам у {{name}} есть доступ.",
+			"dialogTitle": "Доступ к проектам",
+			"editAria": "Изменить доступ к проектам для {{name}} ({{access}})",
+			"label": "Доступ к проектам",
+			"noProjects": "В этой рабочей области пока нет проектов.",
+			"projectCount_few": "{{count}} проекта",
+			"projectCount_many": "{{count}} проектов",
+			"projectCount_one": "{{count}} проект",
+			"projectCount_other": "{{count}} проекта",
+			"projectsLabel": "Проекты",
+			"save": "Сохранить",
+			"selectAtLeastOne": "Выберите хотя бы один проект.",
+			"selectedProjects": "Выбранные проекты",
+			"selectedProjectsDescription": "Доступ только к выбранным вами проектам.",
+			"updateError": "Не удалось обновить доступ к проектам",
+			"updateSuccess": "Доступ к проектам обновлён",
+			"archived": "В архиве",
+			"allProjectsUnavailable": "Ваш собственный доступ ограничен, поэтому вы можете дать доступ только к выбранным проектам."
 		}
 	},
 	"publicProject": {

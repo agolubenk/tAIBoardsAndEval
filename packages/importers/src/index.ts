@@ -1,6 +1,7 @@
 import { connectJira, type JiraCredentials } from "./jira/index.js";
 import { connectKaneo, type KaneoCredentials } from "./kaneo/index.js";
 import { connectLinear, type LinearCredentials } from "./linear/index.js";
+import { connectNotion, type NotionCredentials } from "./notion/index.js";
 import { connectPlane, type PlaneCredentials } from "./plane/index.js";
 import { connectPlanka, type PlankaCredentials } from "./planka/index.js";
 import { connectTrello, type TrelloCredentials } from "./trello/index.js";
@@ -8,6 +9,11 @@ import type { ConnectOptions, ImportSource } from "./types.js";
 
 export { normalizeBaseUrl, SourceHttpError } from "./http.js";
 export { type JiraSite, parseJiraUrl } from "./jira/index.js";
+export {
+  notionIdempotencyKey,
+  reconcile as reconcileNotion,
+  type ReconcileReport as NotionReconcileReport,
+} from "./notion/index.js";
 export {
   SOURCE_PROJECT_KEY_MAX,
   sanitizeProjectKey,
@@ -20,6 +26,7 @@ export type {
   JiraCredentials,
   KaneoCredentials,
   LinearCredentials,
+  NotionCredentials,
   PlaneCredentials,
   PlankaCredentials,
   TrelloCredentials,
@@ -32,6 +39,7 @@ export const IMPORT_SOURCE_IDS = [
   "jira",
   "trello",
   "kaneo",
+  "notion",
 ] as const;
 
 export type ImportSourceId = (typeof IMPORT_SOURCE_IDS)[number];
@@ -43,6 +51,7 @@ export type ImportCredentials = {
   jira: JiraCredentials;
   trello: TrelloCredentials;
   kaneo: KaneoCredentials;
+  notion: NotionCredentials;
 };
 
 export type ImportConnection = {
@@ -66,5 +75,7 @@ export function connectSource(
       return connectTrello(connection, options);
     case "kaneo":
       return connectKaneo(connection, options);
+    case "notion":
+      return connectNotion(connection, options);
   }
 }

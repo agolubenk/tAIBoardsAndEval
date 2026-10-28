@@ -37,7 +37,11 @@ export async function writeProjectContent(
     project,
     includeComments,
   }: ProjectContentInput,
-): Promise<{ counts: ImportCounts; warnings: string[] }> {
+): Promise<{
+  counts: ImportCounts;
+  warnings: string[];
+  taskIds: Map<string, string>;
+}> {
   const now = new Date();
   const description = project.description?.trim();
   if (description) {
@@ -89,12 +93,10 @@ export async function writeProjectContent(
       })
     : 0;
 
+  const taskIds = new Map(tasks.map((task) => [task.key, task.id]));
   const relations = await writeImportRelations(
     tx,
-    planImportRelations(
-      project.relations,
-      new Map(tasks.map((task) => [task.key, task.id])),
-    ),
+    planImportRelations(project.relations, taskIds),
   );
 
   const unmatched = assignees.warning();
@@ -112,5 +114,6 @@ export async function writeProjectContent(
       ...columnPlan.warnings,
       ...(unmatched ? [unmatched] : []),
     ],
+    taskIds,
   };
 }

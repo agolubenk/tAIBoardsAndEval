@@ -180,4 +180,21 @@ describe("buildConnection", () => {
       apiKey: "kaneo_1",
     });
   });
+
+  it("needs the Notion token and at least one database id", () => {
+    const id = "0123456789abcdef0123456789abcdef";
+    expect(
+      buildConnection("notion", values({ token: "ntn_1" }), withServerKey),
+    ).toBeNull();
+    expect(
+      buildConnection("notion", values({ databaseIds: id }), withServerKey),
+    ).toBeNull();
+    expect(
+      buildConnection(
+        "notion",
+        values({ token: " ntn_1 ", databaseIds: `${id}, ${id}` }),
+        withServerKey,
+      ),
+    ).toEqual({ source: "notion", token: "ntn_1", databaseIds: [id] });
+  });
 });

@@ -1,0 +1,89 @@
+// R-034: what a session of each role sees in tools/list. The role trims the
+// list to save tokens; it is not an authorization check — the API still
+// decides what the caller may do with every tool it reaches.
+const READ = [
+  "whoami",
+  "list_workspaces",
+  "list_projects",
+  "get_project",
+  "list_tasks",
+  "get_task",
+  "get_task_by_ticket_id",
+  "search",
+  "list_task_comments",
+  "forest_get_card_meta",
+] as const;
+
+const LEASE = ["forest_acquire_lease", "forest_release_lease"] as const;
+
+export const ROLE_TOOLS = {
+  reader: [...READ],
+  developer: [
+    ...READ,
+    ...LEASE,
+    "update_task",
+    "update_task_status",
+    "create_task_comment",
+    "get_task_relations",
+    "list_project_columns",
+    "forest_set_card_meta",
+    "forest_request_approval",
+  ],
+  reviewer: [
+    ...READ,
+    ...LEASE,
+    "update_task_status",
+    "create_task_comment",
+    "get_task_relations",
+    "list_task_activity",
+    "forest_request_approval",
+  ],
+  planner: [
+    ...READ,
+    ...LEASE,
+    "create_task",
+    "update_task",
+    "move_task",
+    "update_task_status",
+    "update_task_assignee",
+    "update_task_due_date",
+    "create_task_comment",
+    "create_task_relation",
+    "get_task_relations",
+    "list_project_columns",
+    "list_workspace_members",
+    "list_workspace_labels",
+    "attach_label_to_task",
+    "forest_set_card_meta",
+    "forest_request_approval",
+    "forest_list_approvals",
+    "forest_list_sectors",
+  ],
+  forester: [
+    ...READ,
+    ...LEASE,
+    "forest_request_approval",
+    "forest_list_approvals",
+    "forest_list_sectors",
+    "forest_detect_sectors",
+    "forest_fell",
+    "forest_grow",
+    "forest_list_logs",
+    "forest_get_log",
+  ],
+} as const satisfies Record<string, readonly string[]>;
+
+export type McpRole = keyof typeof ROLE_TOOLS;
+
+// A client names its role in this header. Without it the session keeps the
+// full kaneo set, so plain kaneo MCP clients work as before.
+export const ROLE_HEADER = "x-t-boards-role";
+
+// Tools a session may take beyond its role, over its whole life.
+export const EXTRA_TOOLS_MAX = 5;
+
+export const MCP_ROLES = Object.keys(ROLE_TOOLS) as McpRole[];
+
+export function isMcpRole(value: string): value is McpRole {
+  return Object.hasOwn(ROLE_TOOLS, value);
+}

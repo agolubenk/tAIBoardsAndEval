@@ -1,0 +1,63 @@
+import { useTranslation } from "react-i18next";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import useApprovals from "@/hooks/queries/forest/use-approvals";
+import { ApprovalsTab } from "./approvals-tab";
+import { FOREST_TABS, type ForestTab, isForestTab } from "./forest-types";
+import { LeasesTab } from "./leases-tab";
+import { LogsTab } from "./logs-tab";
+import { SectorsTab } from "./sectors-tab";
+import { TreesTab } from "./trees-tab";
+
+type ForestPageProps = {
+  workspaceId: string;
+  tab: ForestTab;
+  onTabChange: (tab: ForestTab) => void;
+};
+
+// Trees, sectors, felled logs with their seeds, «да» requests and leases of a
+// workspace in one place (R-028, R-029, N-011).
+export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
+  const { t } = useTranslation();
+  const { data: pending } = useApprovals(workspaceId, "pending");
+  const pendingCount = pending?.items.length ?? 0;
+
+  return (
+    <Tabs
+      value={tab}
+      onValueChange={(value) => {
+        if (isForestTab(value)) onTabChange(value);
+      }}
+      className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-4 sm:px-6"
+    >
+      <div className="overflow-x-auto">
+        <TabsList variant="underline">
+          {FOREST_TABS.map((item) => (
+            <TabsTab key={item} value={item} className="gap-1.5">
+              {t(`workspace:forest.tabs.${item}`)}
+              {item === "approvals" && pendingCount > 0 ? (
+                <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-[11px] text-background tabular-nums">
+                  {pendingCount}
+                </span>
+              ) : null}
+            </TabsTab>
+          ))}
+        </TabsList>
+      </div>
+      <TabsPanel value="trees">
+        <TreesTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="sectors">
+        <SectorsTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="logs">
+        <LogsTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="approvals">
+        <ApprovalsTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="leases">
+        <LeasesTab workspaceId={workspaceId} />
+      </TabsPanel>
+    </Tabs>
+  );
+}

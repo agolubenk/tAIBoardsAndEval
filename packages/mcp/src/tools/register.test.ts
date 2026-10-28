@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vite-plus/test";
+import { decodeWire } from "../view/wire-format.js";
 import { registerTools } from "./register.js";
 
 type RegisteredTool = {
@@ -27,6 +28,15 @@ function createServerMock() {
     },
     tools,
   };
+}
+
+// Read tools answer {etag, data} (R-031).
+function readData(result: { content: Array<{ text: string }> } | undefined) {
+  return (
+    decodeWire(result?.content[0]?.text ?? "null") as {
+      data: unknown;
+    }
+  ).data;
 }
 
 describe("registerTools", () => {
@@ -70,21 +80,12 @@ describe("registerTools", () => {
       method: "GET",
     });
     expect(result?.isError).toBe(false);
-    expect(result?.content).toEqual([
-      {
-        type: "text",
-        text: JSON.stringify(
-          {
-            id: "user-1",
-            name: "Mohiuddin",
-            email: "user@example.com",
-            role: "user",
-          },
-          null,
-          2,
-        ),
-      },
-    ]);
+    expect(readData(result)).toEqual({
+      id: "user-1",
+      name: "Mohiuddin",
+      email: "user@example.com",
+      role: "user",
+    });
   });
 
   it.each(["user", null, undefined])(
@@ -120,21 +121,14 @@ describe("registerTools", () => {
         method: "GET",
       });
       expect(result?.isError).toBe(false);
-      expect(result?.content).toEqual([
-        {
-          type: "text",
-          text: JSON.stringify(
-            {
-              id: "user-1",
-              name: "Mohiuddin",
-              email: "user@example.com",
-              role,
-            },
-            null,
-            2,
-          ),
-        },
-      ]);
+      const data = readData(result) as Record<string, unknown>;
+      // JSON drops an undefined role, TOON reads it back as null.
+      expect({ ...data, role: data.role ?? null }).toEqual({
+        id: "user-1",
+        name: "Mohiuddin",
+        email: "user@example.com",
+        role: role ?? null,
+      });
     },
   );
 
@@ -149,10 +143,8 @@ describe("registerTools", () => {
 
     const result = await tools.get("whoami")?.handler({});
 
-    expect(result).toEqual({
-      content: [{ type: "text", text: "null" }],
-      isError: false,
-    });
+    expect(result?.isError).toBe(false);
+    expect(readData(result)).toBeNull();
   });
 
   it("builds the expected query string for list_tasks", async () => {
@@ -175,15 +167,8 @@ describe("registerTools", () => {
       "/api/task/tasks/project%201?status=open&page=2&relatedPage=3&sortOrder=desc",
       { method: "GET" },
     );
-    expect(result).toEqual({
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify([{ id: "task-1" }], null, 2),
-        },
-      ],
-      isError: false,
-    });
+    expect(result?.isError).toBe(false);
+    expect(readData(result)).toEqual([{ id: "task-1" }]);
   });
 
   it("gets one task by ticket ID with an optional workspace", async () => {
@@ -481,7 +466,7 @@ describe("registerTools", () => {
       });
       expect(result?.content).toEqual([
         expect.objectContaining({
-          text: expect.stringContaining('"pendingDeletion": true'),
+          text: expect.stringContaining('"pendingDeletion":true'),
         }),
       ]);
     } finally {
@@ -500,7 +485,7 @@ describe("registerTools", () => {
     expect(client.json).toHaveBeenCalledTimes(100);
     expect(result?.content).toEqual([
       expect.objectContaining({
-        text: expect.stringContaining('"pendingDeletion": true'),
+        text: expect.stringContaining('"pendingDeletion":true'),
       }),
     ]);
   });

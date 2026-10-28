@@ -80,6 +80,13 @@ import {
 import { boardSchema, descriptionPageSchema } from "./task/response";
 import { descriptionPageQuery, listTasksQuery } from "./task/schema";
 import taskRelation from "./task-relation";
+// t-boards
+import forest from "./forest";
+import {
+  agentProjectDeleteGuard,
+  agentWorkspaceDeleteGuard,
+} from "./forest/agent-guard/delete-guards";
+import { agentTaskGuard } from "./forest/agent-guard/task-guard";
 import telegramIntegration from "./telegram-integration";
 import timeEntry from "./time-entry";
 import user from "./user";
@@ -449,6 +456,8 @@ export function createApp() {
     const result = await getInvitationDetails(id);
     return c.json(result);
   });
+
+  api.use("/auth/organization/delete", agentWorkspaceDeleteGuard);
 
   api.use("/auth/*", async (c, next) => {
     const apiKeyHeader = c.req.header("x-api-key")?.trim();
@@ -826,6 +835,9 @@ export function createApp() {
   const oauthApi = api.route("/oauth", oauth);
 
   const billingApi = api.route("/billing", billing);
+  // t-boards: agent rights before the upstream routes (R-022, N-004, AC-010).
+  api.use("/project/*", agentProjectDeleteGuard);
+  api.use("/task/*", agentTaskGuard);
   const projectApi = api.route("/project", project);
   const calendarFeedApi = api.route("/calendar-feed", calendarFeed);
   const taskApi = api.route("/task", task);
@@ -868,6 +880,7 @@ export function createApp() {
     telegramIntegration,
   );
   const taskRelationApi = api.route("/task-relation", taskRelation);
+  const forestApi = api.route("/forest", forest);
   const externalLinkApi = api.route("/external-link", externalLink);
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
   const invitationApi = api.route("/invitation", invitation);
@@ -998,6 +1011,7 @@ export function createApp() {
     slackIntegrationApi,
     taskApi,
     taskRelationApi,
+    forestApi,
     telegramIntegrationApi,
     timeEntryApi,
     userApi,
@@ -1131,6 +1145,7 @@ const {
   slackIntegrationApi,
   taskApi,
   taskRelationApi,
+  forestApi,
   telegramIntegrationApi,
   timeEntryApi,
   userApi,
@@ -1176,6 +1191,7 @@ export type AppType =
   | typeof slackIntegrationApi
   | typeof telegramIntegrationApi
   | typeof taskRelationApi
+  | typeof forestApi
   | typeof externalLinkApi
   | typeof workflowRuleApi
   | typeof invitationApi

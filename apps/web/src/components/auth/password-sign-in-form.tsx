@@ -22,6 +22,7 @@ import {
   authLabelClassName,
   authMessageClassName,
 } from "./auth-form-styles";
+import { isValidSignInLogin, resolveSignInEmail } from "./local-admin-login";
 import { PasswordInput } from "./password-input";
 import type { AuthCaptcha as AuthCaptchaState } from "./use-auth-captcha";
 
@@ -47,7 +48,9 @@ export function PasswordSignInForm({
   const schema = useMemo(
     () =>
       z.object({
-        email: z.email(t("auth:forms.invalidEmail")),
+        email: z
+          .string()
+          .refine(isValidSignInLogin, t("auth:forms.invalidEmail")),
         password: z.string().min(1, t("auth:forms.passwordRequired")),
       }),
     [t],
@@ -62,7 +65,7 @@ export function PasswordSignInForm({
     setIsPending(true);
     try {
       const result = await authClient.signIn.email(
-        { email, password },
+        { email: resolveSignInEmail(email), password },
         { headers: captcha.headers },
       );
       if (result.error) {
@@ -101,8 +104,10 @@ export function PasswordSignInForm({
               <FormControl>
                 <Input
                   size="lg"
-                  type="email"
-                  autoComplete="email"
+                  type="text"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  autoComplete="username"
                   placeholder={t("auth:forms.emailPlaceholder")}
                   {...field}
                 />

@@ -3,6 +3,7 @@ import type { ImportUnit } from "@/components/import/import-unit-copy";
 import { JiraLogo } from "@/components/import/source-logos/jira-logo";
 import { KaneoLogo } from "@/components/import/source-logos/kaneo-logo";
 import { LinearLogo } from "@/components/import/source-logos/linear-logo";
+import { NotionLogo } from "@/components/import/source-logos/notion-logo";
 import { PlaneLogo } from "@/components/import/source-logos/plane-logo";
 import { PlankaLogo } from "@/components/import/source-logos/planka-logo";
 import type { SourceLogoProps } from "@/components/import/source-logos/source-logo-size";
@@ -69,6 +70,14 @@ export const IMPORT_SOURCES: ImportSourceDefinition[] = [
     Logo: KaneoLogo,
     descriptionKey: "settings:workspaceImport.sources.kaneo.description",
     introKey: "settings:workspaceImport.sources.kaneo.intro",
+    unit: "project",
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    Logo: NotionLogo,
+    descriptionKey: "settings:workspaceImport.sources.notion.description",
+    introKey: "settings:workspaceImport.sources.notion.intro",
     unit: "project",
   },
 ];

@@ -1,0 +1,193 @@
+import type { Context } from "hono";
+import {
+  apiRouter,
+  type BaseVariables,
+  createRoute,
+  errorResponse,
+  jsonResponse,
+  z,
+} from "../../openapi";
+import { requireWorkspacePermission } from "../../utils/require-workspace-permission";
+import { workspaceAccess } from "../../utils/workspace-access-middleware";
+import { resolveForestActor } from "../actor";
+import {
+  type FellAction,
+  isTaskApprovalAction,
+} from "../approval/approval-params";
+import { decideApproval } from "../approval/decide-approval";
+import { fellTargets } from "../approval/fell-targets";
+import { requestApproval } from "../approval/request-approval";
+import { taskApprovalTarget } from "../approval/task-approval-target";
+import { loadApprovalTargets } from "../read/approval-targets";
+import { listApprovals } from "../read/list-approvals";
+import {
+  approvalParam,
+  approvalQuery,
+  approvalListItemSchema,
+  approvalSchema,
+  decideApprovalBody,
+  requestApprovalBody,
+  workspaceParam,
+} from "./schema";
+
+const requestApprovalRoute = createRoute({
+  method: "post",
+  operationId: "requestForestApproval",
+  path: "/{workspaceId}/approvals",
+  tags: ["Forest"],
+  summary: "Ask the owner for a «да»",
+  description:
+    "Records a pending approval for felling a tree or a sector, or for an agent to close a card or change its priority (R-022). The server fixes what it covers: the trees of a felling, the value of a task action. Felling needs task:delete.",
+  middleware: [
+    workspaceAccess.fromParam(),
+    requireWorkspacePermission({ task: ["update"] }),
+  ] as const,
+  request: {
+    params: workspaceParam,
+    body: {
+      required: true,
+      content: { "application/json": { schema: requestApprovalBody } },
+    },
+  },
+  responses: {
+    200: jsonResponse("The pending approval", approvalSchema),
+    400: errorResponse("A task action without a valid value"),
+    403: errorResponse("Missing permission or project access"),
+    404: errorResponse("Task, tree or sector not found"),
+    410: errorResponse("The tree or sector was already felled"),
+  },
+});
+
+const listApprovalsRoute = createRoute({
+  method: "get",
+  operationId: "listForestApprovals",
+  path: "/{workspaceId}/approvals",
+  tags: ["Forest"],
+  summary: "List approvals",
+  description:
+    "Newest first; pending lists only approvals that have not expired.",
+  middleware: [workspaceAccess.fromParam()] as const,
+  request: { params: workspaceParam, query: approvalQuery },
+  responses: {
+    200: jsonResponse(
+      "A page of approvals",
+      z.object({
+        items: z.array(approvalListItemSchema),
+        nextCursor: z.string().nullable(),
+      }),
+    ),
+    400: errorResponse("Invalid cursor"),
+  },
+});
+
+const decideApprovalRoute = createRoute({
+  method: "post",
+  operationId: "decideForestApproval",
+  path: "/{workspaceId}/approvals/{approvalId}/decide",
+  tags: ["Forest"],
+  summary: "Answer an approval",
+  description:
+    "Only the owner's own browser session can answer (N-011). Any token-bearing caller is refused and the attempt is journaled.",
+  middleware: [workspaceAccess.fromParam()] as const,
+  request: {
+    params: approvalParam,
+    body: {
+      required: true,
+      content: { "application/json": { schema: decideApprovalBody } },
+    },
+  },
+  responses: {
+    200: jsonResponse("The answered approval", approvalSchema),
+    403: errorResponse("Not the owner's session"),
+    409: errorResponse("Approval is not pending"),
+  },
+});
+
+// Felling destroys the working tree, so its approval keeps task:delete.
+async function fellApprovalTarget(
+  c: Context,
+  workspaceId: string,
+  userId: string,
+  action: FellAction,
+  targetId: string,
+) {
+  await requireWorkspacePermission({ task: ["delete"] })(c, async () => {});
+  const { targetType, treeIds } = await fellTargets(
+    workspaceId,
+    userId,
+    action,
+    targetId,
+  );
+  return { targetType, items: treeIds, params: undefined };
+}
+
+function toPublicApproval<
+  T extends { paramsHash: string; decidedByUserId: string | null },
+>(approval: T) {
+  const { paramsHash: _hash, decidedByUserId: _decider, ...rest } = approval;
+  return rest;
+}
+
+export const approvalRoutes = apiRouter<
+  BaseVariables & { workspaceId: string }
+>()
+  .openapi(requestApprovalRoute, async (c) => {
+    const { workspaceId } = c.req.valid("param");
+    const body = c.req.valid("json");
+    const userId = c.get("userId");
+    const target = isTaskApprovalAction(body.action)
+      ? {
+          targetType: "task" as const,
+          ...(await taskApprovalTarget(
+            workspaceId,
+            userId,
+            body.action,
+            body.targetId,
+            body.value,
+          )),
+        }
+      : await fellApprovalTarget(
+          c,
+          workspaceId,
+          userId,
+          body.action,
+          body.targetId,
+        );
+    const approval = await requestApproval({
+      workspaceId,
+      action: body.action,
+      targetType: target.targetType,
+      targetId: body.targetId,
+      items: target.items,
+      params: target.params,
+      reason: body.reason,
+      actor: resolveForestActor(c),
+    });
+    return c.json(toPublicApproval(approval), 200);
+  })
+  .openapi(listApprovalsRoute, async (c) => {
+    const { workspaceId } = c.req.valid("param");
+    const query = c.req.valid("query");
+    const page = await listApprovals({ workspaceId, ...query });
+    const targetOf = await loadApprovalTargets(
+      page.items,
+      workspaceId,
+      c.get("userId"),
+    );
+    const items = page.items.map((approval) => ({
+      ...toPublicApproval(approval),
+      target: targetOf(approval),
+    }));
+    return c.json({ ...page, items }, 200);
+  })
+  .openapi(decideApprovalRoute, async (c) => {
+    const { workspaceId, approvalId } = c.req.valid("param");
+    const { decision } = c.req.valid("json");
+    const approval = await decideApproval({
+      approvalId,
+      workspaceId,
+      decision,
+      actor: resolveForestActor(c),
+    });
+    return c.json(toPublicApproval(approval), 200);
+  });

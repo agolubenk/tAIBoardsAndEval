@@ -1,0 +1,32 @@
+# t-boards local stack: only Postgres runs in Docker; API and web run host-native
+# (`pnpm dev`). Port 5433 keeps clear of the HR Helper stack on 5432.
+# Start: docker compose -p t-boards -f compose.t-boards.yml up -d
+name: t-boards
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: t_boards
+      POSTGRES_USER: t_boards
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - t_boards_pg:/var/lib/postgresql/data
+    mem_limit: 256m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U t_boards -d t_boards"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+secrets:
+  postgres_password:
+    file: ./.secrets/postgres_password
+
+volumes:
+  t_boards_pg:

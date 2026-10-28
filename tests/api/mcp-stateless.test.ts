@@ -88,7 +88,10 @@ afterEach(() => {
 
 describe("MCP 2026-07-28 stateless HTTP", () => {
   it("serves tools/list on independent HTTP requests without session IDs", async () => {
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
 
     const first = await handler.fetch(modernRequest("tools/list", 1));
     const second = await handler.fetch(modernRequest("tools/list", 2));
@@ -115,14 +118,17 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
       },
     );
     vi.stubGlobal("fetch", apiFetch);
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
 
     const responses = await Promise.all(
       [1, 2, 3, 4].map((id) =>
         handler.fetch(
           modernRequest("tools/call", id, {
             name: "whoami",
-            arguments: {},
+            arguments: { format: "json" },
           }),
         ),
       ),
@@ -132,7 +138,7 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
     expect(apiFetch).toHaveBeenCalledTimes(4);
     expect(responses.every((response) => response.status === 200)).toBe(true);
     for (const body of bodies) {
-      expect(JSON.parse(body.result.content[0].text)).toEqual(currentUser);
+      expect(JSON.parse(body.result.content[0].text).data).toEqual(currentUser);
       expect(JSON.stringify(body)).not.toContain("live-session-secret");
       expect(JSON.stringify(body)).not.toContain("unexpected-user-secret");
     }
@@ -146,7 +152,10 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
       return Response.json({ id: "task-1", title: "Direct match" });
     });
     vi.stubGlobal("fetch", apiFetch);
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
 
     const response = await handler.fetch(
       modernRequest("tools/call", 1, {
@@ -182,7 +191,10 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
   });
 
   it("rejects a modern request without the required per-request metadata", async () => {
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
     const request = new Request("http://mcp.test/mcp", {
       method: "POST",
       headers: {
@@ -219,7 +231,10 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
       },
     );
     vi.stubGlobal("fetch", apiFetch);
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
 
     const response = await handler.fetch(
       modernRequest("tools/call", 1, {
@@ -231,7 +246,7 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
 
     expect(response.status).toBe(200);
     expect(apiFetch).toHaveBeenCalledOnce();
-    expect(body.result.content[0].text).toContain('"status": "qa"');
+    expect(body.result.content[0].text).toContain('"status":"qa"');
   });
 
   it("keeps legacy initialize traffic on the sessionful route", async () => {
@@ -370,7 +385,7 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
         jsonrpc: "2.0",
         id: 3,
         method: "tools/call",
-        params: { name: "whoami", arguments: {} },
+        params: { name: "whoami", arguments: { format: "json" } },
       }),
     });
     const callBody = await rpcBody(call);
@@ -382,7 +397,9 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
     expect(toolsBody.result.tools).toContainEqual(
       expect.objectContaining({ name: "whoami" }),
     );
-    expect(JSON.parse(callBody.result.content[0].text)).toEqual(currentUser);
+    expect(JSON.parse(callBody.result.content[0].text).data).toEqual(
+      currentUser,
+    );
     expect(JSON.stringify(callBody)).not.toContain("live-session-secret");
     expect(JSON.stringify(callBody)).not.toContain("unexpected-user-secret");
     expect(apiFetch).toHaveBeenCalledOnce();
@@ -433,8 +450,21 @@ describe("MCP 2026-07-28 stateless HTTP", () => {
     expect(response.status).toBe(200);
   });
 
+  it("refuses an unknown role instead of serving every tool", async () => {
+    const request = modernRequest("tools/list", 1);
+    const headers = new Headers(request.headers);
+    headers.set("x-t-boards-role", "admin");
+    const response = await mcpRoutes.request(new Request(request, { headers }));
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: "unknown_role" });
+  });
+
   it("returns a tool error rather than throwing when arguments fail validation", async () => {
-    const handler = createModernMcpHandler("test-token", "http://api.test");
+    const handler = createModernMcpHandler(
+      { token: "test-token", userId: "user-1" },
+      "http://api.test",
+    );
 
     const response = await handler.fetch(
       modernRequest("tools/call", 1, {

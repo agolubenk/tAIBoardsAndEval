@@ -1366,6 +1366,10 @@
 					"pickerName": "Another Kaneo",
 					"description": "Move projects between Kaneo Cloud and a self-hosted instance.",
 					"intro": "Projects from every workspace the key can see. Each one you pick is copied here."
+				},
+				"notion": {
+					"description": "Databases, pages, statuses, relations and page bodies. Paste an integration token.",
+					"intro": "Each Notion database becomes a project, with its status options as columns."
 				}
 			},
 			"history": {
@@ -1589,6 +1593,16 @@
 				"projectsEmpty": "Import from another tool",
 				"createProjectPrompt": "Moving from Jira, Linear, Trello or Plane?",
 				"createProjectLink": "Import your projects"
+			},
+			"notion": {
+				"tokenLabel": "Integration token",
+				"tokenDescription": "An internal integration token. Read content is enough.",
+				"databasesLabel": "Databases",
+				"databasesDescription": "Paste the database links or IDs, one per line. Each database becomes a project.",
+				"openSettings": "Open Notion integrations",
+				"stepCreate": "In Notion, create an internal integration with Read content.",
+				"stepShare": "Open each database, then ⋯ › Connections, and add the integration.",
+				"stepPaste": "Copy the token and the database links and paste them above."
 			}
 		},
 		"projectGeneral": {
@@ -2389,7 +2403,8 @@
 			"home": "Home",
 			"inbox": "Inbox",
 			"myTasks": "My tasks",
-			"invitePeople": "Invite people"
+			"invitePeople": "Invite people",
+			"forest": "Forest"
 		},
 		"projectList": {
 			"viewProject": "View Project",
@@ -2955,7 +2970,8 @@
 			"startDate": "Start date",
 			"noDate": "No date",
 			"dates": "Dates",
-			"project": "Project"
+			"project": "Project",
+			"due": "Due"
 		},
 		"move": {
 			"title": "Move task",
@@ -3271,6 +3287,100 @@
 			"markdownCopied": "Copied as Markdown",
 			"copyFailed": "Couldn't copy to the clipboard.",
 			"pageUrlCopied": "Copied page URL"
+		},
+		"card": {
+			"loadError": "Could not load the card's fields.",
+			"showMore": "Show more",
+			"showLess": "Show less",
+			"showAll": "Show all ({{total}})",
+			"sections": {
+				"approvals": "Waiting for «да»",
+				"lease": "Lease",
+				"notion": "Notion fields",
+				"agent": "Agent report",
+				"history": "History",
+				"memory": "Memory"
+			},
+			"lease": {
+				"free": "Nobody is working on it now",
+				"holder": "Held by",
+				"until": "Until"
+			},
+			"actor": {
+				"agent": "Agent",
+				"person": "Person",
+				"ownerSession": "Owner"
+			},
+			"fields": {
+				"kind": "Kind",
+				"severity": "Severity",
+				"backlogId": "Backlog ID",
+				"halfBaked": "Half-baked idea",
+				"notion": "Notion",
+				"report": "Report",
+				"executor": "Executor",
+				"branch": "Branch",
+				"pullRequests": "Pull requests",
+				"files": "Files",
+				"tokens": "Tokens",
+				"cost": "Cost",
+				"contextPack": "Context pack"
+			},
+			"kind": {
+				"task": "Task",
+				"bug": "Bug"
+			},
+			"halfBaked": {
+				"yes": "Yes — needs the owner's go-ahead",
+				"no": "No"
+			},
+			"notion": {
+				"open": "Open in Notion"
+			},
+			"agent": {
+				"empty": "No agent has reported on this card yet."
+			},
+			"edit": {
+				"open": "Edit",
+				"title": "Card fields",
+				"description": "Notion fields and the agent report. Empty fields are cleared.",
+				"mirrored": "This card mirrors a Notion page: its Notion fields change only in Notion. The agent report stays editable.",
+				"halfBakedHint": "Agents do not take half-baked ideas without the owner's go-ahead.",
+				"onePerLine": "One per line.",
+				"save": "Save"
+			},
+			"history": {
+				"undo": "Undo this change",
+				"confirmUndo": "Undo?",
+				"loadError": "Could not load the history.",
+				"empty": "No changes yet."
+			},
+			"memory": {
+				"unavailable": "claude-mem is not reachable, and nothing was read from it yet.",
+				"stale": "claude-mem is not reachable: a copy from {{time}}.",
+				"empty": "No observations name this card among the latest {{total}}.",
+				"loadError": "Could not load the memory.",
+				"matched": {
+					"task-id": "names {{value}}",
+					"branch": "branch {{value}}"
+				}
+			},
+			"historyField": {
+				"title": "Title",
+				"description": "Description",
+				"status": "Status",
+				"column": "Column",
+				"priority": "Priority",
+				"assignee": "Assignee",
+				"startDate": "Start date",
+				"dueDate": "Due date"
+			},
+			"toast": {
+				"saved": "Card fields saved",
+				"saveError": "Could not save the card fields",
+				"rolledBack": "Change undone",
+				"rollbackError": "Could not undo the change"
+			}
 		}
 	},
 	"invitations": {
@@ -3426,6 +3536,117 @@
 				"project": "Project"
 			},
 			"truncated": "Showing the first {{shown}} of {{total}} tasks."
+		},
+		"forest": {
+			"pageTitle": "Forest",
+			"loadError": "Could not load this list. Try again in a moment.",
+			"tabs": {
+				"trees": "Trees",
+				"sectors": "Sectors",
+				"logs": "Logs and seeds",
+				"approvals": "«Да» requests",
+				"leases": "Leases"
+			},
+			"hints": {
+				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
+				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
+				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
+				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
+				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it."
+			},
+			"trees": {
+				"project": "Project",
+				"allProjects": "All projects",
+				"toggle": "Show branches",
+				"branches": "Branches: {{branches}}",
+				"leasedBy": "{{name}}, until {{time}}",
+				"sector": "Sector: {{name}}",
+				"empty": "No trees here yet.",
+				"truncated": "Only the newest trees are shown. Pick a project to see the rest.",
+				"noBranches": "This tree has no branches.",
+				"branchesTruncated": "Only the first branches are shown."
+			},
+			"sectors": {
+				"detect": "Find sectors",
+				"empty": "No sectors. Link tasks of different trees, then find sectors.",
+				"trees": "Trees: {{trees}}",
+				"detectedBy": "{{by}}, {{date}}",
+				"hidden": "Trees you cannot open: {{hidden}}",
+				"toast": {
+					"detected": "New sectors: {{created}}",
+					"detectError": "Could not find sectors"
+				}
+			},
+			"logs": {
+				"search": "Search logs",
+				"empty": "No logs yet: fell a finished tree to keep its seeds.",
+				"felledAt": "felled {{time}}",
+				"noSeeds": "This log left no seeds.",
+				"loadMore": "Load more",
+				"selected": "Seeds chosen: {{seeds}}",
+				"clear": "Clear",
+				"seedKind": {
+					"branch": "Branch",
+					"links": "Links"
+				}
+			},
+			"fell": {
+				"titleTree": "Fell the tree",
+				"titleSector": "Fell the sector",
+				"description": "Its tasks leave the board and are kept as logs with seeds. This cannot be undone from the board.",
+				"reason": "Reason",
+				"reasonPlaceholder": "Why is the work finished?",
+				"submit": "Fell",
+				"toast": {
+					"done": "Felled: tasks {{tasks}}, seeds {{seeds}}",
+					"error": "Could not fell"
+				}
+			},
+			"grow": {
+				"open": "Grow a forest",
+				"title": "Grow a forest",
+				"description": "A new project with one task for each chosen seed. Seeds chosen: {{seeds}}.",
+				"name": "Project name",
+				"slug": "Key",
+				"submit": "Grow",
+				"toast": {
+					"done": "Forest grown: tasks {{tasks}}",
+					"error": "Could not grow the forest"
+				}
+			},
+			"approvals": {
+				"empty": "No requests here.",
+				"approve": "Approve",
+				"reject": "Reject",
+				"requestedBy": "Asked by {{name}}",
+				"expires": "expires {{time}}",
+				"sector": "Sector: {{name}}",
+				"targetUnknown": "The card is gone or you cannot open its project.",
+				"action": {
+					"closeTask": "Close the card as «{{status}}»",
+					"setPriority": "Set priority «{{priority}}»",
+					"fellTree": "Fell the tree",
+					"fellSector": "Fell the sector"
+				},
+				"status": {
+					"pending": "Waiting",
+					"approved": "Approved",
+					"rejected": "Rejected",
+					"consumed": "Done",
+					"expired": "Expired",
+					"all": "All"
+				},
+				"toast": {
+					"approved": "Approved",
+					"rejected": "Rejected",
+					"decideError": "Could not answer the request"
+				}
+			},
+			"leases": {
+				"empty": "Nobody holds a card right now.",
+				"group": "Group: {{group}}",
+				"window": "taken {{taken}}, ends {{expires}}"
+			}
 		}
 	},
 	"team": {

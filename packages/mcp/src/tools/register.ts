@@ -1,8 +1,22 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { buildFullTaskUpdateBody } from "../kaneo/task-helpers.js";
-import { errorResult, textResult } from "../utils/mcp-result.js";
+import { excerptSearchResults } from "../view/excerpt.js";
+import { registerForestTools } from "./forest/register-forest.js";
 import { getCurrentUser } from "./get-current-user.js";
+import {
+  createRegisterTool,
+  type FormatFallback,
+  type RegisterHooks,
+  type RegisterTool,
+  run,
+  type ToolCall,
+} from "./register-tool.js";
+
+export type { FormatFallback, RegisterHooks, RegisterTool, ToolCall };
+// The API registers its own tools (R-034 tools_find) with the same
+// validation and call journal as these.
+export { createRegisterTool };
 
 export type ToolClient = {
   readonly usingApiKey?: boolean;
@@ -39,29 +53,12 @@ const hexColorSchema = z
     "Expected a hex color like #FF6600",
   );
 
-function run(fn: () => Promise<unknown>): Promise<CallToolResult> {
-  return fn()
-    .then((data) => textResult(data))
-    .catch((e: unknown) =>
-      errorResult(e instanceof Error ? e.message : String(e)),
-    );
-}
-
 export function registerTools(
   server: ToolRegistrar,
-  ctx: { client: ToolClient },
+  ctx: { client: ToolClient } & RegisterHooks,
 ): void {
-  const { client } = ctx;
-  const registerTool = <S extends z.ZodObject>(
-    name: string,
-    config: { description: string; inputSchema: S },
-    callback: (args: z.output<S>) => Promise<CallToolResult>,
-  ) =>
-    server.registerTool(name, config, async (args) => {
-      const parsed = config.inputSchema.safeParse(args);
-      if (!parsed.success) return errorResult(z.prettifyError(parsed.error));
-      return callback(parsed.data);
-    });
+  const { client, ...hooks } = ctx;
+  const registerTool = createRegisterTool(server, client, hooks);
 
   registerTool(
     "whoami",
@@ -297,7 +294,7 @@ export function registerTools(
         userId: optionalNonEmptyString,
       }),
     },
-    async (args) => {
+    async (args, client) => {
       const body: Record<string, string | undefined> = {
         title: args.title,
         description: args.description,
@@ -366,7 +363,7 @@ export function registerTools(
         "Update a task (fetches current task, merges fields, then full update).",
       inputSchema: updateTaskSchema,
     },
-    async (args) => {
+    async (args, client) => {
       const { taskId, ...patch } = args;
       return run(async () => {
         const existing = (await client.json(
@@ -393,7 +390,7 @@ export function registerTools(
         destinationStatus: optionalNonEmptyString,
       }),
     },
-    async (args) =>
+    async (args, client) =>
       run(() =>
         client.json(`/api/task/move/${encodeURIComponent(args.taskId)}`, {
           method: "PUT",
@@ -416,7 +413,7 @@ export function registerTools(
         status: nonEmptyString,
       }),
     },
-    async (args) =>
+    async (args, client) =>
       run(() =>
         client.json(`/api/task/status/${encodeURIComponent(args.taskId)}`, {
           method: "PUT",
@@ -669,7 +666,7 @@ export function registerTools(
     "search",
     {
       description:
-        "Search across tasks, projects, workspaces, comments, and activities.",
+        "Search across tasks, projects, workspaces, comments, and activities. Descriptions and comment text come as an excerpt around the match; read the task for the whole text.",
       inputSchema: z.object({
         q: nonEmptyString.describe("Search query"),
         type: z
@@ -700,7 +697,12 @@ export function registerTools(
       if (args.workspaceId) qs.set("workspaceId", args.workspaceId);
       if (args.projectId) qs.set("projectId", args.projectId);
       if (args.limit !== undefined) qs.set("limit", String(args.limit));
-      return run(() => client.json(`/api/search?${qs.toString()}`));
+      return run(async () =>
+        excerptSearchResults(
+          await client.json(`/api/search?${qs.toString()}`),
+          args.q,
+        ),
+      );
     },
   );
 
@@ -743,7 +745,7 @@ export function registerTools(
           .describe("Member user ID, or null to unassign"),
       }),
     },
-    async (args) =>
+    async (args, client) =>
       run(() =>
         client.json(`/api/task/assignee/${encodeURIComponent(args.taskId)}`, {
           method: "PUT",
@@ -761,7 +763,7 @@ export function registerTools(
         dueDate: optionalIsoDateTimeSchema,
       }),
     },
-    async (args) =>
+    async (args, client) =>
       run(() =>
         client.json(`/api/task/due-date/${encodeURIComponent(args.taskId)}`, {
           method: "PUT",
@@ -865,4 +867,6 @@ export function registerTools(
     },
     async () => run(() => client.json("/api/notification")),
   );
+
+  registerForestTools(registerTool, client);
 }

@@ -1,5 +1,6 @@
 import type { ImportConnectValues } from "@/components/import/connect-values";
 import type { ImportSourceId } from "@/components/import/import-source-definitions";
+import { parseNotionDatabaseIds } from "@/components/import/notion-database-ids";
 import type { ImportConnection } from "@/fetchers/import/list-import-source-projects";
 
 type BuildConnectionOptions = {
@@ -41,6 +42,12 @@ export function buildConnection(
         : null;
     case "kaneo":
       return url && apiKey ? { source, url, apiKey } : null;
+    case "notion": {
+      const databaseIds = parseNotionDatabaseIds(values.databaseIds);
+      return token && databaseIds.length > 0
+        ? { source, token, databaseIds }
+        : null;
+    }
     default:
       return null;
   }

@@ -7,6 +7,7 @@ import PageTitle from "@/components/page-title";
 import TaskDeleteDialog from "@/components/task/task-delete-dialog";
 import TaskDetailsContent from "@/components/task/task-details-content";
 import { TaskHeaderActions } from "@/components/task/header/task-header-actions";
+import { CardPanel } from "@/components/task/forest/card-panel";
 import { PropertiesRail } from "@/components/task/properties/properties-rail";
 import { PropertyChips } from "@/components/task/properties/property-chips";
 import {
@@ -93,12 +94,19 @@ function RouteComponent() {
         isLoading ? (
           <TaskPropertiesRailSkeleton />
         ) : isTaskError || !task ? null : (
-          <PropertiesRail
-            taskId={taskId}
-            projectId={projectId}
-            workspaceId={workspaceId}
-            className="w-80 shrink-0"
-          />
+          <div className="flex w-80 shrink-0 flex-col">
+            <PropertiesRail
+              taskId={taskId}
+              projectId={projectId}
+              workspaceId={workspaceId}
+              className="pb-3"
+            />
+            <CardPanel
+              workspaceId={workspaceId}
+              taskId={taskId}
+              className="px-3 pb-8"
+            />
+          </div>
         )
       }
     >
@@ -154,21 +162,29 @@ function RouteComponent() {
           </Button>
         </div>
       ) : (
-        <TaskDetailsContent
-          taskId={taskId}
-          projectId={projectId}
-          workspaceId={workspaceId}
-          variant="page"
-          className="mx-auto w-full max-w-2xl px-4 pt-6 pb-16 sm:px-6 xl:pt-12 xl:pb-20"
-          properties={
-            <PropertyChips
-              taskId={taskId}
-              projectId={projectId}
-              workspaceId={workspaceId}
-              className="pb-5 lg:hidden"
-            />
-          }
-        />
+        <>
+          <TaskDetailsContent
+            taskId={taskId}
+            projectId={projectId}
+            workspaceId={workspaceId}
+            variant="page"
+            className="mx-auto w-full max-w-2xl px-4 pt-6 pb-16 sm:px-6 xl:pt-12 xl:pb-20"
+            properties={
+              <PropertyChips
+                taskId={taskId}
+                projectId={projectId}
+                workspaceId={workspaceId}
+                className="pb-5 lg:hidden"
+              />
+            }
+          />
+          {/* The rail is hidden on narrow screens; the card goes under the text. */}
+          <CardPanel
+            workspaceId={workspaceId}
+            taskId={taskId}
+            className="mx-auto w-full max-w-2xl px-4 pb-16 sm:px-6 lg:hidden"
+          />
+        </>
       )}
     </TaskLayout>
   );

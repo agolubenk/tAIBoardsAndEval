@@ -5,6 +5,7 @@ import {
   Inbox,
   type LucideIcon,
   Mail,
+  Trees,
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -15,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import useApprovals from "@/hooks/queries/forest/use-approvals";
 import { usePendingInvitations } from "@/hooks/queries/invitation/use-pending-invitations";
 import useGetNotifications from "@/hooks/queries/notification/use-get-notifications";
 import useGetAssignedTasks from "@/hooks/queries/task/use-get-assigned-tasks";
@@ -39,6 +41,10 @@ export function NavMain() {
   const { data: invitations = [] } = usePendingInvitations();
   const { data: notifications = [] } = useGetNotifications(workspace?.id);
   const { data: assignedTasks } = useGetAssignedTasks(workspace?.id, true);
+  const { data: pendingApprovals } = useApprovals(
+    workspace?.id ?? "",
+    "pending",
+  );
 
   if (!workspace) return null;
 
@@ -61,6 +67,14 @@ export function NavMain() {
       icon: CircleCheck,
       url: `${homeUrl}/my-tasks`,
       count: assignedTasks?.total,
+    },
+    {
+      title: t("navigation:sidebar.forest"),
+      icon: Trees,
+      url: `${homeUrl}/forest`,
+      // Requests waiting for the owner's «да».
+      count: pendingApprovals?.items.length,
+      emphasizeCount: true,
     },
     {
       title: t("navigation:sidebar.members"),

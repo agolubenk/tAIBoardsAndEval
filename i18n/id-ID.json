@@ -2146,6 +2146,10 @@
 				"jira": {
 					"description": "Projects, issues, sub-tasks, links and comments. Cloud or Data Center.",
 					"intro": "Each Jira project becomes a project here, with its workflow as columns."
+				},
+				"notion": {
+					"description": "Databases, pages, statuses, relations and page bodies. Paste an integration token.",
+					"intro": "Each Notion database becomes a project, with its status options as columns."
 				}
 			},
 			"status": {
@@ -2235,6 +2239,16 @@
 				"urlDescription": "Copy it from your browser. Data Center works too.",
 				"urlLabel": "Jira site URL",
 				"urlPlaceholder": "https://your-site.atlassian.net"
+			},
+			"notion": {
+				"databasesDescription": "Paste the database links or IDs, one per line. Each database becomes a project.",
+				"databasesLabel": "Databases",
+				"openSettings": "Open Notion integrations",
+				"stepCreate": "In Notion, create an internal integration with Read content.",
+				"stepPaste": "Copy the token and the database links and paste them above.",
+				"stepShare": "Open each database, then ⋯ › Connections, and add the integration.",
+				"tokenDescription": "An internal integration token. Read content is enough.",
+				"tokenLabel": "Integration token"
 			}
 		},
 		"chatIntegrations": {
@@ -2347,7 +2361,8 @@
 			"home": "Home",
 			"inbox": "Inbox",
 			"invitePeople": "Invite people",
-			"myTasks": "My tasks"
+			"myTasks": "My tasks",
+			"forest": "Forest"
 		},
 		"projectList": {
 			"viewProject": "Lihat Proyek",
@@ -2907,7 +2922,8 @@
 			"startDate": "Tanggal mulai",
 			"noDate": "Tanpa tanggal",
 			"dates": "Tanggal",
-			"project": "Proyek"
+			"project": "Proyek",
+			"due": "Due"
 		},
 		"move": {
 			"title": "Pindahkan tugas",
@@ -3217,6 +3233,100 @@
 			"markdownCopied": "Disalin sebagai Markdown",
 			"copyFailed": "Tidak dapat menyalin ke papan klip.",
 			"pageUrlCopied": "URL halaman disalin"
+		},
+		"card": {
+			"actor": {
+				"agent": "Agent",
+				"ownerSession": "Owner",
+				"person": "Person"
+			},
+			"agent": {
+				"empty": "No agent has reported on this card yet."
+			},
+			"edit": {
+				"description": "Notion fields and the agent report. Empty fields are cleared.",
+				"halfBakedHint": "Agents do not take half-baked ideas without the owner's go-ahead.",
+				"mirrored": "This card mirrors a Notion page: its Notion fields change only in Notion. The agent report stays editable.",
+				"onePerLine": "One per line.",
+				"open": "Edit",
+				"save": "Save",
+				"title": "Card fields"
+			},
+			"fields": {
+				"backlogId": "Backlog ID",
+				"branch": "Branch",
+				"contextPack": "Context pack",
+				"cost": "Cost",
+				"executor": "Executor",
+				"files": "Files",
+				"halfBaked": "Half-baked idea",
+				"kind": "Kind",
+				"notion": "Notion",
+				"pullRequests": "Pull requests",
+				"report": "Report",
+				"severity": "Severity",
+				"tokens": "Tokens"
+			},
+			"halfBaked": {
+				"no": "No",
+				"yes": "Yes — needs the owner's go-ahead"
+			},
+			"history": {
+				"confirmUndo": "Undo?",
+				"empty": "No changes yet.",
+				"loadError": "Could not load the history.",
+				"undo": "Undo this change"
+			},
+			"historyField": {
+				"assignee": "Assignee",
+				"column": "Column",
+				"description": "Description",
+				"dueDate": "Due date",
+				"priority": "Priority",
+				"startDate": "Start date",
+				"status": "Status",
+				"title": "Title"
+			},
+			"kind": {
+				"bug": "Bug",
+				"task": "Task"
+			},
+			"lease": {
+				"free": "Nobody is working on it now",
+				"holder": "Held by",
+				"until": "Until"
+			},
+			"loadError": "Could not load the card's fields.",
+			"notion": {
+				"open": "Open in Notion"
+			},
+			"sections": {
+				"agent": "Agent report",
+				"approvals": "Waiting for «да»",
+				"history": "History",
+				"lease": "Lease",
+				"notion": "Notion fields",
+				"memory": "Memory"
+			},
+			"showAll": "Show all ({{total}})",
+			"showLess": "Show less",
+			"showMore": "Show more",
+			"toast": {
+				"rollbackError": "Could not undo the change",
+				"rolledBack": "Change undone",
+				"saved": "Card fields saved",
+				"saveError": "Could not save the card fields"
+			},
+			"memory": {
+				"empty": "No observations name this card among the latest {{total}}.",
+				"loadError": "Could not load the memory.",
+				"matched": {
+					"branch": "branch {{value}}",
+					"task-id": "names {{value}}"
+				},
+				"stale": "claude-mem is not reachable: a copy from {{time}}.",
+				"unavailable": "claude-mem is not reachable, and nothing was read from it yet."
+			}
 		}
 	},
 	"invitations": {
@@ -3368,6 +3478,117 @@
 			},
 			"empty": "Nothing assigned to you",
 			"loadError": "Your tasks couldn't be loaded."
+		},
+		"forest": {
+			"approvals": {
+				"action": {
+					"closeTask": "Close the card as «{{status}}»",
+					"fellSector": "Fell the sector",
+					"fellTree": "Fell the tree",
+					"setPriority": "Set priority «{{priority}}»"
+				},
+				"approve": "Approve",
+				"empty": "No requests here.",
+				"expires": "expires {{time}}",
+				"reject": "Reject",
+				"requestedBy": "Asked by {{name}}",
+				"sector": "Sector: {{name}}",
+				"status": {
+					"all": "All",
+					"approved": "Approved",
+					"consumed": "Done",
+					"expired": "Expired",
+					"pending": "Waiting",
+					"rejected": "Rejected"
+				},
+				"targetUnknown": "The card is gone or you cannot open its project.",
+				"toast": {
+					"approved": "Approved",
+					"decideError": "Could not answer the request",
+					"rejected": "Rejected"
+				}
+			},
+			"fell": {
+				"description": "Its tasks leave the board and are kept as logs with seeds. This cannot be undone from the board.",
+				"reason": "Reason",
+				"reasonPlaceholder": "Why is the work finished?",
+				"submit": "Fell",
+				"titleSector": "Fell the sector",
+				"titleTree": "Fell the tree",
+				"toast": {
+					"done": "Felled: tasks {{tasks}}, seeds {{seeds}}",
+					"error": "Could not fell"
+				}
+			},
+			"grow": {
+				"description": "A new project with one task for each chosen seed. Seeds chosen: {{seeds}}.",
+				"name": "Project name",
+				"open": "Grow a forest",
+				"slug": "Key",
+				"submit": "Grow",
+				"title": "Grow a forest",
+				"toast": {
+					"done": "Forest grown: tasks {{tasks}}",
+					"error": "Could not grow the forest"
+				}
+			},
+			"hints": {
+				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
+				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
+				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
+				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
+				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished."
+			},
+			"leases": {
+				"empty": "Nobody holds a card right now.",
+				"group": "Group: {{group}}",
+				"window": "taken {{taken}}, ends {{expires}}"
+			},
+			"loadError": "Could not load this list. Try again in a moment.",
+			"logs": {
+				"clear": "Clear",
+				"empty": "No logs yet: fell a finished tree to keep its seeds.",
+				"felledAt": "felled {{time}}",
+				"loadMore": "Load more",
+				"noSeeds": "This log left no seeds.",
+				"search": "Search logs",
+				"seedKind": {
+					"branch": "Branch",
+					"links": "Links"
+				},
+				"selected": "Seeds chosen: {{seeds}}"
+			},
+			"pageTitle": "Forest",
+			"sectors": {
+				"detect": "Find sectors",
+				"detectedBy": "{{by}}, {{date}}",
+				"empty": "No sectors. Link tasks of different trees, then find sectors.",
+				"hidden": "Trees you cannot open: {{hidden}}",
+				"toast": {
+					"detected": "New sectors: {{created}}",
+					"detectError": "Could not find sectors"
+				},
+				"trees": "Trees: {{trees}}"
+			},
+			"tabs": {
+				"approvals": "«Да» requests",
+				"leases": "Leases",
+				"logs": "Logs and seeds",
+				"sectors": "Sectors",
+				"trees": "Trees"
+			},
+			"trees": {
+				"allProjects": "All projects",
+				"branches": "Branches: {{branches}}",
+				"branchesTruncated": "Only the first branches are shown.",
+				"empty": "No trees here yet.",
+				"leasedBy": "{{name}}, until {{time}}",
+				"noBranches": "This tree has no branches.",
+				"project": "Project",
+				"sector": "Sector: {{name}}",
+				"toggle": "Show branches",
+				"truncated": "Only the newest trees are shown. Pick a project to see the rest."
+			}
 		}
 	},
 	"team": {

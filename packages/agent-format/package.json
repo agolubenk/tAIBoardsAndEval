@@ -1,0 +1,32 @@
+{
+	"name": "@kaneo/agent-format",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"license": "MIT",
+	"scripts": {
+		"build": "vp run compile",
+		"lint": "vp check .",
+		"test": "vp run test:run",
+		"test:watch": "vp test --config vitest.config.ts",
+		"bench": "node bench.ts"
+	},
+	"dependencies": {
+		"@toon-format/toon": "4.4.0",
+		"gpt-tokenizer": "4.1.0"
+	},
+	"devDependencies": {
+		"@kaneo/typescript-config": "workspace:*",
+		"typescript": "^7.0.2",
+		"vite": "catalog:",
+		"vite-plus": "catalog:"
+	}
+}

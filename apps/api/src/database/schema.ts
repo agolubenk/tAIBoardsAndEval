@@ -549,6 +549,9 @@ export const taskTable = pgTable(
       onUpdate: "cascade",
     }),
     priority: text("priority").default("low").notNull(),
+    // t-boards: bumped by the task_revision trigger on content changes, so a
+    // fenced agent write can check the version it read (spec R-026).
+    revision: integer("revision").notNull().default(1),
     startDate: timestamp("start_date", { mode: "date" }),
     dueDate: timestamp("due_date", { mode: "date" }),
     createdAt: timestamp("created_at", { mode: "date" })
