@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+# Installs or updates t-boards on the VPS from an unpacked bundle (bundle.sh).
+# Run from anywhere: bash /opt/t-boards/releases/<tag>/install.sh
+# Every step prints what it did; any failure stops with the reason and the
+# previous release keeps running (rollback: .env.prev, see README).
+set -euo pipefail
+
+here="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=/dev/null
+. "$here/VERSION"
+ROOT=/opt/t-boards
+DOMAIN=d4dev.admin.hrhelper.space
+WG_ADDR=10.77.0.1
+TLS_PORT=8443
+compose=(docker compose -p t-boards --project-directory "$ROOT" -f "$ROOT/compose.yml")
+
+log() { printf '[%s] %s\n' "$(date '+%H:%M:%S')" "$*"; }
+die() {
+  log "СТОП: $*"
+  exit 1
+}
+
+preflight() {
+  [ "$(id -u)" = 0 ] || die "нужен root"
+  docker compose version >/dev/null 2>&1 || die "нет docker compose v2"
+  command -v curl >/dev/null 2>&1 || die "нет curl"
+  ip -4 -o addr show wg0 2>/dev/null | grep -q " $WG_ADDR/" || die "wg0 не поднят — сначала пункт s-tb-wg"
+  local mem disk
+  mem="$(awk '/MemAvailable/ {print int($2 / 1024)}' /proc/meminfo)"
+  disk="$(df -Pm /opt | awk 'NR == 2 {print $4}')"
+  log "свободно: память ${mem} МБ, диск /opt ${disk} МБ"
+  [ "$mem" -ge 900 ] || die "меньше 900 МБ свободной памяти"
+  [ "$disk" -ge 3000 ] || die "меньше 3 ГБ на диске"
+}
+
+# The product's certbot sidecar owns the webroot and the certificate volume;
+# reusing both means its renew loop covers our certificate too.
+find_certbot_volumes() {
+  local cb
+  cb="$(docker ps --format '{{.Names}} {{.Image}}' | awk '$2 ~ /^certbot\/certbot/ {print $1; exit}')"
+  [ -n "$cb" ] || die "не нашёл контейнер certbot продукта"
+  CERTBOT_IMAGE="$(docker inspect -f '{{.Config.Image}}' "$cb")"
+  LE_VOLUME="$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/etc/letsencrypt"}}{{.Name}}{{end}}{{end}}' "$cb")"
+  WWW_VOLUME="$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/var/www/certbot"}}{{.Name}}{{end}}{{end}}' "$cb")"
+  if [ -z "$LE_VOLUME" ] || [ -z "$WWW_VOLUME" ]; then
+    die "у $cb нет именованных томов /etc/letsencrypt и /var/www/certbot"
+  fi
+  log "certbot: $cb, тома $LE_VOLUME и $WWW_VOLUME"
+}
+
+ensure_certificate() {
+  if docker run --rm --entrypoint test -v "$LE_VOLUME:/etc/letsencrypt:ro" "$CERTBOT_IMAGE" \
+    -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem"; then
+    log "сертификат $DOMAIN уже есть"
+    return
+  fi
+  # Prove the ACME webroot answers for our name before asking Let's Encrypt.
+  local probe answer
+  probe="tb-probe-$RANDOM$RANDOM"
+  docker run --rm --entrypoint sh -v "$WWW_VOLUME:/w" "$CERTBOT_IMAGE" -c \
+    "mkdir -p /w/.well-known/acme-challenge && echo ok > /w/.well-known/acme-challenge/$probe"
+  answer="$(curl -fsS --max-time 10 "http://$DOMAIN/.well-known/acme-challenge/$probe" 2>&1 || true)"
+  docker run --rm --entrypoint rm -v "$WWW_VOLUME:/w" "$CERTBOT_IMAGE" -f "/w/.well-known/acme-challenge/$probe"
+  [ "$answer" = "ok" ] || die "ACME webroot не отвечает для $DOMAIN: $answer"
+  log "выпускаю сертификат $DOMAIN"
+  docker run --rm -v "$LE_VOLUME:/etc/letsencrypt" -v "$WWW_VOLUME:/var/www/certbot" "$CERTBOT_IMAGE" \
+    certonly --webroot -w /var/www/certbot -d "$DOMAIN" --non-interactive --agree-tos \
+    --register-unsafely-without-email --keep-until-expiring 2>&1 | tail -6
+  docker run --rm --entrypoint test -v "$LE_VOLUME:/etc/letsencrypt:ro" "$CERTBOT_IMAGE" \
+    -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" || die "сертификат не появился"
+}
+
+random_hex() { od -An -N32 -tx1 /dev/urandom | tr -d ' \n'; }
+
+ensure_secrets() {
+  install -d -m 0711 "$ROOT/secrets"
+  local name file
+  for name in postgres_password auth_secret; do
+    file="$ROOT/secrets/$name"
+    if [ ! -s "$file" ]; then
+      (
+        umask 077
+        random_hex >"$file"
+      )
+      log "создан секрет $name"
+    fi
+  done
+  # Postgres (uid 70) and the app (uid 1001) both read the database password.
+  chown 70:1001 "$ROOT/secrets/postgres_password"
+  chmod 0440 "$ROOT/secrets/postgres_password"
+  chown 1001:1001 "$ROOT/secrets/auth_secret"
+  chmod 0400 "$ROOT/secrets/auth_secret"
+  if [ -f "$ROOT/secrets/notion_token" ]; then
+    chown 1001:1001 "$ROOT/secrets/notion_token"
+    chmod 0400 "$ROOT/secrets/notion_token"
+  fi
+}
+
+write_files() {
+  install -d -m 0755 "$ROOT"
+  install -d -m 0750 -o 70 -g 70 "$ROOT/backups"
+  install -m 0644 "$here/compose.yml" "$ROOT/compose.yml"
+  install -m 0644 "$here/backup.sh" "$ROOT/backup.sh"
+  install -m 0700 "$here/backup-key.sh" "$ROOT/backup-key.sh"
+  install -m 0700 "$here/wg-setup.sh" "$ROOT/wg-setup.sh"
+  install -m 0700 "$here/mirror-setup.sh" "$ROOT/mirror-setup.sh"
+  sed -e "s|\${TLS_LISTEN}|$WG_ADDR:$TLS_PORT|g" \
+    -e "s|\${TLS_DOMAIN}|$DOMAIN|g" \
+    -e "s|\${TLS_UPSTREAM}|127.0.0.1:5180|g" \
+    "$here/tls.conf.template" >"$ROOT/tls.conf"
+  if grep -q '\${TLS_' "$ROOT/tls.conf"; then die "tls.conf не отрендерился"; fi
+
+  # Keep the mirror settings the owner already filled in.
+  [ -f "$ROOT/.env" ] && cp -a "$ROOT/.env" "$ROOT/.env.prev"
+  {
+    echo "TB_IMAGE=t-boards:$TB_TAG"
+    echo "TB_DOMAIN=$DOMAIN"
+    echo "TB_LE_VOLUME=$LE_VOLUME"
+    if [ -f "$ROOT/.env.prev" ] && grep -q '^NOTION_MIRROR_' "$ROOT/.env.prev"; then
+      grep '^NOTION_MIRROR_' "$ROOT/.env.prev"
+    else
+      echo "NOTION_MIRROR_WORKSPACE_ID="
+      echo "NOTION_MIRROR_DATABASES="
+    fi
+  } >"$ROOT/.env"
+  chmod 0600 "$ROOT/.env"
+}
+
+load_image() {
+  log "загружаю образ t-boards:$TB_TAG"
+  docker load -i "$here/image.tar.gz" | tail -1
+  local arch
+  arch="$(docker image inspect -f '{{.Architecture}}' "t-boards:$TB_TAG")"
+  [ "$arch" = "amd64" ] || die "образ собран под $arch, нужен amd64"
+}
+
+backup_before_update() {
+  [ -n "$("${compose[@]}" ps -q postgres 2>/dev/null)" ] || return 0
+  local file
+  file="$ROOT/backups/pre-$TB_TAG-$(date +%Y%m%d-%H%M%S).dump"
+  "${compose[@]}" exec -T postgres pg_dump -Fc -U t_boards t_boards >"$file"
+  chown 70:70 "$file"
+  log "бэкап перед обновлением: $file ($(wc -c <"$file") байт)"
+}
+
+start_and_wait() {
+  # up waits for app health (backup depends on it) and fails if the app never
+  # gets there; the loop below then prints the logs and the reason.
+  "${compose[@]}" up -d --remove-orphans 2>&1 | tail -8 || true
+  local app status _
+  app="$("${compose[@]}" ps -q app)"
+  for _ in $(seq 1 60); do
+    status="$(docker inspect -f '{{.State.Health.Status}}' "$app" 2>/dev/null || echo missing)"
+    [ "$status" = healthy ] && break
+    sleep 5
+  done
+  if [ "$status" != healthy ]; then
+    "${compose[@]}" logs --tail 40 app 2>&1
+    die "app не стал healthy за 5 минут (статус $status)"
+  fi
+  log "app healthy"
+}
+
+check_migrations() {
+  local applied
+  applied="$("${compose[@]}" exec -T postgres psql -U t_boards -d t_boards -Atc \
+    'select count(*) from drizzle.__drizzle_migrations' 2>&1)"
+  log "миграции: в базе $applied, в образе $TB_MIGRATIONS"
+  [ "$applied" = "$TB_MIGRATIONS" ] || die "число миграций не совпало"
+}
+
+seed_admin() {
+  "${compose[@]}" exec -T app node /app/apps/api/dist/seed-local-admin.js 2>&1 | tail -3
+}
+
+# Products and their starting cards (seed/products.json). Only adds what is
+# missing, so an update never undoes edits made in the UI.
+seed_products() {
+  [ -f "$here/seed/products.json" ] || {
+    log "нет seed/products.json — продукты не трогаю"
+    return
+  }
+  "${compose[@]}" exec -T app node /app/apps/api/dist/seed-products.js <"$here/seed/products.json" 2>&1 | tail -3
+}
+
+smoke() {
+  local health tls_state
+  health="$(curl -fsS --max-time 10 --resolve "$DOMAIN:$TLS_PORT:$WG_ADDR" \
+    "https://$DOMAIN:$TLS_PORT/api/health" 2>&1 || true)"
+  tls_state="$(docker inspect -f '{{.State.Status}}' "$("${compose[@]}" ps -q tls)" 2>&1)"
+  log "tls: $tls_state; https://$DOMAIN/api/health через туннель: $health"
+  [ -n "$health" ] && [[ "$health" != curl:* ]] || die "TLS не отвечает: docker compose -p t-boards logs tls"
+  log "кто слушает $TLS_PORT: $(ss -ltnH "sport = :$TLS_PORT" | awk '{print $4}' | tr '\n' ' ')"
+}
+
+main() {
+  log "t-boards $TB_TAG ($TB_COMMIT)"
+  preflight
+  find_certbot_volumes
+  ensure_certificate
+  ensure_secrets
+  load_image
+  backup_before_update
+  write_files
+  start_and_wait
+  check_migrations
+  seed_admin
+  seed_products
+  smoke
+  log "готово: https://$DOMAIN (через WireGuard), вход admin / admin"
+  log "откат: cd $ROOT && cp .env.prev .env && docker compose -p t-boards up -d"
+}
+
+main "$@"

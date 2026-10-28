@@ -1,0 +1,163 @@
+import { execFile } from "node:child_process";
+import { once } from "node:events";
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { createServer, type Server } from "node:http";
+import type { AddressInfo } from "node:net";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { promisify } from "node:util";
+import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
+import { auth } from "../../apps/api/src/auth";
+import { createApp } from "../../apps/api/src/index";
+import { resetEmbedQueueForTests } from "../../apps/api/src/notebook/embed/embed-queue";
+import { serve } from "../../apps/api/node_modules/@hono/node-server";
+import { resetTestDatabase } from "./helpers/database";
+import { createWorkspaceMember } from "./helpers/fixtures";
+
+const run = promisify(execFile);
+const MAC = resolve(__dirname, "../../deploy/vps/mac");
+
+// The Mac scripts against a real API over HTTP and a stand-in for Ollama:
+// synthetic files in a throwaway git repo, nothing from the real checkout.
+describe("API integration: notebook Mac scripts", () => {
+  let dir: string;
+  let api: ReturnType<typeof serve>;
+  let ollama: Server;
+  const embedInputs: string[] = [];
+
+  const port = (server: { address(): AddressInfo | string | null }) =>
+    (server.address() as AddressInfo).port;
+
+  beforeEach(async () => {
+    await resetTestDatabase();
+    embedInputs.length = 0;
+    dir = mkdtempSync(join(tmpdir(), "t-boards-notebook-"));
+
+    api = serve({
+      fetch: createApp().app.fetch,
+      hostname: "127.0.0.1",
+      port: 0,
+    });
+    if (!api.listening) await once(api, "listening");
+    ollama = createServer((req, res) => {
+      let body = "";
+      req.on("data", (part) => {
+        body += part;
+      });
+      req.on("end", () => {
+        const { input } = JSON.parse(body) as { input: string[] };
+        embedInputs.push(...input);
+        res.setHeader("content-type", "application/json");
+        res.end(JSON.stringify({ embeddings: input.map((_, i) => [1, i]) }));
+      });
+    });
+    ollama.listen(0, "127.0.0.1");
+    await once(ollama, "listening");
+  });
+
+  afterEach(async () => {
+    resetEmbedQueueForTests();
+    await new Promise((done) => api.close(done));
+    await new Promise((done) => ollama.close(done));
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  async function setup() {
+    const { user, workspace } = await createWorkspaceMember({ role: "owner" });
+    const { key } = await auth.api.createApiKey({
+      body: { userId: user.id, name: "Notebook worker" },
+    });
+    const repo = join(dir, "repo");
+    const home = join(dir, "home");
+    for (const sub of ["docs/plans/archive", "docs/private", "home"]) {
+      mkdirSync(join(sub === "home" ? dir : repo, sub), { recursive: true });
+    }
+    const files: Record<string, string> = {
+      "docs/forest.md": "# Лес\n\n## Аренда\n\nАренда истекает через час.",
+      "CLAUDE.md": "# Карточка\n\nРоль и гейт.",
+      "docs/plans/BACKLOG.md": "# Снимок\n\nстарое",
+      "docs/plans/archive/old.md": "# Архив\n\nстарое",
+      "docs/private/notes.md": "# Личное\n\nне выгружать",
+      ".gitignore": "docs/private/\n",
+    };
+    for (const [path, text] of Object.entries(files)) {
+      writeFileSync(join(repo, path), text);
+    }
+    await run("git", ["init", "-q"], { cwd: repo });
+    writeFileSync(
+      join(home, "config.json"),
+      JSON.stringify({
+        workspaceId: workspace.id,
+        repoRoot: repo,
+        baseUrl: `http://127.0.0.1:${port(api)}`,
+        ollamaUrl: `http://127.0.0.1:${port(ollama)}`,
+        git: "git",
+      }),
+    );
+    writeFileSync(join(home, "api_key"), `${key}\n`);
+    const node = (script: string, ...args: string[]) =>
+      run(process.execPath, [join(MAC, script), ...args], {
+        env: { ...process.env, T_BOARDS_NOTEBOOK_HOME: home },
+      });
+    const sources = async () => {
+      const response = await fetch(
+        `http://127.0.0.1:${port(api)}/api/notebook/${workspace.id}/sources`,
+        { headers: { "x-api-key": key } },
+      );
+      return (await response.json()) as {
+        sources: { ref: string; chunks: number; embedded: number }[];
+      };
+    };
+    return { repo, node, sources };
+  }
+
+  it("syncs only the listed, unignored documents and prunes a deleted one", async () => {
+    const { repo, node, sources } = await setup();
+
+    const first = await node("notebook-sync.mjs");
+    expect(first.stdout).toContain(
+      "2 files, uploaded 2, unchanged 0, skipped 0, pruned 0",
+    );
+    expect((await sources()).sources.map((s) => s.ref)).toEqual([
+      "CLAUDE.md",
+      "docs/forest.md",
+    ]);
+
+    const second = await node("notebook-sync.mjs");
+    expect(second.stdout).toContain("uploaded 0, unchanged 2");
+
+    unlinkSync(join(repo, "CLAUDE.md"));
+    const third = await node("notebook-sync.mjs");
+    expect(third.stdout).toContain(
+      "1 files, uploaded 0, unchanged 1, skipped 0, pruned 1",
+    );
+  });
+
+  it("embeds the uploaded chunks with nomic task prefixes", async () => {
+    const { node, sources } = await setup();
+    await node("notebook-sync.mjs");
+
+    const round = await node("notebook-worker.mjs", "--once");
+    expect(round.stdout).toContain(
+      "embedded 2 (0 queries), saved 2, rejected 0",
+    );
+    expect(embedInputs).toHaveLength(2);
+    expect(
+      embedInputs.every((text) => text.startsWith("search_document: ")),
+    ).toBe(true);
+    expect(embedInputs).toContain(
+      "search_document: Лес › Аренда\n\nАренда истекает через час.",
+    );
+    const listed = await sources();
+    expect(listed.sources.map((s) => [s.chunks, s.embedded])).toEqual([
+      [1, 1],
+      [1, 1],
+    ]);
+  });
+});

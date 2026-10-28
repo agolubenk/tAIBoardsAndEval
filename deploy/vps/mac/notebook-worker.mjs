@@ -1,0 +1,94 @@
+// Mac embedding worker for the t-boards notebook. It long-polls the API over
+// the tunnel, embeds what it gets with the local Ollama and posts the vectors
+// back. One request to Ollama at a time, never in parallel: several inferences
+// at once overload this machine.
+//   node notebook-worker.mjs         — run forever (the LaunchAgent)
+//   node notebook-worker.mjs --once  — one poll round, then exit
+import { loadConfig, notebookApi, stamp } from "./notebook-client.mjs";
+
+const POLL_WAIT_S = 25;
+const BACKOFF_MS = [5_000, 15_000, 60_000];
+
+// nomic-embed-text was trained with task prefixes; other models get raw text.
+const PREFIX = { query: "search_query: ", chunk: "search_document: " };
+const prefixed = (model, item) =>
+  model.startsWith("nomic-embed") ? PREFIX[item.kind] + item.text : item.text;
+
+// Float32 little-endian, as the API stores it (Apple silicon and x86 are LE).
+const toBase64 = (vector) =>
+  Buffer.from(new Float32Array(vector).buffer).toString("base64");
+
+async function embed(config, model, texts) {
+  const response = await fetch(`${config.ollamaUrl}/api/embed`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ model, input: texts, keep_alive: "30m" }),
+    signal: AbortSignal.timeout(120_000),
+  });
+  if (!response.ok) {
+    const detail = (await response.text()).slice(0, 200);
+    throw new Error(`ollama ${model}: HTTP ${response.status} ${detail}`);
+  }
+  const { embeddings } = await response.json();
+  if (!Array.isArray(embeddings) || embeddings.length !== texts.length) {
+    throw new Error(`ollama ${model}: expected ${texts.length} embeddings`);
+  }
+  return embeddings;
+}
+
+async function round(config) {
+  const work = await notebookApi(
+    config,
+    "GET",
+    `/embed/work?wait=${POLL_WAIT_S}`,
+    undefined,
+    (POLL_WAIT_S + 15) * 1000,
+  );
+  if (!work.items.length) return 0;
+  const vectors = await embed(
+    config,
+    work.model,
+    work.items.map((item) => prefixed(work.model, item)),
+  );
+  const saved = await notebookApi(config, "POST", "/embed/results", {
+    model: work.model,
+    items: work.items.map((item, i) => ({
+      kind: item.kind,
+      id: item.id,
+      embedding: toBase64(vectors[i]),
+    })),
+  });
+  const queries = work.items.filter((item) => item.kind === "query").length;
+  console.log(
+    `${stamp()} embedded ${work.items.length} (${queries} queries), saved ${saved.saved}, rejected ${saved.rejected}`,
+  );
+  return work.items.length;
+}
+
+async function main() {
+  const config = loadConfig();
+  if (process.argv.includes("--once")) {
+    if (!(await round(config))) console.log(`${stamp()} no work`);
+    return;
+  }
+  console.log(
+    `${stamp()} worker up: ${config.baseUrl}, ollama ${config.ollamaUrl}`,
+  );
+  let failures = 0;
+  for (;;) {
+    try {
+      await round(config);
+      failures = 0;
+    } catch (error) {
+      const delay = BACKOFF_MS[Math.min(failures, BACKOFF_MS.length - 1)];
+      failures++;
+      console.error(`${stamp()} ${error.message}; retry in ${delay / 1000}s`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+}
+
+main().catch((error) => {
+  console.error(`${stamp()} ${error.message}`);
+  process.exit(1);
+});

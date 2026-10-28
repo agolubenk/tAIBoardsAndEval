@@ -1,0 +1,106 @@
+# t-boards on the VPS, scheme A: reachable only through WireGuard.
+# Lives in /opt/t-boards; install.sh writes .env (image, Let's Encrypt volume,
+# mirror IDs) and secrets/. Run as: docker compose -p t-boards up -d
+# The project name is passed explicitly so a stray local run cannot join the
+# Mac dev stack, which is also called t-boards.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: t_boards
+      POSTGRES_USER: t_boards
+      POSTGRES_PASSWORD_FILE: /run/tb-secrets/postgres_password
+    volumes:
+      - pg:/var/lib/postgresql/data
+      - ./secrets/postgres_password:/run/tb-secrets/postgres_password:ro
+    mem_limit: 256m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U t_boards -d t_boards"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: ${TB_IMAGE:?TB_IMAGE is not set}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      KANEO_CLIENT_URL: https://${TB_DOMAIN:?TB_DOMAIN is not set}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: t_boards
+      POSTGRES_USER: t_boards
+      # Secrets come from files only (N-007).
+      POSTGRES_PASSWORD_FILE: /run/tb-secrets/postgres_password
+      AUTH_SECRET_FILE: /run/tb-secrets/auth_secret
+      # One seeded admin; agents use API keys. Nobody signs up from the tunnel.
+      DISABLE_REGISTRATION: "true"
+      DISABLE_GUEST_ACCESS: "true"
+      NODE_OPTIONS: --max-old-space-size=512
+      # The mirror stays off until the workspace and databases are set; the
+      # token file is read on every run, so adding it needs no restart.
+      NOTION_MIRROR_WORKSPACE_ID: ${NOTION_MIRROR_WORKSPACE_ID:-}
+      NOTION_MIRROR_DATABASES: ${NOTION_MIRROR_DATABASES:-}
+      NOTION_MIRROR_PRODUCT: ${NOTION_MIRROR_PRODUCT:-}
+      NOTION_MIRROR_TOKEN_FILE: /run/tb-secrets/notion_token
+    volumes:
+      - ./secrets:/run/tb-secrets:ro
+    ports:
+      - "127.0.0.1:5180:5173"
+    # Until the K-6 measurements (R-005) say otherwise.
+    mem_limit: 1g
+    restart: unless-stopped
+
+  tls:
+    image: nginx:1.27-alpine
+    # Binds the WireGuard address only; the edge nginx of the product owns
+    # 0.0.0.0:443. Restarts until wg0 is up.
+    network_mode: host
+    depends_on:
+      - app
+    # Re-read certificates the shared certbot sidecar renews.
+    command:
+      - sh
+      - -c
+      - "while sleep 43200; do nginx -s reload; done & exec nginx -g 'daemon off;'"
+    volumes:
+      - ./tls.conf:/etc/nginx/nginx.conf:ro
+      - letsencrypt:/etc/letsencrypt:ro
+    mem_limit: 64m
+    restart: unless-stopped
+
+  backup:
+    image: postgres:16-alpine
+    # uid 70 is postgres in the alpine image and owns the password file.
+    user: "70:70"
+    # The app migrates before it reports healthy, so the first dump already
+    # holds the schema instead of an empty database.
+    depends_on:
+      postgres:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    entrypoint: ["sh", "/usr/local/bin/tb-backup.sh"]
+    environment:
+      PGHOST: postgres
+      PGUSER: t_boards
+      PGDATABASE: t_boards
+      TB_BACKUP_EVERY: "7200"
+      TB_BACKUP_KEEP_DAYS: "3"
+    volumes:
+      - ./backup.sh:/usr/local/bin/tb-backup.sh:ro
+      - ./secrets/postgres_password:/run/tb-secrets/postgres_password:ro
+      - ./backups:/backups
+    mem_limit: 128m
+    restart: unless-stopped
+
+volumes:
+  pg:
+  # The product's certbot volume: its sidecar already renews every
+  # certificate in it, ours included.
+  letsencrypt:
+    external: true
+    name: ${TB_LE_VOLUME:?TB_LE_VOLUME is not set}
