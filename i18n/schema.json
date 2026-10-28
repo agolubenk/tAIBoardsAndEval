@@ -9852,6 +9852,9 @@
 						},
 						"forest": {
 							"type": "string"
+						},
+						"notebook": {
+							"type": "string"
 						}
 					},
 					"required": [
@@ -9864,7 +9867,8 @@
 						"inbox",
 						"myTasks",
 						"invitePeople",
-						"forest"
+						"forest",
+						"notebook"
 					]
 				},
 				"projectList": {
@@ -15314,6 +15318,250 @@
 						"leases",
 						"mirror"
 					]
+				},
+				"notebook": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"pageTitle": {
+							"type": "string"
+						},
+						"tabs": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"chat": {
+									"type": "string"
+								},
+								"search": {
+									"type": "string"
+								},
+								"sources": {
+									"type": "string"
+								}
+							},
+							"required": ["chat", "search", "sources"]
+						},
+						"hints": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"chat": {
+									"type": "string"
+								},
+								"search": {
+									"type": "string"
+								},
+								"sources": {
+									"type": "string"
+								}
+							},
+							"required": ["chat", "search", "sources"]
+						},
+						"status": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"workerOnline": {
+									"type": "string"
+								},
+								"workerOffline": {
+									"type": "string"
+								},
+								"counts": {
+									"type": "string"
+								},
+								"model": {
+									"type": "string"
+								},
+								"noModel": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"workerOnline",
+								"workerOffline",
+								"counts",
+								"model",
+								"noModel"
+							]
+						},
+						"chat": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"newThread": {
+									"type": "string"
+								},
+								"threadsEmpty": {
+									"type": "string"
+								},
+								"pickOrAsk": {
+									"type": "string"
+								},
+								"placeholder": {
+									"type": "string"
+								},
+								"followUpPlaceholder": {
+									"type": "string"
+								},
+								"ask": {
+									"type": "string"
+								},
+								"shortcut": {
+									"type": "string"
+								},
+								"asking": {
+									"type": "string"
+								},
+								"sources": {
+									"type": "string"
+								},
+								"delete": {
+									"type": "string"
+								},
+								"deleteTitle": {
+									"type": "string"
+								},
+								"deleteDescription": {
+									"type": "string"
+								},
+								"answerStatus": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"retrieval-only": {
+											"type": "string"
+										},
+										"nothingFound": {
+											"type": "string"
+										},
+										"capped": {
+											"type": "string"
+										},
+										"rate-limited": {
+											"type": "string"
+										},
+										"failed": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"retrieval-only",
+										"nothingFound",
+										"capped",
+										"rate-limited",
+										"failed"
+									]
+								},
+								"toast": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"error": {
+											"type": "string"
+										},
+										"deleted": {
+											"type": "string"
+										},
+										"deleteError": {
+											"type": "string"
+										}
+									},
+									"required": ["error", "deleted", "deleteError"]
+								}
+							},
+							"required": [
+								"newThread",
+								"threadsEmpty",
+								"pickOrAsk",
+								"placeholder",
+								"followUpPlaceholder",
+								"ask",
+								"shortcut",
+								"asking",
+								"sources",
+								"delete",
+								"deleteTitle",
+								"deleteDescription",
+								"answerStatus",
+								"toast"
+							]
+						},
+						"search": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"placeholder": {
+									"type": "string"
+								},
+								"submit": {
+									"type": "string"
+								},
+								"empty": {
+									"type": "string"
+								},
+								"mode": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"hybrid": {
+											"type": "string"
+										},
+										"keyword": {
+											"type": "string"
+										}
+									},
+									"required": ["hybrid", "keyword"]
+								},
+								"matchedBy": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"vector": {
+											"type": "string"
+										},
+										"keyword": {
+											"type": "string"
+										}
+									},
+									"required": ["vector", "keyword"]
+								}
+							},
+							"required": [
+								"placeholder",
+								"submit",
+								"empty",
+								"mode",
+								"matchedBy"
+							]
+						},
+						"sources": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"empty": {
+									"type": "string"
+								},
+								"model": {
+									"type": "string"
+								},
+								"chunks": {
+									"type": "string"
+								}
+							},
+							"required": ["empty", "model", "chunks"]
+						}
+					},
+					"required": [
+						"pageTitle",
+						"tabs",
+						"hints",
+						"status",
+						"chat",
+						"search",
+						"sources"
+					]
 				}
 			},
 			"required": [
@@ -15323,7 +15571,8 @@
 				"home",
 				"myWork",
 				"myTasks",
-				"forest"
+				"forest",
+				"notebook"
 			]
 		},
 		"team": {

@@ -2404,7 +2404,8 @@
 			"inbox": "Inbox",
 			"invitePeople": "Invite people",
 			"myTasks": "My tasks",
-			"forest": "Forest"
+			"forest": "Forest",
+			"notebook": "Notebook"
 		},
 		"projectList": {
 			"viewProject": "प्रोजेक्ट देखें",
@@ -3697,6 +3698,70 @@
 					"manual": "Manual",
 					"schedule": "Scheduled"
 				}
+			}
+		},
+		"notebook": {
+			"chat": {
+				"answerStatus": {
+					"capped": "Today's answer limit is reached. Here are the sources; written answers resume tomorrow (UTC).",
+					"failed": "The model did not answer. Here are the sources.",
+					"nothingFound": "Nothing in the notebook matches this question.",
+					"rate-limited": "The model is busy. Here are the sources; try again in a minute.",
+					"retrieval-only": "No model is connected, so here are the sources without a written answer."
+				},
+				"ask": "Ask",
+				"asking": "Looking for sources and writing the answer…",
+				"delete": "Delete thread",
+				"deleteDescription": "Its questions and answers are removed for everyone in the workspace.",
+				"deleteTitle": "Delete this thread?",
+				"followUpPlaceholder": "Ask a follow-up…",
+				"newThread": "New question",
+				"pickOrAsk": "Ask a question below or open an earlier one.",
+				"placeholder": "Ask about the documents…",
+				"shortcut": "⌘ Enter or Ctrl Enter to send",
+				"sources": "Sources",
+				"threadsEmpty": "No questions yet.",
+				"toast": {
+					"deleted": "Thread deleted",
+					"deleteError": "Could not delete the thread",
+					"error": "Could not ask the question"
+				}
+			},
+			"hints": {
+				"chat": "Ask about the team's documents. The answer is written only from the sources found and cites them as [1], [2].",
+				"search": "Finds passages by words and, while the Mac worker is online, by meaning.",
+				"sources": "Documents the Mac agent syncs into the notebook. A chunk joins meaning-based search once it has a vector."
+			},
+			"pageTitle": "Notebook",
+			"search": {
+				"empty": "Nothing found.",
+				"matchedBy": {
+					"keyword": "words",
+					"vector": "meaning"
+				},
+				"mode": {
+					"hybrid": "By meaning and words",
+					"keyword": "By words only"
+				},
+				"placeholder": "Search the notebook…",
+				"submit": "Search"
+			},
+			"sources": {
+				"chunks": "{{embedded}} of {{chunks}} chunks with vectors",
+				"empty": "No sources yet. They appear after the Mac agent's first sync.",
+				"model": "Embedding model: {{model}}"
+			},
+			"status": {
+				"counts": "{{sources}} sources · {{chunks}} chunks · {{embedded}} with vectors",
+				"model": "Model {{model}} · {{calls}} of {{max}} answers today",
+				"noModel": "No model connected: answers come as sources without text",
+				"workerOffline": "Worker offline: search by words only",
+				"workerOnline": "Worker online"
+			},
+			"tabs": {
+				"chat": "Questions",
+				"search": "Search",
+				"sources": "Sources"
 			}
 		}
 	},

@@ -5,6 +5,7 @@ import {
   Inbox,
   type LucideIcon,
   Mail,
+  NotebookText,
   Trees,
   Users,
 } from "lucide-react";
@@ -75,6 +76,11 @@ export function NavMain() {
       // Requests waiting for the owner's «да».
       count: pendingApprovals?.items.length,
       emphasizeCount: true,
+    },
+    {
+      title: t("navigation:sidebar.notebook"),
+      icon: NotebookText,
+      url: `${homeUrl}/notebook`,
     },
     {
       title: t("navigation:sidebar.members"),
