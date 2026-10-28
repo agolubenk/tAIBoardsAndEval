@@ -215,6 +215,43 @@ describe("API integration: scheduled Notion mirror (AC-002, AC-003)", () => {
     expect(report?.error).not.toContain(TOKEN);
   });
 
+  it("closes a run a restart cut short, in its own workspace only", async () => {
+    const { workspace } = await createWorkspaceMember({ role: "owner" });
+    const { workspace: other } = await createWorkspaceMember({ role: "owner" });
+    const startedAt = new Date(Date.now() - 3 * 3_600_000);
+    const [cut, foreign] = await db
+      .insert(notionMirrorRunTable)
+      .values([
+        {
+          workspaceId: workspace.id,
+          trigger: "schedule",
+          status: "running",
+          startedAt,
+        },
+        {
+          workspaceId: other.id,
+          trigger: "schedule",
+          status: "running",
+          startedAt,
+        },
+      ])
+      .returning({ id: notionMirrorRunTable.id });
+
+    const run = await mirrorOnce(
+      config(workspace.id, tokenFile()),
+      "schedule",
+      fakeNotion(() => []),
+    );
+
+    const closed = await runRow(cut?.id ?? "");
+    expect(closed?.status).toBe("failed");
+    expect(closed?.finishedAt).toBeInstanceOf(Date);
+    expect(closed?.report.databases[0]?.databaseId).toBe("(interrupted)");
+    expect((await runRow(foreign?.id ?? ""))?.status).toBe("running");
+    expect((await runRow(run.runId))?.status).toBe(run.status);
+    expect(run.status).not.toBe("running");
+  });
+
   it("records a failed run when the token file is missing", async () => {
     const { workspace } = await createWorkspaceMember({ role: "owner" });
     const run = await mirrorOnce(

@@ -19,7 +19,9 @@ import {
   readMirrorConfig,
   readMirrorToken,
 } from "./mirror-config";
+import { closeInterruptedRuns } from "./close-interrupted-runs";
 import {
+  failedReport,
   MAX_LISTED_DISCREPANCIES,
   type MirrorDatabaseReport,
   runStatusOf,
@@ -93,6 +95,7 @@ async function openMirrorRun(
   config: NotionMirrorConfig,
   trigger: MirrorTrigger,
 ): Promise<string> {
+  await closeInterruptedRuns(config.workspaceId);
   const [run] = await db
     .insert(notionMirrorRunTable)
     .values({ workspaceId: config.workspaceId, trigger, status: "running" })
@@ -210,20 +213,6 @@ function needsBody(
     return true;
   }
   return false;
-}
-
-function failedReport(databaseId: string, error: string): MirrorDatabaseReport {
-  return {
-    databaseId,
-    name: databaseId,
-    read: { pages: 0, fresh: 0, changed: 0 },
-    totals: null,
-    byStatus: {},
-    byType: {},
-    discrepancyCount: 0,
-    discrepancies: [],
-    error,
-  };
 }
 
 // Errors land in a row the workspace can read: never the token.

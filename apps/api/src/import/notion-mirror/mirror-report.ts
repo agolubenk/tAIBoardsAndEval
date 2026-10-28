@@ -23,6 +23,23 @@ export type MirrorRunReport = { databases: MirrorDatabaseReport[] };
 // A report row stays small even when a sync breaks every card.
 export const MAX_LISTED_DISCREPANCIES = 200;
 
+export function failedReport(
+  databaseId: string,
+  error: string,
+): MirrorDatabaseReport {
+  return {
+    databaseId,
+    name: databaseId,
+    read: { pages: 0, fresh: 0, changed: 0 },
+    totals: null,
+    byStatus: {},
+    byType: {},
+    discrepancyCount: 0,
+    discrepancies: [],
+    error,
+  };
+}
+
 export function runStatusOf(
   databases: readonly MirrorDatabaseReport[],
 ): Exclude<MirrorRunStatus, "running"> {
