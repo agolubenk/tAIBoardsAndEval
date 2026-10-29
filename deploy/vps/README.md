@@ -81,8 +81,10 @@ the HR Helper / Lavaeon product, which `install.sh` creates.
 ## Products
 
 `install.sh` seeds three products owned by the admin: HR Helper / Lavaeon, aiBoards&eval and Financial terminal.
-aiBoards&eval carries the plan of t-boards, supertick-eval and the infrastructure as cards (`TB-…`, `SE-…`, `OPS-…`).
-The card key is stored as the card's backlog id, so a later bundle adds new cards and leaves edited ones alone.
+aiBoards&eval carries the plan of t-boards, supertick-eval, the infrastructure, the admin host, ideas and goals as a
+tree of cards (`TB-…`, `SE-…`, `OPS-…`, `ADM-…`, `IDEA-…`, `GL-…`) with their links and agent fields.
+The card key is stored as the card's backlog id, so a later bundle adds new cards and links, brings cards nobody has
+edited to the plan (journaled under `seed:products`, undone from the card's history) and leaves edited ones alone.
 
 ## Rollback
 
