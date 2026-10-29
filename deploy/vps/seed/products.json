@@ -1,5 +1,5 @@
 {
-	"version": "2026-10-28",
+	"version": "2026-10-29",
 	"products": [
 		{
 			"slug": "hr-helper-lavaeon",
@@ -27,23 +27,23 @@
 						{
 							"key": "TB-001",
 							"title": "Блокнот: страница в интерфейсе — чат, источники, статус",
-							"status": "in-progress",
+							"status": "done",
 							"priority": "high",
-							"description": "API блокнота готово (R-050–R-053): источники, эмбеддинги на Mac, гибридный поиск, чат с цитатами [n].\n\nОсталось: страница `/dashboard/workspace/$id/notebook` — треды, вопрос, ответ с раскрываемыми источниками, список источников, статус воркера и лимита облачных вызовов. Строки — в `i18n/en-US.json`, RU по умолчанию."
+							"description": "API блокнота готово (R-050–R-053): источники, эмбеддинги на Mac, гибридный поиск, чат с цитатами [n].\n\nОсталось: страница `/dashboard/workspace/$id/notebook` — треды, вопрос, ответ с раскрываемыми источниками, список источников, статус воркера и лимита облачных вызовов. Строки — в `i18n/en-US.json`, RU по умолчанию.\n\nСделано 29.10: `e981589` — страница блокнота с цитатами, поиском и источниками."
 						},
 						{
 							"key": "TB-002",
 							"title": "Блокнот: источники из карточек, PR GitHub и ссылок",
-							"status": "to-do",
+							"status": "in-progress",
 							"priority": "medium",
-							"description": "Срез 3 блокнота. Виды источников `card`, `pr`, `link` рядом с `repo-doc`. Обновление при правке карточки. Ссылки — только по явному добавлению, с лимитом размера."
+							"description": "Срез 3 блокнота. Виды источников `card`, `pr`, `link` рядом с `repo-doc`. Обновление при правке карточки. Ссылки — только по явному добавлению, с лимитом размера.\n\n29.10: карточки как источники — `8d4a96e`. Осталось: PR GitHub и ссылки."
 						},
 						{
 							"key": "TB-003",
 							"title": "Блокнот: MCP-инструмент notebook_search и GLM-бриф по кнопке",
-							"status": "to-do",
+							"status": "in-progress",
 							"priority": "medium",
-							"description": "Агент ищет по блокноту тем же гибридным поиском, ответ — в бюджете токенов (R-031). Бриф GOAL/CONSTRAINTS/ACCEPTANCE по кнопке из треда."
+							"description": "Агент ищет по блокноту тем же гибридным поиском, ответ — в бюджете токенов (R-031). Бриф GOAL/CONSTRAINTS/ACCEPTANCE по кнопке из треда.\n\n29.10: `notebook_search` — `8d4a96e`. Осталось: GLM-бриф по кнопке."
 						},
 						{
 							"key": "TB-004",
@@ -104,9 +104,9 @@
 						{
 							"key": "TB-012",
 							"title": "MCP-инструмент памяти карточки и work_state на доске",
-							"status": "to-do",
+							"status": "done",
 							"priority": "medium",
-							"description": "Хвост K-5 и R-037. Наблюдения claude-mem, привязанные к карточке, — через MCP; списки work_state — видны на доске."
+							"description": "Хвост K-5 и R-037. Наблюдения claude-mem, привязанные к карточке, — через MCP; списки work_state — видны на доске.\n\nСделано 29.10: `6ead678` — work_state на доске и MCP-инструмент памяти карточки."
 						},
 						{
 							"key": "TB-013",
@@ -118,9 +118,9 @@
 						{
 							"key": "TB-014",
 							"title": "Панели: граф связей, лента агентов, «что горит», ⌘K",
-							"status": "to-do",
+							"status": "in-progress",
 							"priority": "medium",
-							"description": "R-090. ⌘K в kaneo не проверен."
+							"description": "R-090. ⌘K в kaneo не проверен.\n\n29.10: «Пульс» и лента агентов — `8bf6ee4`. Осталось: граф связей R-090, «что горит», ⌘K."
 						},
 						{
 							"key": "TB-015",
@@ -191,6 +191,104 @@
 							"status": "to-do",
 							"priority": "low",
 							"description": "R-075, R-027, R-035, R-083. После перехода."
+						},
+						{
+							"key": "TB-025",
+							"title": "Зеркало Notion: все базы интеграции, не две",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G8: `mirror-setup.sh` берёт базы через `POST /v1/search {filter: database}`; проект на базу. Сейчас — только «Задачи» и «Ошибки» из 7."
+						},
+						{
+							"key": "TB-026",
+							"title": "Зеркало: метки и связи изменённых карточек",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G5: метки из набора Notion и связи между зеркальными карточками приводятся к Notion; заведённое на доске не трогается."
+						},
+						{
+							"key": "TB-027",
+							"title": "Зеркало: пропавшие страницы — в архив с предохранителем",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G6: страница не пришла в полной выдаче → архив с причиной «удалена или в корзине Notion»; вернулась → из архива. Больше max(5, 10 %) за прогон — пропуск и предупреждение."
+						},
+						{
+							"key": "TB-028",
+							"title": "Зеркало: комментарии Notion",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G2: `/v1/comments`, идемпотентно по id комментария (`notion_comment_link`); изменённые страницы — каждый прогон, все — раз в сутки в 08:07."
+						},
+						{
+							"key": "TB-029",
+							"title": "Зеркало: все типы свойств в полях карточки",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G7: formula, rollup, files, relation текстом, created/edited time и by, place, verification → `extraFields`."
+						},
+						{
+							"key": "TB-030",
+							"title": "Зеркало: таблицы, колонки, embed и другие блоки в описании",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G4: table → markdown, column_list подряд, bookmark/embed → ссылка, equation, synced_block, child_page, файлы ссылкой."
+						},
+						{
+							"key": "TB-031",
+							"title": "Зеркало: связи между базами одного продукта",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G1, фаза 2: id страниц целей → карточка через `card_meta.notion_page_id`; наружу продукта не пишется (R-002)."
+						},
+						{
+							"key": "TB-032",
+							"title": "Зеркало: файлы и картинки в хранилище доски",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md`. G3, фаза 2, после TB-020: скачивать в тот же прогон (ссылка Notion живёт час), 25 МБ на файл, 500 МБ на прогон."
+						},
+						{
+							"key": "TB-033",
+							"title": "Переход с Notion: заморозка, финальный импорт, Notion только чтение",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Фаза B плана перехода: заморозить запись в Notion → финальный импорт и сверка → канон на t-boards (правила 17, `docs/plans/notion-board.md`, CLAUDE.md, 00-task-ingress, скиллы `grill-task`, `pr-review`; см. TB-008) → Notion только чтение. Условия — R-084."
+						},
+						{
+							"key": "TB-034",
+							"title": "R-023: массовый откат по ключу и версии документов",
+							"status": "to-do",
+							"priority": "low",
+							"description": "История с откатом одной правки готова; осталось — откатить всё, что сделал один ключ, и версии страниц-документов."
+						},
+						{
+							"key": "TB-035",
+							"title": "R-036: стоимость по задаче и журнал через API",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Токены и деньги на карточку из журнала агентов, чтение журнала через REST/MCP — для AC-001 и итога пилота."
+						},
+						{
+							"key": "TB-036",
+							"title": "Перманентные вопросы R-100…R-105",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C: поле `permanence`, эпизоды по расписанию, прогоны сторожей, «известно, не чинить», разбор импорта пачкой. Первые: parse_mode на всех путях, refresh-токен только в cookie, апстрим kaneo раз в 2 месяца, восстановление бэкапа, обрывы Telegram-сессий, красный ci-frontend, остаток npm audit."
+						},
+						{
+							"key": "TB-037",
+							"title": "Разбор «кладбища» Notion после перехода",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C: закрытые и брошенные страницы — в архив доски с причиной или в `done/`, без потери истории."
+						},
+						{
+							"key": "TB-038",
+							"title": "Очередь владельца в t-boards (R-083)",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C, по решению `d-tb-plan-queue`: пункты oq_* — карточками доски, ops-консоль читает доску."
 						}
 					]
 				},
@@ -275,6 +373,27 @@
 							"status": "to-do",
 							"priority": "medium",
 							"description": "Цель пайплайна ≈ $20 на PR против ≈ $37 у Т3 и $68 у Т2. Отчёт по неделе пилота."
+						},
+						{
+							"key": "SE-012",
+							"title": "Итог линзы 3 Kimi — в EVALUATION.md",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Раздел «Адверсариальная проверка» в `supertick-eval/EVALUATION.md`."
+						},
+						{
+							"key": "SE-013",
+							"title": "Геном на остальные роли после пилота",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Фаза 4: пилот автора прошёл ворота (средний контекст ≤ 120K, база ≤ 55K) → `--settings` с геномом Координатору, Контролю и остальным."
+						},
+						{
+							"key": "SE-014",
+							"title": "Связь с Kimi: сессия в Claude Code или общий файл",
+							"status": "to-do",
+							"priority": "low",
+							"description": "SendMessage к Kimi не доходит. Варианты: запуск Kimi внутри Claude Code или `pipeline/BRIDGE.md`."
 						}
 					]
 				},
@@ -293,9 +412,9 @@
 						{
 							"key": "OPS-002",
 							"title": "Субдомен d4dev.admin.hrhelper.space только через VPN",
-							"status": "in-progress",
+							"status": "done",
 							"priority": "urgent",
-							"description": "Схема А: публичная A-запись — только для сертификата; t-boards слушает адрес туннеля. Остальные поддомены — без VPN, как раньше. Пункт `s-tb-install`."
+							"description": "Схема А: публичная A-запись — только для сертификата; t-boards слушает адрес туннеля. Остальные поддомены — без VPN, как раньше. Пункт `s-tb-install`.\n\nСделано 29.10 19:52: d4dev открывается через VPN, без туннеля — отказ соединения."
 						},
 						{
 							"key": "OPS-003",
@@ -328,9 +447,16 @@
 						{
 							"key": "OPS-007",
 							"title": "Второе устройство в VPN",
-							"status": "to-do",
+							"status": "in-progress",
 							"priority": "low",
-							"description": "Телефон или второй ноутбук: `wg-setup.sh <ключ> <имя>`, те же два профиля."
+							"description": "Телефон или второй ноутбук: `wg-setup.sh <ключ> <имя>`, те же два профиля.\n\n29.10: `wg-issue.sh` (`1a0ab42`) выпускает готовый конфиг и QR на VPS; пункт очереди `s-vpn-issue`."
+						},
+						{
+							"key": "OPS-008",
+							"title": "Набор b6 на VPS: tls-фикс, wg-issue, зеркало S6",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Собрать `bundle.sh` (фиксы `15bc5ea`, `1a0ab42` и фаза 1 S6), selftest на Mac, поставка s-пунктом с откатом на b5."
 						}
 					]
 				}

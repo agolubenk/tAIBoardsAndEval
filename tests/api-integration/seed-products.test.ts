@@ -102,9 +102,12 @@ describe("API integration: products seed", () => {
         eq(schema.columnTable.id, schema.taskTable.columnId),
       )
       .where(eq(cardMetaTable.backlogId, "TB-001"));
+    // The plan moves as work lands, so the expected column comes from it.
+    const tb001 = planned.products[1].projects[0].cards[0];
+    expect(tb001.key).toBe("TB-001");
     expect(card).toMatchObject({
-      status: "in-progress",
-      columnSlug: "in-progress",
+      status: tb001.status,
+      columnSlug: tb001.status,
       number: 1,
     });
 
