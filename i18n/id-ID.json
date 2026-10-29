@@ -801,7 +801,10 @@
 				"validation": {
 					"nameRequired": "Masukkan nama",
 					"nameShort": "Gunakan minimal 3 karakter"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Tindakan untuk {{name}}",
@@ -809,7 +812,9 @@
 				"expired": "Kedaluwarsa sejak {{date}}",
 				"expiredBadge": "Kedaluwarsa",
 				"expires": "Kedaluwarsa {{date}}",
-				"neverExpires": "Tidak pernah kedaluwarsa"
+				"neverExpires": "Tidak pernah kedaluwarsa",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

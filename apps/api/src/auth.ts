@@ -684,6 +684,8 @@ export const auth = betterAuth({
     bearer(),
     apiKey({
       enableSessionForAPIKeys: true,
+      // t-boards: metadata.workspaceId limits a key to one workspace (R-002).
+      enableMetadata: true,
       apiKeyHeaders: "x-api-key",
       rateLimit: {
         enabled: true,

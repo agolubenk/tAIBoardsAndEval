@@ -1546,7 +1546,10 @@
 				"validation": {
 					"nameRequired": "Wpisz nazwę",
 					"nameShort": "Użyj co najmniej 3 znaków"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"createdModal": {
 				"copied": "Skopiowano",
@@ -1570,7 +1573,9 @@
 				"expired": "Wygasł {{date}}",
 				"expiredBadge": "Wygasł",
 				"expires": "Wygasa {{date}}",
-				"neverExpires": "Nigdy nie wygasa"
+				"neverExpires": "Nigdy nie wygasa",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"apiKeys": "Klucze API",

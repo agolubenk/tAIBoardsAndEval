@@ -1032,7 +1032,10 @@
 				"validation": {
 					"nameRequired": "Enter a name",
 					"nameShort": "Use at least 3 characters"
-				}
+				},
+				"workspaceLabel": "Workspace",
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings."
 			},
 			"row": {
 				"created": "Created {{date}}",
@@ -1040,7 +1043,9 @@
 				"expired": "Expired {{date}}",
 				"neverExpires": "Never expires",
 				"expiredBadge": "Expired",
-				"actions": "Actions for {{name}}"
+				"actions": "Actions for {{name}}",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

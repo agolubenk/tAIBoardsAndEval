@@ -809,7 +809,10 @@
 				"validation": {
 					"nameRequired": "Внеси име",
 					"nameShort": "Користи најмалку 3 знаци"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Акции за {{name}}",
@@ -817,7 +820,9 @@
 				"expired": "Истечен {{date}}",
 				"expiredBadge": "Истечен",
 				"expires": "Истекува {{date}}",
-				"neverExpires": "Никогаш не истекува"
+				"neverExpires": "Никогаш не истекува",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

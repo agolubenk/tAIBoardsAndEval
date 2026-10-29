@@ -809,7 +809,10 @@
 				"validation": {
 					"nameRequired": "नाम दर्ज करें",
 					"nameShort": "कम से कम 3 अक्षर उपयोग करें"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} के लिए कार्रवाइयाँ",
@@ -817,7 +820,9 @@
 				"expired": "{{date}} को समाप्त हुई",
 				"expiredBadge": "समाप्त",
 				"expires": "{{date}} को समाप्त होगी",
-				"neverExpires": "कभी समाप्त नहीं होगी"
+				"neverExpires": "कभी समाप्त नहीं होगी",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

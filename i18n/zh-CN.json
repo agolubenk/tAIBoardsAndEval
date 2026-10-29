@@ -801,7 +801,10 @@
 				"validation": {
 					"nameRequired": "请输入名称",
 					"nameShort": "至少输入 3 个字符"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} 的操作",
@@ -809,7 +812,9 @@
 				"expired": "已于 {{date}} 过期",
 				"expiredBadge": "已过期",
 				"expires": "{{date}} 到期",
-				"neverExpires": "永不过期"
+				"neverExpires": "永不过期",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

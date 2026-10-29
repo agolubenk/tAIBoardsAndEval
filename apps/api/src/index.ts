@@ -93,6 +93,7 @@ import timeEntry from "./time-entry";
 import user from "./user";
 import getAvatar from "./user/controllers/get-avatar";
 import { apiKeyRejection } from "./utils/api-key-rejection";
+import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
 import { applyApiKeyHeaders } from "./utils/apply-api-key-headers";
 import { authenticateApiRequest } from "./utils/authenticate-api-request";
 import {
@@ -106,6 +107,11 @@ import { migrateNotificationPreferencesSchema } from "./utils/migrate-notificati
 import { migrateSessionColumn } from "./utils/migrate-session-column";
 import { migrateWorkspaceUserEmail } from "./utils/migrate-workspace-user-email";
 import { normalizeApiServerUrl } from "./utils/openapi-spec";
+import {
+  assertScopedKeyAuthRoute,
+  limitAuthResponseToScope,
+  scopedApiKeyGuard,
+} from "./utils/scoped-api-key-guard";
 import { seedDefaultWorkspaceRoles } from "./utils/seed-default-workspace-roles";
 import { drainSignInEmails } from "./utils/sign-in-email-tasks";
 import { validateWorkspaceAccess } from "./utils/validate-workspace-access";
@@ -132,6 +138,7 @@ type ApiKey = {
   userId: string;
   enabled: boolean;
   permissions: Record<string, string[]> | null;
+  workspaceScope?: ApiKeyWorkspaceScope;
 };
 
 type AppVariables = {
@@ -465,7 +472,10 @@ export function createApp() {
     if (!apiKeyHeader) return next();
     const apiKeyResult = await verifyApiKey(apiKeyHeader, { consume: false });
     if (apiKeyResult?.status !== "valid") throw apiKeyRejection(apiKeyResult);
+    const scope = apiKeyResult.key.workspaceScope;
+    assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
     await next();
+    c.res = await limitAuthResponseToScope(scope, c.req.path, c.res);
     c.set(
       "apiKeyHeaders",
       await apiKeyResponseHeaders(
@@ -777,13 +787,19 @@ export function createApp() {
 
       const apiKeyResult = await verifyApiKey(bearerToken, { consume: false });
       if (apiKeyResult?.status !== "valid") throw apiKeyRejection(apiKeyResult);
+      const scope: ApiKeyWorkspaceScope = apiKeyResult.key.workspaceScope;
+      assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
 
       // Better Auth API key plugin validates from x-api-key by default.
       headers.set("x-api-key", bearerToken);
 
-      const response = await withJsonRateLimit(
-        await withJsonNotFound(
-          await auth.handler(new Request(c.req.raw, { headers })),
+      const response = await limitAuthResponseToScope(
+        scope,
+        c.req.path,
+        await withJsonRateLimit(
+          await withJsonNotFound(
+            await auth.handler(new Request(c.req.raw, { headers })),
+          ),
         ),
       );
       c.set(
@@ -832,6 +848,9 @@ export function createApp() {
       }
     });
   });
+
+  // t-boards: a workspace-scoped key reaches only workspace-resolved routes (R-002).
+  api.use("*", scopedApiKeyGuard);
 
   const oauthApi = api.route("/oauth", oauth);
 

@@ -800,7 +800,10 @@
 				"validation": {
 					"nameRequired": "請輸入名稱",
 					"nameShort": "請至少輸入 3 個字元"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} 的操作",
@@ -808,7 +811,9 @@
 				"expired": "已於 {{date}} 到期",
 				"expiredBadge": "已到期",
 				"expires": "{{date}} 到期",
-				"neverExpires": "永不到期"
+				"neverExpires": "永不到期",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

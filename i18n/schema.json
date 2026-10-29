@@ -4132,6 +4132,15 @@
 										}
 									},
 									"required": ["nameRequired", "nameShort"]
+								},
+								"workspaceLabel": {
+									"type": "string"
+								},
+								"workspaceAll": {
+									"type": "string"
+								},
+								"workspaceDescription": {
+									"type": "string"
 								}
 							},
 							"required": [
@@ -4149,7 +4158,10 @@
 								"create",
 								"creating",
 								"failedCreate",
-								"validation"
+								"validation",
+								"workspaceLabel",
+								"workspaceAll",
+								"workspaceDescription"
 							]
 						},
 						"row": {
@@ -4173,6 +4185,12 @@
 								},
 								"actions": {
 									"type": "string"
+								},
+								"workspaceBadge": {
+									"type": "string"
+								},
+								"workspaceUnknown": {
+									"type": "string"
 								}
 							},
 							"required": [
@@ -4181,7 +4199,9 @@
 								"expired",
 								"neverExpires",
 								"expiredBadge",
-								"actions"
+								"actions",
+								"workspaceBadge",
+								"workspaceUnknown"
 							]
 						}
 					},

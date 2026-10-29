@@ -1,10 +1,12 @@
 import { KeyRoundIcon, Trash2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ApiKeyItem } from "@/components/settings/api-keys/api-key-item";
+import { readApiKeyWorkspace } from "@/components/settings/api-keys/api-key-workspace";
 import { getApiKeyExpiry } from "@/components/settings/api-keys/get-api-key-expiry";
 import { RowActionsMenu } from "@/components/settings/row-actions-menu";
 import { SettingsRow } from "@/components/settings/settings-row";
 import { StatusBadge } from "@/components/settings/status-badge";
+import useGetWorkspaces from "@/hooks/queries/workspace/use-get-workspaces";
 import { formatDateMedium } from "@/lib/format";
 
 type ApiKeyRowProps = {
@@ -14,9 +16,14 @@ type ApiKeyRowProps = {
 
 export function ApiKeyRow({ apiKey, onDelete }: ApiKeyRowProps) {
   const { t } = useTranslation();
+  const { data: workspaces } = useGetWorkspaces();
   const name = apiKey.name || t("settings:developerPage.unnamedKey");
   const expiry = getApiKeyExpiry(apiKey.expiresAt);
   const expired = expiry.status === "expired";
+  const workspaceId = readApiKeyWorkspace(apiKey.metadata);
+  const workspaceName = workspaceId
+    ? workspaces?.find((workspace) => workspace.id === workspaceId)?.name
+    : undefined;
   const created = t("settings:apiKey.row.created", {
     date: formatDateMedium(apiKey.createdAt),
   });
@@ -39,6 +46,14 @@ export function ApiKeyRow({ apiKey, onDelete }: ApiKeyRowProps) {
         expired ? (
           <StatusBadge tone="destructive">
             {t("settings:apiKey.row.expiredBadge")}
+          </StatusBadge>
+        ) : workspaceId !== null ? (
+          <StatusBadge tone="neutral">
+            {workspaceName
+              ? t("settings:apiKey.row.workspaceBadge", {
+                  workspace: workspaceName,
+                })
+              : t("settings:apiKey.row.workspaceUnknown")}
           </StatusBadge>
         ) : null
       }

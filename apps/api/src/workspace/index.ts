@@ -11,6 +11,11 @@ import {
   requireWorkspacePermission,
   workspacePermissionChecker,
 } from "../utils/require-workspace-permission";
+import {
+  assertKeyReachesWorkspace,
+  requestWorkspaceScope,
+  scopeAllowsWorkspace,
+} from "../utils/api-key-workspace-scope";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import getMyCapabilitiesCtrl from "./controllers/get-my-capabilities";
 import getMyProjectAccessCtrl from "./controllers/get-my-project-access";
@@ -178,15 +183,21 @@ const updateMemberProjectAccessRoute = createRoute({
 });
 
 const workspace = apiRouter<BaseVariables & { workspaceId: string }>()
-  .openapi(listWorkspacesRoute, async (c) =>
-    c.json(await listWorkspacesCtrl(c.get("userId")), 200),
-  )
-  .openapi(getWorkspaceRoute, async (c) =>
-    c.json(
-      await getWorkspaceCtrl(c.req.valid("param").workspaceId, c.get("userId")),
+  .openapi(listWorkspacesRoute, async (c) => {
+    const scope = requestWorkspaceScope(c);
+    const workspaces = await listWorkspacesCtrl(c.get("userId"));
+    return c.json(
+      workspaces.filter((workspace) =>
+        scopeAllowsWorkspace(scope, workspace.id),
+      ),
       200,
-    ),
-  )
+    );
+  })
+  .openapi(getWorkspaceRoute, async (c) => {
+    const { workspaceId } = c.req.valid("param");
+    assertKeyReachesWorkspace(c, workspaceId);
+    return c.json(await getWorkspaceCtrl(workspaceId, c.get("userId")), 200);
+  })
   .openapi(getWorkspaceMembersRoute, async (c) =>
     c.json(
       await getWorkspaceMembersCtrl({

@@ -825,7 +825,10 @@
 				"validation": {
 					"nameRequired": "Введіть назву",
 					"nameShort": "Використовуйте щонайменше 3 символи"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Дії для {{name}}",
@@ -833,7 +836,9 @@
 				"expired": "Закінчився {{date}}",
 				"expiredBadge": "Закінчився",
 				"expires": "Діє до {{date}}",
-				"neverExpires": "Безстроковий"
+				"neverExpires": "Безстроковий",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

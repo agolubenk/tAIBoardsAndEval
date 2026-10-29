@@ -3,6 +3,11 @@ import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import db, { schema } from "../database";
 import { ApiError } from "../errors/api-error";
+import {
+  assertKeyReachesWorkspace,
+  requestWorkspaceScope,
+  scopeAllowsWorkspace,
+} from "./api-key-workspace-scope";
 import { isInstanceAdmin } from "./is-instance-admin";
 import { missingPermissions } from "./missing-permissions";
 import {
@@ -76,6 +81,9 @@ export async function hasWorkspacePermission(
 ) {
   const workspaceId = workspaceIdOverride ?? c.get("workspaceId");
   if (!workspaceId) return false;
+  if (!scopeAllowsWorkspace(requestWorkspaceScope(c), workspaceId)) {
+    return false;
+  }
 
   const scope = apiKeyPermissions(c);
   if (scope && !satisfies(scope, permissions)) {
@@ -97,6 +105,9 @@ export async function workspacePermissionChecker(
 ): Promise<(permissions: PermissionMap) => boolean> {
   const workspaceId = c.get("workspaceId");
   if (!workspaceId) return () => false;
+  if (!scopeAllowsWorkspace(requestWorkspaceScope(c), workspaceId)) {
+    return () => false;
+  }
 
   const scope = apiKeyPermissions(c);
   const isAdmin = await isInstanceAdmin(c);
@@ -158,6 +169,7 @@ export function requireWorkspacePermission(permissions: PermissionMap) {
     }
 
     assertApiKeyScope(c, permissions);
+    assertKeyReachesWorkspace(c, workspaceId);
 
     if (await isInstanceAdmin(c)) {
       return next();

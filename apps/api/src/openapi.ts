@@ -1,6 +1,7 @@
 import { OpenAPIHono, z } from "@hono/zod-openapi";
 import type { Session, User } from "better-auth/types";
 import { apiErrorSchema } from "./errors/api-error-schema";
+import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
 import { validationHook } from "./errors/validation-error";
 
 export { createRoute } from "@hono/zod-openapi";
@@ -11,6 +12,7 @@ export type ApiKey = {
   userId: string;
   enabled: boolean;
   permissions: Record<string, string[]> | null;
+  workspaceScope?: ApiKeyWorkspaceScope;
 };
 
 export type BaseVariables = {

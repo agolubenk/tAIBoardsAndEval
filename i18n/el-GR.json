@@ -809,7 +809,10 @@
 				"validation": {
 					"nameRequired": "Εισαγάγετε όνομα",
 					"nameShort": "Χρησιμοποιήστε τουλάχιστον 3 χαρακτήρες"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Ενέργειες για {{name}}",
@@ -817,7 +820,9 @@
 				"expired": "Έληξε {{date}}",
 				"expiredBadge": "Έληξε",
 				"expires": "Λήγει {{date}}",
-				"neverExpires": "Δεν λήγει ποτέ"
+				"neverExpires": "Δεν λήγει ποτέ",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

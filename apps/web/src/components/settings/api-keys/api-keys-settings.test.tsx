@@ -22,6 +22,7 @@ type TestKey = {
   start: string | null;
   createdAt: string;
   expiresAt: string | null;
+  metadata?: unknown;
 };
 
 const m = vi.hoisted(() => ({
@@ -46,6 +47,14 @@ vi.mock("@/hooks/queries/use-get-api-keys", () => ({
     data: m.isPending ? undefined : m.keys,
     isPending: m.isPending,
     isError: false,
+  }),
+}));
+vi.mock("@/hooks/queries/workspace/use-get-workspaces", () => ({
+  default: () => ({
+    data: [
+      { id: "ws-a", name: "Product A" },
+      { id: "ws-b", name: "Product B" },
+    ],
   }),
 }));
 vi.mock("@/hooks/mutations/api-key/use-create-api-key", () => ({
@@ -75,6 +84,14 @@ const expiredKey: TestKey = {
   createdAt: "2026-08-04T00:00:00Z",
   expiresAt: "2026-09-03T00:00:00Z",
 };
+
+function choose(option: HTMLElement) {
+  fireEvent.pointerDown(option);
+  fireEvent.mouseDown(option);
+  fireEvent.pointerUp(option);
+  fireEvent.mouseUp(option);
+  fireEvent.click(option, { detail: 1 });
+}
 
 afterEach(cleanup);
 beforeEach(() => {
@@ -108,6 +125,20 @@ describe("API keys list", () => {
     );
     expect(
       screen.getAllByText("settings:apiKey.row.expiredBadge"),
+    ).toHaveLength(1);
+  });
+
+  it("marks keys limited to one workspace", () => {
+    m.keys = [
+      { ...activeKey, metadata: { workspaceId: "ws-a" } },
+      { ...activeKey, id: "gone", metadata: '{"workspaceId":"ws-gone"}' },
+    ];
+    render(<ApiKeysSettings />);
+    expect(
+      screen.getAllByText("settings:apiKey.row.workspaceBadge"),
+    ).toHaveLength(1);
+    expect(
+      screen.getAllByText("settings:apiKey.row.workspaceUnknown"),
     ).toHaveLength(1);
   });
 
@@ -225,6 +256,38 @@ describe("creating API keys", () => {
         name: "settings:apiKey.createdModal.copied",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("limits a new key to the chosen workspace", async () => {
+    m.create.mockResolvedValue({ key: "kn_secret", name: "Board bot" });
+    render(<ApiKeysSettings />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "settings:developerPage.newKey" }),
+    );
+    const dialog = await screen.findByRole("dialog");
+    fireEvent.change(
+      within(dialog).getByLabelText("settings:apiKey.createDialog.nameLabel"),
+      { target: { value: "Board bot" } },
+    );
+    fireEvent.click(
+      within(dialog).getByRole("combobox", {
+        name: "settings:apiKey.createDialog.workspaceLabel",
+      }),
+      { detail: 1 },
+    );
+    choose(await screen.findByRole("option", { name: "Product A" }));
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: "settings:apiKey.createDialog.create",
+      }),
+    );
+    await waitFor(() =>
+      expect(m.create).toHaveBeenCalledWith({
+        name: "Board bot",
+        expiresIn: 2_592_000,
+        metadata: { workspaceId: "ws-a" },
+      }),
+    );
   });
 
   it("keeps Done disabled and reports an error when copying fails", async () => {

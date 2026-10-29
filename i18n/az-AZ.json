@@ -809,7 +809,10 @@
 				"validation": {
 					"nameRequired": "Ad daxil edin",
 					"nameShort": "Ən azı 3 simvol istifadə edin"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} üçün əməliyyatlar",
@@ -817,7 +820,9 @@
 				"expired": "Müddəti bitib: {{date}}",
 				"expiredBadge": "Müddəti bitib",
 				"expires": "Müddəti bitir: {{date}}",
-				"neverExpires": "Müddəti bitmir"
+				"neverExpires": "Müddəti bitmir",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

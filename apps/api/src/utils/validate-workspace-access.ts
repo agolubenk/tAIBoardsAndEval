@@ -1,6 +1,10 @@
 import { and, eq, or } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db, { schema } from "../database";
+import {
+  parseApiKeyWorkspaceScope,
+  scopeAllowsWorkspace,
+} from "./api-key-workspace-scope";
 import { hasInstanceAdminRole } from "./instance-admin-role";
 
 type ValidateWorkspaceAccessOptions = {
@@ -13,9 +17,14 @@ export async function validateWorkspaceAccess(
   apiKeyId?: string,
   options: ValidateWorkspaceAccessOptions = {},
 ): Promise<void> {
+  const notFound = () =>
+    new HTTPException(404, {
+      message: options.notFoundMessage ?? "Workspace not found",
+    });
+
   if (apiKeyId) {
     const apiKey = await db
-      .select()
+      .select({ metadata: schema.apikeyTable.metadata })
       .from(schema.apikeyTable)
       .where(
         and(
@@ -34,12 +43,12 @@ export async function validateWorkspaceAccess(
         message: "Invalid API key for this workspace",
       });
     }
+    // t-boards: R-002. A workspace-scoped key sees other workspaces as absent.
+    const scope = parseApiKeyWorkspaceScope(apiKey[0]?.metadata);
+    if (!scopeAllowsWorkspace(scope, workspaceId)) {
+      throw notFound();
+    }
   }
-
-  const notFound = () =>
-    new HTTPException(404, {
-      message: options.notFoundMessage ?? "Workspace not found",
-    });
 
   const [user] = await db
     .select({ role: schema.userTable.role })

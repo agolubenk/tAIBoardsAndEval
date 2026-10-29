@@ -3,6 +3,7 @@ import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import db, { schema } from "../database";
 import { assertProjectAccess } from "../project-access/assert-project-access";
+import { assertKeyReachesWorkspace } from "./api-key-workspace-scope";
 import { validateWorkspaceAccess } from "./validate-workspace-access";
 
 type LookupResource =
@@ -154,6 +155,7 @@ export function workspaceAccessMiddleware(
     const apiKey = c.get("apiKey");
     const apiKeyId = apiKey?.id;
 
+    assertKeyReachesWorkspace(c, workspaceId, notFoundMessage);
     await validateWorkspaceAccess(userId, workspaceId, apiKeyId, {
       notFoundMessage,
     });

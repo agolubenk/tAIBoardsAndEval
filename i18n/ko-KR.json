@@ -801,7 +801,10 @@
 				"validation": {
 					"nameRequired": "이름을 입력하세요",
 					"nameShort": "3자 이상 입력하세요"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} 메뉴",
@@ -809,7 +812,9 @@
 				"expired": "{{date}} 만료됨",
 				"expiredBadge": "만료됨",
 				"expires": "{{date}} 만료",
-				"neverExpires": "만료 없음"
+				"neverExpires": "만료 없음",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

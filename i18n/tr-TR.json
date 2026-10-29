@@ -809,7 +809,10 @@
 				"validation": {
 					"nameRequired": "Bir ad girin",
 					"nameShort": "En az 3 karakter kullanın"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} için işlemler",
@@ -817,7 +820,9 @@
 				"expired": "{{date}} tarihinde sona erdi",
 				"expiredBadge": "Süresi doldu",
 				"expires": "{{date}} tarihinde sona erer",
-				"neverExpires": "Süresi dolmaz"
+				"neverExpires": "Süresi dolmaz",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

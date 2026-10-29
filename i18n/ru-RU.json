@@ -825,7 +825,10 @@
 				"validation": {
 					"nameRequired": "Введите название",
 					"nameShort": "Используйте не менее 3 символов"
-				}
+				},
+				"workspaceLabel": "Продукт",
+				"workspaceAll": "Все мои продукты",
+				"workspaceDescription": "Ключ для одного продукта не видит другие продукты, уведомления и настройки аккаунта."
 			},
 			"row": {
 				"actions": "Действия для {{name}}",
@@ -833,7 +836,9 @@
 				"expired": "Истёк {{date}}",
 				"expiredBadge": "Истёк",
 				"expires": "Истекает {{date}}",
-				"neverExpires": "Бессрочный"
+				"neverExpires": "Бессрочный",
+				"workspaceBadge": "Только {{workspace}}",
+				"workspaceUnknown": "Один продукт"
 			}
 		},
 		"workspaceGeneral": {

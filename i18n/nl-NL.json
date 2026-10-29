@@ -687,7 +687,10 @@
 				"validation": {
 					"nameRequired": "Voer een naam in",
 					"nameShort": "Gebruik minimaal 3 tekens"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Acties voor {{name}}",
@@ -695,7 +698,9 @@
 				"expired": "Verlopen op {{date}}",
 				"expiredBadge": "Verlopen",
 				"expires": "Verloopt op {{date}}",
-				"neverExpires": "Verloopt nooit"
+				"neverExpires": "Verloopt nooit",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

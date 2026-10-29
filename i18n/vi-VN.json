@@ -801,7 +801,10 @@
 				"validation": {
 					"nameRequired": "Nhập tên",
 					"nameShort": "Dùng ít nhất 3 ký tự"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Thao tác cho {{name}}",
@@ -809,7 +812,9 @@
 				"expired": "Đã hết hạn ngày {{date}}",
 				"expiredBadge": "Đã hết hạn",
 				"expires": "Hết hạn ngày {{date}}",
-				"neverExpires": "Không bao giờ hết hạn"
+				"neverExpires": "Không bao giờ hết hạn",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

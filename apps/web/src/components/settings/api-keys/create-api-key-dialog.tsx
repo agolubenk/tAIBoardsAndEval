@@ -10,6 +10,11 @@ import {
   isApiKeyExpiration,
 } from "@/components/settings/api-keys/api-key-expirations";
 import { ApiKeyExpiryToggle } from "@/components/settings/api-keys/api-key-expiry-toggle";
+import {
+  ALL_WORKSPACES,
+  apiKeyWorkspaceMetadata,
+} from "@/components/settings/api-keys/api-key-workspace";
+import { ApiKeyWorkspaceSelect } from "@/components/settings/api-keys/api-key-workspace-select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,6 +43,7 @@ import type { CreateApiKeyResponse } from "@/types/api-key";
 type FormValues = {
   name: string;
   expiresIn: ApiKeyExpiration;
+  workspace: string;
 };
 
 type CreateApiKeyDialogProps = {
@@ -54,6 +60,7 @@ export function CreateApiKeyDialog({
   const { t } = useTranslation();
   const { mutateAsync: createApiKey, isPending } = useCreateApiKey();
   const expiresLabelId = useId();
+  const workspaceLabelId = useId();
 
   const schema = useMemo(
     () =>
@@ -64,13 +71,18 @@ export function CreateApiKeyDialog({
           .min(1, t("settings:apiKey.createDialog.validation.nameRequired"))
           .min(3, t("settings:apiKey.createDialog.validation.nameShort")),
         expiresIn: z.custom<ApiKeyExpiration>(isApiKeyExpiration),
+        workspace: z.string().min(1),
       }),
     [t],
   );
 
   const form = useForm<FormValues>({
     resolver: standardSchemaResolver(schema),
-    defaultValues: { name: "", expiresIn: DEFAULT_API_KEY_EXPIRATION },
+    defaultValues: {
+      name: "",
+      expiresIn: DEFAULT_API_KEY_EXPIRATION,
+      workspace: ALL_WORKSPACES,
+    },
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -78,6 +90,7 @@ export function CreateApiKeyDialog({
       const result = await createApiKey({
         name: data.name,
         expiresIn: getExpirationSeconds(data.expiresIn),
+        metadata: apiKeyWorkspaceMetadata(data.workspace),
       });
       form.reset();
       onSuccess(result);
@@ -154,6 +167,26 @@ export function CreateApiKeyDialog({
                       onChange={field.onChange}
                       disabled={isPending}
                     />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="workspace"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label id={workspaceLabelId} render={<span />}>
+                      {t("settings:apiKey.createDialog.workspaceLabel")}
+                    </Label>
+                    <ApiKeyWorkspaceSelect
+                      labelledBy={workspaceLabelId}
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                    <FormDescription className="text-xs">
+                      {t("settings:apiKey.createDialog.workspaceDescription")}
+                    </FormDescription>
                   </FormItem>
                 )}
               />

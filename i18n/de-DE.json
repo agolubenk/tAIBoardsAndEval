@@ -886,7 +886,10 @@
 				"validation": {
 					"nameRequired": "Gib einen Namen ein",
 					"nameShort": "Verwende mindestens 3 Zeichen"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Aktionen für {{name}}",
@@ -894,7 +897,9 @@
 				"expired": "Abgelaufen am {{date}}",
 				"expiredBadge": "Abgelaufen",
 				"expires": "Läuft am {{date}} ab",
-				"neverExpires": "Läuft nie ab"
+				"neverExpires": "Läuft nie ab",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

@@ -14,6 +14,10 @@ import {
 } from "../../project/project-key";
 import { projectAccessCondition } from "../../project-access/project-access-condition";
 import { TICKET_ID_PATTERN } from "../ticket-id";
+import {
+  type ApiKeyWorkspaceScope,
+  isWorkspaceScoped,
+} from "../../utils/api-key-workspace-scope";
 import { hasInstanceAdminRole } from "../../utils/instance-admin-role";
 import getTask from "./get-task";
 
@@ -24,7 +28,13 @@ export default async function getTaskByTicketId(
     workspaceId,
     workspaceSlug,
     projectId,
-  }: { workspaceId?: string; workspaceSlug?: string; projectId?: string } = {},
+    apiKeyScope,
+  }: {
+    workspaceId?: string;
+    workspaceSlug?: string;
+    projectId?: string;
+    apiKeyScope?: ApiKeyWorkspaceScope;
+  } = {},
 ) {
   const match = ticketId.normalize("NFKC").match(TICKET_ID_PATTERN);
   const projectKey = match?.[1];
@@ -84,6 +94,12 @@ export default async function getTaskByTicketId(
           ? inArray(projectTable.workspaceId, slugWorkspaceIds)
           : undefined,
         projectId ? eq(projectTable.id, projectId) : undefined,
+        isWorkspaceScoped(apiKeyScope)
+          ? eq(
+              projectTable.workspaceId,
+              apiKeyScope.kind === "workspace" ? apiKeyScope.workspaceId : "",
+            )
+          : undefined,
         hasInstanceAdminRole(user?.role)
           ? undefined
           : inArray(projectTable.workspaceId, memberWorkspaces),

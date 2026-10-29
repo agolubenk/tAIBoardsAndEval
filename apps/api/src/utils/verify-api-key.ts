@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { and, eq, exists, gt, isNull, or, sql } from "drizzle-orm";
 import db, { schema } from "../database";
 import { evaluateApiKeyUsage } from "./api-key-usage";
+import { parseApiKeyWorkspaceScope } from "./api-key-workspace-scope";
 import { notBannedCondition } from "./user-ban";
 
 async function hashApiKey(key: string): Promise<string> {
@@ -83,6 +84,7 @@ async function checkApiKey(hashedKey: string) {
       enabled: apiKey.enabled ?? false,
       permissions: parsePermissions(apiKey.permissions),
       metadata: null,
+      workspaceScope: parseApiKeyWorkspaceScope(apiKey.metadata),
     },
   };
 }
@@ -150,6 +152,7 @@ export async function verifyApiKey(
         metadata: apiKey.metadata
           ? (JSON.parse(apiKey.metadata) as Record<string, unknown>)
           : null,
+        workspaceScope: parseApiKeyWorkspaceScope(apiKey.metadata),
       },
     };
   });

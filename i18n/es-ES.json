@@ -692,7 +692,10 @@
 				"validation": {
 					"nameRequired": "Introduce un nombre",
 					"nameShort": "Usa al menos 3 caracteres"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "Acciones para {{name}}",
@@ -700,7 +703,9 @@
 				"expired": "Caducó el {{date}}",
 				"expiredBadge": "Caducada",
 				"expires": "Caduca el {{date}}",
-				"neverExpires": "No caduca nunca"
+				"neverExpires": "No caduca nunca",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

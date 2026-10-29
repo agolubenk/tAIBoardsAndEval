@@ -801,7 +801,10 @@
 				"validation": {
 					"nameRequired": "名前を入力してください",
 					"nameShort": "3 文字以上で入力してください"
-				}
+				},
+				"workspaceAll": "All my workspaces",
+				"workspaceDescription": "A key for one workspace can't see your other workspaces, notifications, or account settings.",
+				"workspaceLabel": "Workspace"
 			},
 			"row": {
 				"actions": "{{name}} の操作",
@@ -809,7 +812,9 @@
 				"expired": "期限切れ: {{date}}",
 				"expiredBadge": "期限切れ",
 				"expires": "有効期限: {{date}}",
-				"neverExpires": "無期限"
+				"neverExpires": "無期限",
+				"workspaceBadge": "{{workspace}} only",
+				"workspaceUnknown": "One workspace"
 			}
 		},
 		"workspaceGeneral": {

@@ -35,6 +35,7 @@ import {
   validateDateRange,
 } from "../utils/validate-dates";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
+import { requestWorkspaceScope } from "../utils/api-key-workspace-scope";
 import bulkUpdateTasks from "./controllers/bulk-update-tasks";
 import createTask from "./controllers/create-task";
 import deleteTask from "./controllers/delete-task";
@@ -934,7 +935,10 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(getTaskByTicketIdRoute, async (c) => {
     const { ticketId } = c.req.valid("param");
     return c.json(
-      await getTaskByTicketId(ticketId, c.get("userId"), c.req.valid("query")),
+      await getTaskByTicketId(ticketId, c.get("userId"), {
+        ...c.req.valid("query"),
+        apiKeyScope: requestWorkspaceScope(c),
+      }),
       200,
     );
   })
