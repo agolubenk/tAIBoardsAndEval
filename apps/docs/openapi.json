@@ -5880,6 +5880,175 @@
           "step"
         ]
       },
+      "ForestJournal": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "actorKind": {
+                  "type": "string"
+                },
+                "actorName": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                },
+                "targetType": {
+                  "type": "string"
+                },
+                "targetId": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "taskNumber": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "taskTitle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "projectId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "projectName": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "actorKind",
+                "actorName",
+                "action",
+                "targetType",
+                "targetId",
+                "outcome",
+                "detail",
+                "createdAt",
+                "taskNumber",
+                "taskTitle",
+                "projectId",
+                "projectName"
+              ]
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "ForestFires": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "severity": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "hot": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "taskId",
+                "number",
+                "title",
+                "status",
+                "priority",
+                "kind",
+                "severity",
+                "projectId",
+                "projectName",
+                "createdAt",
+                "hot"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total",
+          "items"
+        ]
+      },
       "NotebookSources": {
         "type": "object",
         "properties": {
@@ -25756,6 +25925,182 @@
           },
           "403": {
             "description": "Missing task:update permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/forest/{workspaceId}/journal": {
+      "get": {
+        "operationId": "listForestJournal",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "List what agents did",
+        "description": "The journal of actions on the board, refused ones included, newest first. Entries about cards of projects you may not open are left out; so are entries about removed cards unless you may open every project.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "required": false,
+            "name": "take",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "agent",
+                "all"
+              ],
+              "description": "agent (default) shows agents only; all adds people."
+            },
+            "required": false,
+            "description": "agent (default) shows agents only; all adds people.",
+            "name": "actor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "denied"
+              ],
+              "description": "denied keeps only refused actions."
+            },
+            "required": false,
+            "description": "denied keeps only refused actions.",
+            "name": "outcome",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of the journal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestJournal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid cursor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/forest/{workspaceId}/fires": {
+      "get": {
+        "operationId": "listForestFires",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "List what is on fire",
+        "description": "Open bugs and urgent cards you may open: critical and high bugs first, then urgent cards, then other bugs, oldest first in each group. `total` counts them all.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "required": false,
+            "name": "take",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Open bugs and urgent cards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestFires"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing task:read permission",
             "content": {
               "application/json": {
                 "schema": {

@@ -3651,13 +3651,30 @@
 				}
 			},
 			"hints": {
+				"pulse": "What needs you now: «да» requests and sessions waiting for an answer, open bugs and urgent cards, and what was refused in the last day.",
 				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
 				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
 				"sessions": "What each session is doing: its step, branch and what it waits for. Agents record it after each step; a session silent for 30 days disappears.",
+				"journal": "What agents and people did on the board, newest first. Entries about cards of projects you may not open are left out.",
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
 				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
 				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs."
+			},
+			"pulse": {
+				"fires": "What is on fire",
+				"firesEmpty": "No open bugs or urgent cards.",
+				"hot": "Hot",
+				"bug": "Bug",
+				"bugSeverity": "Bug: {{severity}}",
+				"urgent": "Urgent",
+				"since": "open since {{when}}",
+				"waiting": "Waiting for you",
+				"waitingEmpty": "Nothing waits for an answer.",
+				"toApprovals": "All requests",
+				"denied": "Refused in the last day",
+				"deniedEmpty": "Nothing was refused in the last day.",
+				"toJournal": "Open the feed"
 			},
 			"leases": {
 				"empty": "Nobody holds a card right now.",
@@ -3669,6 +3686,17 @@
 				"branch": "Branch: {{branch}}",
 				"waiting": "Waiting for: {{waiting}}",
 				"updated": "updated {{when}}"
+			},
+			"journal": {
+				"denied": "Refused",
+				"target": "{{type}} {{id}}",
+				"actor": {
+					"agent": "Agents",
+					"all": "Everyone"
+				},
+				"deniedOnly": "Refusals only",
+				"empty": "Nothing has happened here yet.",
+				"loadMore": "Show more"
 			},
 			"loadError": "Could not load this list. Try again in a moment.",
 			"logs": {
@@ -3697,9 +3725,11 @@
 				"trees": "Trees: {{trees}}"
 			},
 			"tabs": {
+				"pulse": "Pulse",
 				"approvals": "«Да» requests",
 				"leases": "Leases",
 				"sessions": "Sessions",
+				"journal": "Feed",
 				"logs": "Logs and seeds",
 				"sectors": "Sectors",
 				"trees": "Trees",

@@ -19,7 +19,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { t } = useTranslation();
   const { workspaceId } = Route.useParams();
-  const { tab = "trees" } = Route.useSearch();
+  const { tab = "pulse" } = Route.useSearch();
   const navigate = Route.useNavigate();
 
   return (

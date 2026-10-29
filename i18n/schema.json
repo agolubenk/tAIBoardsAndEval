@@ -14680,6 +14680,9 @@
 							"type": "object",
 							"additionalProperties": false,
 							"properties": {
+								"pulse": {
+									"type": "string"
+								},
 								"trees": {
 									"type": "string"
 								},
@@ -14698,17 +14701,22 @@
 								"sessions": {
 									"type": "string"
 								},
+								"journal": {
+									"type": "string"
+								},
 								"mirror": {
 									"type": "string"
 								}
 							},
 							"required": [
+								"pulse",
 								"trees",
 								"sectors",
 								"logs",
 								"approvals",
 								"leases",
 								"sessions",
+								"journal",
 								"mirror"
 							]
 						},
@@ -14716,6 +14724,9 @@
 							"type": "object",
 							"additionalProperties": false,
 							"properties": {
+								"pulse": {
+									"type": "string"
+								},
 								"trees": {
 									"type": "string"
 								},
@@ -14734,18 +14745,83 @@
 								"sessions": {
 									"type": "string"
 								},
+								"journal": {
+									"type": "string"
+								},
 								"mirror": {
 									"type": "string"
 								}
 							},
 							"required": [
+								"pulse",
 								"trees",
 								"sectors",
 								"logs",
 								"approvals",
 								"leases",
 								"sessions",
+								"journal",
 								"mirror"
+							]
+						},
+						"pulse": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"fires": {
+									"type": "string"
+								},
+								"firesEmpty": {
+									"type": "string"
+								},
+								"hot": {
+									"type": "string"
+								},
+								"bug": {
+									"type": "string"
+								},
+								"bugSeverity": {
+									"type": "string"
+								},
+								"urgent": {
+									"type": "string"
+								},
+								"since": {
+									"type": "string"
+								},
+								"waiting": {
+									"type": "string"
+								},
+								"waitingEmpty": {
+									"type": "string"
+								},
+								"toApprovals": {
+									"type": "string"
+								},
+								"denied": {
+									"type": "string"
+								},
+								"deniedEmpty": {
+									"type": "string"
+								},
+								"toJournal": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"fires",
+								"firesEmpty",
+								"hot",
+								"bug",
+								"bugSeverity",
+								"urgent",
+								"since",
+								"waiting",
+								"waitingEmpty",
+								"toApprovals",
+								"denied",
+								"deniedEmpty",
+								"toJournal"
 							]
 						},
 						"trees": {
@@ -15130,6 +15206,48 @@
 							},
 							"required": ["empty", "branch", "waiting", "updated"]
 						},
+						"journal": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"denied": {
+									"type": "string"
+								},
+								"target": {
+									"type": "string"
+								},
+								"actor": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"agent": {
+											"type": "string"
+										},
+										"all": {
+											"type": "string"
+										}
+									},
+									"required": ["agent", "all"]
+								},
+								"deniedOnly": {
+									"type": "string"
+								},
+								"empty": {
+									"type": "string"
+								},
+								"loadMore": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"denied",
+								"target",
+								"actor",
+								"deniedOnly",
+								"empty",
+								"loadMore"
+							]
+						},
 						"mirror": {
 							"type": "object",
 							"additionalProperties": false,
@@ -15336,6 +15454,7 @@
 						"loadError",
 						"tabs",
 						"hints",
+						"pulse",
 						"trees",
 						"sectors",
 						"logs",
@@ -15344,6 +15463,7 @@
 						"approvals",
 						"leases",
 						"sessions",
+						"journal",
 						"mirror"
 					]
 				},

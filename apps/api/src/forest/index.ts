@@ -7,6 +7,7 @@ import { historyRoutes } from "./routes/history-routes";
 import { leaseRoutes } from "./routes/lease-routes";
 import { memoryRoutes } from "./routes/memory-routes";
 import { mirrorRoutes } from "./routes/mirror-routes";
+import { pulseRoutes } from "./routes/pulse-routes";
 import { readRoutes } from "./routes/read-routes";
 import { treeRoutes } from "./routes/tree-routes";
 import { workStateRoutes } from "./routes/work-state-routes";
@@ -15,7 +16,8 @@ import { workStateRoutes } from "./routes/work-state-routes";
 // felling into logs and seeds, sectors, growing from seeds, and the card
 // fields Notion keeps (R-024), the card history with rollback (R-023), and
 // the context pack an agent reads to pick up a card (R-031), and the reads
-// the forest page shows: trees with their branches, live leases.
+// the forest page shows: trees with their branches, live leases, the
+// agents' feed and what is on fire (R-090).
 const forest = apiRouter<BaseVariables & { workspaceId: string }>()
   .route("/", leaseRoutes)
   .route("/", approvalRoutes)
@@ -27,6 +29,7 @@ const forest = apiRouter<BaseVariables & { workspaceId: string }>()
   .route("/", memoryRoutes)
   .route("/", mirrorRoutes)
   .route("/", treeRoutes)
-  .route("/", workStateRoutes);
+  .route("/", workStateRoutes)
+  .route("/", pulseRoutes);
 
 export default forest;

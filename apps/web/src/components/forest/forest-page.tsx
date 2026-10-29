@@ -3,9 +3,11 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import useApprovals from "@/hooks/queries/forest/use-approvals";
 import { ApprovalsTab } from "./approvals-tab";
 import { FOREST_TABS, type ForestTab, isForestTab } from "./forest-types";
+import { JournalTab } from "./journal-tab";
 import { LeasesTab } from "./leases-tab";
 import { LogsTab } from "./logs-tab";
 import { MirrorTab } from "./mirror-tab";
+import { PulseTab } from "./pulse-tab";
 import { SectorsTab } from "./sectors-tab";
 import { SessionsTab } from "./sessions-tab";
 import { TreesTab } from "./trees-tab";
@@ -16,10 +18,10 @@ type ForestPageProps = {
   onTabChange: (tab: ForestTab) => void;
 };
 
-// Trees, sectors, felled logs with their seeds, «да» requests and leases of a
-// workspace in one place (R-028, R-029, N-011), what each session is doing
-// (R-037), and the Notion mirror's
-// reconciliation runs (AC-002, AC-003).
+// What is on fire and waits for the owner (R-090), trees, sectors, felled logs
+// with their seeds, «да» requests and leases of a workspace in one place
+// (R-028, R-029, N-011), what each session is doing (R-037), the agents' feed
+// (R-090), and the Notion mirror's reconciliation runs (AC-002, AC-003).
 export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
   const { t } = useTranslation();
   const { data: pending } = useApprovals(workspaceId, "pending");
@@ -47,6 +49,9 @@ export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
           ))}
         </TabsList>
       </div>
+      <TabsPanel value="pulse">
+        <PulseTab workspaceId={workspaceId} onTabChange={onTabChange} />
+      </TabsPanel>
       <TabsPanel value="trees">
         <TreesTab workspaceId={workspaceId} />
       </TabsPanel>
@@ -64,6 +69,9 @@ export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
       </TabsPanel>
       <TabsPanel value="sessions">
         <SessionsTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="journal">
+        <JournalTab workspaceId={workspaceId} />
       </TabsPanel>
       <TabsPanel value="mirror">
         <MirrorTab workspaceId={workspaceId} />
