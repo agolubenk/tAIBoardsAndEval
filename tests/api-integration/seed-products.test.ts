@@ -3,11 +3,15 @@ import { resolve } from "node:path";
 import { and, eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
-import { cardMetaTable } from "../../apps/api/src/database/forest-schema";
+import {
+  cardHistoryTable,
+  cardMetaTable,
+} from "../../apps/api/src/database/forest-schema";
 import { plannedLinks } from "../../apps/api/src/seed/seed-card-links";
 import {
   type ProductsPlan,
   productsPlanSchema,
+  SEED_ACTOR,
   seedProducts,
 } from "../../apps/api/src/seed/seed-products";
 import { resetTestDatabase } from "./helpers/database";
@@ -49,6 +53,45 @@ const insertOwner = () =>
     .insert(schema.userTable)
     .values({ name: "admin", email: OWNER, emailVerified: true })
     .returning();
+
+const card = (key: string, extra: object = {}) => ({
+  key,
+  title: key,
+  status: "to-do",
+  priority: "low",
+  ...extra,
+});
+const mini = (...cards: ReturnType<typeof card>[]): ProductsPlan =>
+  productsPlanSchema.parse({
+    version: "test",
+    products: [
+      {
+        slug: "mini",
+        name: "Mini",
+        projects: [{ key: "TB", name: "TB", icon: "Box", cards }],
+      },
+    ],
+  });
+
+const taskOf = async (key: string) => {
+  const [task] = await db
+    .select({
+      id: schema.taskTable.id,
+      title: schema.taskTable.title,
+      description: schema.taskTable.description,
+      status: schema.taskTable.status,
+      priority: schema.taskTable.priority,
+      columnSlug: schema.columnTable.slug,
+    })
+    .from(cardMetaTable)
+    .innerJoin(schema.taskTable, eq(schema.taskTable.id, cardMetaTable.taskId))
+    .leftJoin(
+      schema.columnTable,
+      eq(schema.columnTable.id, schema.taskTable.columnId),
+    )
+    .where(eq(cardMetaTable.backlogId, key));
+  return task;
+};
 
 describe("API integration: products seed", () => {
   beforeEach(async () => {
@@ -164,7 +207,11 @@ describe("API integration: products seed", () => {
     const second = await seedProducts(plan(), OWNER);
     expect(second.workspaces.created).toEqual([]);
     expect(second.projects.created).toEqual([]);
-    expect(second.cards).toEqual({ created: 0, existing: cardCount });
+    expect(second.cards).toEqual({
+      created: 0,
+      existing: cardCount,
+      synced: 0,
+    });
     expect(second.agentFields).toEqual({ filled: 0 });
     expect(second.links).toEqual({
       created: 0,
@@ -185,25 +232,6 @@ describe("API integration: products seed", () => {
 
   it("fills agent fields only where empty and keeps a parent set on the board", async () => {
     await insertOwner();
-    const card = (key: string, extra: object = {}) => ({
-      key,
-      title: key,
-      status: "to-do",
-      priority: "low",
-      ...extra,
-    });
-    const mini = (...cards: ReturnType<typeof card>[]): ProductsPlan =>
-      productsPlanSchema.parse({
-        version: "test",
-        products: [
-          {
-            slug: "mini",
-            name: "Mini",
-            projects: [{ key: "TB", name: "TB", icon: "Box", cards }],
-          },
-        ],
-      });
-
     const first = await seedProducts(
       mini(
         card("TB-001"),
@@ -256,5 +284,69 @@ describe("API integration: products seed", () => {
       skipped: ["TB-001 subtask TB-002: card has another parent"],
     });
     expect(await subtaskParents("TB-002")).toEqual(["TB-003"]);
+  });
+
+  it("moves an untouched seeded card to the plan and leaves an edited one", async () => {
+    await insertOwner();
+    await seedProducts(
+      mini(
+        card("TB-001", { description: "Начало." }),
+        card("TB-002"),
+        card("TB-003"),
+      ),
+      OWNER,
+    );
+    // A person drags TB-002 to in-progress: kaneo's route leaves no actor.
+    const two = await taskOf("TB-002");
+    await db
+      .update(schema.taskTable)
+      .set({ status: "in-progress" })
+      .where(eq(schema.taskTable.id, two?.id ?? ""));
+
+    const next = mini(
+      card("TB-001", {
+        description: "Начало.\n\nСессии: 2c",
+        status: "done",
+        priority: "high",
+      }),
+      card("TB-002", { status: "done" }),
+      card("TB-003"),
+    );
+    const second = await seedProducts(next, OWNER);
+    expect(second.cards).toEqual({ created: 0, existing: 3, synced: 1 });
+    expect(await taskOf("TB-001")).toMatchObject({
+      description: "Начало.\n\nСессии: 2c",
+      status: "done",
+      columnSlug: "done",
+      priority: "high",
+    });
+    expect(await taskOf("TB-002")).toMatchObject({ status: "in-progress" });
+
+    // The sync is in the card's history under the seed, so it can be undone,
+    // and a later plan still reaches the card.
+    const one = await taskOf("TB-001");
+    const history = await db
+      .select({ actorId: cardHistoryTable.actorId })
+      .from(cardHistoryTable)
+      .where(
+        and(
+          eq(cardHistoryTable.taskId, one?.id ?? ""),
+          eq(cardHistoryTable.kind, "task"),
+        ),
+      );
+    expect(history).toEqual([{ actorId: SEED_ACTOR }]);
+    const third = await seedProducts(
+      mini(
+        card("TB-001", { status: "in-review", priority: "high" }),
+        card("TB-002", { status: "done" }),
+        card("TB-003"),
+      ),
+      OWNER,
+    );
+    expect(third.cards.synced).toBe(1);
+    expect(await taskOf("TB-001")).toMatchObject({
+      status: "in-review",
+      description: "",
+    });
   });
 });

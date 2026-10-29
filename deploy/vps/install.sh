@@ -174,8 +174,8 @@ seed_admin() {
   "${compose[@]}" exec -T app node /app/apps/api/dist/seed-local-admin.js 2>&1 | tail -3
 }
 
-# Products and their starting cards (seed/products.json). Only adds what is
-# missing, so an update never undoes edits made in the UI.
+# Products and their starting cards (seed/products.json). Adds what is missing
+# and brings cards nobody has edited to the plan; an edit made in the UI stays.
 seed_products() {
   [ -f "$here/seed/products.json" ] || {
     log "нет seed/products.json — продукты не трогаю"

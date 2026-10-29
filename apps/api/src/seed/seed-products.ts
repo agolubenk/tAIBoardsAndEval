@@ -13,19 +13,21 @@ import type {
   ProductsPlan,
 } from "./products-plan-schema";
 import { type LinkReport, seedCardLinks } from "./seed-card-links";
+import { syncSeededCards } from "./sync-seeded-cards";
 
 export { type ProductsPlan, productsPlanSchema } from "./products-plan-schema";
 
 // Products (spec: a product is a workspace with a hard data boundary, its
 // projects are repositories) and their starting cards, from a plan kept in git
-// (deploy/vps/seed/products.json). Only adds what is missing: a card already
-// seeded keeps whatever people did to it since, matched by its backlog id.
+// (deploy/vps/seed/products.json). Adds what is missing; a card already seeded
+// keeps whatever people did to it since, matched by its backlog id, and only a
+// card nobody has edited follows the plan (sync-seeded-cards).
 export const SEED_ACTOR = "seed:products";
 
 export type SeedReport = {
   workspaces: { created: string[]; existing: string[] };
   projects: { created: string[]; existing: string[] };
-  cards: { created: number; existing: number };
+  cards: { created: number; existing: number; synced: number };
   agentFields: { filled: number };
   links: LinkReport;
   sectors: number;
@@ -201,7 +203,7 @@ export async function seedProducts(
   const report: SeedReport = {
     workspaces: { created: [], existing: [] },
     projects: { created: [], existing: [] },
-    cards: { created: 0, existing: 0 },
+    cards: { created: 0, existing: 0, synced: 0 },
     agentFields: { filled: 0 },
     links: { created: 0, existing: 0, skipped: [] },
     sectors: 0,
@@ -224,6 +226,13 @@ export async function seedProducts(
           )
       : [];
     const present = new Set(seeded.map((row) => row.backlogId));
+    report.cards.synced += await syncSeededCards(
+      workspace.id,
+      product.projects
+        .flatMap((p) => p.cards)
+        .filter((c) => present.has(c.key)),
+      SEED_ACTOR,
+    );
 
     for (const planned of product.projects) {
       const { project, created: projectCreated } = await ensureProject(

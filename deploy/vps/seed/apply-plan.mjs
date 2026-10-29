@@ -8,6 +8,9 @@
 // board still holds the planned text's beginning: a text someone rewrote stays.
 // Cards are matched by the plan key (card meta backlogId), never by number or
 // title, so cards added by hand on the board are left alone.
+// An API key is an agent to the guard: it moves no card to done and rewrites no
+// seeded text without the owner's «да». On the VPS the seed (install.sh) brings
+// untouched cards to the plan; this is for boards without that shell.
 // Dry run by default; --apply writes.
 //   T_BOARDS_API_KEY=… node apply-plan.mjs [--apply] [--product aiboards-eval]
 import { readFileSync } from "node:fs";
