@@ -94,6 +94,28 @@ function linkIssues(product: PlannedProduct) {
   }
   const cycle = parentCycle(cards);
   if (cycle) issues.push(`${cycle}: parent chain loops`);
+  issues.push(...repeatedLinks(cards));
+  return issues;
+}
+
+// The seed treats a link in either direction as the same link, so a pair
+// listed twice (often once from each card) would show up as already kept.
+function repeatedLinks(cards: PlannedCard[]) {
+  const seen = new Set<string>();
+  const issues: string[] = [];
+  for (const card of cards) {
+    const links = [
+      ...(card.parent ? [["subtask", card.parent]] : []),
+      ...card.blocks.map((key) => ["blocks", key]),
+      ...card.related.map((key) => ["related", key]),
+    ];
+    for (const [type, other] of links) {
+      const id = `${type}:${[card.key, other].sort().join("|")}`;
+      if (seen.has(id))
+        issues.push(`${card.key}: ${type} link to ${other} is listed twice`);
+      seen.add(id);
+    }
+  }
   return issues;
 }
 

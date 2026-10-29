@@ -90,6 +90,21 @@ describe("productsPlanSchema", () => {
     ).toEqual(["TB-001: parent chain loops"]);
   });
 
+  it("rejects a link listed twice, from either card", () => {
+    expect(
+      issues(
+        plan(
+          card("TB-001", { related: ["TB-002"], blocks: ["TB-003"] }),
+          card("TB-002", { related: ["TB-001"] }),
+          card("TB-003", { parent: "TB-001", blocks: ["TB-001"] }),
+        ),
+      ),
+    ).toEqual([
+      "TB-002: related link to TB-001 is listed twice",
+      "TB-003: blocks link to TB-001 is listed twice",
+    ]);
+  });
+
   it("rejects fields the plan does not know", () => {
     expect(issues(plan(card("TB-001", { backlogId: "TB-001" })))).toHaveLength(
       1,
