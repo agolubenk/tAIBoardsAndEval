@@ -3537,6 +3537,7 @@
 			"hints": {
 				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
 				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
+				"sessions": "What each session is doing: its step, branch and what it waits for. Agents record it after each step; a session silent for 30 days disappears.",
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
 				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
@@ -3546,6 +3547,12 @@
 				"empty": "Nobody holds a card right now.",
 				"group": "Group: {{group}}",
 				"window": "taken {{taken}}, ends {{expires}}"
+			},
+			"sessions": {
+				"empty": "No session has recorded its state yet.",
+				"branch": "Branch: {{branch}}",
+				"waiting": "Waiting for: {{waiting}}",
+				"updated": "updated {{when}}"
 			},
 			"loadError": "Could not load this list. Try again in a moment.",
 			"logs": {
@@ -3576,6 +3583,7 @@
 			"tabs": {
 				"approvals": "«Да» requests",
 				"leases": "Leases",
+				"sessions": "Sessions",
 				"logs": "Logs and seeds",
 				"sectors": "Sectors",
 				"trees": "Trees",

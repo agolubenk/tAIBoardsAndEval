@@ -14695,6 +14695,9 @@
 								"leases": {
 									"type": "string"
 								},
+								"sessions": {
+									"type": "string"
+								},
 								"mirror": {
 									"type": "string"
 								}
@@ -14705,6 +14708,7 @@
 								"logs",
 								"approvals",
 								"leases",
+								"sessions",
 								"mirror"
 							]
 						},
@@ -14727,6 +14731,9 @@
 								"leases": {
 									"type": "string"
 								},
+								"sessions": {
+									"type": "string"
+								},
 								"mirror": {
 									"type": "string"
 								}
@@ -14737,6 +14744,7 @@
 								"logs",
 								"approvals",
 								"leases",
+								"sessions",
 								"mirror"
 							]
 						},
@@ -15103,6 +15111,25 @@
 							},
 							"required": ["empty", "group", "window"]
 						},
+						"sessions": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"empty": {
+									"type": "string"
+								},
+								"branch": {
+									"type": "string"
+								},
+								"waiting": {
+									"type": "string"
+								},
+								"updated": {
+									"type": "string"
+								}
+							},
+							"required": ["empty", "branch", "waiting", "updated"]
+						},
 						"mirror": {
 							"type": "object",
 							"additionalProperties": false,
@@ -15316,6 +15343,7 @@
 						"grow",
 						"approvals",
 						"leases",
+						"sessions",
 						"mirror"
 					]
 				},

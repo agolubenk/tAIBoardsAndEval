@@ -9,6 +9,7 @@ import { memoryRoutes } from "./routes/memory-routes";
 import { mirrorRoutes } from "./routes/mirror-routes";
 import { readRoutes } from "./routes/read-routes";
 import { treeRoutes } from "./routes/tree-routes";
+import { workStateRoutes } from "./routes/work-state-routes";
 
 // t-boards forest model (spec R-026…R-029, N-011): leases, the owner's «да»,
 // felling into logs and seeds, sectors, growing from seeds, and the card
@@ -25,6 +26,7 @@ const forest = apiRouter<BaseVariables & { workspaceId: string }>()
   .route("/", contextRoutes)
   .route("/", memoryRoutes)
   .route("/", mirrorRoutes)
-  .route("/", treeRoutes);
+  .route("/", treeRoutes)
+  .route("/", workStateRoutes);
 
 export default forest;

@@ -4,6 +4,7 @@ import type listLogs from "@/fetchers/forest/list-logs";
 import type listMirrorRuns from "@/fetchers/forest/list-mirror-runs";
 import type listSectors from "@/fetchers/forest/list-sectors";
 import type listTrees from "@/fetchers/forest/list-trees";
+import type listWorkState from "@/fetchers/forest/list-work-state";
 
 export type ForestTree = Awaited<ReturnType<typeof listTrees>>["trees"][number];
 export type ForestSector = Awaited<ReturnType<typeof listSectors>>[number];
@@ -14,6 +15,7 @@ export type ForestApproval = Awaited<
   ReturnType<typeof listApprovals>
 >["items"][number];
 export type ForestLease = Awaited<ReturnType<typeof listLeases>>[number];
+export type ForestSession = Awaited<ReturnType<typeof listWorkState>>[number];
 export type ForestMirror = Awaited<ReturnType<typeof listMirrorRuns>>;
 export type ForestMirrorRun = ForestMirror["runs"][number];
 export type ForestMirrorDatabase = NonNullable<
@@ -26,6 +28,7 @@ export const FOREST_TABS = [
   "logs",
   "approvals",
   "leases",
+  "sessions",
   "mirror",
 ] as const;
 export type ForestTab = (typeof FOREST_TABS)[number];

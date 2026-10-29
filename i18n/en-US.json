@@ -3547,6 +3547,7 @@
 				"logs": "Logs and seeds",
 				"approvals": "«Да» requests",
 				"leases": "Leases",
+				"sessions": "Sessions",
 				"mirror": "Notion mirror"
 			},
 			"hints": {
@@ -3555,6 +3556,7 @@
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
 				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
+				"sessions": "What each session is doing: its step, branch and what it waits for. Agents record it after each step; a session silent for 30 days disappears.",
 				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs."
 			},
 			"trees": {
@@ -3650,6 +3652,12 @@
 				"empty": "Nobody holds a card right now.",
 				"group": "Group: {{group}}",
 				"window": "taken {{taken}}, ends {{expires}}"
+			},
+			"sessions": {
+				"empty": "No session has recorded its state yet.",
+				"branch": "Branch: {{branch}}",
+				"waiting": "Waiting for: {{waiting}}",
+				"updated": "updated {{when}}"
 			},
 			"mirror": {
 				"notConfigured": "The scheduled mirror is not set up for this workspace. Runs appear here once the server has the NOTION_MIRROR_* settings.",

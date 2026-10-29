@@ -419,6 +419,41 @@ export const cardHistoryTable = pgTable(
   ],
 );
 
+// R-037: what each session is doing right now (its step, branch and what it
+// waits for), one row per session, replaced on every write. It used to live
+// in claude-mem work_state; the board owns it now. A row goes with its card.
+export const sessionWorkStateTable = pgTable(
+  "session_work_state",
+  {
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    actorId: text("actor_id").notNull(),
+    actorName: text("actor_name").notNull(),
+    actorKind: text("actor_kind").notNull(),
+    taskId: text("task_id").references(() => taskTable.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    step: text("step").notNull(),
+    branch: text("branch"),
+    waiting: text("waiting"),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.workspaceId, table.actorId] }),
+    index("session_work_state_updated_at_idx").on(
+      table.workspaceId,
+      table.updatedAt,
+    ),
+  ],
+);
+
 // R-034: tools a session took beyond its role, at most five. The key is the
 // role and a hash of the bearer token, never the token itself.
 export const mcpToolGrantTable = pgTable(

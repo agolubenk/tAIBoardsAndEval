@@ -7,6 +7,7 @@ import { LeasesTab } from "./leases-tab";
 import { LogsTab } from "./logs-tab";
 import { MirrorTab } from "./mirror-tab";
 import { SectorsTab } from "./sectors-tab";
+import { SessionsTab } from "./sessions-tab";
 import { TreesTab } from "./trees-tab";
 
 type ForestPageProps = {
@@ -16,7 +17,8 @@ type ForestPageProps = {
 };
 
 // Trees, sectors, felled logs with their seeds, «да» requests and leases of a
-// workspace in one place (R-028, R-029, N-011), and the Notion mirror's
+// workspace in one place (R-028, R-029, N-011), what each session is doing
+// (R-037), and the Notion mirror's
 // reconciliation runs (AC-002, AC-003).
 export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
   const { t } = useTranslation();
@@ -59,6 +61,9 @@ export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
       </TabsPanel>
       <TabsPanel value="leases">
         <LeasesTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="sessions">
+        <SessionsTab workspaceId={workspaceId} />
       </TabsPanel>
       <TabsPanel value="mirror">
         <MirrorTab workspaceId={workspaceId} />

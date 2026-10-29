@@ -12,10 +12,18 @@ const READ = [
   "search",
   "list_task_comments",
   "forest_get_card_meta",
+  "forest_get_card_memory",
+  "forest_list_work_state",
   "notebook_search",
 ] as const;
 
-const LEASE = ["forest_acquire_lease", "forest_release_lease"] as const;
+// A working session takes leases and keeps its state on the board (R-037).
+const LEASE = [
+  "forest_acquire_lease",
+  "forest_release_lease",
+  "forest_set_work_state",
+  "forest_clear_work_state",
+] as const;
 
 export const ROLE_TOOLS = {
   reader: [...READ],

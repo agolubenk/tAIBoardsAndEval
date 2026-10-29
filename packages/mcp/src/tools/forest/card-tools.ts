@@ -68,6 +68,17 @@ export function registerForestCardTools(
   );
 
   registerTool(
+    "forest_get_card_memory",
+    {
+      description:
+        "List claude-mem observations that name the card (its id, Backlog ID, board number or branch): id, type, title and why it matched, not the text. stale: true means the memory worker is down and this is the last copy.",
+      inputSchema: z.object({ workspaceId: id, taskId: id }),
+    },
+    ({ workspaceId, taskId }) =>
+      run(() => forestCall(client, workspaceId, cardPath(taskId, "memory"))),
+  );
+
+  registerTool(
     "forest_set_card_meta",
     {
       description:

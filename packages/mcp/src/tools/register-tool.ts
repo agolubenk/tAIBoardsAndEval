@@ -45,6 +45,8 @@ const READ_TOOLS = new Set([
   "forest_list_sectors",
   "forest_get_card_meta",
   "forest_get_context",
+  "forest_get_card_memory",
+  "forest_list_work_state",
   "notebook_search",
 ]);
 

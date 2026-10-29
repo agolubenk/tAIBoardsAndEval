@@ -21,7 +21,7 @@ export function forestCall(
     body?: unknown;
     session?: string;
     query?: Record<string, unknown>;
-    method?: "POST" | "PUT";
+    method?: "POST" | "PUT" | "DELETE";
   } = {},
 ) {
   const qs = new URLSearchParams();
@@ -34,7 +34,7 @@ export function forestCall(
   return client.json(
     `/api/forest/${encodeURIComponent(workspaceId)}${path}${suffix ? `?${suffix}` : ""}`,
     opts.body === undefined
-      ? { method: "GET", headers }
+      ? { method: opts.method ?? "GET", headers }
       : {
           method: opts.method ?? "POST",
           headers,
