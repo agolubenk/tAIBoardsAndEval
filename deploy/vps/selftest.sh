@@ -111,8 +111,8 @@ log "sign-up refused: HTTP $signup"
 # The VPS runs tls with host networking on the WireGuard address; here the
 # same rendered config listens in a bridge container and reaches the app on
 # the host port.
-sed -e "s|\${TLS_LISTEN}|8443|g" -e "s|\${TLS_DOMAIN}|$domain|g" \
-  -e "s|\${TLS_UPSTREAM}|host.docker.internal:5180|g" "$vps/tls.conf.template" >"$root/tls.conf"
+bash "$vps/render-tls.sh" "$vps/tls.conf.template" "$root/tls.conf" \
+  8443 "$domain" host.docker.internal:5180 || fail "tls.conf not rendered"
 docker run -d --name tb-selftest-tls -p 127.0.0.1:18443:8443 \
   -v "$root/tls.conf:/etc/nginx/nginx.conf:ro" -v "$le_volume:/etc/letsencrypt:ro" \
   nginx:1.27-alpine >/dev/null

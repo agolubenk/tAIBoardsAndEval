@@ -106,11 +106,8 @@ write_files() {
   install -m 0700 "$here/backup-key.sh" "$ROOT/backup-key.sh"
   install -m 0700 "$here/wg-setup.sh" "$ROOT/wg-setup.sh"
   install -m 0700 "$here/mirror-setup.sh" "$ROOT/mirror-setup.sh"
-  sed -e "s|\${TLS_LISTEN}|$WG_ADDR:$TLS_PORT|g" \
-    -e "s|\${TLS_DOMAIN}|$DOMAIN|g" \
-    -e "s|\${TLS_UPSTREAM}|127.0.0.1:5180|g" \
-    "$here/tls.conf.template" >"$ROOT/tls.conf"
-  if grep -q '\${TLS_' "$ROOT/tls.conf"; then die "tls.conf не отрендерился"; fi
+  bash "$here/render-tls.sh" "$here/tls.conf.template" "$ROOT/tls.conf" \
+    "$WG_ADDR:$TLS_PORT" "$DOMAIN" 127.0.0.1:5180 || die "tls.conf не отрендерился"
 
   # Keep the mirror and notebook settings the owner already filled in.
   [ -f "$ROOT/.env" ] && cp -a "$ROOT/.env" "$ROOT/.env.prev"

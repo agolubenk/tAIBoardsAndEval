@@ -21,7 +21,8 @@ name="t-boards-$tag"
 mkdir "$stage/$name"
 
 cp "$vps/compose.yml" "$vps/tls.conf.template" "$vps/backup.sh" \
-  "$vps/install.sh" "$vps/wg-setup.sh" "$vps/backup-key.sh" "$vps/mirror-setup.sh" "$stage/$name/"
+  "$vps/install.sh" "$vps/render-tls.sh" "$vps/wg-setup.sh" "$vps/backup-key.sh" "$vps/mirror-setup.sh" \
+  "$stage/$name/"
 mkdir "$stage/$name/seed"
 cp "$vps/seed/products.json" "$stage/$name/seed/"
 commit="$(git -C "$app" rev-parse --short HEAD)"
@@ -31,7 +32,8 @@ migrations="$(node -e "process.stdout.write(String(require(process.argv[1]).entr
 printf 'TB_TAG=%s\nTB_COMMIT=%s\nTB_MIGRATIONS=%s\n' "$tag" "$commit" "$migrations" >"$stage/$name/VERSION"
 docker save "t-boards:$tag" | gzip -1 >"$stage/$name/image.tar.gz"
 
-tar -C "$stage" -cf "$out/$name.tar" "$name"
+# No macOS xattrs: GNU tar on the VPS warns on every LIBARCHIVE.xattr header.
+COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata -C "$stage" -cf "$out/$name.tar" "$name"
 (cd "$out" && shasum -a 256 "$name.tar" >"$name.tar.sha256")
 ls -l "$out/$name.tar"
 cat "$out/$name.tar.sha256"
