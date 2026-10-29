@@ -50,32 +50,17 @@ describe("productsPlanSchema", () => {
     ]);
   });
 
-  it("checks a card's status against its project's process", () => {
-    const bugs = (status: string) => ({
-      version: "test",
-      products: [
-        {
-          slug: "p",
-          name: "P",
-          projects: [
-            {
-              key: "PB",
-              name: "Ошибки",
-              icon: "Bug",
-              process: "bugs",
-              cards: [card("PB-001", { status })],
-            },
-          ],
-        },
-      ],
-    });
-    expect(issues(bugs("prod-check"))).toEqual([]);
-    expect(issues(bugs("confirmation"))).toEqual([
-      "PB-001: confirmation is not a column of the bugs process",
-    ]);
-    expect(issues(plan(card("TB-001", { status: "fixed" })))).toEqual([
-      "TB-001: fixed is not a column of the tasks process",
-    ]);
+  it("keeps a bug on the board's columns, with no bugs project", () => {
+    const bug = { kind: "bug", severity: "high" };
+    expect(
+      issues(plan(card("TB-001", { ...bug, status: "in-review" }))),
+    ).toEqual([]);
+    expect(
+      issues(plan(card("TB-001", { ...bug, status: "fixed" }))),
+    ).toHaveLength(1);
+    const bugsProject = plan(card("TB-001"));
+    Object.assign(bugsProject.products[0]!.projects[0]!, { process: "bugs" });
+    expect(issues(bugsProject)).toHaveLength(1);
   });
 
   it("rejects a parent chain that loops", () => {

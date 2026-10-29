@@ -2786,9 +2786,6 @@
 			"confirmation": "Confirmation",
 			"done": "Done",
 			"closed": "Closed",
-			"triage": "Triage",
-			"prod-check": "Prod check",
-			"fixed": "Fixed",
 			"archived": "Archived",
 			"planned": "Planned"
 		},

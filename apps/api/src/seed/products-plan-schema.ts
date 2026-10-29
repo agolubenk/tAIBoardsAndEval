@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CARD_KINDS } from "../forest/card/card-fields";
-import { PROJECT_PROCESSES } from "../project/project-processes";
+import { DEFAULT_PROJECT_COLUMNS } from "../project/project-processes";
 import { VALID_PRIORITIES } from "../task/validate-task-fields";
 
 const cardKey = z.string().regex(/^[A-Z]{2,5}-\d{3}$/);
@@ -12,8 +12,7 @@ const text = (max: number) => z.string().trim().min(1).max(max);
 const cardSchema = z.strictObject({
   key: cardKey,
   title: z.string().min(1).max(200),
-  // Checked against the project's process below.
-  status: z.string().min(1).max(40),
+  status: z.enum(DEFAULT_PROJECT_COLUMNS.map((column) => column.slug)),
   priority: z.enum(VALID_PRIORITIES),
   description: z.string().max(4000).default(""),
   parent: cardKey.optional(),
@@ -30,27 +29,14 @@ const cardSchema = z.strictObject({
   contextPack: text(2000).optional(),
 });
 
-const projectSchema = z
-  .object({
-    key: z.string().regex(/^[A-Z][A-Z0-9]{1,9}$/),
-    name: z.string().min(1).max(80),
-    icon: z.string().min(1).max(40),
-    process: z.enum(["tasks", "bugs"]).default("tasks"),
-    cards: z.array(cardSchema).max(200),
-  })
-  .superRefine((project, ctx) => {
-    const slugs = new Set<string>(
-      PROJECT_PROCESSES[project.process].map((column) => column.slug),
-    );
-    project.cards.forEach((card, index) => {
-      if (!slugs.has(card.status))
-        ctx.addIssue({
-          code: "custom",
-          path: ["cards", index, "status"],
-          message: `${card.key}: ${card.status} is not a column of the ${project.process} process`,
-        });
-    });
-  });
+// A bug is a card of kind "bug" in its product's project, in the same
+// columns as any task (owner, 30.10): there is no separate bugs project.
+const projectSchema = z.strictObject({
+  key: z.string().regex(/^[A-Z][A-Z0-9]{1,9}$/),
+  name: z.string().min(1).max(80),
+  icon: z.string().min(1).max(40),
+  cards: z.array(cardSchema).max(200),
+});
 
 const productSchema = z.object({
   slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),

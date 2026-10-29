@@ -124,7 +124,11 @@ describe("API integration: products seed", () => {
     expect(first.sectors).toBeGreaterThan(0);
     expect(await subtaskParents("OPS-012")).toEqual(["OPS-001"]);
     expect(await subtaskParents("OPS-001")).toEqual(["OPS-100"]);
-    expect(await metaOf("HRB-002")).toMatchObject({ kind: "bug" });
+    // A bug is a card of its product's project, not a project of its own.
+    expect(await metaOf("ADM-008")).toMatchObject({
+      kind: "bug",
+      severity: "high",
+    });
     expect(await metaOf("IDEA-003")).toMatchObject({ halfBaked: true });
     expect(await metaOf("ADM-001")).toMatchObject({
       executor: "Claude Opus 5.5",
@@ -174,36 +178,13 @@ describe("API integration: products seed", () => {
       ),
     ).toBe(8);
 
-    // Each product keeps its own work, and its «Ошибки» runs the bugs process.
+    // Each product keeps its own work, bugs included, on the task columns.
     const hrHelper = workspaces.find((w) => w.name === "HR Helper / Lavaeon");
     const hrProjects = await db
-      .select({ id: schema.projectTable.id, slug: schema.projectTable.slug })
+      .select({ slug: schema.projectTable.slug })
       .from(schema.projectTable)
       .where(eq(schema.projectTable.workspaceId, hrHelper?.id ?? ""));
-    expect(hrProjects.map((p) => p.slug).sort()).toEqual(["ADM", "HRB", "HRH"]);
-    const hrb = hrProjects.find((p) => p.slug === "HRB");
-    const bugColumns = await db
-      .select({
-        slug: schema.columnTable.slug,
-        isFinal: schema.columnTable.isFinal,
-      })
-      .from(schema.columnTable)
-      .where(eq(schema.columnTable.projectId, hrb?.id ?? ""))
-      .orderBy(schema.columnTable.position);
-    expect(bugColumns.map((c) => c.slug)).toEqual([
-      "new",
-      "triage",
-      "to-do",
-      "in-progress",
-      "in-review",
-      "prod-check",
-      "fixed",
-      "closed",
-    ]);
-    expect(bugColumns.filter((c) => c.isFinal).map((c) => c.slug)).toEqual([
-      "fixed",
-      "closed",
-    ]);
+    expect(hrProjects.map((p) => p.slug).sort()).toEqual(["ADM", "HRH"]);
     expect((await metaOf("GL-005"))?.workspaceId).toBe(hrHelper?.id);
 
     const [card] = await db

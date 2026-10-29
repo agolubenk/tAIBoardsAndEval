@@ -7,9 +7,9 @@ type Reader = Pick<typeof db, "select">;
 
 // A status closes a card when its column is final («готово»), or when it is
 // the virtual «archived», which hides the card the same way (R-022). The
-// owner's stages past review («Подтверждение», «Проверка на проде») count as
-// closing too: an agent stops at «На ревью» and goes further, or back out,
-// only with the owner's «да» (owner, 29.10).
+// owner's stage past review («Подтверждение») counts as closing too: an agent
+// stops at «На ревью» and goes further, or back out, only with the owner's
+// «да» (owner, 29.10).
 export async function isClosingStatus(
   projectId: string,
   status: string,

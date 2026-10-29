@@ -2739,10 +2739,7 @@
 			"closed": "Closed",
 			"confirmation": "Confirmation",
 			"grilling": "Grilling",
-			"new": "New",
-			"fixed": "Fixed",
-			"prod-check": "Prod check",
-			"triage": "Triage"
+			"new": "New"
 		},
 		"priority": {
 			"label": "優先度",

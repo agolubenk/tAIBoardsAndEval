@@ -6,15 +6,11 @@ import {
   CircleSlash,
   Flame,
   Inbox,
-  Rocket,
-  ScanSearch,
   Search,
-  Wrench,
 } from "lucide-react";
 
-// The boards' processes, tasks then the bug-only columns; the API creates the
-// same columns (project-processes.ts). A column still under its default name
-// shows the translated status label.
+// The board's process; the API creates the same columns (project-processes.ts).
+// A column still under its default name shows the translated status label.
 export const DEFAULT_COLUMNS = [
   { id: "new", name: "New", icon: Inbox },
   { id: "grilling", name: "Grilling", icon: Flame },
@@ -24,7 +20,4 @@ export const DEFAULT_COLUMNS = [
   { id: "confirmation", name: "Confirmation", icon: BadgeCheck },
   { id: "done", name: "Done", icon: Check },
   { id: "closed", name: "Closed", icon: CircleSlash },
-  { id: "triage", name: "Triage", icon: ScanSearch },
-  { id: "prod-check", name: "Prod Check", icon: Rocket },
-  { id: "fixed", name: "Fixed", icon: Wrench },
 ] as const;

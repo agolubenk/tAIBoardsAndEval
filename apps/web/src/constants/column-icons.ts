@@ -8,9 +8,7 @@ import {
   CircleSlash,
   Flame,
   Inbox,
-  ScanSearch,
   Search,
-  Wrench,
 } from "lucide-react";
 import projectIcons from "./project-icons";
 
@@ -23,9 +21,6 @@ export const DEFAULT_COLUMN_ICON_NAMES = {
   confirmation: "BadgeCheck",
   done: "CheckCircle2",
   closed: "CircleSlash",
-  triage: "ScanSearch",
-  "prod-check": "Rocket",
-  fixed: "Wrench",
   archived: "Archive",
   planned: "CircleDashed",
 } as const;
@@ -42,8 +37,6 @@ const columnIcons = {
   Flame,
   BadgeCheck,
   CircleSlash,
-  ScanSearch,
-  Wrench,
 };
 
 export type ColumnIconName = keyof typeof columnIcons;

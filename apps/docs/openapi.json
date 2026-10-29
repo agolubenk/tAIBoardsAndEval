@@ -5956,6 +5956,28 @@
           ]
         }
       },
+      "ForestBoardBugs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string"
+            },
+            "severity": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "How bad the bug is, as its card records it."
+            }
+          },
+          "required": [
+            "taskId",
+            "severity"
+          ]
+        }
+      },
       "ForestJournal": {
         "type": "object",
         "properties": {
@@ -26051,6 +26073,72 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForestCardWorkers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/forest/{workspaceId}/bugs": {
+      "get": {
+        "operationId": "listForestBoardBugs",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "List the bugs on a project's board",
+        "description": "For the board: the cards of kind bug, with their severity. A bug is a card in the project's own columns, not a project of its own; a project you may not open answers an empty list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The project whose board asks."
+            },
+            "required": true,
+            "description": "The project whose board asks.",
+            "name": "projectId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The bugs on the board",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestBoardBugs"
                 }
               }
             }

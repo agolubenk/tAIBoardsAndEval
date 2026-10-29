@@ -37,6 +37,7 @@ import { useUserPreferencesStore } from "@/store/user-preferences";
 import type Task from "@/types/task";
 import TaskCardContextMenuContent from "../task-card-context-menu/task-card-context-menu-content";
 import { TaskLabels } from "../task-labels";
+import { TaskCardBug } from "./task-card-bug";
 import { TaskCardWorker } from "./task-card-worker";
 import { useTaskCardClick } from "./use-task-card-click";
 
@@ -216,6 +217,14 @@ function TaskCardContent({
                 taskIsCompleted && "hidden",
               )}
             >
+              {workspace?.id && (
+                <TaskCardBug
+                  workspaceId={workspace.id}
+                  projectId={task.projectId}
+                  taskId={task.id}
+                />
+              )}
+
               {showPriority && hasPriority && (
                 <span
                   className="inline-flex h-5.5 items-center"
