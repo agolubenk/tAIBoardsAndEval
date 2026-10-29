@@ -52,6 +52,11 @@ services:
       NOTEBOOK_LLM_MODEL: ${NOTEBOOK_LLM_MODEL:-}
       NOTEBOOK_LLM_DAILY_MAX: ${NOTEBOOK_LLM_DAILY_MAX:-}
       NOTEBOOK_LLM_KEY_FILE: /run/tb-secrets/notebook_llm_key
+      # claude-mem of the owner's Mac, GET only, through the tunnel's read-only
+      # proxy (R-040, d-tb-claude-mem). While the Mac sleeps cards show the
+      # reader's last copy.
+      CLAUDE_MEM_WORKER_HOST: ${CLAUDE_MEM_WORKER_HOST:-}
+      CLAUDE_MEM_WORKER_PORT: ${CLAUDE_MEM_WORKER_PORT:-}
     volumes:
       - ./secrets:/run/tb-secrets:ro
     ports:

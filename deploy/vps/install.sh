@@ -109,11 +109,11 @@ write_files() {
   bash "$here/render-tls.sh" "$here/tls.conf.template" "$ROOT/tls.conf" \
     "$WG_ADDR:$TLS_PORT" "$DOMAIN" 127.0.0.1:5180 || die "tls.conf не отрендерился"
 
-  # Keep the mirror and notebook settings the owner already filled in.
+  # Keep the mirror, notebook and claude-mem settings the owner already filled in.
   [ -f "$ROOT/.env" ] && cp -a "$ROOT/.env" "$ROOT/.env.prev"
   local kept=""
   if [ -f "$ROOT/.env.prev" ]; then
-    kept="$(grep -E '^(NOTION_MIRROR|NOTEBOOK_LLM)_' "$ROOT/.env.prev" || true)"
+    kept="$(grep -E '^(NOTION_MIRROR|NOTEBOOK_LLM|CLAUDE_MEM)_' "$ROOT/.env.prev" || true)"
   fi
   {
     echo "TB_IMAGE=t-boards:$TB_TAG"
@@ -123,6 +123,9 @@ write_files() {
     for var in NOTION_MIRROR_WORKSPACE_ID NOTION_MIRROR_DATABASES; do
       grep -q "^$var=" <<<"$kept" || echo "$var="
     done
+    # The Mac's read-only claude-mem proxy listens on its tunnel address.
+    grep -q "^CLAUDE_MEM_WORKER_HOST=" <<<"$kept" || echo "CLAUDE_MEM_WORKER_HOST=10.77.0.2"
+    grep -q "^CLAUDE_MEM_WORKER_PORT=" <<<"$kept" || echo "CLAUDE_MEM_WORKER_PORT=37702"
   } >"$ROOT/.env"
   chmod 0600 "$ROOT/.env"
 }
