@@ -3,6 +3,9 @@
 // planned cards it lacks (with their plan key in the card fields, so the seed
 // later sees them as present) and moves cards whose planned status changed.
 // The seed itself only adds; this is for a board that is already in use.
+// Run the seed first: it adds cards with their meta, links and sectors, and a
+// card added here gets only its plan key. A description grows only while the
+// board still holds the planned text's beginning: a text someone rewrote stays.
 // Cards are matched by the plan key (card meta backlogId), never by number or
 // title, so cards added by hand on the board are left alone.
 // Dry run by default; --apply writes.
@@ -56,6 +59,21 @@ async function boardTasks(projectId) {
   }
 }
 
+async function extendDescription(task, card) {
+  const live = (await api(`/api/task/${task.id}`)).description ?? "";
+  if (live === card.description) return;
+  if (!card.description.startsWith(live)) {
+    console.log(`= ${card.key}: описание правили на доске — не трогаю`);
+    return;
+  }
+  console.log(`+ ${card.key}: описание дополнено`);
+  if (!apply) return;
+  await api(`/api/task/description/${task.id}`, {
+    method: "PUT",
+    body: JSON.stringify({ description: card.description }),
+  });
+}
+
 const workspaces = list(await api("/api/workspace"));
 let failed = 0;
 for (const product of plan.products) {
@@ -100,13 +118,16 @@ for (const product of plan.products) {
             method: "PUT",
             body: JSON.stringify({ backlogId: card.key }),
           });
-        } else if (task.status !== card.status) {
-          console.log(`~ ${card.key} ${task.status} → ${card.status}`);
-          if (!apply) continue;
-          await api(`/api/task/status/${task.id}`, {
-            method: "PUT",
-            body: JSON.stringify({ status: card.status }),
-          });
+        } else {
+          if (task.status !== card.status) {
+            console.log(`~ ${card.key} ${task.status} → ${card.status}`);
+            if (apply)
+              await api(`/api/task/status/${task.id}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: card.status }),
+              });
+          }
+          await extendDescription(task, card);
         }
       } catch (error) {
         failed++;

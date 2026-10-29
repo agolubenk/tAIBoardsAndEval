@@ -14,7 +14,9 @@ if (isCloud()) {
 const plan = productsPlanSchema.parse(JSON.parse(readFileSync(0, "utf8")));
 const report = await seedProducts(plan, LOCAL_ADMIN_EMAIL);
 console.log(
-  `products: +${report.workspaces.created.length} (${report.workspaces.existing.length} kept), projects: +${report.projects.created.length}, cards: +${report.cards.created} (${report.cards.existing} kept)`,
+  `products: +${report.workspaces.created.length} (${report.workspaces.existing.length} kept), projects: +${report.projects.created.length}, cards: +${report.cards.created} (${report.cards.existing} kept, ${report.agentFields.filled} got agent fields), links: +${report.links.created} (${report.links.existing} kept), sectors: ${report.sectors}`,
 );
+for (const skipped of report.links.skipped)
+  console.warn(`link skipped: ${skipped}`);
 
 await getDatabasePool().end();

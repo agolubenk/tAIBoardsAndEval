@@ -1,12 +1,20 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { z } from "zod";
 import db, { schema } from "../database";
 import { cardMetaTable } from "../database/forest-schema";
+import { detectSectors } from "../forest/sector/detect-sectors";
 import { insertProject } from "../project/controllers/insert-project";
 import { claimTaskNumber } from "../task/controllers/claim-task-numbers";
 import { nextTaskPosition } from "../task/controllers/next-task-position";
-import { VALID_PRIORITIES } from "../task/validate-task-fields";
 import { seedDefaultWorkspaceRoles } from "../utils/seed-default-workspace-roles";
+import type {
+  PlannedCard,
+  PlannedProduct,
+  PlannedProject,
+  ProductsPlan,
+} from "./products-plan-schema";
+import { type LinkReport, seedCardLinks } from "./seed-card-links";
+
+export { type ProductsPlan, productsPlanSchema } from "./products-plan-schema";
 
 // Products (spec: a product is a workspace with a hard data boundary, its
 // projects are repositories) and their starting cards, from a plan kept in git
@@ -14,48 +22,16 @@ import { seedDefaultWorkspaceRoles } from "../utils/seed-default-workspace-roles
 // seeded keeps whatever people did to it since, matched by its backlog id.
 export const SEED_ACTOR = "seed:products";
 
-const cardSchema = z.object({
-  key: z.string().regex(/^[A-Z]{2,5}-\d{3}$/),
-  title: z.string().min(1).max(200),
-  status: z.enum(["to-do", "in-progress", "in-review", "done"]),
-  priority: z.enum(VALID_PRIORITIES),
-  description: z.string().max(4000).default(""),
-});
-
-const projectSchema = z.object({
-  key: z.string().regex(/^[A-Z][A-Z0-9]{1,9}$/),
-  name: z.string().min(1).max(80),
-  icon: z.string().min(1).max(40),
-  cards: z.array(cardSchema).max(200),
-});
-
-export const productsPlanSchema = z.object({
-  version: z.string(),
-  products: z
-    .array(
-      z.object({
-        slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
-        name: z.string().min(1).max(80),
-        description: z.string().max(2000).default(""),
-        projects: z.array(projectSchema).max(20),
-      }),
-    )
-    .max(10),
-});
-
-export type ProductsPlan = z.infer<typeof productsPlanSchema>;
-type PlannedCard = z.infer<typeof cardSchema>;
-
 export type SeedReport = {
   workspaces: { created: string[]; existing: string[] };
   projects: { created: string[]; existing: string[] };
   cards: { created: number; existing: number };
+  agentFields: { filled: number };
+  links: LinkReport;
+  sectors: number;
 };
 
-async function ensureWorkspace(
-  product: ProductsPlan["products"][number],
-  ownerId: string,
-) {
+async function ensureWorkspace(product: PlannedProduct, ownerId: string) {
   const [found] = await db
     .select()
     .from(schema.workspaceTable)
@@ -87,7 +63,7 @@ async function ensureWorkspace(
 
 async function ensureProject(
   workspaceId: string,
-  project: z.infer<typeof projectSchema>,
+  project: PlannedProject,
   ownerId: string,
 ) {
   const [found] = await db
@@ -155,9 +131,61 @@ async function insertCard(
       taskId: task.id,
       workspaceId,
       backlogId: card.key,
+      kind: card.kind,
+      severity: card.severity ?? null,
+      halfBaked: card.halfBaked,
+      report: card.report ?? null,
+      ...agentFields(card),
       updatedBy: SEED_ACTOR,
     });
   });
+}
+
+function agentFields(card: PlannedCard) {
+  return {
+    executor: card.executor ?? null,
+    branch: card.branch ?? null,
+    pullRequests: card.pullRequests,
+    files: card.files,
+    contextPack: card.contextPack ?? null,
+  };
+}
+
+const hasAgentFields = (card: PlannedCard) =>
+  Boolean(
+    card.executor ||
+    card.branch ||
+    card.contextPack ||
+    card.pullRequests.length ||
+    card.files.length,
+  );
+
+// A card seeded before the plan knew its agent fields gets them, but only
+// where the board still has nothing: what an agent or person wrote stays.
+async function fillAgentFields(workspaceId: string, card: PlannedCard) {
+  const fields = agentFields(card);
+  const updated = await db
+    .update(cardMetaTable)
+    .set({
+      executor: sql`coalesce(${cardMetaTable.executor}, ${fields.executor})`,
+      branch: sql`coalesce(${cardMetaTable.branch}, ${fields.branch})`,
+      contextPack: sql`coalesce(${cardMetaTable.contextPack}, ${fields.contextPack})`,
+      pullRequests: sql`case when ${cardMetaTable.pullRequests} = '[]'::jsonb then ${JSON.stringify(fields.pullRequests)}::jsonb else ${cardMetaTable.pullRequests} end`,
+      files: sql`case when ${cardMetaTable.files} = '[]'::jsonb then ${JSON.stringify(fields.files)}::jsonb else ${cardMetaTable.files} end`,
+    })
+    .where(
+      and(
+        eq(cardMetaTable.workspaceId, workspaceId),
+        eq(cardMetaTable.backlogId, card.key),
+        sql`(${cardMetaTable.executor} is null and ${fields.executor}::text is not null
+          or ${cardMetaTable.branch} is null and ${fields.branch}::text is not null
+          or ${cardMetaTable.contextPack} is null and ${fields.contextPack}::text is not null
+          or ${cardMetaTable.pullRequests} = '[]'::jsonb and ${fields.pullRequests.length} > 0
+          or ${cardMetaTable.files} = '[]'::jsonb and ${fields.files.length} > 0)`,
+      ),
+    )
+    .returning({ taskId: cardMetaTable.taskId });
+  return updated.length;
 }
 
 export async function seedProducts(
@@ -174,6 +202,9 @@ export async function seedProducts(
     workspaces: { created: [], existing: [] },
     projects: { created: [], existing: [] },
     cards: { created: 0, existing: 0 },
+    agentFields: { filled: 0 },
+    links: { created: 0, existing: 0, skipped: [] },
+    sectors: 0,
   };
 
   for (const product of plan.products) {
@@ -206,12 +237,25 @@ export async function seedProducts(
       for (const card of planned.cards) {
         if (present.has(card.key)) {
           report.cards.existing++;
+          if (hasAgentFields(card))
+            report.agentFields.filled += await fillAgentFields(
+              workspace.id,
+              card,
+            );
           continue;
         }
         await insertCard(workspace.id, project.id, card);
         report.cards.created++;
       }
     }
+
+    const links = await seedCardLinks(workspace.id, product);
+    report.links.created += links.created;
+    report.links.existing += links.existing;
+    report.links.skipped.push(...links.skipped);
+    // New links can join trees into sectors (R-029); recompute only then.
+    if (links.created)
+      report.sectors += (await detectSectors(workspace.id)).length;
   }
 
   // The default viewer/member/admin roles a workspace needs; the API backfills
