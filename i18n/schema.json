@@ -13741,6 +13741,38 @@
 							},
 							"required": ["free", "holder", "until"]
 						},
+						"worker": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"label": {
+									"type": "string"
+								},
+								"holding": {
+									"type": "string"
+								},
+								"holdingUntil": {
+									"type": "string"
+								},
+								"session": {
+									"type": "string"
+								},
+								"sessionAt": {
+									"type": "string"
+								},
+								"executor": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"label",
+								"holding",
+								"holdingUntil",
+								"session",
+								"sessionAt",
+								"executor"
+							]
+						},
 						"actor": {
 							"type": "object",
 							"additionalProperties": false,
@@ -14023,6 +14055,7 @@
 						"showAll",
 						"sections",
 						"lease",
+						"worker",
 						"actor",
 						"fields",
 						"kind",

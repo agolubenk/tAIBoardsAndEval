@@ -3447,6 +3447,14 @@
 				},
 				"stale": "claude-mem is not reachable: a copy from {{time}}.",
 				"unavailable": "claude-mem is not reachable, and nothing was read from it yet."
+			},
+			"worker": {
+				"executor": "Done by {{name}}",
+				"holding": "{{name}} is on it",
+				"holdingUntil": "Holds the card until {{time}}",
+				"label": "Who works on the card",
+				"session": "{{name}}: {{step}}",
+				"sessionAt": "Last update {{time}}"
 			}
 		}
 	},
