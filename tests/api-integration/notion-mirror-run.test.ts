@@ -72,6 +72,9 @@ function fakeNotion(pages: () => NotionPage[]) {
     if (method === "POST" && pathname === "/v1/databases/db-1/query") {
       return json({ results: pages(), has_more: false, next_cursor: null });
     }
+    if (method === "POST" && pathname === "/v1/search") {
+      return json({ results: [DATABASE], has_more: false, next_cursor: null });
+    }
     const block = /^\/v1\/blocks\/([^/]+)\/children$/.exec(pathname);
     if (block?.[1]) {
       blockReads.push(block[1]);
@@ -88,6 +91,7 @@ function config(workspaceId: string, tokenFile: string): NotionMirrorConfig {
   return {
     workspaceId,
     databaseIds: ["db-1"],
+    discover: false,
     tokenFile,
     cron: "7 */2 * * *",
     maxGapHours: 5,
@@ -198,6 +202,18 @@ describe("API integration: scheduled Notion mirror (AC-002, AC-003)", () => {
 
     const listed = await listMirrorRuns(workspace.id);
     expect(listed.streak).toMatchObject({ runs: 0, brokenBy: "discrepancies" });
+  });
+
+  it("mirrors every shared database once when told to discover them", async () => {
+    const { workspace } = await createWorkspaceMember({ role: "owner" });
+    const notion = fakeNotion(() => [page("a", T1)]);
+    const mirror = { ...config(workspace.id, tokenFile()), discover: true };
+
+    const run = await mirrorOnce(mirror, "schedule", notion);
+    expect(run.status).toBe("clean");
+    const report = (await runRow(run.runId))?.report.databases;
+    expect(report).toHaveLength(1);
+    expect(report?.[0]).toMatchObject({ name: "Bugs", error: null });
   });
 
   it("records a failed run without the token when Notion refuses", async () => {

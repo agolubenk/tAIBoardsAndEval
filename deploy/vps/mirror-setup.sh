@@ -3,7 +3,9 @@
 # checks it can read every database, writes the workspace and the databases
 # into /opt/t-boards/.env and recreates the app. Run after install.sh: it
 # seeds the HR Helper product the mirror writes into.
-# Usage: mirror-setup.sh [DATABASE_ID,DATABASE_ID [WORKSPACE_ID]]  (asks for the token)
+# Usage: mirror-setup.sh [DATABASE_ID,…,all [WORKSPACE_ID]]  (asks for the token)
+# "all" also mirrors every other database shared with the integration; the
+# API looks them up on each run, so a newly shared database needs no rerun.
 set -euo pipefail
 
 ROOT=/opt/t-boards
@@ -14,7 +16,7 @@ MIRROR_SLUG=hr-helper-lavaeon
 OWNED_SQL="select w.id, w.name from workspace w join workspace_member m on m.workspace_id = w.id and m.role = 'owner' join \"user\" u on u.id = m.user_id where u.email = 'admin@t-boards.local' order by w.created_at"
 PRODUCT_SQL="select w.id, w.name from workspace w where w.slug = '$MIRROR_SLUG'"
 # «Задачи» and «Ошибки»: database ids for /v1/databases, not data-source ids.
-databases="${1:-256853cd-b4ae-4394-a768-a2a2ebd3c5fe,714f2a2f-5274-485e-84ca-ee701ed5df19}"
+databases="${1:-256853cd-b4ae-4394-a768-a2a2ebd3c5fe,714f2a2f-5274-485e-84ca-ee701ed5df19,all}"
 workspace="${2:-}"
 compose=(docker compose -p t-boards --project-directory "$ROOT" -f "$ROOT/compose.yml")
 
@@ -27,7 +29,7 @@ sql() { "${compose[@]}" exec -T postgres psql -U t_boards -d t_boards -At -F ' |
 
 [ "$(id -u)" = 0 ] || die "нужен root"
 [ -f "$ROOT/.env" ] || die "t-boards не установлен — сначала пункт s-tb-install"
-[[ "$databases" =~ ^[0-9a-f-]{32,36}(,[0-9a-f-]{32,36})*$ ]] || die "id баз — через запятую, без пробелов"
+[[ "$databases" =~ ^([0-9a-f-]{32,36}|all)(,([0-9a-f-]{32,36}|all))*$ ]] || die "id баз или all — через запятую, без пробелов"
 
 if [ -z "$workspace" ]; then
   owned="$(sql "$PRODUCT_SQL")"
@@ -50,12 +52,22 @@ token="$(printf '%s' "$token" | tr -d '[:space:]')"
 [[ "$token" =~ ^(ntn_|secret_)[A-Za-z0-9]{20,}$ ]] || die "это не похоже на токен интеграции Notion"
 
 # The header goes through stdin so the token never shows up in the process list.
+notion() {
+  printf 'Authorization: Bearer %s\nNotion-Version: 2022-06-28\nContent-Type: application/json\n' "$token" |
+    curl -sS --max-time 20 -H @- "$@"
+}
 for id in ${databases//,/ }; do
-  code="$(printf 'Authorization: Bearer %s\nNotion-Version: 2022-06-28\n' "$token" |
-    curl -sS -o /dev/null -w '%{http_code}' --max-time 20 -H @- "https://api.notion.com/v1/databases/$id")"
+  [ "$id" = all ] && continue
+  code="$(notion -o /dev/null -w '%{http_code}' "https://api.notion.com/v1/databases/$id")"
   [ "$code" = 200 ] || die "база $id: HTTP $code — поделитесь базой с интеграцией (… → Connections) и повторите"
   log "база $id читается"
 done
+if [[ ",$databases," == *,all,* ]]; then
+  found="$(notion -X POST -d '{"filter":{"property":"object","value":"database"},"page_size":100}' \
+    https://api.notion.com/v1/search | grep -o '"object":"database"' | grep -c . || true)"
+  [ "$found" -gt 0 ] || die "all: интеграции не открыта ни одна база — … → Connections"
+  log "all: интеграции открыто баз на первой странице поиска: $found"
+fi
 
 (
   umask 077

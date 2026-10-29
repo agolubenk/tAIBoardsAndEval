@@ -5,6 +5,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   DEFAULT_MAX_GAP_HOURS,
   DEFAULT_MIRROR_CRON,
+  mirrorDatabaseOrder,
   readMirrorConfig,
   readMirrorToken,
 } from "./mirror-config";
@@ -30,11 +31,34 @@ describe("readMirrorConfig", () => {
     expect(readMirrorConfig(BASE)).toEqual({
       workspaceId: "ws-1",
       databaseIds: ["db-a", "db-b"],
+      discover: false,
       tokenFile: "/run/secrets/notion",
       product: undefined,
       cron: DEFAULT_MIRROR_CRON,
       maxGapHours: DEFAULT_MAX_GAP_HOURS,
     });
+  });
+
+  it("turns discovery on with all, alone or after listed databases", () => {
+    const all = readMirrorConfig({ ...BASE, NOTION_MIRROR_DATABASES: "ALL" });
+    expect(all).toMatchObject({ databaseIds: [], discover: true });
+    expect(
+      readMirrorConfig({ ...BASE, NOTION_MIRROR_DATABASES: "db-a, all ,db-a" }),
+    ).toMatchObject({ databaseIds: ["db-a"], discover: true });
+  });
+
+  it("orders listed databases first, then discovered ones by title", () => {
+    expect(
+      mirrorDatabaseOrder(
+        ["256853cd-b4ae-4394-a768-a2a2ebd3c5fe", "db-b"],
+        [
+          { id: "db-z", title: "Sprints" },
+          { id: "256853cdb4ae4394a768a2a2ebd3c5fe", title: "Задачи" },
+          { id: "db-c", title: "Projects" },
+          { id: "db-b", title: "Ошибки" },
+        ],
+      ),
+    ).toEqual(["256853cd-b4ae-4394-a768-a2a2ebd3c5fe", "db-b", "db-c", "db-z"]);
   });
 
   it("ignores a gap that is not a positive number", () => {

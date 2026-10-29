@@ -111,3 +111,38 @@ describe("readNotionMirror", () => {
     ]);
   });
 });
+
+describe("NotionClient.searchDatabases", () => {
+  it("pages through search, asks for databases only and skips trashed ones", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    const fetch: FetchLike = async (url, init) => {
+      expect(new URL(url).pathname).toBe("/v1/search");
+      const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      bodies.push(body);
+      return body.start_cursor
+        ? json({
+            results: [
+              { id: "db-3", title: [], properties: {}, in_trash: true },
+            ],
+            has_more: false,
+            next_cursor: null,
+          })
+        : json({
+            results: [
+              { id: "db-1", title: [], properties: {} },
+              { id: "db-2", title: [], properties: {}, archived: true },
+            ],
+            has_more: true,
+            next_cursor: "c-2",
+          });
+    };
+    const client = new NotionClient({ token: "ntn_x", fetch });
+    const found = await client.searchDatabases();
+    expect(found.map((d) => d.id)).toEqual(["db-1"]);
+    expect(bodies[0]).toMatchObject({
+      filter: { property: "object", value: "database" },
+      page_size: 100,
+    });
+    expect(bodies[1]).toMatchObject({ start_cursor: "c-2" });
+  });
+});

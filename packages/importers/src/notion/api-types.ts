@@ -36,6 +36,8 @@ export type NotionDatabase = {
   title: NotionRichText[];
   description?: NotionRichText[];
   properties: Record<string, NotionPropertySchema>;
+  archived?: boolean;
+  in_trash?: boolean;
 };
 
 export type NotionUser = {

@@ -61,6 +61,29 @@ export class NotionClient {
     );
   }
 
+  // Every database the integration was given access to (Connections in
+  // Notion), so a newly shared one is mirrored without a config change.
+  async searchDatabases(): Promise<NotionDatabase[]> {
+    const databases: NotionDatabase[] = [];
+    let cursor: string | null = null;
+    do {
+      const response: NotionListResponse<NotionDatabase> =
+        await this.http.request("/v1/search", {
+          method: "POST",
+          body: JSON.stringify({
+            filter: { property: "object", value: "database" },
+            page_size: NOTION_PAGE_SIZE,
+            ...(cursor ? { start_cursor: cursor } : {}),
+          }),
+        });
+      databases.push(
+        ...response.results.filter((d) => !d.archived && !d.in_trash),
+      );
+      cursor = response.has_more ? response.next_cursor : null;
+    } while (cursor);
+    return databases;
+  }
+
   async queryDatabase(
     databaseId: string,
     onPage?: (count: number) => void,
