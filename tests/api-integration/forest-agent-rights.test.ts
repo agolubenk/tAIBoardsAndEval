@@ -262,6 +262,43 @@ describe("API integration: agent rights on kaneo routes", () => {
     expect(openAlready.status).toBe(400);
   });
 
+  // Owner, 29.10: an agent stops at «На ревью»; the owner's stages past it are
+  // approved like a close, and so is taking a card back out of them.
+  it("moves a card to review freely but into the owner's confirmation only with a «да»", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const token = await lease(forest, task.id);
+    const move = (status: string, approvalId?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status },
+        {
+          "x-t-boards-fence": token,
+          ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
+        },
+        "dev-1",
+      );
+
+    expect((await move("in-review")).status).toBe(200);
+    const unapproved = await move("confirmation");
+    expect(unapproved.status).toBe(403);
+    expect(unapproved.body.message).toContain("close_task");
+
+    const approvalId = await approve(
+      forest,
+      "close_task",
+      task.id,
+      "confirmation",
+    );
+    expect((await move("confirmation", approvalId)).status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("confirmation");
+
+    const back = await move("in-progress");
+    expect(back.status).toBe(403);
+    expect(back.body.message).toContain("reopen_task");
+  });
+
   it("changes priority only with a «да» and hands it back if the write fails", async () => {
     const forest = await createForest();
     const task = await addTask(forest.project.id, "Task");

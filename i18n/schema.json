@@ -11412,6 +11412,15 @@
 						"closed": {
 							"type": "string"
 						},
+						"triage": {
+							"type": "string"
+						},
+						"prod-check": {
+							"type": "string"
+						},
+						"fixed": {
+							"type": "string"
+						},
 						"archived": {
 							"type": "string"
 						},
@@ -11429,6 +11438,9 @@
 						"confirmation",
 						"done",
 						"closed",
+						"triage",
+						"prod-check",
+						"fixed",
 						"archived",
 						"planned"
 					]

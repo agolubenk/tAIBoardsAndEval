@@ -2739,7 +2739,10 @@
 			"closed": "Closed",
 			"confirmation": "Confirmation",
 			"grilling": "Grilling",
-			"new": "New"
+			"new": "New",
+			"fixed": "Fixed",
+			"prod-check": "Prod check",
+			"triage": "Triage"
 		},
 		"priority": {
 			"label": "Mức ưu tiên",

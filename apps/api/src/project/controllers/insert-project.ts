@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import type db from "../../database";
 import { columnTable, projectTable } from "../../database/schema";
 import { grantProjectToRestrictedMember } from "../../project-access/grant-project-to-restricted-member";
+import { PROJECT_PROCESSES, type ProjectProcess } from "../project-processes";
 import {
   assertProjectKeyAvailable,
   lockProjectOrdering,
@@ -16,6 +17,7 @@ export type NewProject = {
   icon: string;
   slug: string;
   userId: string;
+  process?: ProjectProcess;
 };
 
 export type ProjectPlacement = {
@@ -24,24 +26,12 @@ export type ProjectPlacement = {
   slug: string;
 };
 
-// The board's process (owner, 29.10): a task is new, then grilled, then open
-// or closed; open work goes through review to the owner's confirmation.
-// Kaneo's four slugs keep their meaning ("to-do" is «Открыта»), so cards and
-// integrations stay put. A final column closes a card, which an agent does
-// only with the owner's «да» (agent-guard).
-export const DEFAULT_PROJECT_COLUMNS = [
-  { name: "New", slug: "new", position: 0, isFinal: false },
-  { name: "Grilling", slug: "grilling", position: 1, isFinal: false },
-  { name: "To Do", slug: "to-do", position: 2, isFinal: false },
-  { name: "In Progress", slug: "in-progress", position: 3, isFinal: false },
-  { name: "In Review", slug: "in-review", position: 4, isFinal: false },
-  { name: "Confirmation", slug: "confirmation", position: 5, isFinal: false },
-  { name: "Done", slug: "done", position: 6, isFinal: true },
-  { name: "Closed", slug: "closed", position: 7, isFinal: true },
-] as const;
-
-async function seedDefaultColumns(tx: Transaction, projectId: string) {
-  for (const col of DEFAULT_PROJECT_COLUMNS) {
+async function seedDefaultColumns(
+  tx: Transaction,
+  projectId: string,
+  process: ProjectProcess = "tasks",
+) {
+  for (const col of PROJECT_PROCESSES[process]) {
     await tx.insert(columnTable).values({
       projectId,
       name: col.name,
@@ -54,7 +44,7 @@ async function seedDefaultColumns(tx: Transaction, projectId: string) {
 
 export async function insertProject(
   tx: Transaction,
-  { workspaceId, name, icon, slug, userId }: NewProject,
+  { workspaceId, name, icon, slug, userId, process }: NewProject,
 ) {
   // Serialize ordering writes per workspace: without this, two concurrent
   // creates can read the same max(position) and land on the same slot, and a
@@ -72,7 +62,7 @@ export async function insertProject(
     .returning();
 
   if (createdProject) {
-    await seedDefaultColumns(tx, createdProject.id);
+    await seedDefaultColumns(tx, createdProject.id, process);
     await grantProjectToRestrictedMember(tx, {
       workspaceId,
       userId,

@@ -88,6 +88,7 @@ async function ensureProject(
       icon: project.icon,
       slug: project.key,
       userId: ownerId,
+      process: project.process,
     }),
   );
   if (!created)
@@ -240,7 +241,10 @@ export async function seedProducts(
         `${product.slug}/${planned.key}`,
       );
       if (!projectCreated)
-        report.columns.added += await ensureProcessColumns(project.id);
+        report.columns.added += await ensureProcessColumns(
+          project.id,
+          planned.process,
+        );
       for (const card of planned.cards) {
         if (present.has(card.key)) {
           report.cards.existing++;
