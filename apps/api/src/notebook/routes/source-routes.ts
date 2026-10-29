@@ -10,8 +10,10 @@ import { requireWorkspacePermission } from "../../utils/require-workspace-permis
 import { workspaceAccess } from "../../utils/workspace-access-middleware";
 import { notebookEmbedModel } from "../notebook-config";
 import { listSources, pruneSources } from "../sources/list-sources";
+import { syncCardSources } from "../sources/sync-card-sources";
 import { upsertSource } from "../sources/upsert-source";
 import {
+  cardSyncSchema,
   prunedSchema,
   pruneSourcesBody,
   putSourceBody,
@@ -94,6 +96,25 @@ const pruneSourcesRoute = createRoute({
   },
 });
 
+const syncCardsRoute = createRoute({
+  method: "post",
+  operationId: "syncNotebookCards",
+  path: "/{workspaceId}/sources/cards",
+  tags: ["Notebook"],
+  summary: "Sync the workspace cards into the notebook",
+  description:
+    "The scheduler runs this every 10 minutes; call it to see a card edit in search sooner. Only cards of active projects that every member may open are kept, since threads are shared by the whole workspace.",
+  middleware: [
+    workspaceAccess.fromParam(),
+    requireWorkspacePermission({ workspace: ["manage_settings"] }),
+  ] as const,
+  request: { params: workspaceParam },
+  responses: {
+    200: jsonResponse("Cards synced", cardSyncSchema),
+    403: errorResponse("Missing workspace:manage_settings permission"),
+  },
+});
+
 export const sourceRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(listSourcesRoute, async (c) => {
     const { workspaceId } = c.req.valid("param");
@@ -115,4 +136,8 @@ export const sourceRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
       { deleted: await pruneSources(workspaceId, kind, keep) },
       200,
     );
+  })
+  .openapi(syncCardsRoute, async (c) => {
+    const { workspaceId } = c.req.valid("param");
+    return c.json(await syncCardSources(workspaceId), 200);
   });

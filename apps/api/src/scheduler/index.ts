@@ -6,6 +6,7 @@ import { Cron } from "croner";
 import { readMirrorConfig } from "../import/notion-mirror/mirror-config";
 import { runScheduledNotionMirror } from "../import/notion-mirror/run-notion-mirror";
 import { checkDueDateReminders } from "./due-date-reminders";
+import { syncNotebookCards } from "./notebook-card-sync";
 import { checkProjectWebhookReminders } from "./project-webhook-reminders";
 import { reconcileWorkspaceSeats } from "./seat-reconciliation";
 import { checkTrialReminders } from "./trial-reminders";
@@ -90,6 +91,13 @@ export function initializeScheduler(): void {
   );
   jobs.push(
     new Cron("23 * * * *", withCheckIn("trial-reminders", checkTrialReminders)),
+  );
+  jobs.push(
+    new Cron(
+      "*/10 * * * *",
+      { protect: true },
+      withCheckIn("notebook-card-sync", syncNotebookCards),
+    ),
   );
   // Off unless the mirror is configured; the job itself re-reads the config so
   // a missing token file shows up as a failed run, not a silent skip.

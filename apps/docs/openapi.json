@@ -5821,6 +5821,28 @@
           "deleted"
         ]
       },
+      "NotebookCardSync": {
+        "type": "object",
+        "properties": {
+          "cards": {
+            "type": "integer",
+            "description": "Cards the notebook holds after the sync."
+          },
+          "changed": {
+            "type": "integer",
+            "description": "Cards whose text changed and were cut again."
+          },
+          "pruned": {
+            "type": "integer",
+            "description": "Card sources removed: the card is gone, archived, or in a project not every member may open."
+          }
+        },
+        "required": [
+          "cards",
+          "changed",
+          "pruned"
+        ]
+      },
       "NotebookEmbedWork": {
         "type": "object",
         "properties": {
@@ -25479,7 +25501,6 @@
                     "type": "string",
                     "enum": [
                       "repo-doc",
-                      "card",
                       "github-pr",
                       "link"
                     ]
@@ -25488,7 +25509,7 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 512,
-                    "description": "A repo path, task id, PR number or URL; unique per kind."
+                    "description": "A repo path, PR number or URL; unique per kind."
                   },
                   "title": {
                     "type": "string",
@@ -25586,7 +25607,6 @@
                     "type": "string",
                     "enum": [
                       "repo-doc",
-                      "card",
                       "github-pr",
                       "link"
                     ]
@@ -25643,6 +25663,61 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/notebook/{workspaceId}/sources/cards": {
+      "post": {
+        "operationId": "syncNotebookCards",
+        "tags": [
+          "Notebook"
+        ],
+        "summary": "Sync the workspace cards into the notebook",
+        "description": "The scheduler runs this every 10 minutes; call it to see a card edit in search sooner. Only cards of active projects that every member may open are kept, since threads are shared by the whole workspace.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cards synced",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookCardSync"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
             "content": {
               "application/json": {
                 "schema": {

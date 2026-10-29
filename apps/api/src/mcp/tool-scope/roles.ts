@@ -12,6 +12,7 @@ const READ = [
   "search",
   "list_task_comments",
   "forest_get_card_meta",
+  "notebook_search",
 ] as const;
 
 const LEASE = ["forest_acquire_lease", "forest_release_lease"] as const;

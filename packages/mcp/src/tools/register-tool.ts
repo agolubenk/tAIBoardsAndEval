@@ -45,6 +45,7 @@ const READ_TOOLS = new Set([
   "forest_list_sectors",
   "forest_get_card_meta",
   "forest_get_context",
+  "notebook_search",
 ]);
 
 export function isReadTool(name: string) {

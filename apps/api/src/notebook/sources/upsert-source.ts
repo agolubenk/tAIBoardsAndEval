@@ -23,7 +23,7 @@ export type UpsertedSource = {
   chunks: number;
 };
 
-const sha256 = (text: string) =>
+export const sha256 = (text: string) =>
   createHash("sha256").update(text).digest("hex");
 
 // Same text: only the title may move, chunks and their embeddings stay. New

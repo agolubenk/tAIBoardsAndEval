@@ -16,11 +16,13 @@ export const EMBED_RESULTS_BODY_BYTES = 2 * 1024 * 1024;
 export const workspaceParam = z.object({ workspaceId: z.string() });
 
 const sourceKind = z.enum(["repo-doc", "card", "github-pr", "link"]);
+// Cards come from the board itself (POST /sources/cards), never uploaded.
+const uploadKind = z.enum(["repo-doc", "github-pr", "link"]);
 
 export const putSourceBody = z.object({
-  kind: sourceKind,
+  kind: uploadKind,
   ref: z.string().min(1).max(512).openapi({
-    description: "A repo path, task id, PR number or URL; unique per kind.",
+    description: "A repo path, PR number or URL; unique per kind.",
   }),
   title: z.string().min(1).max(300),
   text: z.string().max(SOURCE_TEXT_MAX),
@@ -57,7 +59,7 @@ export const sourcesSchema = z
   .openapi("NotebookSources");
 
 export const pruneSourcesBody = z.object({
-  kind: sourceKind,
+  kind: uploadKind,
   keep: z.array(z.string().min(1).max(512)).max(20_000).openapi({
     description: "Every ref of this kind that still exists; the rest goes.",
   }),
@@ -66,6 +68,21 @@ export const pruneSourcesBody = z.object({
 export const prunedSchema = z
   .object({ deleted: z.number().int() })
   .openapi("NotebookPruned");
+
+export const cardSyncSchema = z
+  .object({
+    cards: z.number().int().openapi({
+      description: "Cards the notebook holds after the sync.",
+    }),
+    changed: z.number().int().openapi({
+      description: "Cards whose text changed and were cut again.",
+    }),
+    pruned: z.number().int().openapi({
+      description:
+        "Card sources removed: the card is gone, archived, or in a project not every member may open.",
+    }),
+  })
+  .openapi("NotebookCardSync");
 
 export const embedWorkQuery = z.object({
   wait: pagingNumber(0, 25, 0).openapi({
