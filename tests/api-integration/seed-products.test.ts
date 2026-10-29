@@ -123,8 +123,8 @@ describe("API integration: products seed", () => {
     expect(first.links.created).toBeGreaterThan(0);
     expect(first.sectors).toBeGreaterThan(0);
     expect(await subtaskParents("OPS-012")).toEqual(["OPS-001"]);
-    expect(await subtaskParents("OPS-001")).toEqual(["TB-110"]);
-    expect(await metaOf("ADM-008")).toMatchObject({ kind: "bug" });
+    expect(await subtaskParents("OPS-001")).toEqual(["OPS-100"]);
+    expect(await metaOf("HRB-002")).toMatchObject({ kind: "bug" });
     expect(await metaOf("IDEA-003")).toMatchObject({ halfBaked: true });
     expect(await metaOf("ADM-001")).toMatchObject({
       executor: "Claude Opus 5.5",
@@ -173,6 +173,39 @@ describe("API integration: products seed", () => {
         eq(schema.columnTable.projectId, tb.id),
       ),
     ).toBe(8);
+
+    // Each product keeps its own work, and its «Ошибки» runs the bugs process.
+    const hrHelper = workspaces.find((w) => w.name === "HR Helper / Lavaeon");
+    const hrProjects = await db
+      .select({ id: schema.projectTable.id, slug: schema.projectTable.slug })
+      .from(schema.projectTable)
+      .where(eq(schema.projectTable.workspaceId, hrHelper?.id ?? ""));
+    expect(hrProjects.map((p) => p.slug).sort()).toEqual(["ADM", "HRB", "HRH"]);
+    const hrb = hrProjects.find((p) => p.slug === "HRB");
+    const bugColumns = await db
+      .select({
+        slug: schema.columnTable.slug,
+        isFinal: schema.columnTable.isFinal,
+      })
+      .from(schema.columnTable)
+      .where(eq(schema.columnTable.projectId, hrb?.id ?? ""))
+      .orderBy(schema.columnTable.position);
+    expect(bugColumns.map((c) => c.slug)).toEqual([
+      "new",
+      "triage",
+      "to-do",
+      "in-progress",
+      "in-review",
+      "prod-check",
+      "fixed",
+      "closed",
+    ]);
+    expect(bugColumns.filter((c) => c.isFinal).map((c) => c.slug)).toEqual([
+      "fixed",
+      "closed",
+    ]);
+    expect((await metaOf("GL-005"))?.workspaceId).toBe(hrHelper?.id);
+
     const [card] = await db
       .select({
         title: schema.taskTable.title,
