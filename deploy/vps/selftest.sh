@@ -88,8 +88,8 @@ log "seed: one admin after two runs"
 "${compose[@]}" exec -T app node /app/apps/api/dist/seed-products.js <"$vps/seed/products.json" 2>&1 | tail -1
 again="$("${compose[@]}" exec -T app node /app/apps/api/dist/seed-products.js <"$vps/seed/products.json" 2>&1 | tail -1)"
 printf '%s\n' "$again"
-[[ "$again" == "products: +0 "*"cards: +0 "* ]] || fail "second products seed changed something: $again"
-log "seed: products added once, kept on the second run"
+[[ "$again" == "products: +0 "*"cards: +0 "*"links: +0 "* ]] || fail "second products seed changed something: $again"
+log "seed: products and links added once, kept on the second run"
 
 # mirror-setup.sh picks the workspace with these exact lines: the HR Helper
 # product first, the admin's only workspace otherwise.

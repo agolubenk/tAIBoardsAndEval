@@ -13,10 +13,11 @@ if (isCloud()) {
 
 const plan = productsPlanSchema.parse(JSON.parse(readFileSync(0, "utf8")));
 const report = await seedProducts(plan, LOCAL_ADMIN_EMAIL);
+// The summary goes last: install.sh and selftest.sh read the final line.
+for (const skipped of report.links.skipped)
+  console.warn(`link skipped: ${skipped}`);
 console.log(
   `products: +${report.workspaces.created.length} (${report.workspaces.existing.length} kept), projects: +${report.projects.created.length}, cards: +${report.cards.created} (${report.cards.existing} kept, ${report.agentFields.filled} got agent fields), links: +${report.links.created} (${report.links.existing} kept), sectors: ${report.sectors}`,
 );
-for (const skipped of report.links.skipped)
-  console.warn(`link skipped: ${skipped}`);
 
 await getDatabasePool().end();
