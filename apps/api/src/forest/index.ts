@@ -10,6 +10,7 @@ import { mirrorRoutes } from "./routes/mirror-routes";
 import { pulseRoutes } from "./routes/pulse-routes";
 import { readRoutes } from "./routes/read-routes";
 import { treeRoutes } from "./routes/tree-routes";
+import { workersRoutes } from "./routes/workers-routes";
 import { workStateRoutes } from "./routes/work-state-routes";
 
 // t-boards forest model (spec R-026…R-029, N-011): leases, the owner's «да»,
@@ -30,6 +31,7 @@ const forest = apiRouter<BaseVariables & { workspaceId: string }>()
   .route("/", mirrorRoutes)
   .route("/", treeRoutes)
   .route("/", workStateRoutes)
+  .route("/", workersRoutes)
   .route("/", pulseRoutes);
 
 export default forest;

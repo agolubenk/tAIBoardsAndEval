@@ -5880,6 +5880,82 @@
           "step"
         ]
       },
+      "ForestCardWorkers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string"
+            },
+            "holder": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "until": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "name",
+                "kind",
+                "until"
+              ],
+              "description": "Who holds the card's lease now."
+            },
+            "session": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "step": {
+                  "type": "string"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "name",
+                "kind",
+                "step",
+                "at"
+              ],
+              "description": "The latest session whose working state names the card."
+            },
+            "executor": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Who the card's fields say did or does the work."
+            }
+          },
+          "required": [
+            "taskId",
+            "holder",
+            "session",
+            "executor"
+          ]
+        }
+      },
       "ForestJournal": {
         "type": "object",
         "properties": {
@@ -25925,6 +26001,72 @@
           },
           "403": {
             "description": "Missing task:update permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/forest/{workspaceId}/workers": {
+      "get": {
+        "operationId": "listForestCardWorkers",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "List who works on a project's cards",
+        "description": "For the board: per card, the live lease holder, the latest session whose working state names it and the recorded executor. Cards nobody is on are left out; a project you may not open answers an empty list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The project whose board asks."
+            },
+            "required": true,
+            "description": "The project whose board asks.",
+            "name": "projectId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Who works on the cards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestCardWorkers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing task:read permission",
             "content": {
               "application/json": {
                 "schema": {

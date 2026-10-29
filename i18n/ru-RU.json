@@ -3479,6 +3479,14 @@
 				"holder": "Держит",
 				"until": "До"
 			},
+			"worker": {
+				"label": "Кто работает над карточкой",
+				"holding": "{{name}} работает",
+				"holdingUntil": "Держит карточку до {{time}}",
+				"session": "{{name}}: {{step}}",
+				"sessionAt": "Обновлено {{time}}",
+				"executor": "Исполнитель: {{name}}"
+			},
 			"actor": {
 				"agent": "Агент",
 				"person": "Человек",

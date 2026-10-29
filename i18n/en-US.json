@@ -3319,6 +3319,14 @@
 				"holder": "Held by",
 				"until": "Until"
 			},
+			"worker": {
+				"label": "Who works on the card",
+				"holding": "{{name}} is on it",
+				"holdingUntil": "Holds the card until {{time}}",
+				"session": "{{name}}: {{step}}",
+				"sessionAt": "Last update {{time}}",
+				"executor": "Done by {{name}}"
+			},
 			"actor": {
 				"agent": "Agent",
 				"person": "Person",
