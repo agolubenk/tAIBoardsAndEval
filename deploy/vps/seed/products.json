@@ -289,6 +289,125 @@
 							"status": "to-do",
 							"priority": "low",
 							"description": "Фаза C, по решению `d-tb-plan-queue`: пункты oq_* — карточками доски, ops-консоль читает доску."
+						},
+						{
+							"key": "TB-101",
+							"title": "Лес: деревья, сектора, lease и fencing",
+							"status": "done",
+							"priority": "medium",
+							"description": "Модель леса и аренда карточки агентом с fencing-токеном. Сделано 28–29.10 (§4.2, «Готово»). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-102",
+							"title": "Права агента: guard записи и одобрения владельца",
+							"status": "done",
+							"priority": "high",
+							"description": "Агент не правит текст карточки владельца, закрытие, переоткрытие и приоритет — только с одобрением из сессии владельца (N-004, N-011). Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-103",
+							"title": "Поля Notion и агента в карточке",
+							"status": "done",
+							"priority": "medium",
+							"description": "Поля карточки: ключ бэклога, поля Notion, подпись агента. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-104",
+							"title": "История карточки с откатом",
+							"status": "done",
+							"priority": "medium",
+							"description": "Журнал изменений карточки и откат версии. Массовый откат — TB-034. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-105",
+							"title": "MCP: бюджеты ответов и TOON",
+							"status": "done",
+							"priority": "medium",
+							"description": "Лимиты размера ответа MCP и компактный формат TOON. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-106",
+							"title": "Набор инструментов роли и контекст-пакет",
+							"status": "done",
+							"priority": "medium",
+							"description": "MCP отдаёт роли только её инструменты; контекст-пакет карточки для старта сессии. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-107",
+							"title": "Читатель claude-mem на доске",
+							"status": "done",
+							"priority": "medium",
+							"description": "`apps/api/src/forest/memory/memory-reader.ts`, кэш «последнего известного» (R-042). Подключение на d4dev — TB-112. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-108",
+							"title": "Сверка зеркала Notion каждые 2 часа",
+							"status": "done",
+							"priority": "high",
+							"description": "Сверка по расписанию готова; на настоящем Notion ещё не прогонялась — TB-006, TB-007. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-109",
+							"title": "Лента агентов и «Пульс»",
+							"status": "done",
+							"priority": "medium",
+							"description": "Часть R-090, коммит `8bf6ee4`. Граф связей и ⌘K — TB-014. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-110",
+							"title": "Набор для VPS и d4dev за WireGuard",
+							"status": "done",
+							"priority": "high",
+							"description": "`install.sh`, `bundle.sh`, бэкап, `wg-setup.sh`, `wg-issue.sh`. 29.10 19:52 `s-tb-install` v5: 76 миграций, три продукта, 42 карточки; `/`, `/auth/sign-in` и `/api/health` — 200 через туннель. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-111",
+							"title": "Сид продуктов: три продукта и стартовые карточки",
+							"status": "done",
+							"priority": "medium",
+							"description": "`deploy/vps/seed/products.json`, сид только добавляет недостающее по ключу. Живую доску к плану подводит `apply-plan.mjs`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-112",
+							"title": "claude-mem строго локально для t-boards на d4dev",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Владелец 29.10: claude-mem подключён и строго локален на Mac и для t-boards, облако выключено. На VPS не подключён: читатель идёт на 127.0.0.1:37777 внутри контейнера. Варианты: (а) воркер Mac через туннель 10.77.0.2 с кэшем на время сна Mac; (б) свой контейнер на VPS с лимитом памяти и замером. Решение — d-пунктом, команды — s-пунктами (§4.6). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-113",
+							"title": "План перехода: ответы d-tb-plan-* и проверка ≥ 4 участников",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Собрать план после ответов `d-tb-plan-deadline` (рекомендация «по условиям»), `d-tb-plan-home` (ops), `d-tb-plan-queue` («после»). Перед этим — адверсариальная проверка, линзы: реалистичность, порядок по ценности, риск и обратимость, 3G и 400 px (§4.3). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-114",
+							"title": "Условия перехода R-084",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Импорт сверен (TB-006), AC-001 выполнен (TB-005), серия чистых сверок зеркала (TB-007), бэкап поднимается на чистой машине (OPS-003), правила и скиллы переписаны (TB-008). Открыто: переход, если блокнот не успеет. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-115",
+							"title": "Лес и боковая панель карточки: замечания владельца",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "`c-tb-ui-check` — ответ на жалобу 28.10 «неаккуратно, не видно, как управлять деревьями». Ждёт списка того, чего не хватает. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-116",
+							"title": "Первые перманентные карточки",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C. Проверка: `parse_mode` на всех путях отправки, refresh-токен только в cookie. Период: апстрим kaneo раз в 2 месяца, восстановление бэкапа. Фокус: обрывы Telegram-сессий, красный `ci-frontend`. Принято: остаток `npm audit`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "TB-117",
+							"title": "Открытые решения спеки — спрашивать, когда блокируют",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Q-107 стек ядра — бэкенд kaneo, один процесс. Q-104 наследник через t-boards (блокирует R-011). D-014 деревья из нескольких секторов — рубить по явной отметке. D-015 незавершённое при вырубке — «вырублено» с причиной. D-016 транскрипты — 9 месяцев, зашифрованный том (§4.4). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
 						}
 					]
 				},
@@ -394,6 +513,90 @@
 							"status": "to-do",
 							"priority": "low",
 							"description": "SendMessage к Kimi не доходит. Варианты: запуск Kimi внутри Claude Code или `pipeline/BRIDGE.md`."
+						},
+						{
+							"key": "SE-101",
+							"title": "Оценка supertick: «не брать»",
+							"status": "done",
+							"priority": "medium",
+							"description": "`EVALUATION.md`, 26.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-102",
+							"title": "Аудит токенов Т2 и Т3 и классы вызовов",
+							"status": "done",
+							"priority": "medium",
+							"description": "`tools/context_audit.py` (`--match` с 29.10), `tools/call_purpose.py`, `pipeline/data/*`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-103",
+							"title": "Протокол Claude × Kimi и синтез R3",
+							"status": "done",
+							"priority": "medium",
+							"description": "`pipeline/PROTOCOL.md`, R1 обоих, R2 Claude о Kimi, синтез в `PIPELINE.md`. R2 Kimi о Claude не написан — его заменяет §7 PIPELINE и SE-111. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-104",
+							"title": "Сданное Kimi — перепроверить по коду и цифрам",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "Kimi выбыл 29.10, его результаты непроверены: `reports/lens-3-kimi.md`, `shadow/watchdog.py`, `pipeline/r1-kimi.md`, `t-boards/kimi-tasks.md`. Опираться только после перепроверки (§4.5, §6.5). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-105",
+							"title": "Нерв: демон, журнал, кворум, пауза по лимиту, ночной режим",
+							"status": "done",
+							"priority": "high",
+							"description": "П7, П8: `nerve/` (15 тестов), LaunchAgent `space.hrhelper.nerve`, пачки на 60% окна, тапы ролей. Работает с 28.10 (d4 «да, всё сразу»). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-106",
+							"title": "Рой через llm-gateway с фильтром исходящих",
+							"status": "done",
+							"priority": "medium",
+							"description": "П9, `swarm/` (9 тестов), d5 «free-code». Собран; без ключей OpenRouter не работает — SE-008. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-107",
+							"title": "Геном ролей: author, coord, control",
+							"status": "done",
+							"priority": "high",
+							"description": "П1, П3: `pipeline/genome/*.json`. Проба: база 83K → 42K, список скиллов 8.7K → 1.3K. Пилот — SE-001, SE-002. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-108",
+							"title": "«Био»-память и антигены",
+							"status": "done",
+							"priority": "medium",
+							"description": "П2: `MEMORY.md` 18.3 КБ → 1 КБ, индекс `MEMORY-index.md`, 15 ловушек в `genome/antigens.json`. Включено. Откат: `MEMORY.before-2026-10-28.md` поверх `MEMORY.md`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-109",
+							"title": "Время хуком и рефлексы",
+							"status": "done",
+							"priority": "medium",
+							"description": "П5: `pipeline/reflex/` (`now.sh`, `pr_state.py`, `wt_state.py`, `handoff_read.py`), 20 тестов. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-110",
+							"title": "Капсула",
+							"status": "done",
+							"priority": "medium",
+							"description": "П6: `pipeline/capsule.py`, `capsules/author.md` (6 тестов), пересобрана под R-090. Применение вместо сжатия — SE-005. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-111",
+							"title": "Атаки несостоявшегося R2 Kimi — сами",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "`PIPELINE.md` §7: модель «под нагрузкой», срез базы на 30K, пересечения П6 и П7 (§6.4). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "SE-112",
+							"title": "Стоп-критерии пилота",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Любой — откат на запуск без `--settings`: заметное снаружи изменение; вернувшаяся работа или пропущенная находка; повторный вопрос владельцу; потерянное событие Нерва (§5.4). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
 						}
 					]
 				},
@@ -457,6 +660,174 @@
 							"status": "to-do",
 							"priority": "high",
 							"description": "Собрать `bundle.sh` (фиксы `15bc5ea`, `1a0ab42` и фаза 1 S6), selftest на Mac, поставка s-пунктом с откатом на b5."
+						},
+						{
+							"key": "OPS-101",
+							"title": "PR #402: claude-mem в хабе, одна копия mcp-search",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "Открыт. Линзы и ревью на GLM, мёрж с `[skip ci]` по «Влить», затем `npm run mcp-hub:sync` и живая проверка `work_state_read` (§6.1). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-102",
+							"title": "Проверки PR на GitHub не запускаются",
+							"status": "to-do",
+							"priority": "high",
+							"description": "`c-gh-actions-billing`: оплата или лимит. Пока нет ответа — гейты локально. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-103",
+							"title": "`ci-frontend` на main красный с 07.10",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Циклы madge до тестов и сборки, фронтенд-гейт — локально. Кандидат в перманентный «фокус». Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-104",
+							"title": "Осиротевшие процессы 75978, 44462, 5397",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Сначала проверить, живы ли. Остановить или оставить — решение владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-105",
+							"title": "Сессии Т2: прощание и «пауза снята»",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Т2 закрыты, SendMessage не доходит — способ не выбран. «Пауза снята» для остальных сессий — тоже ждёт ответа. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-106",
+							"title": "K-7: контейнер open-notebook",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Бывшая задача Kimi из `t-boards/kimi-tasks.md`, делает Claude без отдельного старта (§4.5). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						}
+					]
+				},
+				{
+					"key": "ADM",
+					"name": "Админка admin.hrhelper.space",
+					"icon": "Settings",
+					"cards": [
+						{
+							"key": "ADM-001",
+							"title": "Этап «а»: свой хост admin.hrhelper.space",
+							"status": "done",
+							"priority": "high",
+							"description": "Влиты #351 (план 2FA, `310fec7ee`), #405 nginx, #404 бэкенд, #406 фронтенд (`9e8f73570`). Сертификат до 27.01.2027, свой server-блок, CSP с `wss://admin…`, `/health` и `/admin/login` — 200. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-002",
+							"title": "Этап 5: включить 2FA и войти на admin-хост",
+							"status": "to-do",
+							"priority": "high",
+							"description": "`c-admin-mfa-s1`, действие владельца. Обход до этапа 6 — сразу `/admin/login`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-003",
+							"title": "Ревью GLM PR #405, #404, #406",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Ночной прогон `handoff/2026-10-29/final/glm-review-night.sh`. Находки проверить по коду main; подтверждённые — отдельными PR от свежего main, в каждом блок проверки ≥ 3 участника и m-пункт. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-004",
+							"title": "#365: эпоха сессий, 2FA администраторов, продление токена расширения",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Планы `docs/plans/roadmap/session-epoch.md`, `platform-admin-mfa.md`, `extension-token-renewal.md`, одна миграция. До кода — d-пункт с планом миграции. Оценка 2–2.5 дня. Ревью: `security-expert`, `code-reviewer`, консилиум. Скрипт сдвига эпохи — только s-пунктом. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-005",
+							"title": "QA: матрица «хосты × роли»",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "curl и Playwright, `admin-host/HANDOFF.md` §4.7. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-006",
+							"title": "Этап 6: ADMIN_DOMAIN",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Только при владельце и после влитого #365. Роли хостов, переадресации 302 с app, site и showcase. Чинит «редирект не на ту страницу входа» (сейчас ожидаемо: `admin: \"\"`). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "ADM-007",
+							"title": "Этап 7: приёмка по сценариям 1–13",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "После неё — запись в `docs/plans/done/` и статус карточки, только по «да» владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						}
+					]
+				},
+				{
+					"key": "IDEA",
+					"name": "Банк идей",
+					"icon": "Lightbulb",
+					"cards": [
+						{
+							"key": "IDEA-001",
+							"title": "Антиген «длинный вывод Bash»",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "В Б4 вывод Bash — самая крупная статья: 836 вызовов, хвост 12.8M. Урок вставляется, когда команда без `tail`/`grep`/файла может дать много строк. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-002",
+							"title": "Стигмергия и кворум для всей команды",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Статусы в PR и `work_state`, сообщения только «нервные». Сейчас пилот одной роли (d2); для всех — правка правил 2 и 3 TEAM-0. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-003",
+							"title": "Автоматический work_state хуком",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Механику (ветка, голова, pid) пишет PostToolUse, а не ход модели. В Т2 — 661 вызов `work_state`, 9.6% вызовов. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-004",
+							"title": "Ночная консолидация",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Локальная Ollama или Haiku, строго по одной модели: капсулы из транскриптов дня, отметки устаревших документов, кандидаты в уроки. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-005",
+							"title": "AUTH-сигнал сторожа — в Нерв",
+							"status": "to-do",
+							"priority": "low",
+							"description": "По желанию. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-006",
+							"title": "«Колония» как продукт через t-boards",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Отдельного сервера нет: журнал Нерва → `agent_journal`, капсула → `card_meta.context_pack`, `capsule_get/put` → MCP `forest_*`, дайджест → проекция журнала. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-007",
+							"title": "Бесплатные провайдеры для несекретного текста",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Groq и Cerebras (триаж), OpenRouter `:free`, Google AI Studio (данные могут идти на обучение), Mistral, GitHub Models, Cloudflare Workers AI, NVIDIA NIM, SambaNova, Hugging Face. Лимиты и политику данных — при подключении. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-008",
+							"title": "Внешний CLI (GLM) для разовых ролей на чтение",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Тень вручную на 2–3 прошлых PR с замером. Запуск — по `d-spend` с «да» владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-009",
+							"title": "Ядро команды — не больше 5 сессий",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Урок недельного лимита: 23–24.10 четырнадцать сессий сожгли его за 42 часа. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
 						}
 					]
 				}
