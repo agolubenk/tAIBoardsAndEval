@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CARD_KINDS } from "../forest/card/card-fields";
+import { DEFAULT_PROJECT_COLUMNS } from "../project/controllers/insert-project";
 import { VALID_PRIORITIES } from "../task/validate-task-fields";
 
 const cardKey = z.string().regex(/^[A-Z]{2,5}-\d{3}$/);
@@ -11,7 +12,7 @@ const text = (max: number) => z.string().trim().min(1).max(max);
 const cardSchema = z.strictObject({
   key: cardKey,
   title: z.string().min(1).max(200),
-  status: z.enum(["to-do", "in-progress", "in-review", "done"]),
+  status: z.enum(DEFAULT_PROJECT_COLUMNS.map((column) => column.slug)),
   priority: z.enum(VALID_PRIORITIES),
   description: z.string().max(4000).default(""),
   parent: cardKey.optional(),

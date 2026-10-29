@@ -3848,7 +3848,11 @@
 			"in-review": "Do przeglądu",
 			"label": "Status",
 			"planned": "Zaplanowane",
-			"to-do": "Do zrobienia"
+			"to-do": "Do zrobienia",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"subtasks": {
 			"addAction": "Dodaj",

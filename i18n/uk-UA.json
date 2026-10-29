@@ -2876,7 +2876,11 @@
 			"in-review": "На перевірці",
 			"done": "Готово",
 			"archived": "Архівовано",
-			"planned": "Заплановано"
+			"planned": "Заплановано",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Пріоритет",

@@ -2829,7 +2829,11 @@
 			"in-review": "Em Revisão",
 			"done": "Concluído",
 			"archived": "Arquivado",
-			"planned": "Planejado"
+			"planned": "Planejado",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Prioridade",

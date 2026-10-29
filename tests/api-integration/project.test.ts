@@ -84,19 +84,19 @@ describe("API integration: project creation", () => {
       orderBy: (column, { asc }) => [asc(column.position)],
     });
 
-    expect(columns).toHaveLength(4);
     expect(columns.map((column) => column.slug)).toEqual([
+      "new",
+      "grilling",
       "to-do",
       "in-progress",
       "in-review",
+      "confirmation",
       "done",
+      "closed",
     ]);
-    expect(columns.map((column) => column.isFinal)).toEqual([
-      false,
-      false,
-      false,
-      true,
-    ]);
+    expect(
+      columns.filter((column) => column.isFinal).map((column) => column.slug),
+    ).toEqual(["done", "closed"]);
   });
 
   it("rejects project creation for users outside the workspace", async () => {

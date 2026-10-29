@@ -11388,6 +11388,12 @@
 						"label": {
 							"type": "string"
 						},
+						"new": {
+							"type": "string"
+						},
+						"grilling": {
+							"type": "string"
+						},
 						"to-do": {
 							"type": "string"
 						},
@@ -11397,7 +11403,13 @@
 						"in-review": {
 							"type": "string"
 						},
+						"confirmation": {
+							"type": "string"
+						},
 						"done": {
+							"type": "string"
+						},
+						"closed": {
 							"type": "string"
 						},
 						"archived": {
@@ -11409,10 +11421,14 @@
 					},
 					"required": [
 						"label",
+						"new",
+						"grilling",
 						"to-do",
 						"in-progress",
 						"in-review",
+						"confirmation",
 						"done",
+						"closed",
 						"archived",
 						"planned"
 					]

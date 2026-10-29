@@ -2735,7 +2735,11 @@
 			"in-review": "Dalam Review",
 			"done": "Selesai",
 			"archived": "Diarsipkan",
-			"planned": "Direncanakan"
+			"planned": "Direncanakan",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Prioritas",

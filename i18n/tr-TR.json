@@ -2782,7 +2782,11 @@
 			"in-review": "İncelemede",
 			"done": "Tamamlandı",
 			"archived": "Arşivlendi",
-			"planned": "Planlandı"
+			"planned": "Planlandı",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Öncelik",

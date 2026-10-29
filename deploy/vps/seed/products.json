@@ -1,5 +1,5 @@
 {
-	"version": "2026-10-29.3",
+	"version": "2026-10-29.4",
 	"products": [
 		{
 			"slug": "hr-helper-lavaeon",
@@ -996,7 +996,7 @@
 						{
 							"key": "IDEA-002",
 							"title": "Стигмергия и кворум для всей команды",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "Статусы в PR и `work_state`, сообщения только «нервные». Сейчас пилот одной роли (d2); для всех — правка правил 2 и 3 TEAM-0. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
 							"parent": "GL-001",
@@ -1006,7 +1006,7 @@
 						{
 							"key": "IDEA-003",
 							"title": "Автоматический work_state хуком",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "Механику (ветка, голова, pid) пишет PostToolUse, а не ход модели. В Т2 — 661 вызов `work_state`, 9.6% вызовов. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
 							"parent": "GL-001",
@@ -1016,7 +1016,7 @@
 						{
 							"key": "IDEA-004",
 							"title": "Ночная консолидация",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "Локальная Ollama или Haiku, строго по одной модели: капсулы из транскриптов дня, отметки устаревших документов, кандидаты в уроки. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
 							"parent": "GL-001",
@@ -1026,7 +1026,7 @@
 						{
 							"key": "IDEA-005",
 							"title": "AUTH-сигнал сторожа — в Нерв",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "По желанию. Сторож `shadow/watchdog.py` писал Kimi — сначала перепроверка (SE-007).",
 							"parent": "GL-001",
@@ -1044,7 +1044,7 @@
 						{
 							"key": "IDEA-007",
 							"title": "Бесплатные провайдеры для несекретного текста",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "Только несекретный текст через `swarm/egress.py`. Groq и Cerebras (триаж, классификация), OpenRouter `:free`, Google AI Studio (на бесплатном уровне данные могут идти на обучение), Mistral, GitHub Models, Cloudflare Workers AI; NVIDIA NIM, SambaNova, Hugging Face — стартовые кредиты. Проверять при подключении.",
 							"parent": "GL-001",
@@ -1054,7 +1054,7 @@
 						{
 							"key": "IDEA-008",
 							"title": "Внешний CLI (GLM) для разовых ролей на чтение",
-							"status": "to-do",
+							"status": "new",
 							"priority": "low",
 							"description": "Тень вручную на 2–3 прошлых PR с замером. Запуск — по `d-spend` с «да» владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
 							"parent": "GL-001",
@@ -1063,7 +1063,7 @@
 						{
 							"key": "IDEA-009",
 							"title": "Ядро команды — не больше 5 сессий",
-							"status": "to-do",
+							"status": "new",
 							"priority": "medium",
 							"description": "Урок недельного лимита: 23–24.10 четырнадцать сессий сожгли его за 42 часа. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
 							"parent": "GL-001",

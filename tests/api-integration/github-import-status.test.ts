@@ -114,7 +114,8 @@ describe("GitHub import project workflow validation", () => {
     const { project, columns } = await setup();
     await db
       .update(schema.columnTable)
-      .set({ slug: "ready", name: "Ready" })
+      // Without a "to-do" column the importer falls back to the board's first.
+      .set({ slug: "ready", name: "Ready", position: -1 })
       .where(eq(schema.columnTable.id, columns.todo.id));
     m.labels = ["status:hidden"];
     await importIssues(project.id);

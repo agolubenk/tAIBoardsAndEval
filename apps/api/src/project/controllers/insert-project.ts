@@ -24,11 +24,20 @@ export type ProjectPlacement = {
   slug: string;
 };
 
+// The board's process (owner, 29.10): a task is new, then grilled, then open
+// or closed; open work goes through review to the owner's confirmation.
+// Kaneo's four slugs keep their meaning ("to-do" is «Открыта»), so cards and
+// integrations stay put. A final column closes a card, which an agent does
+// only with the owner's «да» (agent-guard).
 export const DEFAULT_PROJECT_COLUMNS = [
-  { name: "To Do", slug: "to-do", position: 0, isFinal: false },
-  { name: "In Progress", slug: "in-progress", position: 1, isFinal: false },
-  { name: "In Review", slug: "in-review", position: 2, isFinal: false },
-  { name: "Done", slug: "done", position: 3, isFinal: true },
+  { name: "New", slug: "new", position: 0, isFinal: false },
+  { name: "Grilling", slug: "grilling", position: 1, isFinal: false },
+  { name: "To Do", slug: "to-do", position: 2, isFinal: false },
+  { name: "In Progress", slug: "in-progress", position: 3, isFinal: false },
+  { name: "In Review", slug: "in-review", position: 4, isFinal: false },
+  { name: "Confirmation", slug: "confirmation", position: 5, isFinal: false },
+  { name: "Done", slug: "done", position: 6, isFinal: true },
+  { name: "Closed", slug: "closed", position: 7, isFinal: true },
 ] as const;
 
 async function seedDefaultColumns(tx: Transaction, projectId: string) {

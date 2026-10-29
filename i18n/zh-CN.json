@@ -2735,7 +2735,11 @@
 			"in-review": "评审中",
 			"done": "已完成",
 			"archived": "已归档",
-			"planned": "已计划"
+			"planned": "已计划",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "优先级",

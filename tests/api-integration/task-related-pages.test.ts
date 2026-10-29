@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { getDatabasePool, schema } from "../../apps/api/src/database";
 import { createApp } from "../../apps/api/src/index";
+import { DEFAULT_PROJECT_COLUMNS } from "../../apps/api/src/project/controllers/insert-project";
 import getTasks from "../../apps/api/src/task/controllers/get-tasks";
 import { mockAnonymousSession, mockAuthenticatedSession } from "./helpers/auth";
 import { resetTestDatabase } from "./helpers/database";
@@ -26,7 +27,7 @@ async function fixture() {
       projectId: project.id,
       slug: `extra-${i}`,
       name: `Extra ${i}`,
-      position: i + 4,
+      position: i + DEFAULT_PROJECT_COLUMNS.length,
     })),
   );
   const [task] = await db
@@ -110,7 +111,7 @@ describe("bounded board related pages", () => {
       }
       expect(labels.size).toBe(237);
       expect(links.size).toBe(203);
-      expect(columns.size).toBe(241);
+      expect(columns.size).toBe(237 + DEFAULT_PROJECT_COLUMNS.length);
     },
   );
   it("does not let malformed legacy link metadata break the board", async () => {

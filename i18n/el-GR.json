@@ -2782,7 +2782,11 @@
 			"in-review": "Σε έλεγχο",
 			"done": "Ολοκληρώθηκε",
 			"archived": "Αρχειοθετημένο",
-			"planned": "Προγραμματισμένο"
+			"planned": "Προγραμματισμένο",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Προτεραιότητα",

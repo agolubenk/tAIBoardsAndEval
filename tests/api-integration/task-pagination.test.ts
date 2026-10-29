@@ -195,7 +195,7 @@ describe("bounded task pages", () => {
       );
       const payload = await response.json();
       expect(allTasks(payload.data)).toHaveLength(0);
-      expect(payload.data.columns).toHaveLength(4);
+      expect(payload.data.columns).toHaveLength(8);
       expect(payload.pagination).toMatchObject({
         total: 0,
         totalPages: 1,

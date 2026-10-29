@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
 import {
@@ -172,7 +172,7 @@ describe("API integration: products seed", () => {
         schema.columnTable,
         eq(schema.columnTable.projectId, tb.id),
       ),
-    ).toBe(4);
+    ).toBe(8);
     const [card] = await db
       .select({
         title: schema.taskTable.title,
@@ -284,6 +284,92 @@ describe("API integration: products seed", () => {
       skipped: ["TB-001 subtask TB-002: card has another parent"],
     });
     expect(await subtaskParents("TB-002")).toEqual(["TB-003"]);
+  });
+
+  it("brings a four-column board to the process and keeps a column people added", async () => {
+    await insertOwner();
+    await seedProducts(
+      mini(card("TB-001"), card("TB-002", { status: "in-progress" })),
+      OWNER,
+    );
+    // The board as Kaneo made it before the process, plus a person's column.
+    const [project] = await db
+      .select({ id: schema.projectTable.id })
+      .from(schema.projectTable)
+      .where(eq(schema.projectTable.slug, "TB"));
+    const projectId = project?.id ?? "";
+    const columns = () =>
+      db
+        .select({ slug: schema.columnTable.slug })
+        .from(schema.columnTable)
+        .where(eq(schema.columnTable.projectId, projectId))
+        .orderBy(schema.columnTable.position)
+        .then((rows) => rows.map((row) => row.slug));
+    await db
+      .delete(schema.columnTable)
+      .where(
+        and(
+          eq(schema.columnTable.projectId, projectId),
+          inArray(schema.columnTable.slug, [
+            "new",
+            "grilling",
+            "confirmation",
+            "closed",
+          ]),
+        ),
+      );
+    await db.insert(schema.columnTable).values({
+      projectId,
+      name: "Blocked",
+      slug: "blocked",
+      position: 1,
+    });
+
+    const second = await seedProducts(
+      mini(
+        card("TB-001", { status: "new" }),
+        card("TB-002", { status: "in-progress" }),
+      ),
+      OWNER,
+    );
+    expect(second.columns).toEqual({ added: 4 });
+    expect(await columns()).toEqual([
+      "new",
+      "grilling",
+      "to-do",
+      "in-progress",
+      "in-review",
+      "confirmation",
+      "done",
+      "closed",
+      "blocked",
+    ]);
+    // The plan reaches a column the same run added.
+    expect(await taskOf("TB-001")).toMatchObject({
+      status: "new",
+      columnSlug: "new",
+    });
+    expect(await taskOf("TB-002")).toMatchObject({ columnSlug: "in-progress" });
+
+    // A complete board keeps the order its people gave it.
+    await db
+      .update(schema.columnTable)
+      .set({ position: -1 })
+      .where(
+        and(
+          eq(schema.columnTable.projectId, projectId),
+          eq(schema.columnTable.slug, "blocked"),
+        ),
+      );
+    const third = await seedProducts(
+      mini(
+        card("TB-001", { status: "new" }),
+        card("TB-002", { status: "in-progress" }),
+      ),
+      OWNER,
+    );
+    expect(third.columns).toEqual({ added: 0 });
+    expect((await columns())[0]).toBe("blocked");
   });
 
   it("moves an untouched seeded card to the plan and leaves an edited one", async () => {

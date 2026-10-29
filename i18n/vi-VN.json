@@ -2735,7 +2735,11 @@
 			"in-review": "Đang xem xét",
 			"done": "Hoàn thành",
 			"archived": "Đã lưu trữ",
-			"planned": "Đã lên kế hoạch"
+			"planned": "Đã lên kế hoạch",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Mức ưu tiên",

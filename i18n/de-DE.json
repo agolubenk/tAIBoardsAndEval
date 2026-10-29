@@ -2782,7 +2782,11 @@
 			"in-review": "In Prüfung",
 			"done": "Erledigt",
 			"archived": "Archiviert",
-			"planned": "Geplant"
+			"planned": "Geplant",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Priorität",

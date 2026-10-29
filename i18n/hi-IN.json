@@ -2782,7 +2782,11 @@
 			"in-review": "समीक्षा में",
 			"done": "पूरा हुआ",
 			"archived": "संग्रहित",
-			"planned": "नियोजित"
+			"planned": "नियोजित",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "प्राथमिकता",

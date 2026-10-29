@@ -2782,7 +2782,11 @@
 			"in-review": "Ter beoordeling",
 			"done": "Gereed",
 			"archived": "Gearchiveerd",
-			"planned": "Gepland"
+			"planned": "Gepland",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Prioriteit",

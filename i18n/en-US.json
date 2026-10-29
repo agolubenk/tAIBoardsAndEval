@@ -2778,10 +2778,14 @@
 		"title": "Tasks",
 		"status": {
 			"label": "Status",
+			"new": "New",
+			"grilling": "Grilling",
 			"to-do": "To Do",
 			"in-progress": "In Progress",
 			"in-review": "In Review",
+			"confirmation": "Confirmation",
 			"done": "Done",
+			"closed": "Closed",
 			"archived": "Archived",
 			"planned": "Planned"
 		},

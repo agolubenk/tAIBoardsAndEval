@@ -12,6 +12,7 @@ import type {
   PlannedProject,
   ProductsPlan,
 } from "./products-plan-schema";
+import { ensureProcessColumns } from "./ensure-process-columns";
 import { type LinkReport, seedCardLinks } from "./seed-card-links";
 import { syncSeededCards } from "./sync-seeded-cards";
 
@@ -27,6 +28,7 @@ export const SEED_ACTOR = "seed:products";
 export type SeedReport = {
   workspaces: { created: string[]; existing: string[] };
   projects: { created: string[]; existing: string[] };
+  columns: { added: number };
   cards: { created: number; existing: number; synced: number };
   agentFields: { filled: number };
   links: LinkReport;
@@ -203,6 +205,7 @@ export async function seedProducts(
   const report: SeedReport = {
     workspaces: { created: [], existing: [] },
     projects: { created: [], existing: [] },
+    columns: { added: 0 },
     cards: { created: 0, existing: 0, synced: 0 },
     agentFields: { filled: 0 },
     links: { created: 0, existing: 0, skipped: [] },
@@ -226,13 +229,6 @@ export async function seedProducts(
           )
       : [];
     const present = new Set(seeded.map((row) => row.backlogId));
-    report.cards.synced += await syncSeededCards(
-      workspace.id,
-      product.projects
-        .flatMap((p) => p.cards)
-        .filter((c) => present.has(c.key)),
-      SEED_ACTOR,
-    );
 
     for (const planned of product.projects) {
       const { project, created: projectCreated } = await ensureProject(
@@ -243,6 +239,8 @@ export async function seedProducts(
       report.projects[projectCreated ? "created" : "existing"].push(
         `${product.slug}/${planned.key}`,
       );
+      if (!projectCreated)
+        report.columns.added += await ensureProcessColumns(project.id);
       for (const card of planned.cards) {
         if (present.has(card.key)) {
           report.cards.existing++;
@@ -257,6 +255,15 @@ export async function seedProducts(
         report.cards.created++;
       }
     }
+
+    // After the columns: the plan may move a card into one the process added.
+    report.cards.synced += await syncSeededCards(
+      workspace.id,
+      product.projects
+        .flatMap((p) => p.cards)
+        .filter((c) => present.has(c.key)),
+      SEED_ACTOR,
+    );
 
     const links = await seedCardLinks(workspace.id, product);
     report.links.created += links.created;

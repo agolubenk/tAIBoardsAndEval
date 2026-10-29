@@ -2782,7 +2782,11 @@
 			"in-review": "На преглед",
 			"done": "Завршено",
 			"archived": "Архивирано",
-			"planned": "Планирано"
+			"planned": "Планирано",
+			"closed": "Closed",
+			"confirmation": "Confirmation",
+			"grilling": "Grilling",
+			"new": "New"
 		},
 		"priority": {
 			"label": "Приоритет",
