@@ -16,6 +16,7 @@ export {
   type NotionMirrorRead,
   type NotionPage,
   notionIdempotencyKey,
+  plainText as notionPlainText,
   readNotionMirror,
   reconcile as reconcileNotion,
   type ReconcileDiscrepancy as NotionReconcileDiscrepancy,

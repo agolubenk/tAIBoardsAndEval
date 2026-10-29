@@ -3,6 +3,7 @@ import {
   NOTION_DEFAULT_PRODUCT,
   NotionClient,
   type NotionPage,
+  notionPlainText,
   readNotionMirror,
   reconcileNotion,
 } from "@kaneo/importers";
@@ -15,6 +16,7 @@ import { writeImportedProject } from "../write-imported-project";
 import { loadMirroredCards } from "./load-mirrored-cards";
 import { findWorkspaceOwner, loadMirrorRows } from "./load-mirror-rows";
 import {
+  mirrorDatabaseOrder,
   type NotionMirrorConfig,
   readMirrorConfig,
   readMirrorToken,
@@ -119,7 +121,16 @@ async function completeMirrorRun(
       token,
       fetch: deps.fetch ?? createGuardedFetch("Notion").fetch,
     });
-    for (const databaseId of config.databaseIds) {
+    const databaseIds = config.discover
+      ? mirrorDatabaseOrder(
+          config.databaseIds,
+          (await client.searchDatabases()).map((d) => ({
+            id: d.id,
+            title: notionPlainText(d.title),
+          })),
+        )
+      : config.databaseIds;
+    for (const databaseId of databaseIds) {
       databases.push(
         await mirrorDatabase(client, config, databaseId, userId, token),
       );
