@@ -37,6 +37,7 @@ import { useUserPreferencesStore } from "@/store/user-preferences";
 import type Task from "@/types/task";
 import TaskCardContextMenuContent from "../task-card-context-menu/task-card-context-menu-content";
 import { TaskLabels } from "../task-labels";
+import { TaskCardWorker } from "./task-card-worker";
 import { useTaskCardClick } from "./use-task-card-click";
 
 const dueDateTextColors: Record<DueDateStatus, string> = {
@@ -195,6 +196,14 @@ function TaskCardContent({
               <div className="mb-2.5">
                 <TaskLabels labels={task.labels ?? []} />
               </div>
+            )}
+
+            {workspace?.id && (
+              <TaskCardWorker
+                workspaceId={workspace.id}
+                projectId={task.projectId}
+                taskId={task.id}
+              />
             )}
 
             {!taskIsCompleted && (
