@@ -8,7 +8,12 @@ export type ImportErrorContext = {
   secrets: readonly string[];
 };
 
-export type DescribedImportError = { status: 400 | 502; message: string };
+export type DescribedImportError = {
+  status: 400 | 502;
+  message: string;
+  // A SourceAccessError's code, so the form can point at the field to fix.
+  code?: string;
+};
 
 const MAX_MESSAGE_LENGTH = 500;
 const MIN_REDACTABLE_SECRET_LENGTH = 6;
@@ -31,6 +36,14 @@ function sourceHttpStatus(error: unknown) {
   }
   const status = (error as { status?: unknown }).status;
   return typeof status === "number" ? status : null;
+}
+
+function sourceAccessCode(error: unknown) {
+  if (!(error instanceof Error) || error.name !== "SourceAccessError") {
+    return null;
+  }
+  const code = (error as { code?: unknown }).code;
+  return typeof code === "string" ? code : null;
 }
 
 function describeHttpStatus(
@@ -108,6 +121,12 @@ export function describeImportError(
         ? `${sourceName} at ${lastHost} took too long to answer.`
         : `${sourceName} took too long to answer.`,
     };
+  }
+
+  const accessCode = sourceAccessCode(error);
+  if (accessCode !== null && error instanceof Error) {
+    const message = sanitizeImportMessage(error.message, context.secrets);
+    if (message) return { status: 400, message, code: accessCode };
   }
 
   const httpStatus = sourceHttpStatus(error);

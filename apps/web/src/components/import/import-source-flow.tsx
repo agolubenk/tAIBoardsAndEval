@@ -16,6 +16,7 @@ import type { ImportSourceProject } from "@/fetchers/import/list-import-source-p
 import useListImportSourceProjects from "@/hooks/mutations/import/use-list-import-source-projects";
 import useStartImportRun from "@/hooks/mutations/import/use-start-import-run";
 import useTrelloAuthorizeUrl from "@/hooks/queries/import/use-trello-authorize-url";
+import { HttpError } from "@/lib/http-error";
 
 type ImportSourceFlowProps = {
   source: ImportSourceDefinition;
@@ -108,6 +109,11 @@ export function ImportSourceFlow({
           onChange={updateValues}
           trelloAuthorizeUrl={trelloAuthorizeUrl}
           error={listProjects.error?.message ?? null}
+          errorCode={
+            listProjects.error instanceof HttpError
+              ? (listProjects.error.code ?? null)
+              : null
+          }
           canSubmit={connection !== null}
           isSubmitting={listProjects.isPending}
           onSubmit={connect}

@@ -2295,7 +2295,14 @@
 				"stepPaste": "Copy the token and the database links and paste them above.",
 				"stepShare": "Open each database, then ⋯ › Connections, and add the integration.",
 				"tokenDescription": "An internal integration token. Read content is enough.",
-				"tokenLabel": "Integration token"
+				"tokenLabel": "Integration token",
+				"errors": {
+					"contentUnreadable": "The token works, but the integration may not read content. In Notion, open the integration's Capabilities and turn on Read content.",
+					"databaseNotShared": "The token works, but one of these databases is not shared with the integration, or its link is wrong. Open it in Notion, then ⋯ › Connections, and add the integration.",
+					"notADatabase": "One of these links is a page, not a database. Open the database as a full page and copy its link.",
+					"nothingShared": "The token works, but no database is shared with the integration yet. Open the database in Notion, then ⋯ › Connections, and add the integration.",
+					"tokenInvalid": "Notion did not accept this token. Copy the Internal Integration Secret again from the integration's page in Notion."
+				}
 			}
 		},
 		"chatIntegrations": {

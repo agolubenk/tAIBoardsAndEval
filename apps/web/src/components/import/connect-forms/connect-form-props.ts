@@ -4,5 +4,7 @@ export type ConnectFormProps = {
   values: ImportConnectValues;
   onChange: (patch: Partial<ImportConnectValues>) => void;
   error: string | null;
+  // The API's code for `error`, when a form can place it better than the first field.
+  errorCode?: string | null;
   trelloAuthorizeUrl: string | null;
 };

@@ -84,6 +84,22 @@ export class NotionClient {
     return databases;
   }
 
+  // One search page, for telling "nothing shared yet" from a wrong ID.
+  async hasSharedDatabase(): Promise<boolean> {
+    const response: NotionListResponse<NotionDatabase> =
+      await this.http.request("/v1/search", {
+        method: "POST",
+        body: JSON.stringify({
+          filter: { property: "object", value: "database" },
+          page_size: 10,
+        }),
+      });
+    return (
+      response.has_more ||
+      response.results.some((d) => !d.archived && !d.in_trash)
+    );
+  }
+
   async queryDatabase(
     databaseId: string,
     onPage?: (count: number) => void,

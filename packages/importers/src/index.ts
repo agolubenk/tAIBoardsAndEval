@@ -8,6 +8,7 @@ import { connectTrello, type TrelloCredentials } from "./trello/index.js";
 import type { ConnectOptions, ImportSource } from "./types.js";
 
 export { normalizeBaseUrl, SourceHttpError } from "./http.js";
+export { SourceAccessError } from "./source-access-error.js";
 export { type JiraSite, parseJiraUrl } from "./jira/index.js";
 export {
   DEFAULT_PRODUCT as NOTION_DEFAULT_PRODUCT,

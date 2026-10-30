@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 import type { FetchLike } from "../types.js";
 import type { NotionBlock, NotionPage } from "./api-types.js";
+import { SourceAccessError } from "../source-access-error.js";
 import { NOTION_VERSION } from "./client.js";
 import { connectNotion } from "./source.js";
 
@@ -60,7 +61,8 @@ function fakeNotion(routes: Record<string, (call: Call) => unknown>) {
     const route = routes[`${call.method} ${pathname}`];
     if (!route)
       return json({ message: `unexpected ${call.method} ${pathname}` }, 404);
-    return json(route(call));
+    const answer = route(call);
+    return answer instanceof Response ? answer : json(answer);
   };
   return { fetch, calls };
 }
@@ -156,13 +158,87 @@ describe("connectNotion", () => {
     expect(calls.every((call) => !call.path.includes(TOKEN))).toBe(true);
   });
 
-  it("reports an unshared database as a 401 hint without echoing the token", async () => {
-    const fetch: FetchLike = async () => json({ message: "unauthorized" }, 401);
+  it("accepts a token with a shared database on the first try", async () => {
+    const { fetch, calls } = workspace();
+    const source = await connectNotion(
+      { token: TOKEN, databaseIds: ["db-1"] },
+      { fetch },
+    );
+
+    expect(await source.listProjects()).toHaveLength(1);
+    expect(calls.map((call) => `${call.method} ${call.path}`)).toEqual([
+      "GET /v1/users/me",
+      "GET /v1/databases/db-1",
+    ]);
+  });
+
+  it("calls a token Notion refuses invalid, without echoing it", async () => {
+    const fetch: FetchLike = async () =>
+      json({ code: "unauthorized", message: "API token is invalid." }, 401);
     const error = await connectNotion(
       { token: TOKEN, databaseIds: ["db-1"] },
       { fetch },
     ).catch((caught: unknown) => caught);
-    expect(String(error)).toMatch(/shared with the databases/);
+
+    expect(error).toBeInstanceOf(SourceAccessError);
+    expect((error as SourceAccessError).code).toBe("NOTION_TOKEN_INVALID");
+    expect(String(error)).toMatch(/did not accept this integration token/);
     expect(String(error)).not.toContain(TOKEN);
+  });
+
+  async function refusal(
+    database: () => Response,
+    shared: unknown[] = [],
+  ): Promise<SourceAccessError> {
+    const { fetch } = fakeNotion({
+      "GET /v1/users/me": () => ({ object: "user", id: "bot" }),
+      "GET /v1/databases/db-1": database,
+      "POST /v1/search": () => list(shared, null),
+    });
+    const source = await connectNotion(
+      { token: TOKEN, databaseIds: ["db-1"] },
+      { fetch },
+    );
+    const error = await source
+      .listProjects()
+      .catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(SourceAccessError);
+    return error as SourceAccessError;
+  }
+
+  const notFound = () =>
+    json({ code: "object_not_found", message: "Could not find database" }, 404);
+
+  it("names the share step when a working token sees no database yet", async () => {
+    const error = await refusal(notFound);
+    expect(error.code).toBe("NOTION_NOTHING_SHARED");
+    expect(error.message).toMatch(/no database is shared/);
+    expect(error.message).toMatch(/Connections/);
+  });
+
+  it("names the database when others are shared but this one is not", async () => {
+    const error = await refusal(notFound, [DATABASE]);
+    expect(error.code).toBe("NOTION_DATABASE_NOT_SHARED");
+    expect(error.message).toContain("db-1");
+  });
+
+  it("tells a missing Read content capability from a bad token", async () => {
+    const error = await refusal(() =>
+      json({ code: "restricted_resource", message: "Insufficient" }, 403),
+    );
+    expect(error.code).toBe("NOTION_CONTENT_UNREADABLE");
+  });
+
+  it("asks for the database link when the link is a page", async () => {
+    const error = await refusal(() =>
+      json(
+        {
+          code: "validation_error",
+          message: "Provided ID db-1 is a page, not a database.",
+        },
+        400,
+      ),
+    );
+    expect(error.code).toBe("NOTION_NOT_A_DATABASE");
   });
 });

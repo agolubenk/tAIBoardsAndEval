@@ -6545,6 +6545,34 @@
 								},
 								"stepPaste": {
 									"type": "string"
+								},
+								"errors": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"tokenInvalid": {
+											"type": "string"
+										},
+										"contentUnreadable": {
+											"type": "string"
+										},
+										"nothingShared": {
+											"type": "string"
+										},
+										"databaseNotShared": {
+											"type": "string"
+										},
+										"notADatabase": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"tokenInvalid",
+										"contentUnreadable",
+										"nothingShared",
+										"databaseNotShared",
+										"notADatabase"
+									]
 								}
 							},
 							"required": [
@@ -6555,7 +6583,8 @@
 								"openSettings",
 								"stepCreate",
 								"stepShare",
-								"stepPaste"
+								"stepPaste",
+								"errors"
 							]
 						}
 					},

@@ -24,6 +24,18 @@ const context: ImportErrorContext = {
 };
 
 describe("describeImportError", () => {
+  it("keeps a source's access code and redacts its message", () => {
+    const error = Object.assign(
+      new Error("No database is shared with super-secret-key yet."),
+      { name: "SourceAccessError", code: "NOTION_NOTHING_SHARED" },
+    );
+    expect(describeImportError(error, context)).toEqual({
+      status: 400,
+      message: "No database is shared with [redacted] yet.",
+      code: "NOTION_NOTHING_SHARED",
+    });
+  });
+
   it("explains rejected credentials without the adapter's request path", () => {
     expect(
       describeImportError(
