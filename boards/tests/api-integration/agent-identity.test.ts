@@ -1,4 +1,8 @@
 import { randomUUID } from "node:crypto";
+import {
+  AGENT_ROLE_NAME,
+  defaultRolePayloads,
+} from "../../apps/api/node_modules/@kaneo/permissions";
 import { and, eq } from "drizzle-orm";
 import {
   afterEach,
@@ -11,6 +15,7 @@ import {
 import { auth } from "../../apps/api/src/auth";
 import db, { schema } from "../../apps/api/src/database";
 import { realignAgentRoles } from "../../apps/api/src/agent-identity/realign-agent-roles";
+import { seedDefaultWorkspaceRoles } from "../../apps/api/src/utils/seed-default-workspace-roles";
 import { createApp } from "../../apps/api/src/index";
 import { handleMemberRemoved } from "../../apps/api/src/workspace-members/handle-member-removed";
 import { mockAuthenticatedSession } from "./helpers/auth";
@@ -334,5 +339,30 @@ describe("API integration: agents under their own name (R-010)", () => {
       ]),
     );
     expect(await realignAgentRoles()).toBe(0);
+  });
+
+  it("gives a workspace's own older role named agent the agent role's permissions", async () => {
+    const { workspace } = await createWorkspaceMember({ role: "owner" });
+    const agentRole = and(
+      eq(schema.workspaceRoleTable.workspaceId, workspace.id),
+      eq(schema.workspaceRoleTable.role, AGENT_ROLE_NAME),
+    );
+    await db.delete(schema.workspaceRoleTable).where(agentRole);
+    await db.insert(schema.workspaceRoleTable).values({
+      workspaceId: workspace.id,
+      role: AGENT_ROLE_NAME,
+      permission: JSON.stringify(defaultRolePayloads.admin),
+      createdAt: new Date(),
+    });
+
+    await seedDefaultWorkspaceRoles();
+
+    const rows = await db
+      .select({ permission: schema.workspaceRoleTable.permission })
+      .from(schema.workspaceRoleTable)
+      .where(agentRole);
+    expect(rows.map((row) => JSON.parse(row.permission))).toEqual([
+      defaultRolePayloads.agent,
+    ]);
   });
 });
