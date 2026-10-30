@@ -114,6 +114,11 @@ export function ImportSourceFlow({
               ? (listProjects.error.code ?? null)
               : null
           }
+          errorTarget={
+            listProjects.error instanceof HttpError
+              ? (listProjects.error.target ?? null)
+              : null
+          }
           canSubmit={connection !== null}
           isSubmitting={listProjects.isPending}
           onSubmit={connect}

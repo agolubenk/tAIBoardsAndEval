@@ -51,6 +51,10 @@ export class NotionClient {
     });
   }
 
+  get aborted(): boolean {
+    return this.options.signal?.aborted ?? false;
+  }
+
   me(): Promise<NotionUser> {
     return this.http.request<NotionUser>("/v1/users/me");
   }

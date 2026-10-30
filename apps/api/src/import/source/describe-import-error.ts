@@ -13,6 +13,8 @@ export type DescribedImportError = {
   message: string;
   // A SourceAccessError's code, so the form can point at the field to fix.
   code?: string;
+  // The entry the source refused, so a form with several can name it.
+  target?: string;
 };
 
 const MAX_MESSAGE_LENGTH = 500;
@@ -38,12 +40,17 @@ function sourceHttpStatus(error: unknown) {
   return typeof status === "number" ? status : null;
 }
 
-function sourceAccessCode(error: unknown) {
+// The code becomes part of the response, so only a stable UPPER_SNAKE_CASE
+// code passes; anything else is described like any other adapter error.
+const ACCESS_CODE = /^[A-Z][A-Z0-9_]{0,63}$/;
+
+function sourceAccess(error: unknown) {
   if (!(error instanceof Error) || error.name !== "SourceAccessError") {
     return null;
   }
-  const code = (error as { code?: unknown }).code;
-  return typeof code === "string" ? code : null;
+  const { code, target } = error as { code?: unknown; target?: unknown };
+  if (typeof code !== "string" || !ACCESS_CODE.test(code)) return null;
+  return { code, target: typeof target === "string" ? target : null };
 }
 
 function describeHttpStatus(
@@ -123,10 +130,19 @@ export function describeImportError(
     };
   }
 
-  const accessCode = sourceAccessCode(error);
-  if (accessCode !== null && error instanceof Error) {
+  const access = sourceAccess(error);
+  if (access !== null && error instanceof Error) {
     const message = sanitizeImportMessage(error.message, context.secrets);
-    if (message) return { status: 400, message, code: accessCode };
+    const target =
+      access.target && sanitizeImportMessage(access.target, context.secrets);
+    if (message) {
+      return {
+        status: 400,
+        message,
+        code: access.code,
+        ...(target ? { target } : {}),
+      };
+    }
   }
 
   const httpStatus = sourceHttpStatus(error);

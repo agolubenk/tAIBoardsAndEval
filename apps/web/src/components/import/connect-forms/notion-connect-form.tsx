@@ -15,11 +15,18 @@ export function NotionConnectForm({
   onChange,
   error,
   errorCode,
+  errorTarget,
 }: ConnectFormProps) {
   const { t } = useTranslation();
   const tokenLabel = t("settings:workspaceImport.notion.tokenLabel");
   const placed = notionConnectError(errorCode);
-  const message = error && placed.messageKey ? t(placed.messageKey) : error;
+  const message = !error
+    ? error
+    : errorTarget && placed.namedMessageKey
+      ? t(placed.namedMessageKey, { databaseId: errorTarget })
+      : placed.messageKey
+        ? t(placed.messageKey)
+        : error;
   const tokenError = placed.field === "token" ? message : null;
   const databasesError = placed.field === "databases" ? message : null;
 

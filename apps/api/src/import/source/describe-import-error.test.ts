@@ -36,6 +36,36 @@ describe("describeImportError", () => {
     });
   });
 
+  it("names the refused entry without its secrets", () => {
+    const error = Object.assign(new Error("Database db-1 is not shared."), {
+      name: "SourceAccessError",
+      code: "NOTION_DATABASE_NOT_SHARED",
+      target: "db-1",
+    });
+    expect(describeImportError(error, context)).toMatchObject({
+      code: "NOTION_DATABASE_NOT_SHARED",
+      target: "db-1",
+    });
+
+    const leaky = Object.assign(new Error("Not shared."), {
+      name: "SourceAccessError",
+      code: "NOTION_DATABASE_NOT_SHARED",
+      target: "super-secret-key",
+    });
+    expect(describeImportError(leaky, context).target).toBe("[redacted]");
+  });
+
+  it("does not send a code that is not a stable one", () => {
+    const error = Object.assign(new Error("Not shared."), {
+      name: "SourceAccessError",
+      code: "<b>not a code</b>",
+    });
+    expect(describeImportError(error, context)).toEqual({
+      status: 400,
+      message: "Not shared.",
+    });
+  });
+
   it("explains rejected credentials without the adapter's request path", () => {
     expect(
       describeImportError(

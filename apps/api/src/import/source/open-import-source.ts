@@ -26,9 +26,10 @@ export function importHttpError({
   status,
   message,
   code,
+  target,
 }: DescribedImportError) {
   return code
-    ? new ApiError(status, { message, code })
+    ? new ApiError(status, { message, code, ...(target ? { target } : {}) })
     : new HTTPException(status, { message });
 }
 

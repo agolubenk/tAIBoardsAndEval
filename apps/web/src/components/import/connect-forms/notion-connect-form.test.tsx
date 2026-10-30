@@ -4,18 +4,26 @@ import { NotionConnectForm } from "@/components/import/connect-forms/notion-conn
 import { EMPTY_CONNECT_VALUES } from "@/components/import/connect-values";
 
 vi.mock("react-i18next", () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: { databaseId?: string }) =>
+      options?.databaseId ? `${key} ${options.databaseId}` : key,
+  }),
 }));
 
 afterEach(cleanup);
 
-function renderWith(error: string | null, errorCode: string | null) {
+function renderWith(
+  error: string | null,
+  errorCode: string | null,
+  errorTarget: string | null = null,
+) {
   render(
     <NotionConnectForm
       values={EMPTY_CONNECT_VALUES}
       onChange={vi.fn()}
       error={error}
       errorCode={errorCode}
+      errorTarget={errorTarget}
       trelloAuthorizeUrl={null}
     />,
   );
@@ -39,6 +47,28 @@ describe("NotionConnectForm", () => {
       /settings:workspaceImport\.notion\.errors\.nothingShared/,
     );
     expect(token).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("names the database Notion refused among several", () => {
+    const { databases } = renderWith(
+      "Database 1a2b3c is not shared with the integration.",
+      "NOTION_DATABASE_NOT_SHARED",
+      "1a2b3c",
+    );
+
+    expect(databases).toHaveAttribute("aria-invalid", "true");
+    expect(databases).toHaveAccessibleDescription(
+      /errors\.databaseNotSharedNamed 1a2b3c/,
+    );
+  });
+
+  it("keeps the general copy when the API names no database", () => {
+    const { databases } = renderWith(
+      "A database is not shared with the integration.",
+      "NOTION_DATABASE_NOT_SHARED",
+    );
+
+    expect(databases).toHaveAccessibleDescription(/errors\.databaseNotShared$/);
   });
 
   it("calls a refused token invalid under the token", () => {

@@ -75,17 +75,24 @@ async function describeDatabaseRefusal(
     return new SourceAccessError(
       NOTION_ACCESS_CODES.notADatabase,
       `${databaseId} is a page, not a database. Open the database as a full page and copy its link.`,
+      databaseId,
     );
   }
   if (status !== 404) return error;
 
   // Only on this failure path: one search page says whether anything at all
   // is shared, which is the usual state of a token made minutes ago.
-  const anyShared = await client.hasSharedDatabase().catch(() => true);
+  // A failed search falls back to the per-database text, but a cancelled
+  // import stays cancelled.
+  const anyShared = await client.hasSharedDatabase().catch((searchError) => {
+    if (client.aborted) throw searchError;
+    return true;
+  });
   return anyShared
     ? new SourceAccessError(
         NOTION_ACCESS_CODES.databaseNotShared,
         `The token works, but database ${databaseId} is not shared with the integration, or the link is wrong. ${SHARE_STEP}`,
+        databaseId,
       )
     : new SourceAccessError(
         NOTION_ACCESS_CODES.nothingShared,

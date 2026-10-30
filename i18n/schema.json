@@ -6562,7 +6562,13 @@
 										"databaseNotShared": {
 											"type": "string"
 										},
+										"databaseNotSharedNamed": {
+											"type": "string"
+										},
 										"notADatabase": {
+											"type": "string"
+										},
+										"notADatabaseNamed": {
 											"type": "string"
 										}
 									},
@@ -6571,7 +6577,9 @@
 										"contentUnreadable",
 										"nothingShared",
 										"databaseNotShared",
-										"notADatabase"
+										"databaseNotSharedNamed",
+										"notADatabase",
+										"notADatabaseNamed"
 									]
 								}
 							},

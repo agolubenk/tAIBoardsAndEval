@@ -13,6 +13,7 @@ type ImportConnectStepProps = {
   trelloAuthorizeUrl: string | null;
   error: string | null;
   errorCode?: string | null;
+  errorTarget?: string | null;
   canSubmit: boolean;
   isSubmitting: boolean;
   onSubmit: () => void;
@@ -26,6 +27,7 @@ export function ImportConnectStep({
   trelloAuthorizeUrl,
   error,
   errorCode,
+  errorTarget,
   canSubmit,
   isSubmitting,
   onSubmit,
@@ -67,6 +69,7 @@ export function ImportConnectStep({
           onChange={onChange}
           error={error}
           errorCode={errorCode}
+          errorTarget={errorTarget}
           trelloAuthorizeUrl={trelloAuthorizeUrl}
         />
         <div className="flex justify-end gap-2 pt-1">

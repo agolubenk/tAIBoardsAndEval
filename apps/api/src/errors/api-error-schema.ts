@@ -34,5 +34,10 @@ export const apiErrorSchema = z
           "Permissions the caller lacks for this route, as resource:action, for MISSING_PERMISSION and API_KEY_SCOPE.",
         example: ["task:update"],
       }),
+    target: z.string().optional().openapi({
+      description:
+        "The one entry the request named that was refused, such as an import source's database ID, when the request named several.",
+      example: "1a2b3c4d5e6f40718293a4b5c6d7e8f9",
+    }),
   })
   .openapi("ApiError");

@@ -18,6 +18,22 @@ describe("importHttpError", () => {
     });
   });
 
+  it("names the refused database for the form", async () => {
+    const response = await httpExceptionResponse(
+      importHttpError({
+        status: 400,
+        message: "Database db-1 is not shared.",
+        code: "NOTION_DATABASE_NOT_SHARED",
+        target: "db-1",
+      }),
+    );
+    expect(await response.json()).toEqual({
+      message: "Database db-1 is not shared.",
+      code: "NOTION_DATABASE_NOT_SHARED",
+      target: "db-1",
+    });
+  });
+
   it("names any other failure by its status", async () => {
     const response = await httpExceptionResponse(
       importHttpError({ status: 502, message: "Notion took too long." }),

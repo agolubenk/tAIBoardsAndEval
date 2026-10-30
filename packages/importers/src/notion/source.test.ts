@@ -220,6 +220,28 @@ describe("connectNotion", () => {
     const error = await refusal(notFound, [DATABASE]);
     expect(error.code).toBe("NOTION_DATABASE_NOT_SHARED");
     expect(error.message).toContain("db-1");
+    expect(error.target).toBe("db-1");
+  });
+
+  it("keeps a cancelled import cancelled while it checks what is shared", async () => {
+    const controller = new AbortController();
+    const { fetch } = fakeNotion({
+      "GET /v1/users/me": () => ({ object: "user", id: "bot" }),
+      "GET /v1/databases/db-1": notFound,
+      "POST /v1/search": () => {
+        controller.abort();
+        throw new DOMException("The operation was aborted.", "AbortError");
+      },
+    });
+    const source = await connectNotion(
+      { token: TOKEN, databaseIds: ["db-1"] },
+      { fetch, signal: controller.signal },
+    );
+    const error = await source
+      .listProjects()
+      .catch((caught: unknown) => caught);
+    expect(error).not.toBeInstanceOf(SourceAccessError);
+    expect((error as Error).name).toBe("AbortError");
   });
 
   it("tells a missing Read content capability from a bad token", async () => {
@@ -240,5 +262,6 @@ describe("connectNotion", () => {
       ),
     );
     expect(error.code).toBe("NOTION_NOT_A_DATABASE");
+    expect(error.target).toBe("db-1");
   });
 });

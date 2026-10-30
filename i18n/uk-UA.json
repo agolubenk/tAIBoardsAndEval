@@ -2385,7 +2385,9 @@
 					"databaseNotShared": "The token works, but one of these databases is not shared with the integration, or its link is wrong. Open it in Notion, then ⋯ › Connections, and add the integration.",
 					"notADatabase": "One of these links is a page, not a database. Open the database as a full page and copy its link.",
 					"nothingShared": "The token works, but no database is shared with the integration yet. Open the database in Notion, then ⋯ › Connections, and add the integration.",
-					"tokenInvalid": "Notion did not accept this token. Copy the Internal Integration Secret again from the integration's page in Notion."
+					"tokenInvalid": "Notion did not accept this token. Copy the Internal Integration Secret again from the integration's page in Notion.",
+					"databaseNotSharedNamed": "The token works, but database {{databaseId}} is not shared with the integration, or its link is wrong. Open it in Notion, then ⋯ › Connections, and add the integration.",
+					"notADatabaseNamed": "{{databaseId}} is a page, not a database. Open the database as a full page and copy its link."
 				}
 			}
 		},

@@ -21,6 +21,7 @@ export class HttpError extends Error {
   code?: string;
   issues?: ApiErrorIssue[];
   missingPermissions?: string[];
+  target?: string;
 
   constructor(status: number, message: string, details: ApiErrorDetails = {}) {
     super(message);
@@ -29,6 +30,7 @@ export class HttpError extends Error {
     this.code = details.code;
     this.issues = details.issues;
     this.missingPermissions = details.missingPermissions;
+    this.target = details.target;
   }
 
   static async fromResponse(

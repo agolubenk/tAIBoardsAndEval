@@ -4,6 +4,7 @@ export type ApiErrorDetails = {
   code?: string;
   issues?: ApiErrorIssue[];
   missingPermissions?: string[];
+  target?: string;
 };
 
 function isIssueList(value: unknown): value is ApiErrorIssue[] {
@@ -54,5 +55,6 @@ export function parseApiErrorBody(
     ...(isStringList(body.missingPermissions)
       ? { missingPermissions: body.missingPermissions }
       : {}),
+    ...(typeof body.target === "string" ? { target: body.target } : {}),
   };
 }
