@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
+import removeWorkspaceMember from "../../apps/api/src/admin/controllers/remove-workspace-member";
 import transferWorkspaceOwnership from "../../apps/api/src/admin/controllers/transfer-workspace-ownership";
 import updateWorkspaceMemberRole from "../../apps/api/src/admin/controllers/update-workspace-member-role";
 import { MAX_AGENTS_PER_OWNER } from "../../apps/api/src/agent-identity/issue-agent-key";
@@ -145,6 +146,56 @@ describe("API integration: an agent follows its owner (R-010)", () => {
     expect(response.status).toBe(200);
     expect(await role(workspace.id, issued.agent.id)).toBeNull();
     expect(await role(workspace.id, owner.id)).toBe("owner");
+  });
+
+  it("removes an agent only together with its owner", async () => {
+    const { user: owner, workspace } = await createWorkspaceMember({
+      role: "owner",
+    });
+    const member = await addMember(workspace.id, "member");
+    const issued = (await issue(await ownerKey(member))).body;
+
+    await expect(
+      removeWorkspaceMember({
+        workspaceId: workspace.id,
+        userId: issued.agent.id,
+      }),
+    ).rejects.toThrow("together with its owner");
+
+    const [agentMember] = await db
+      .select({ id: schema.workspaceUserTable.id })
+      .from(schema.workspaceUserTable)
+      .where(
+        and(
+          eq(schema.workspaceUserTable.workspaceId, workspace.id),
+          eq(schema.workspaceUserTable.userId, issued.agent.id),
+        ),
+      );
+    const token = `remove-${randomUUID()}`;
+    await db.insert(schema.sessionTable).values({
+      id: randomUUID(),
+      userId: owner.id,
+      token,
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+    const response = await auth.handler(
+      new Request("http://localhost:1337/api/auth/organization/remove-member", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          organizationId: workspace.id,
+          memberIdOrEmail: agentMember?.id,
+        }),
+      }),
+    );
+    expect(response.status).toBe(400);
+    expect(await role(workspace.id, issued.agent.id)).toBe("member");
+
+    await removeWorkspaceMember({ workspaceId: workspace.id, userId: member });
+    expect(await role(workspace.id, issued.agent.id)).toBeNull();
   });
 
   it("lets a sole owner with agents delete the account, agents included", async () => {

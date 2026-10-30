@@ -54,6 +54,7 @@ import { handleMemberRemoved } from "./workspace-members/handle-member-removed";
 import { isAgentEmail } from "./agent-identity/agent-naming";
 import {
   AGENT_FOLLOWS_OWNER,
+  AGENT_LEAVES_WITH_OWNER,
   isAgentUser,
 } from "./agent-identity/is-agent-user";
 import {
@@ -635,6 +636,15 @@ export const auth = betterAuth({
         afterAddMember: async ({ member }) => {
           if (member?.organizationId) {
             await handleMemberAdded(member.organizationId, member.userId);
+          }
+        },
+        beforeRemoveMember: async ({ user }) => {
+          // R-010: no removal of its own either; it goes when its owner does.
+          if (user.role === "agent") {
+            throw new APIError("BAD_REQUEST", {
+              code: "AGENT_LEAVES_WITH_OWNER",
+              message: AGENT_LEAVES_WITH_OWNER,
+            });
           }
         },
         afterRemoveMember: async ({ member, user }) => {

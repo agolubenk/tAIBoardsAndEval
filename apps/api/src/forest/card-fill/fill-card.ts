@@ -8,6 +8,7 @@ import {
   taskTable,
   userTable,
 } from "../../database/schema";
+import { publishEvent } from "../../events";
 import createExternalLink from "../../external-link/controllers/create-external-link";
 import { publishTaskMutation } from "../../task/controllers/task-mutation-effects";
 import { withLockedTask } from "../../task/controllers/with-locked-task";
@@ -64,8 +65,18 @@ async function takeCard(taskId: string, userId: string) {
       .returning();
     return updated ?? task;
   });
-  if (before !== after) {
-    await publishTaskMutation(before, after, userId, { fields: ["userId"] });
+  if (before === after) return;
+  await publishTaskMutation(before, after, userId, { fields: ["userId"] });
+  // A start date has no field event of its own; this one makes open tabs
+  // refetch the card instead of showing it empty until a reload.
+  if (!before.startDate && after.startDate) {
+    await publishEvent("task.updated", {
+      taskId: after.id,
+      projectId: after.projectId,
+      title: after.title,
+      status: after.status,
+      userId,
+    });
   }
 }
 

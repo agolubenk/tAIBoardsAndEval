@@ -1,5 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import {
+  AGENT_LEAVES_WITH_OWNER,
+  isAgentUser,
+} from "../../agent-identity/is-agent-user";
 import db from "../../database";
 import { userTable, workspaceUserTable } from "../../database/schema";
 import { isOwnerRole } from "../../project-access/is-owner-role";
@@ -18,6 +22,9 @@ async function removeWorkspaceMember(request: {
     const member = members.find((candidate) => candidate.userId === userId);
     if (!member) {
       throw new HTTPException(404, { message: "Member not found" });
+    }
+    if (await isAgentUser(userId, tx)) {
+      throw new HTTPException(400, { message: AGENT_LEAVES_WITH_OWNER });
     }
     const owners = members.filter((candidate) => isOwnerRole(candidate.role));
     if (isOwnerRole(member.role) && owners.length === 1) {
