@@ -129,6 +129,24 @@ describe("project access enforcement", () => {
     expect((await request("/task/by-ticket-id/BETA-1")).status).toBe(404);
   });
 
+  it("keeps a closed project's card out of the short-id search the command palette uses", async () => {
+    const ctx = await createRestrictedWorkspace();
+    mockAuthenticatedSession(ctx.restricted);
+    const request = projectAccessApi();
+    const search = async (q: string) => {
+      const response = await request(
+        `/search?${new URLSearchParams({ q, workspaceId: ctx.workspace.id, type: "tasks", limit: "8" })}`,
+      );
+      expect(response.status).toBe(200);
+      return JSON.stringify(await response.json());
+    };
+
+    expect(await search("ALPHA-1")).toContain("Visible alpha task");
+    const hidden = await search("BETA-1");
+    expect(hidden).not.toContain("Hidden beta task");
+    expect(hidden).not.toContain(ctx.betaTask.id);
+  });
+
   it("hides notifications about tasks in other projects", async () => {
     const ctx = await createRestrictedWorkspace();
     await db.insert(schema.notificationTable).values([

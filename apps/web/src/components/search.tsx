@@ -4,7 +4,7 @@ import { ShortcutKeys } from "@/components/shortcuts/shortcut-keys";
 import { SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import SearchCommandMenu from "@/components/search-command-menu";
+import LazySearchCommandMenu from "@/components/search-command-menu/lazy-search-command-menu";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -49,7 +49,7 @@ export default function Search() {
         </Tooltip>
       </TooltipProvider>
 
-      <SearchCommandMenu open={open} setOpen={setOpen} />
+      <LazySearchCommandMenu open={open} setOpen={setOpen} />
     </>
   );
 }
