@@ -9,7 +9,10 @@ import { cloudCallsToday } from "../chat/call-budget";
 import { effectiveNotebookModel } from "../../notebook-model/effective-notebook-model";
 
 export async function notebookStatus(workspaceId: string) {
-  const settings = await effectiveNotebookModel();
+  const [settings, callsToday] = await Promise.all([
+    effectiveNotebookModel(),
+    cloudCallsToday(),
+  ]);
   const model = settings.embedModel;
   const [[sources], [chunks]] = await Promise.all([
     db
@@ -35,7 +38,7 @@ export async function notebookStatus(workspaceId: string) {
     llm: {
       configured: settings.model !== null && settings.key !== null,
       model: settings.model,
-      callsToday: await cloudCallsToday(),
+      callsToday,
       dailyMax: settings.model ? settings.dailyMax : null,
     },
   };

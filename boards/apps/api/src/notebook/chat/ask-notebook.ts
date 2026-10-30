@@ -144,11 +144,13 @@ export async function askNotebook(input: {
     })
     .returning();
 
+  const settings = await effectiveNotebookModel();
   const { results: hits } = await searchNotebook({
     workspaceId: input.workspaceId,
     query: input.question,
     limit: ANSWER_SOURCES,
     mode: "hybrid",
+    embedModel: settings.embedModel,
   });
   const citations: NotebookCitation[] = hits.map((hit, i) => ({
     n: i + 1,
@@ -158,12 +160,7 @@ export async function askNotebook(input: {
     title: hit.source.title,
     heading: hit.heading,
   }));
-  const outcome = await writeAnswer(
-    await effectiveNotebookModel(),
-    input.question,
-    hits,
-    history,
-  );
+  const outcome = await writeAnswer(settings, input.question, hits, history);
   // Only a model call carries a model, and only a model call holds a place.
   const [answer] = await db
     .insert(notebookMessageTable)

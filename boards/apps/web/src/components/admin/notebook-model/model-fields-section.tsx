@@ -1,4 +1,5 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useIsMutating } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -9,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { NotebookModelSettings } from "@/fetchers/admin/get-notebook-model";
-import useUpdateNotebookModel from "@/hooks/mutations/admin/use-update-notebook-model";
+import useUpdateNotebookModel, {
+  NOTEBOOK_MODEL_MUTATION_KEY,
+} from "@/hooks/mutations/admin/use-update-notebook-model";
 import { createModelFormSchema } from "./create-model-form-schema";
 import {
   type ModelFormValues,
@@ -33,16 +36,25 @@ export function ModelFieldsSection({
   const schema = useMemo(() => createModelFormSchema(t), [t]);
   const current = useMemo(() => toModelFormValues(settings), [settings]);
   const { mutate, isPending } = useUpdateNotebookModel();
+  const saving =
+    useIsMutating({ mutationKey: NOTEBOOK_MODEL_MUTATION_KEY }) > 0;
   const form = useForm<ModelFormValues>({
     resolver: standardSchemaResolver(schema),
     defaultValues: current,
   });
+  const { isDirty } = form.formState;
 
-  useEffect(() => form.reset(current), [form, current]);
+  // A save of the key section must not wipe fields being edited here.
+  useEffect(() => {
+    if (!isDirty) form.reset(current);
+  }, [form, current, isDirty]);
 
   const onSubmit = (values: ModelFormValues) => {
     const patch = toModelPatch(values, current);
-    if (Object.keys(patch).length > 0) mutate(patch);
+    if (Object.keys(patch).length === 0) return;
+    mutate(patch, {
+      onSuccess: (saved) => form.reset(toModelFormValues(saved)),
+    });
   };
 
   return (
@@ -73,7 +85,7 @@ export function ModelFieldsSection({
                       inputMode={inputMode}
                       autoComplete="off"
                       spellCheck={false}
-                      disabled={isPending}
+                      disabled={saving}
                       {...field}
                     />
                   </SettingsFormRow>
@@ -86,7 +98,7 @@ export function ModelFieldsSection({
               type="submit"
               size="sm"
               loading={isPending}
-              disabled={!form.formState.isDirty}
+              disabled={!isDirty || saving}
             >
               {t("settings:adminNotebookModel.fields.save")}
             </Button>

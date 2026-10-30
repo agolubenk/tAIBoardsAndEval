@@ -19,9 +19,21 @@ describe("notebook LLM config", () => {
     vi.unstubAllEnvs();
   });
 
-  it("is off without a model or a key file", () => {
-    expect(configWith({ NOTEBOOK_LLM_MODEL: " " })).toBeNull();
-    expect(configWith({ NOTEBOOK_LLM_KEY_FILE: "" })).toBeNull();
+  // The admin may set the model in the settings and keep the server's key
+  // file and limit, or the other way round.
+  it("reads each value on its own", () => {
+    expect(
+      configWith({ NOTEBOOK_LLM_MODEL: " ", NOTEBOOK_LLM_DAILY_MAX: "9" }),
+    ).toEqual({
+      baseUrl: DEFAULT_LLM_BASE_URL,
+      model: null,
+      keyFile: "/run/key",
+      dailyMax: 9,
+    });
+    expect(configWith({ NOTEBOOK_LLM_KEY_FILE: "" })).toMatchObject({
+      model: "m",
+      keyFile: null,
+    });
   });
 
   // compose writes unset variables as empty strings.
@@ -42,14 +54,12 @@ describe("notebook LLM config", () => {
     ["1.5", DEFAULT_LLM_DAILY_MAX],
     ["many", DEFAULT_LLM_DAILY_MAX],
   ])("takes a daily max of %j as %d", (raw, expected) => {
-    expect(configWith({ NOTEBOOK_LLM_DAILY_MAX: raw })?.dailyMax).toBe(
-      expected,
-    );
+    expect(configWith({ NOTEBOOK_LLM_DAILY_MAX: raw }).dailyMax).toBe(expected);
   });
 
   it("drops trailing slashes from the base URL", () => {
     expect(
-      configWith({ NOTEBOOK_LLM_BASE_URL: "http://gw:8080/v1//" })?.baseUrl,
+      configWith({ NOTEBOOK_LLM_BASE_URL: "http://gw:8080/v1//" }).baseUrl,
     ).toBe("http://gw:8080/v1");
   });
 });

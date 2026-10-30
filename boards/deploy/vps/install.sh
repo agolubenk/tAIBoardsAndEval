@@ -75,7 +75,9 @@ random_hex() { od -An -N32 -tx1 /dev/urandom | tr -d ' \n'; }
 ensure_secrets() {
   install -d -m 0711 "$ROOT/secrets"
   local name file
-  for name in postgres_password auth_secret; do
+  # settings_key seals the model key an admin saves (TB-67); replacing it
+  # later makes that key unreadable until it is entered again.
+  for name in postgres_password auth_secret settings_key; do
     file="$ROOT/secrets/$name"
     if [ ! -s "$file" ]; then
       (
@@ -88,8 +90,10 @@ ensure_secrets() {
   # Postgres (uid 70) and the app (uid 1001) both read the database password.
   chown 70:1001 "$ROOT/secrets/postgres_password"
   chmod 0440 "$ROOT/secrets/postgres_password"
-  chown 1001:1001 "$ROOT/secrets/auth_secret"
-  chmod 0400 "$ROOT/secrets/auth_secret"
+  for name in auth_secret settings_key; do
+    chown 1001:1001 "$ROOT/secrets/$name"
+    chmod 0400 "$ROOT/secrets/$name"
+  done
   for optional in notion_token notebook_llm_key; do
     if [ -f "$ROOT/secrets/$optional" ]; then
       chown 1001:1001 "$ROOT/secrets/$optional"

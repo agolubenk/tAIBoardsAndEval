@@ -8425,7 +8425,11 @@
           },
           "keyUnreadable": {
             "type": "boolean",
-            "description": "A key is stored but the server's settings key cannot open it; enter the key again."
+            "description": "A key is stored but cannot be opened: the server's settings key or the API address changed since it was saved. Enter the key again."
+          },
+          "fileKeyWithheld": {
+            "type": "boolean",
+            "description": "The server's key file holds a key for the server's own API address; it is not sent to the address set here."
           },
           "canStoreKey": {
             "type": "boolean",
@@ -8465,6 +8469,7 @@
           "hasKey",
           "keySource",
           "keyUnreadable",
+          "fileKeyWithheld",
           "canStoreKey",
           "callsToday",
           "usage"
@@ -8479,7 +8484,8 @@
               "null"
             ],
             "maxLength": 500,
-            "format": "uri"
+            "format": "uri",
+            "description": "An https address of an OpenAI-compatible API. A stored key is bound to it: changing it needs the key again."
           },
           "model": {
             "type": [

@@ -1,3 +1,6 @@
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { eq } from "drizzle-orm";
 import {
   afterEach,
@@ -16,7 +19,7 @@ import { projectAccessApi } from "./helpers/project-access/project-access-api";
 
 // Synthetic values only; none of these is a real key.
 const MODEL_KEY = "sk-test-settings-key";
-const SETTINGS_KEY = "test-settings-encryption-key";
+const SETTINGS_KEY = "test-settings-encryption-key-0123456789";
 
 async function storedRow() {
   const [row] = await db
@@ -132,7 +135,7 @@ describe("API integration: notebook model settings", () => {
       body: { key: MODEL_KEY },
     });
 
-    vi.stubEnv("SETTINGS_ENCRYPTION_KEY", "another-settings-key");
+    vi.stubEnv("SETTINGS_ENCRYPTION_KEY", "another-settings-key-0123456789abc");
     const view = await request("/admin/notebook-model");
     expect(await view.json()).toMatchObject({
       hasKey: false,
@@ -143,7 +146,11 @@ describe("API integration: notebook model settings", () => {
 
   it("rejects a malformed address and an out-of-range limit", async () => {
     const request = await asAdmin();
-    for (const body of [{ baseUrl: "not a url" }, { dailyMax: -1 }]) {
+    for (const body of [
+      { baseUrl: "not a url" },
+      { baseUrl: "http://gw.example/v1" },
+      { dailyMax: -1 },
+    ]) {
       const put = await request("/admin/notebook-model", {
         method: "PUT",
         body,
@@ -151,5 +158,106 @@ describe("API integration: notebook model settings", () => {
       expect(put.status).toBe(400);
     }
     expect(await storedRow()).toBeNull();
+  });
+
+  it("binds a stored key to its API address", async () => {
+    const request = await asAdmin();
+    const put = (body: Record<string, unknown>) =>
+      request("/admin/notebook-model", { method: "PUT", body });
+
+    const saved = await put({
+      baseUrl: "https://gw.example/v1/",
+      key: MODEL_KEY,
+    });
+    expect(await saved.json()).toMatchObject({
+      baseUrl: "https://gw.example/v1",
+      keySource: "settings",
+    });
+
+    // Another host would receive the key: it has to be entered again.
+    const moved = await put({ baseUrl: "https://collector.example/v1" });
+    expect(moved.status).toBe(409);
+    const back = await put({ baseUrl: null });
+    expect(back.status).toBe(409);
+    expect(await storedRow()).toMatchObject({
+      value: expect.stringContaining("https://gw.example/v1"),
+    });
+
+    const samehost = await put({ baseUrl: "https://gw.example/v2" });
+    expect(await samehost.json()).toMatchObject({ keySource: "settings" });
+
+    const rekeyed = await put({
+      baseUrl: "https://collector.example/v1",
+      key: MODEL_KEY,
+    });
+    expect(await rekeyed.json()).toMatchObject({
+      baseUrl: "https://collector.example/v1",
+      keySource: "settings",
+    });
+  });
+
+  it("keeps the server's key file to the server's own address", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "notebook-model-"));
+    try {
+      writeFileSync(join(dir, "key"), "sk-test-file-key\n");
+      vi.stubEnv("NOTEBOOK_LLM_KEY_FILE", join(dir, "key"));
+      const request = await asAdmin();
+
+      const before = await request("/admin/notebook-model");
+      expect(await before.json()).toMatchObject({
+        keySource: "file",
+        fileKeyWithheld: false,
+      });
+
+      const moved = await request("/admin/notebook-model", {
+        method: "PUT",
+        body: { baseUrl: "https://collector.example/v1" },
+      });
+      expect(await moved.json()).toMatchObject({
+        hasKey: false,
+        keySource: null,
+        fileKeyWithheld: true,
+      });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps the stored key when another field is broken", async () => {
+    const request = await asAdmin();
+    await request("/admin/notebook-model", {
+      method: "PUT",
+      body: { model: "a/b", key: MODEL_KEY },
+    });
+    const row = await storedRow();
+    const value = { ...JSON.parse(String(row?.value)), dailyMax: "many" };
+    await db
+      .update(schema.instanceSettingTable)
+      .set({ value: JSON.stringify(value) })
+      .where(eq(schema.instanceSettingTable.key, "notebook.model"));
+
+    const view = await request("/admin/notebook-model");
+    expect(await view.json()).toMatchObject({
+      model: "a/b",
+      dailyMax: 500,
+      keySource: "settings",
+    });
+  });
+
+  it("keeps every field of saves made at the same time", async () => {
+    const request = await asAdmin();
+    const saves = await Promise.all(
+      [{ model: "a/b" }, { dailyMax: 3 }, { embedModel: "bge-m3" }].map(
+        (body) => request("/admin/notebook-model", { method: "PUT", body }),
+      ),
+    );
+    expect(saves.map((save) => save.status)).toEqual([200, 200, 200]);
+
+    const view = await request("/admin/notebook-model");
+    expect(await view.json()).toMatchObject({
+      model: "a/b",
+      dailyMax: 3,
+      embedModel: "bge-m3",
+    });
   });
 });

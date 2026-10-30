@@ -3,13 +3,18 @@ import { z } from "zod";
 
 const DAILY_MAX_LIMIT = 100_000;
 
+// The key travels to this address, so it has to be encrypted on the way.
+function isHttpsUrl(value: string) {
+  return URL.canParse(value) && new URL(value).protocol === "https:";
+}
+
 export function createModelFormSchema(t: TFunction) {
   return z.object({
     baseUrl: z
       .string()
       .trim()
       .max(500)
-      .refine((value) => value === "" || URL.canParse(value), {
+      .refine((value) => value === "" || isHttpsUrl(value), {
         message: t("settings:adminNotebookModel.validation.baseUrl"),
       }),
     model: z.string().trim().max(200),

@@ -17,6 +17,7 @@ export async function notebookModelView() {
     hasKey: settings.key !== null,
     keySource: settings.keySource,
     keyUnreadable: settings.keyUnreadable,
+    fileKeyWithheld: settings.fileKeyWithheld,
     canStoreKey: canSealSecrets(),
     callsToday,
     usage,

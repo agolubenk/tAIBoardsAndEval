@@ -72,13 +72,15 @@ export const embedRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(embedWorkRoute, async (c) => {
     const { workspaceId } = c.req.valid("param");
     const { wait } = c.req.valid("query");
-    const model = await notebookEmbedModel();
+    let model = await notebookEmbedModel();
     markWorkerSeen(workspaceId);
     let items = await claimEmbedWork(workspaceId, model);
     if (!items.length && wait > 0) {
       await waitForEmbedWork(workspaceId, wait * 1000, c.req.raw.signal);
       markWorkerSeen(workspaceId);
       if (!c.req.raw.signal.aborted) {
+        // The admin may have switched the embedding model during the wait.
+        model = await notebookEmbedModel();
         items = await claimEmbedWork(workspaceId, model);
       }
     }

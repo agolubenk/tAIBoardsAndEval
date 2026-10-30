@@ -1,9 +1,5 @@
-import {
-  DEFAULT_LLM_BASE_URL,
-  DEFAULT_LLM_DAILY_MAX,
-  notebookLlmConfig,
-  readLlmKey,
-} from "../notebook/llm/llm-config";
+import { normalizeBaseUrl, urlOrigin } from "../notebook/llm/base-url";
+import { notebookLlmConfig, readLlmKey } from "../notebook/llm/llm-config";
 import { envEmbedModel } from "../notebook/notebook-config";
 import { readStoredNotebookModel } from "./notebook-model-store";
 import { openSecret } from "./secret-box";
@@ -16,24 +12,35 @@ export type NotebookModel = {
   key: string | null;
   // Where the key came from; "settings" wins over the server's key file.
   keySource: "settings" | "file" | null;
-  // A key is stored but the server's settings key cannot open it.
+  // A key is stored but cannot be opened: the server's settings key or the
+  // API address changed since it was saved.
   keyUnreadable: boolean;
+  // The server's key file holds a key for the server's own address, and the
+  // admin's address differs, so the file key is not sent there.
+  fileKeyWithheld: boolean;
 };
 
 // The admin's settings first, then the server's environment, then defaults.
 export async function effectiveNotebookModel(): Promise<NotebookModel> {
   const stored = await readStoredNotebookModel();
   const env = notebookLlmConfig();
-  const storedKey = stored.key ? openSecret(stored.key) : null;
-  const fileKey = storedKey || !env ? null : readLlmKey(env);
+  const baseUrl = stored.baseUrl
+    ? normalizeBaseUrl(stored.baseUrl)
+    : env.baseUrl;
+  const origin = urlOrigin(baseUrl);
+  const storedKey = stored.key ? openSecret(stored.key, origin) : null;
+  const fileFits = origin === urlOrigin(env.baseUrl);
+  const fileKey = storedKey ? null : readLlmKey(env.keyFile);
+  const usedFileKey = fileFits ? fileKey : null;
   return {
-    baseUrl: stored.baseUrl ?? env?.baseUrl ?? DEFAULT_LLM_BASE_URL,
-    model: stored.model ?? env?.model ?? null,
+    baseUrl,
+    model: stored.model ?? env.model,
     embedModel: stored.embedModel ?? envEmbedModel(),
-    dailyMax: stored.dailyMax ?? env?.dailyMax ?? DEFAULT_LLM_DAILY_MAX,
-    key: storedKey ?? fileKey,
-    keySource: storedKey ? "settings" : fileKey ? "file" : null,
+    dailyMax: stored.dailyMax ?? env.dailyMax,
+    key: storedKey ?? usedFileKey,
+    keySource: storedKey ? "settings" : usedFileKey ? "file" : null,
     keyUnreadable: Boolean(stored.key) && !storedKey,
+    fileKeyWithheld: fileKey !== null && !fileFits,
   };
 }
 
