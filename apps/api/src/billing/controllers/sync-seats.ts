@@ -1,6 +1,7 @@
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, isNull, ne, or } from "drizzle-orm";
 import db from "../../database";
 import {
+  userTable,
   workspaceBillingTable,
   workspaceUserTable,
 } from "../../database/schema";
@@ -26,10 +27,17 @@ export async function syncWorkspaceSeats(workspaceId: string) {
     return;
   }
 
+  // R-010: agents act for a member who already holds a seat.
   const [members] = await db
     .select({ value: count() })
     .from(workspaceUserTable)
-    .where(eq(workspaceUserTable.workspaceId, workspaceId));
+    .innerJoin(userTable, eq(userTable.id, workspaceUserTable.userId))
+    .where(
+      and(
+        eq(workspaceUserTable.workspaceId, workspaceId),
+        or(isNull(userTable.role), ne(userTable.role, "agent")),
+      ),
+    );
 
   const seats = Math.max(1, members?.value ?? 1);
   if (seats === billing.seats) {

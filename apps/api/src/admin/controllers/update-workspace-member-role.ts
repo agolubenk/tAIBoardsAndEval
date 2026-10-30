@@ -1,5 +1,10 @@
 import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import {
+  AGENT_FOLLOWS_OWNER,
+  isAgentUser,
+} from "../../agent-identity/is-agent-user";
+import { refreshOwnerAgents } from "../../agent-identity/owner-agents";
 import db from "../../database";
 import { workspaceUserTable } from "../../database/schema";
 import { isOwnerRole } from "../../project-access/is-owner-role";
@@ -19,6 +24,9 @@ async function updateWorkspaceMemberRole(request: {
     const member = members.find((candidate) => candidate.userId === userId);
     if (!member) {
       throw new HTTPException(404, { message: "Member not found" });
+    }
+    if (await isAgentUser(userId, tx)) {
+      throw new HTTPException(400, { message: AGENT_FOLLOWS_OWNER });
     }
     if (!(await isAssignableWorkspaceRole(tx, workspaceId, role))) {
       throw new HTTPException(400, {
@@ -45,6 +53,9 @@ async function updateWorkspaceMemberRole(request: {
       );
   });
 
+  await refreshOwnerAgents(userId).catch((error) => {
+    console.error("Agent role refresh failed:", error);
+  });
   return listWorkspaceMembers(workspaceId);
 }
 

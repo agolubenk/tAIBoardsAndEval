@@ -1,5 +1,6 @@
 import { APIError } from "better-auth/api";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNull, ne, or } from "drizzle-orm";
+import { deleteOwnerAgents } from "../../agent-identity/owner-agents";
 import {
   findBillableWorkspaces,
   formatBillableWorkspacesMessage,
@@ -48,7 +49,15 @@ async function collectMemberships(
       workspaceTable,
       eq(workspaceUserTable.workspaceId, workspaceTable.id),
     )
-    .where(inArray(workspaceUserTable.workspaceId, workspaceIds));
+    // R-010: agents act for members and leave with them; they are not the
+    // people a workspace would be handed to.
+    .innerJoin(userTable, eq(userTable.id, workspaceUserTable.userId))
+    .where(
+      and(
+        inArray(workspaceUserTable.workspaceId, workspaceIds),
+        or(isNull(userTable.role), ne(userTable.role, "agent")),
+      ),
+    );
 
   return memberships.map((membership) => {
     const workspaceMembers = members.filter(
@@ -85,6 +94,8 @@ export async function deleteAccountData(userId: string) {
       ),
     });
   }
+
+  await deleteOwnerAgents(userId);
 
   if (plan.workspaceIdsToDelete.length > 0) {
     const admins = await db

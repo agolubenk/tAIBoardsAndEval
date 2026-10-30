@@ -12,7 +12,13 @@ const HEADERS = {
   groupKey: "x-t-boards-group",
   expectedRevision: "x-t-boards-revision",
   approvalId: "x-t-boards-approval",
+  note: "x-t-boards-note",
+  link: "x-t-boards-link",
 } as const;
+
+// Header values are Latin-1, so the note travels percent-encoded.
+const ENCODE: Partial<Record<keyof typeof HEADERS, (value: string) => string>> =
+  { note: encodeURIComponent };
 
 const AGENT_WRITE_TOOLS = new Set([
   "create_task",
@@ -62,6 +68,24 @@ export const agentWriteShape = {
     .describe(
       "An approved forest_request_approval (close_task, reopen_task or set_priority) for this exact status or priority; spent on success.",
     ),
+  note: z
+    .string()
+    .trim()
+    .min(1)
+    .max(2000)
+    .optional()
+    .describe(
+      "On a status change: what was done or found. It goes to the card's comments at once, with a mention of your owner.",
+    ),
+  link: z
+    .string()
+    .trim()
+    .url()
+    .max(500)
+    .optional()
+    .describe(
+      "On a status change: the PR, commit or other http(s) link to the work. Moving to review needs one, sent here or already on the card.",
+    ),
 };
 
 export function splitAgentWrite(args: Record<string, unknown>) {
@@ -70,7 +94,9 @@ export function splitAgentWrite(args: Record<string, unknown>) {
   for (const [field, header] of Object.entries(HEADERS)) {
     const value = rest[field];
     delete rest[field];
-    if (value !== undefined) headers[header] = String(value);
+    if (value === undefined) continue;
+    const encode = ENCODE[field as keyof typeof HEADERS];
+    headers[header] = encode ? encode(String(value)) : String(value);
   }
   return { headers, rest };
 }

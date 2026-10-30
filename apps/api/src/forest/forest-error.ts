@@ -14,7 +14,8 @@ export type ForestErrorCode =
   | "too_large"
   | "half_baked"
   | "mirror_read_only"
-  | "history_conflict";
+  | "history_conflict"
+  | "card_incomplete";
 
 const STATUS: Record<ForestErrorCode, 400 | 403 | 409 | 410 | 413> = {
   lease_conflict: 409,
@@ -31,6 +32,7 @@ const STATUS: Record<ForestErrorCode, 400 | 403 | 409 | 410 | 413> = {
   half_baked: 403,
   mirror_read_only: 403,
   history_conflict: 409,
+  card_incomplete: 400,
 };
 
 // Expected forest refusals carry a machine code so agents can branch on it.

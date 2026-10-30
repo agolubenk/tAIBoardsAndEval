@@ -1,5 +1,10 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
+import {
+  type AgentIdentity,
+  harnessSlug,
+  withAgentIdentity,
+} from "../kaneo/agent-identity.js";
 import { errorResult } from "../utils/mcp-result.js";
 import { shapeResult } from "../view/shape-result.js";
 import { splitView, viewOptionsShape } from "../view/view-options.js";
@@ -10,6 +15,7 @@ import {
   splitAgentWrite,
   withHeaders,
 } from "./agent-write.js";
+import { sessionField } from "./forest/request.js";
 import type { ToolClient, ToolRegistrar } from "./register.js";
 
 // The callback gets the client for this call: for agent task writes it carries
@@ -98,6 +104,26 @@ export type ToolCall = {
 export type RegisterHooks = {
   onFormatFallback?: FormatFallback;
   onCall?: (call: ToolCall) => void;
+  // R-010: every tool takes session and harness, and the call runs as that
+  // session's own agent. Left out where the server already knows the caller.
+  agentIdentity?: { defaultHarness: () => string };
+};
+
+const identityShape = {
+  session: sessionField
+    .optional()
+    .describe(
+      "Your session's stable label, the same on every call (role and number, e.g. «successor bb»). Cards, comments and the journal show your work under it; without it you work as your harness's default agent.",
+    ),
+  harness: z
+    .string()
+    .trim()
+    .min(1)
+    .max(40)
+    .optional()
+    .describe(
+      "Where you run: claude-code, codex, continue, cursor, kimi, copilot, roo or your own name.",
+    ),
 };
 
 function answerText(result: CallToolResult) {
@@ -112,33 +138,36 @@ export function createRegisterTool(
   hooks: RegisterHooks = {},
 ): RegisterTool {
   const onFormatFallback = hooks.onFormatFallback ?? logFallback;
-  const { onCall } = hooks;
+  const { onCall, agentIdentity } = hooks;
   return (name, config, callback) => {
     const read = isReadTool(name);
     const agentWrite = isAgentWriteTool(name);
-    const inputSchema = read
-      ? config.inputSchema.extend(viewOptionsShape)
-      : agentWrite
-        ? config.inputSchema.extend(agentWriteShape)
-        : config.inputSchema;
-    const handle = async (args: unknown): Promise<CallToolResult> => {
-      const parsed = inputSchema.safeParse(args);
-      if (!parsed.success) return errorResult(z.prettifyError(parsed.error));
-      if (agentWrite) {
-        const { headers, rest } = splitAgentWrite(
-          parsed.data as Record<string, unknown>,
+    // Forest tools and agent writes already take a session; it names the
+    // agent too.
+    const ownSession = agentWrite || "session" in config.inputSchema.shape;
+    const base = !agentIdentity
+      ? config.inputSchema
+      : config.inputSchema.extend(
+          ownSession ? { harness: identityShape.harness } : identityShape,
         );
+    const inputSchema = read
+      ? base.extend(viewOptionsShape)
+      : agentWrite
+        ? base.extend(agentWriteShape)
+        : base;
+    const dispatch = async (
+      data: Record<string, unknown>,
+    ): Promise<CallToolResult> => {
+      if (agentWrite) {
+        const { headers, rest } = splitAgentWrite(data);
         return callback(
           rest as z.output<typeof config.inputSchema>,
           withHeaders(client, headers),
         );
       }
       if (!read)
-        return callback(
-          parsed.data as z.output<typeof config.inputSchema>,
-          client,
-        );
-      const { view, rest } = splitView(parsed.data as Record<string, unknown>);
+        return callback(data as z.output<typeof config.inputSchema>, client);
+      const { view, rest } = splitView(data);
       const result = await callback(
         rest as z.output<typeof config.inputSchema>,
         client,
@@ -147,6 +176,21 @@ export function createRegisterTool(
       return shapeResult(answers.get(result), view, fullRef(name, rest), (e) =>
         onFormatFallback(name, e),
       );
+    };
+    const handle = async (args: unknown): Promise<CallToolResult> => {
+      const parsed = inputSchema.safeParse(args);
+      if (!parsed.success) return errorResult(z.prettifyError(parsed.error));
+      const data = { ...(parsed.data as Record<string, unknown>) };
+      if (!agentIdentity) return dispatch(data);
+      const identity: AgentIdentity = {
+        harness:
+          harnessSlug(data.harness as string | undefined) ??
+          agentIdentity.defaultHarness(),
+        session: data.session as string | undefined,
+      };
+      delete data.harness;
+      if (!ownSession) delete data.session;
+      return withAgentIdentity(identity, () => dispatch(data));
     };
     return server.registerTool(
       name,

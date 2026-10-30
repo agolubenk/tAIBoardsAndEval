@@ -189,6 +189,8 @@ describe("API integration: agent rights on kaneo routes", () => {
         { status },
         {
           "x-t-boards-fence": token,
+          // A card goes to review with what to review (card fill, 30.10).
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
           ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
         },
         "dev-1",
@@ -275,6 +277,7 @@ describe("API integration: agent rights on kaneo routes", () => {
         { status },
         {
           "x-t-boards-fence": token,
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
           ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
         },
         "dev-1",
@@ -437,7 +440,10 @@ describe("API integration: agent rights on kaneo routes", () => {
           position: current.body.position ?? 0,
           ...patch,
         },
-        { "x-t-boards-fence": token },
+        {
+          "x-t-boards-fence": token,
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
+        },
         "dev-1",
       );
 

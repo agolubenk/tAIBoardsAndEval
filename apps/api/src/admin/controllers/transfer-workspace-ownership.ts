@@ -2,6 +2,10 @@ import { and, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { workspaceUserTable } from "../../database/schema";
+import {
+  AGENT_FOLLOWS_OWNER,
+  isAgentUser,
+} from "../../agent-identity/is-agent-user";
 import { publishEvent } from "../../events";
 import { clearMemberProjectAccess } from "../../project-access/clear-member-project-access";
 import { isOwnerRole } from "../../project-access/is-owner-role";
@@ -19,6 +23,9 @@ async function transferWorkspaceOwnership(request: {
     const target = members.find((candidate) => candidate.userId === userId);
     if (!target) {
       throw new HTTPException(404, { message: "Member not found" });
+    }
+    if (await isAgentUser(userId, tx)) {
+      throw new HTTPException(400, { message: AGENT_FOLLOWS_OWNER });
     }
     const otherOwners = members
       .filter((candidate) => isOwnerRole(candidate.role))

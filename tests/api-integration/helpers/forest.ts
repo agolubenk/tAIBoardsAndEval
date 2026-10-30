@@ -58,6 +58,8 @@ export async function createForest() {
   return {
     workspace,
     project,
+    ownerId: user.id,
+    key,
     owner: (path: string, body?: unknown) => {
       mockAuthenticatedSession(owner as typeof user);
       return call(path, {}, body);

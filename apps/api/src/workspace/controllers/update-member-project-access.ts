@@ -1,4 +1,9 @@
 import { HTTPException } from "hono/http-exception";
+import {
+  AGENT_FOLLOWS_OWNER,
+  isAgentUser,
+} from "../../agent-identity/is-agent-user";
+import { refreshOwnerAgents } from "../../agent-identity/owner-agents";
 import db from "../../database";
 import { publishEvent } from "../../events";
 import { keepHiddenGrants } from "../../project-access/keep-hidden-grants";
@@ -32,6 +37,9 @@ async function updateMemberProjectAccess(request: {
       }
       if (lock.targetRole === null) {
         throw new HTTPException(404, { message: "Member not found" });
+      }
+      if (await isAgentUser(userId, tx)) {
+        throw new HTTPException(400, { message: AGENT_FOLLOWS_OWNER });
       }
 
       const resolution = await resolveProjectAccessRequest({
@@ -90,6 +98,10 @@ async function updateMemberProjectAccess(request: {
     await publishEvent("task.bulk_unassigned", { projectId, userId: actorId });
   }
 
+  // R-010: the member's agents see what the member now sees.
+  await refreshOwnerAgents(userId).catch((error) => {
+    console.error("Agent access refresh failed:", error);
+  });
   return { userId, ...access };
 }
 

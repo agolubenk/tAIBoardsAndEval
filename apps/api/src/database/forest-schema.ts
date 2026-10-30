@@ -506,3 +506,33 @@ export const notionMirrorRunTable = pgTable(
     ),
   ],
 );
+
+// R-010: an agent works under its own name. Each session of a harness gets a
+// user of role "agent" that has no login; its keys are issued by its owner's
+// key and its workspace roles follow the owner's, never above admin. A
+// disabled agent keeps its history but gets no new keys.
+export const agentProfileTable = pgTable(
+  "agent_profile",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => userTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => userTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    harness: text("harness").notNull(),
+    session: text("session").notNull(),
+    disabledAt: timestamp("disabled_at", { mode: "date" }),
+    lastIssuedAt: timestamp("last_issued_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+  },
+  (table) => [index("agent_profile_owner_idx").on(table.ownerId)],
+);

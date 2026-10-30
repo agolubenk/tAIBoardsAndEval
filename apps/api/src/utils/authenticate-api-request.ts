@@ -83,6 +83,8 @@ function setApiKeyContext(c: Context, { key, rateLimit }: VerifiedApiKey) {
     enabled: key.enabled,
     permissions: key.permissions,
     workspaceScope: key.workspaceScope,
+    agent: key.agent,
+    expiresAt: key.expiresAt ?? null,
   });
   setRateLimitHeaders(c, rateLimit);
   attachUserToScope(key.userId);

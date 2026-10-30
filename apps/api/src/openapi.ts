@@ -13,6 +13,9 @@ export type ApiKey = {
   enabled: boolean;
   permissions: Record<string, string[]> | null;
   workspaceScope?: ApiKeyWorkspaceScope;
+  // R-010: set when the key belongs to an agent user; it acts under this name.
+  agent?: { name: string } | null;
+  expiresAt?: Date | null;
 };
 
 export type BaseVariables = {

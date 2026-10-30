@@ -51,6 +51,15 @@ import { isOwnerRole } from "./project-access/is-owner-role";
 import { publishMemberProjects } from "./project-access/publish-member-projects";
 import { handleMemberAdded } from "./workspace-members/handle-member-added";
 import { handleMemberRemoved } from "./workspace-members/handle-member-removed";
+import { isAgentEmail } from "./agent-identity/agent-naming";
+import {
+  AGENT_FOLLOWS_OWNER,
+  isAgentUser,
+} from "./agent-identity/is-agent-user";
+import {
+  refreshOwnerAgents,
+  removeOwnerAgents,
+} from "./agent-identity/owner-agents";
 import { handleOwnerPromoted } from "./workspace-members/handle-owner-promoted";
 import { hideInaccessibleInvitationProjects } from "./project-access/hide-inaccessible-invitation-projects";
 import clearEmailVerificationOnAdminChange from "./user/controllers/clear-email-verification-on-admin-change";
@@ -606,10 +615,22 @@ export const auth = betterAuth({
             console.error("Project member refresh failed:", error);
           });
         },
+        beforeUpdateMemberRole: async ({ member }) => {
+          // R-010: an agent never holds a role of its own, owner least of all.
+          if (await isAgentUser(member.userId)) {
+            throw new APIError("BAD_REQUEST", {
+              code: "AGENT_ROLE_FOLLOWS_OWNER",
+              message: AGENT_FOLLOWS_OWNER,
+            });
+          }
+        },
         afterUpdateMemberRole: async ({ member }) => {
           if (isOwnerRole(member.role)) {
             await handleOwnerPromoted(member.organizationId, member.userId);
           }
+          await refreshOwnerAgents(member.userId).catch((error) => {
+            console.error("Agent role refresh failed:", error);
+          });
         },
         afterAddMember: async ({ member }) => {
           if (member?.organizationId) {
@@ -725,6 +746,15 @@ export const auth = betterAuth({
     },
   },
   databaseHooks: {
+    session: {
+      create: {
+        // R-010: an agent works through its keys only; no sign-in, OAuth link
+        // or impersonation opens a session for it.
+        before: async (session) => {
+          if (await isAgentUser(session.userId)) return false;
+        },
+      },
+    },
     user: {
       delete: {
         after: async (user, ctx) => {
@@ -741,6 +771,12 @@ export const auth = betterAuth({
       },
       update: {
         before: async (user, ctx) => {
+          if (isAgentEmail((user as { email?: string }).email)) {
+            throw new APIError("BAD_REQUEST", {
+              code: "RESERVED_EMAIL",
+              message: "This address is reserved.",
+            });
+          }
           if (
             (ctx?.path === "/admin/set-role" ||
               ctx?.path === "/admin/update-user") &&
@@ -757,6 +793,13 @@ export const auth = betterAuth({
       },
       create: {
         before: async (user, ctx) => {
+          // R-010: agents are made by the server, never signed up.
+          if (isAgentEmail(user.email)) {
+            throw new APIError("BAD_REQUEST", {
+              code: "RESERVED_EMAIL",
+              message: "This address is reserved.",
+            });
+          }
           await assertUserRegistrationAllowed(
             user as Partial<UserWithAnonymous> & { email: string },
             {
@@ -964,6 +1007,12 @@ export const auth = betterAuth({
           ).catch((error) => {
             console.error("Project access cleanup failed:", error);
           });
+          // R-010: leaving takes the member's agents along.
+          await removeOwnerAgents(removed.organizationId, removed.userId).catch(
+            (error) => {
+              console.error("Agent membership cleanup failed:", error);
+            },
+          );
           await revokeWorkspaceConnections(
             removed.userId,
             removed.organizationId,

@@ -1,4 +1,6 @@
 import type { AuthService } from "../auth/auth-service.js";
+import { type AgentIdentity, currentAgentIdentity } from "./agent-identity.js";
+import { AgentKeys } from "./agent-keys.js";
 
 export type Json =
   | null
@@ -11,22 +13,33 @@ export type Json =
 export class KaneoClient {
   readonly baseUrl: string;
   private readonly auth: AuthService;
+  // R-010: with it, a call made under an agent identity goes out with that
+  // agent's own key, issued by the owner's credential.
+  private readonly agentKeys?: AgentKeys;
 
-  constructor(options: { baseUrl: string; auth: AuthService }) {
+  constructor(options: {
+    baseUrl: string;
+    auth: AuthService;
+    agentSessions?: boolean;
+  }) {
     this.baseUrl = options.baseUrl;
     this.auth = options.auth;
+    if (options.agentSessions) {
+      this.agentKeys = new AgentKeys(async (identity) =>
+        this.send(
+          "/api/agent-identity/session",
+          { method: "POST", body: JSON.stringify(identity) },
+          await this.auth.getAccessToken(),
+        ),
+      );
+    }
   }
 
   get usingApiKey() {
     return this.auth.usingApiKey;
   }
 
-  private async authorizedFetch(
-    path: string,
-    init?: RequestInit,
-    didRetry = false,
-  ): Promise<Response> {
-    const token = await this.auth.getAccessToken();
+  private send(path: string, init: RequestInit | undefined, token: string) {
     const headers = new Headers(init?.headers);
     headers.set("Authorization", `Bearer ${token}`);
     if (init?.body != null && !headers.has("Content-Type")) {
@@ -38,13 +51,56 @@ export class KaneoClient {
     const signal = init?.signal
       ? AbortSignal.any([init.signal, timeoutSignal])
       : timeoutSignal;
-    const res = await fetch(url, { ...init, headers, signal });
+    return fetch(url, { ...init, headers, signal });
+  }
+
+  private async agentFetch(
+    identity: AgentIdentity,
+    path: string,
+    init: RequestInit | undefined,
+  ): Promise<Response | null> {
+    const agentKeys = this.agentKeys;
+    if (!agentKeys) return null;
+    const agent = await agentKeys.get(identity);
+    if (!agent) return null;
+    const res = await this.send(path, init, agent.key);
+    if (res.status !== 401) return res;
+    // Expired or revoked: one new key; a disabled agent is refused there.
+    agentKeys.drop(identity);
+    const renewed = await agentKeys.get(identity);
+    return renewed ? this.send(path, init, renewed.key) : res;
+  }
+
+  private async authorizedFetch(
+    path: string,
+    init?: RequestInit,
+    didRetry = false,
+  ): Promise<Response> {
+    const identity = this.agentKeys ? currentAgentIdentity() : undefined;
+    let request = init;
+    if (identity) {
+      const res = await this.agentFetch(identity, path, init);
+      if (res) return res;
+      // A server without agent identities tells sessions apart by header.
+      if (identity.session) {
+        const headers = new Headers(init?.headers);
+        if (!headers.has("x-t-boards-session")) {
+          headers.set("x-t-boards-session", identity.session);
+        }
+        request = { ...init, headers };
+      }
+    }
+    const res = await this.send(
+      path,
+      request,
+      await this.auth.getAccessToken(),
+    );
 
     // With a static API key there is nothing to refresh, so surface the 401
     // instead of looping back into the interactive device flow.
     if (res.status === 401 && !didRetry && !this.auth.usingApiKey) {
       await this.auth.clearToken();
-      return this.authorizedFetch(path, init, true);
+      return this.authorizedFetch(path, request, true);
     }
 
     return res;

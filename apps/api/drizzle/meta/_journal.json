@@ -533,6 +533,13 @@
       "when": 1793251019742,
       "tag": "0075_t_boards_work_state",
       "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "7",
+      "when": 1793323028850,
+      "tag": "0076_t_boards_agent_identity",
+      "breakpoints": true
     }
   ]
 }

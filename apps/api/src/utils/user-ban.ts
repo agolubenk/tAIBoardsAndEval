@@ -1,4 +1,12 @@
-import { and, eq, isNotNull, isNull, lt, or } from "drizzle-orm";
+import {
+  type AnyColumn,
+  and,
+  eq,
+  isNotNull,
+  isNull,
+  lt,
+  or,
+} from "drizzle-orm";
 import { schema } from "../database";
 
 export type BanState = {
@@ -16,13 +24,13 @@ export function isBanActive(user: BanState | null | undefined) {
   return new Date(user.banExpires).getTime() >= Date.now();
 }
 
-export function notBannedCondition() {
+// The user table itself or an alias of it.
+type BanColumns = { banned: AnyColumn; banExpires: AnyColumn };
+
+export function notBannedCondition(user: BanColumns = schema.userTable) {
   return or(
-    isNull(schema.userTable.banned),
-    eq(schema.userTable.banned, false),
-    and(
-      isNotNull(schema.userTable.banExpires),
-      lt(schema.userTable.banExpires, new Date()),
-    ),
+    isNull(user.banned),
+    eq(user.banned, false),
+    and(isNotNull(user.banExpires), lt(user.banExpires, new Date())),
   );
 }

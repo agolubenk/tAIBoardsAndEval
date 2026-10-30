@@ -1,5 +1,15 @@
 import { createHash } from "node:crypto";
-import { and, eq, exists, gt, isNull, or, sql } from "drizzle-orm";
+import {
+  and,
+  eq,
+  exists,
+  getTableColumns,
+  gt,
+  isNull,
+  or,
+  sql,
+} from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import db, { schema } from "../database";
 import { evaluateApiKeyUsage } from "./api-key-usage";
 import { parseApiKeyWorkspaceScope } from "./api-key-workspace-scope";
@@ -39,6 +49,56 @@ function parsePermissions(raw: string | null): Record<string, string[]> | null {
   return permissions;
 }
 
+const keyOwnerId = sql`coalesce(${schema.apikeyTable.referenceId}, ${schema.apikeyTable.userId})`;
+
+// R-010: a key of an agent user acts under the agent's own name. Read with
+// the key itself, so telling an agent apart costs no extra round trip.
+const keyOwnerRole = sql<
+  string | null
+>`(select ${schema.userTable.role} from ${schema.userTable} where ${schema.userTable.id} = ${keyOwnerId})`;
+
+const keyColumns = {
+  ...getTableColumns(schema.apikeyTable),
+  ownerRole: keyOwnerRole,
+  ownerName: sql<
+    string | null
+  >`(select ${schema.userTable.name} from ${schema.userTable} where ${schema.userTable.id} = ${keyOwnerId})`,
+};
+
+function keyAgent(row: {
+  ownerRole: string | null;
+  ownerName: string | null;
+}): { name: string } | null {
+  return row.ownerRole === "agent" ? { name: row.ownerName ?? "agent" } : null;
+}
+
+const agentOwner = alias(schema.userTable, "agent_owner");
+
+// R-010: an agent works only while it is enabled and its owner may work. A
+// disabled agent, a banned owner or one who deleted the account voids every
+// key of the agent at once, whatever the key's own expiry.
+function agentMayWork() {
+  return or(
+    sql`${keyOwnerRole} is distinct from 'agent'`,
+    exists(
+      db
+        .select({ id: schema.agentProfileTable.userId })
+        .from(schema.agentProfileTable)
+        .innerJoin(
+          agentOwner,
+          eq(agentOwner.id, schema.agentProfileTable.ownerId),
+        )
+        .where(
+          and(
+            eq(schema.agentProfileTable.userId, keyOwnerId),
+            isNull(schema.agentProfileTable.disabledAt),
+            notBannedCondition(agentOwner),
+          ),
+        ),
+    ),
+  );
+}
+
 function activeApiKey(hashedKey: string) {
   return and(
     eq(schema.apikeyTable.key, hashedKey),
@@ -48,16 +108,9 @@ function activeApiKey(hashedKey: string) {
       db
         .select({ id: schema.userTable.id })
         .from(schema.userTable)
-        .where(
-          and(
-            eq(
-              schema.userTable.id,
-              sql`coalesce(${schema.apikeyTable.referenceId}, ${schema.apikeyTable.userId})`,
-            ),
-            notBannedCondition(),
-          ),
-        ),
+        .where(and(eq(schema.userTable.id, keyOwnerId), notBannedCondition())),
     ),
+    agentMayWork(),
     or(
       isNull(schema.apikeyTable.expiresAt),
       gt(schema.apikeyTable.expiresAt, new Date()),
@@ -66,12 +119,13 @@ function activeApiKey(hashedKey: string) {
 }
 
 async function checkApiKey(hashedKey: string) {
-  const [apiKey] = await db
-    .select()
+  const [row] = await db
+    .select(keyColumns)
     .from(schema.apikeyTable)
     .where(activeApiKey(hashedKey))
     .limit(1);
-  if (!apiKey) return null;
+  if (!row) return null;
+  const { ownerRole: _role, ownerName: _name, ...apiKey } = row;
 
   const usage = evaluateApiKeyUsage(apiKey, new Date(), false);
   if (usage.status !== "valid") return usage;
@@ -85,6 +139,7 @@ async function checkApiKey(hashedKey: string) {
       permissions: parsePermissions(apiKey.permissions),
       metadata: null,
       workspaceScope: parseApiKeyWorkspaceScope(apiKey.metadata),
+      agent: keyAgent(row),
     },
   };
 }
@@ -97,16 +152,17 @@ export async function verifyApiKey(
   if (options.consume === false) return checkApiKey(hashedKey);
 
   return db.transaction(async (tx) => {
-    const [apiKey] = await tx
-      .select()
+    const [row] = await tx
+      .select(keyColumns)
       .from(schema.apikeyTable)
       .where(activeApiKey(hashedKey))
       .limit(1)
       .for("update");
 
-    if (!apiKey) {
+    if (!row) {
       return null;
     }
+    const { ownerRole: _role, ownerName: _name, ...apiKey } = row;
     // A key may expire while SELECT waits for another request's row lock.
     const now = new Date();
     if (apiKey.expiresAt && apiKey.expiresAt <= now) return null;
@@ -153,6 +209,7 @@ export async function verifyApiKey(
           ? (JSON.parse(apiKey.metadata) as Record<string, unknown>)
           : null,
         workspaceScope: parseApiKeyWorkspaceScope(apiKey.metadata),
+        agent: keyAgent(row),
       },
     };
   });

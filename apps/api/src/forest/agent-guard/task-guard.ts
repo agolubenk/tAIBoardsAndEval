@@ -1,6 +1,10 @@
 import type { Context, Next } from "hono";
 import { assertProjectAccess } from "../../project-access/assert-project-access";
 import { type ForestActor, resolveForestActor } from "../actor";
+import { assertReviewLink } from "../card-fill/assert-review-link";
+import { readCardFillHeaders } from "../card-fill/card-fill-headers";
+import { cardStage } from "../card-fill/card-stage";
+import { fillCard } from "../card-fill/fill-card";
 import { ForestError } from "../forest-error";
 import { attributeAgentEdit } from "../history/attribute-agent-edit";
 import { writeJournal } from "../journal";
@@ -139,15 +143,31 @@ async function guardEdit(
   }
 
   const headers = readAgentHeaders(c);
+  const fill = readCardFillHeaders(c);
+  const to = statusChanged ? changes.status : undefined;
   try {
     await assertAgentLease(actor, task.id, headers);
+    if (to && cardStage(to) === "review") {
+      await assertReviewLink(task.id, fill.link);
+    }
   } catch (error) {
     if (error instanceof ForestError) await deny(at, error);
     throw error;
   }
 
   const { approval } = decision;
-  const attribute = () => attributeAgentEdit(task.id, task.revision, actor.id);
+  const attribute = async () => {
+    await attributeAgentEdit(task.id, task.revision, actor.id);
+    if (!to) return;
+    await fillCard({
+      taskId: task.id,
+      projectId: changes.projectId ?? task.projectId,
+      from: task.status,
+      to,
+      actor,
+      ...fill,
+    });
+  };
   if (!approval) {
     await next();
     if (c.res.ok) await attribute();

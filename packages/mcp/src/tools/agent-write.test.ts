@@ -19,6 +19,23 @@ describe("splitAgentWrite", () => {
       "x-t-boards-approval": "ap-1",
     });
   });
+
+  it("sends the note percent-encoded and the link as is", () => {
+    const { headers, rest } = splitAgentWrite({
+      status: "in-review",
+      note: "Готово: тесты «зелёные»",
+      link: "https://github.com/agolubenk/t-boards/pull/7",
+    });
+
+    expect(rest).toEqual({ status: "in-review" });
+    expect(decodeURIComponent(headers["x-t-boards-note"] ?? "")).toBe(
+      "Готово: тесты «зелёные»",
+    );
+    expect(headers["x-t-boards-note"]).toMatch(/^[\x20-\x7e]+$/);
+    expect(headers["x-t-boards-link"]).toBe(
+      "https://github.com/agolubenk/t-boards/pull/7",
+    );
+  });
 });
 
 describe("withHeaders", () => {

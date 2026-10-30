@@ -6147,6 +6147,188 @@
           "items"
         ]
       },
+      "IssuedAgentKey": {
+        "type": "object",
+        "properties": {
+          "agent": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "harness": {
+                "type": "string"
+              },
+              "session": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "harness",
+              "session"
+            ]
+          },
+          "key": {
+            "type": "string",
+            "description": "The key itself, shown once; the server keeps only a hash."
+          },
+          "keyId": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "agent",
+          "key",
+          "keyId",
+          "expiresAt"
+        ]
+      },
+      "IssueAgentKeyBody": {
+        "type": "object",
+        "properties": {
+          "harness": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "The harness the session runs in, as a lowercase slug: claude-code, codex, continue, cursor, kimi, copilot, roo or your own.",
+            "example": "claude-code"
+          },
+          "session": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "What the session calls itself (letters, digits, spaces and . _ : / # @ + -, up to 80). Without it the agent is named after the harness.",
+            "example": "successor bb"
+          }
+        },
+        "required": [
+          "harness"
+        ]
+      },
+      "AgentList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "harness": {
+              "type": "string"
+            },
+            "session": {
+              "type": "string"
+            },
+            "disabledAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lastIssuedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "keys": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "start": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "lastRequest": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "expiresAt": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "start",
+                  "createdAt",
+                  "lastRequest",
+                  "expiresAt"
+                ]
+              }
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "harness",
+            "session",
+            "disabledAt",
+            "lastIssuedAt",
+            "createdAt",
+            "keys"
+          ]
+        }
+      },
+      "AgentEnabled": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "revokedKeys": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "revokedKeys"
+        ]
+      },
+      "SetAgentEnabledBody": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
       "NotebookSources": {
         "type": "object",
         "properties": {
@@ -26331,6 +26513,192 @@
           },
           "403": {
             "description": "Missing task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/agent-identity/session": {
+      "post": {
+        "operationId": "issueAgentKey",
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Issue a key for an agent session",
+        "description": "Gets or creates the agent of the caller, harness and session — a user of its own that cannot sign in — copies the caller's workspace memberships onto it (owner becomes admin) and returns a key valid for a day. Cards, comments and the journal then show the agent's name, not the caller's. Only a person's session or unscoped key may call it.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueAgentKeyBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The agent and its new key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuedAgentKey"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Harness or session label not accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The caller is an agent, a one-workspace key, or the agent is disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/agent-identity": {
+      "get": {
+        "operationId": "listAgents",
+        "tags": [
+          "Agents"
+        ],
+        "summary": "List your agents",
+        "description": "Your agents with their live keys: name, harness, session, when each key was made, last used and expires. Key secrets are never returned.",
+        "responses": {
+          "200": {
+            "description": "Your agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Agents and one-workspace keys do not list agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/agent-identity/{agentId}": {
+      "patch": {
+        "operationId": "setAgentEnabled",
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Disable or enable an agent",
+        "description": "Disabling revokes every key of the agent at once and refuses new ones; its work stays under its name. Enabling lets it get a key again.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "agentId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetAgentEnabledBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The agent's state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentEnabled"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Agents and one-workspace keys do not manage agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found",
             "content": {
               "application/json": {
                 "schema": {

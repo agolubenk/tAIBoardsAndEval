@@ -81,6 +81,7 @@ import { boardSchema, descriptionPageSchema } from "./task/response";
 import { descriptionPageQuery, listTasksQuery } from "./task/schema";
 import taskRelation from "./task-relation";
 // t-boards
+import agentIdentity from "./agent-identity";
 import forest from "./forest";
 import notebook from "./notebook";
 import {
@@ -92,6 +93,7 @@ import telegramIntegration from "./telegram-integration";
 import timeEntry from "./time-entry";
 import user from "./user";
 import getAvatar from "./user/controllers/get-avatar";
+import { assertAgentAuthRoute } from "./agent-identity/agent-auth-routes";
 import { apiKeyRejection } from "./utils/api-key-rejection";
 import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
 import { applyApiKeyHeaders } from "./utils/apply-api-key-headers";
@@ -139,6 +141,7 @@ type ApiKey = {
   enabled: boolean;
   permissions: Record<string, string[]> | null;
   workspaceScope?: ApiKeyWorkspaceScope;
+  agent?: { name: string } | null;
 };
 
 type AppVariables = {
@@ -474,6 +477,7 @@ export function createApp() {
     if (apiKeyResult?.status !== "valid") throw apiKeyRejection(apiKeyResult);
     const scope = apiKeyResult.key.workspaceScope;
     assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
+    assertAgentAuthRoute(apiKeyResult.key.agent, c.req.method, c.req.path);
     await next();
     c.res = await limitAuthResponseToScope(scope, c.req.path, c.res);
     c.set(
@@ -789,6 +793,7 @@ export function createApp() {
       if (apiKeyResult?.status !== "valid") throw apiKeyRejection(apiKeyResult);
       const scope: ApiKeyWorkspaceScope = apiKeyResult.key.workspaceScope;
       assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
+      assertAgentAuthRoute(apiKeyResult.key.agent, c.req.method, c.req.path);
 
       // Better Auth API key plugin validates from x-api-key by default.
       headers.set("x-api-key", bearerToken);
@@ -901,6 +906,7 @@ export function createApp() {
   );
   const taskRelationApi = api.route("/task-relation", taskRelation);
   const forestApi = api.route("/forest", forest);
+  const agentIdentityApi = api.route("/agent-identity", agentIdentity);
   const notebookApi = api.route("/notebook", notebook);
   const externalLinkApi = api.route("/external-link", externalLink);
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
@@ -1033,6 +1039,7 @@ export function createApp() {
     taskApi,
     taskRelationApi,
     forestApi,
+    agentIdentityApi,
     notebookApi,
     telegramIntegrationApi,
     timeEntryApi,
@@ -1168,6 +1175,7 @@ const {
   taskApi,
   taskRelationApi,
   forestApi,
+  agentIdentityApi,
   notebookApi,
   telegramIntegrationApi,
   timeEntryApi,
@@ -1215,6 +1223,7 @@ export type AppType =
   | typeof telegramIntegrationApi
   | typeof taskRelationApi
   | typeof forestApi
+  | typeof agentIdentityApi
   | typeof notebookApi
   | typeof externalLinkApi
   | typeof workflowRuleApi

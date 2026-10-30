@@ -36,6 +36,17 @@ export function resolveForestActor<E extends { Variables: BaseVariables }>(
     Boolean(c.req.header("x-api-key"));
   const label = sessionLabel(c);
 
+  // R-010: an agent user is one session already; its id outlives key rotation.
+  const user = c.get("user");
+  const agentName =
+    apiKey?.agent?.name ??
+    ((user as { role?: string | null } | null)?.role === "agent"
+      ? user?.name
+      : undefined);
+  if (agentName) {
+    return { kind: "agent", id: `agent:${userId}`, name: agentName, userId };
+  }
+
   if (hasToken) {
     const base = apiKey ? `key:${apiKey.id}` : `bearer:${userId}`;
     return {
@@ -46,7 +57,6 @@ export function resolveForestActor<E extends { Variables: BaseVariables }>(
     };
   }
 
-  const user = c.get("user");
   const session = c.get("session");
   if (!user || !session) {
     throw new HTTPException(401, { message: "Unauthorized" });
