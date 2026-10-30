@@ -21,6 +21,8 @@ curl --fail-with-body 'https://kaneo.example.com/api/task/tasks/PROJECT_ID' \
 
 Replace `PROJECT_ID` with the ID from a project URL. See [Make your first API request](/api-reference/introduction) for the complete sequence.
 
+Under `/api/auth/*` a key only reads who it belongs to and which workspaces it sees: `GET /api/auth/get-session` and `GET /api/auth/organization/list`. Managing the account, its keys, sessions and workspaces there needs a signed-in session; a key gets `403` with `SESSION_REQUIRED`. To read the current user with a key, call `GET /api/user/me`.
+
 ### JavaScript on a server
 
 ```javascript

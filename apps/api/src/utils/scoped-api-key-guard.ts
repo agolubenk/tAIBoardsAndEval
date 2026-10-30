@@ -6,10 +6,10 @@ import {
   requestWorkspaceScope,
   scopeAllowsWorkspace,
 } from "./api-key-workspace-scope";
+import { apiKeyMayCallAuth } from "./api-key-auth-routes";
 import {
   ORGANIZATION_LIST_PATH,
   scopedKeyMayCall,
-  scopedKeyMayCallAuth,
 } from "./scoped-api-key-routes";
 
 function outOfScope() {
@@ -37,7 +37,7 @@ export function assertScopedKeyAuthRoute(
   method: string,
   path: string,
 ): void {
-  if (isWorkspaceScoped(scope) && !scopedKeyMayCallAuth(method, path)) {
+  if (isWorkspaceScoped(scope) && !apiKeyMayCallAuth(method, path)) {
     throw outOfScope();
   }
 }

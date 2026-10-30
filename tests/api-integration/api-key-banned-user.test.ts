@@ -161,12 +161,16 @@ describe("API integration: API keys of banned users", () => {
       const { app, userId, key } = await mintKey();
       const headers = { authorization: `Bearer ${key}` };
 
-      const active = await app.request("/api/auth/api-key/list", { headers });
+      const active = await app.request("/api/auth/organization/list", {
+        headers,
+      });
       expect(active.status).toBe(200);
 
       await ban(userId);
 
-      const banned = await app.request("/api/auth/api-key/list", { headers });
+      const banned = await app.request("/api/auth/organization/list", {
+        headers,
+      });
       expect(banned.status).toBe(401);
     });
   });

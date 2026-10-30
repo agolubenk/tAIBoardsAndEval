@@ -26,12 +26,6 @@ const WORKSPACE_RESOLVED_PREFIXES = [
 
 const USER_ROUTES = new Set(["GET /api/user/me"]);
 
-// Better Auth: read the caller and the workspace list (filtered to the scope).
-const AUTH_ROUTES = new Set([
-  "GET /api/auth/get-session",
-  "GET /api/auth/organization/list",
-]);
-
 export const ORGANIZATION_LIST_PATH = "/api/auth/organization/list";
 
 function normalize(path: string): string {
@@ -48,8 +42,4 @@ export function scopedKeyMayCall(method: string, rawPath: string): boolean {
   return WORKSPACE_RESOLVED_PREFIXES.some((prefix) =>
     underPrefix(path, prefix),
   );
-}
-
-export function scopedKeyMayCallAuth(method: string, rawPath: string): boolean {
-  return AUTH_ROUTES.has(`${method.toUpperCase()} ${normalize(rawPath)}`);
 }

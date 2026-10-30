@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import {
-  scopedKeyMayCall,
-  scopedKeyMayCallAuth,
-} from "./scoped-api-key-routes";
+import { scopedKeyMayCall } from "./scoped-api-key-routes";
 
 describe("scopedKeyMayCall", () => {
   it("allows routes that resolve their workspace", () => {
@@ -35,31 +32,6 @@ describe("scopedKeyMayCall", () => {
       ["GET", "/api/tasks-export"],
     ] as const) {
       expect(scopedKeyMayCall(method, path), `${method} ${path}`).toBe(false);
-    }
-  });
-});
-
-describe("scopedKeyMayCallAuth", () => {
-  it("allows reading the session and the workspace list", () => {
-    expect(scopedKeyMayCallAuth("GET", "/api/auth/get-session")).toBe(true);
-    expect(scopedKeyMayCallAuth("get", "/api/auth/organization/list/")).toBe(
-      true,
-    );
-  });
-
-  it("refuses minting, widening or deleting keys and workspaces", () => {
-    for (const [method, path] of [
-      ["POST", "/api/auth/api-key/create"],
-      ["POST", "/api/auth/api-key/update"],
-      ["GET", "/api/auth/api-key/list"],
-      ["POST", "/api/auth/organization/set-active"],
-      ["POST", "/api/auth/organization/create"],
-      ["POST", "/api/auth/organization/delete"],
-      ["POST", "/api/auth/organization/list"],
-    ] as const) {
-      expect(scopedKeyMayCallAuth(method, path), `${method} ${path}`).toBe(
-        false,
-      );
     }
   });
 });

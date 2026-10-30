@@ -94,6 +94,7 @@ import timeEntry from "./time-entry";
 import user from "./user";
 import getAvatar from "./user/controllers/get-avatar";
 import { assertAgentAuthRoute } from "./agent-identity/agent-auth-routes";
+import { assertApiKeyAuthRoute } from "./utils/api-key-auth-routes";
 import { apiKeyRejection } from "./utils/api-key-rejection";
 import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
 import { applyApiKeyHeaders } from "./utils/apply-api-key-headers";
@@ -478,6 +479,7 @@ export function createApp() {
     const scope = apiKeyResult.key.workspaceScope;
     assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
     assertAgentAuthRoute(apiKeyResult.key.agent, c.req.method, c.req.path);
+    assertApiKeyAuthRoute(c.req.method, c.req.path);
     await next();
     c.res = await limitAuthResponseToScope(scope, c.req.path, c.res);
     c.set(
@@ -794,6 +796,7 @@ export function createApp() {
       const scope: ApiKeyWorkspaceScope = apiKeyResult.key.workspaceScope;
       assertScopedKeyAuthRoute(scope, c.req.method, c.req.path);
       assertAgentAuthRoute(apiKeyResult.key.agent, c.req.method, c.req.path);
+      assertApiKeyAuthRoute(c.req.method, c.req.path);
 
       // Better Auth API key plugin validates from x-api-key by default.
       headers.set("x-api-key", bearerToken);

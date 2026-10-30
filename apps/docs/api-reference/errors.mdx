@@ -53,7 +53,7 @@ An unknown path under `/api` returns `404` with `{"message": "Not found", "code"
 | `VALIDATION_ERROR` | 400 | The path, query, or body failed validation. See `issues`. |
 | `MISSING_PERMISSION` | 403 | Your workspace role does not grant the action. `missingPermissions` lists what is missing, such as `task:update`. |
 | `API_KEY_SCOPE` | 403 | The API key was created with permissions that do not cover the action. `missingPermissions` lists what is missing. |
-| `SESSION_REQUIRED` | 403 | The endpoint needs a signed-in user session and does not accept API keys. This covers account-level actions such as billing, instance administration, and some GitHub setup routes. |
+| `SESSION_REQUIRED` | 403 | The endpoint needs a signed-in user session and does not accept API keys. This covers account-level actions such as billing, instance administration, and some GitHub setup routes, and every `/api/auth/*` route except `GET /api/auth/get-session` and `GET /api/auth/organization/list`. |
 | `INTEGRATION_AUTH_FAILED` | 401 | A connected service such as GitLab rejected the token in the request, or could not be reached to check it. Your Kaneo session or API key is still valid. |
 
 `missingPermissions` only names permissions for the route you called in the workspace it targets.
