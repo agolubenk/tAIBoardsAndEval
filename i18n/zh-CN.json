@@ -2973,7 +2973,8 @@
 			"noDate": "无日期",
 			"dates": "日期",
 			"project": "项目",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "移动任务",

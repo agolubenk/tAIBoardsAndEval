@@ -2973,7 +2973,8 @@
 			"noDate": "Không có ngày",
 			"dates": "Ngày",
 			"project": "Dự án",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Di chuyển công việc",

@@ -3075,7 +3075,8 @@
 			"noDate": "Sem data",
 			"dates": "Datas",
 			"project": "Projeto",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Mover tarefa",

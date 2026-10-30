@@ -3075,7 +3075,8 @@
 			"noDate": "Nessuna data",
 			"dates": "Date",
 			"project": "Progetto",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Sposta attività",

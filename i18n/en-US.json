@@ -3025,7 +3025,8 @@
 			"noDate": "No date",
 			"dates": "Dates",
 			"project": "Project",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Move task",

@@ -3024,7 +3024,8 @@
 			"noDate": "Kein Datum",
 			"dates": "Termine",
 			"project": "Projekt",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Aufgabe verschieben",

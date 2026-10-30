@@ -3024,7 +3024,8 @@
 			"noDate": "Χωρίς ημερομηνία",
 			"dates": "Ημερομηνίες",
 			"project": "Έργο",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Μετακίνηση εργασίας",

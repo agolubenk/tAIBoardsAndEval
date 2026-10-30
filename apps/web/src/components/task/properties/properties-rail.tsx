@@ -1,4 +1,4 @@
-import { Calendar, CalendarDays } from "lucide-react";
+import { Calendar, CalendarCheck, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import icons from "@/constants/project-icons";
 import { getColumnIcon } from "@/lib/column";
@@ -142,6 +142,15 @@ export function PropertiesRail({
             </PropertyValue>
           </TaskDueDatePopover>
         </PropertyRow>
+
+        {task.completedAt ? (
+          <PropertyRow label={t("tasks:properties.completed")}>
+            <div className="flex h-7.5 min-w-0 items-center gap-2 px-2 font-medium text-[13px] text-foreground [&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg]:text-muted-foreground">
+              <CalendarCheck />
+              <span>{formatDateShort(task.completedAt)}</span>
+            </div>
+          </PropertyRow>
+        ) : null}
 
         <PropertyRow label={t("tasks:properties.project")}>
           {canMoveTask ? (
