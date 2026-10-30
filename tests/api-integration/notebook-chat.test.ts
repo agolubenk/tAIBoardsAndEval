@@ -17,11 +17,15 @@ import {
 import db, { schema } from "../../apps/api/src/database";
 import { resetEmbedQueueForTests } from "../../apps/api/src/notebook/embed/embed-queue";
 import { clearVectorCacheForTests } from "../../apps/api/src/notebook/search/vector-index";
+import { writeStoredNotebookModel } from "../../apps/api/src/notebook-model/notebook-model-store";
+import { sealSecret } from "../../apps/api/src/notebook-model/secret-box";
 import { createApp } from "../../apps/api/src/index";
 import { mockAuthenticatedSession } from "./helpers/auth";
+import { createInstanceAdmin } from "./helpers/admin/create-instance-admin";
 import { resetTestDatabase } from "./helpers/database";
 import { createWorkspaceMember } from "./helpers/fixtures";
 import { createForest } from "./helpers/forest";
+import { projectAccessApi } from "./helpers/project-access/project-access-api";
 
 // Synthetic corpus only, as in notebook.test.ts.
 const LEASE_DOC = [
@@ -188,6 +192,32 @@ describe("API integration: notebook chat", () => {
     );
     expect(prompt[0]?.content).not.toContain("Рубка превращает");
     expect(prompt.at(-1)).toEqual({ role: "user", content: "аренда карточки" });
+  });
+
+  it("answers with the admin's model and key over the server's file and counts the call per workspace", async () => {
+    useLlm();
+    vi.stubEnv("SETTINGS_ENCRYPTION_KEY", "test-settings-encryption-key");
+    await writeStoredNotebookModel(
+      { model: "admin-model", key: sealSecret("sk-test-admin-key") },
+      null,
+    );
+    const nb = await chatFixture();
+
+    const asked = await nb.owner("POST", "/threads", {
+      question: "аренда карточки",
+    });
+    expect(asked.body.messages[1]).toMatchObject({
+      status: "answered",
+      model: "admin-model",
+    });
+    expect(seen[0]?.authorization).toBe("Bearer sk-test-admin-key");
+
+    mockAuthenticatedSession(await createInstanceAdmin());
+    const view = await projectAccessApi()("/admin/notebook-model");
+    expect(await view.json()).toMatchObject({
+      callsToday: 1,
+      usage: [{ workspaceId: nb.workspace.id, calls: 1 }],
+    });
   });
 
   it("skips the model when nothing matched", async () => {

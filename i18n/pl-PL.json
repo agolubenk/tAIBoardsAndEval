@@ -3443,8 +3443,9 @@
 				"keyMissing": "No key",
 				"loadError": "Could not load the model status.",
 				"none": "No model set",
-				"note": "The key is a file on the server and is never typed in here. The model and the daily limit come from the server's settings.",
-				"title": "Model"
+				"note": "One model serves every workspace on this server. An instance admin sets the model, key and daily limit.",
+				"title": "Model",
+				"configure": "Configure"
 			},
 			"pageTitle": "Agents and MCP",
 			"row": {
@@ -3476,6 +3477,66 @@
 				"loadError": "Could not load the tool sets.",
 				"note": "A client names its role in the {{header}} header. A session may add up to {{extra}} more tools nearest to its request. A role trims the list; the server still checks every call.",
 				"title": "MCP tool sets"
+			}
+		},
+		"adminNotebookModel": {
+			"fields": {
+				"baseUrl": {
+					"hint": "An OpenAI-compatible endpoint, OpenRouter by default.",
+					"label": "API address"
+				},
+				"dailyMax": {
+					"hint": "Answers per day across all workspaces.",
+					"label": "Daily limit"
+				},
+				"description": "Leave a field empty to use the server's default.",
+				"embedModel": {
+					"hint": "Changing it re-embeds every notebook in the background.",
+					"label": "Embedding model"
+				},
+				"model": {
+					"hint": "For example openai/gpt-4o-mini. Without a model, answers come as sources only.",
+					"label": "Answer model"
+				},
+				"save": "Save",
+				"title": "Model"
+			},
+			"key": {
+				"current": "Current key",
+				"description": "The key is stored encrypted and is never shown again.",
+				"newLabel": "New key",
+				"noEncryptionKey": "The server has no settings encryption key, so a key cannot be saved here. Ask the server's operator to add SETTINGS_ENCRYPTION_KEY_FILE.",
+				"note": "A key saved here takes priority over the server's key file.",
+				"remove": "Remove key",
+				"save": "Save key",
+				"status": {
+					"file": "From the server's file",
+					"missing": "No key",
+					"settings": "Saved here",
+					"unreadable": "Cannot be opened, enter it again"
+				},
+				"title": "Key"
+			},
+			"loadError": "Could not load the model settings.",
+			"retry": "Try again",
+			"subtitle": "One model, key and daily limit for every workspace on this instance.",
+			"title": "Notebook model",
+			"toast": {
+				"saved": "Model settings saved",
+				"saveError": "Could not save the model settings"
+			},
+			"usage": {
+				"calls_few": "{{count}} answers",
+				"calls_many": "{{count}} answers",
+				"calls_one": "{{count}} answer",
+				"calls_other": "{{count}} answers",
+				"empty": "No answers yet today.",
+				"title": "Today",
+				"total": "{{count}} of {{max}} answers today"
+			},
+			"validation": {
+				"baseUrl": "Enter a full address, for example https://openrouter.ai/api/v1.",
+				"dailyMax": "Enter a whole number from 0 to {{max}}."
 			}
 		}
 	},

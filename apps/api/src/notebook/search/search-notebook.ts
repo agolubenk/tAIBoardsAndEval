@@ -7,7 +7,7 @@ import {
 } from "../../database/notebook-schema";
 import { isWorkerOnline, requestQueryEmbedding } from "../embed/embed-queue";
 import { decodeEmbedding } from "../embed/embedding-codec";
-import { notebookEmbedModel } from "../notebook-config";
+import { notebookEmbedModel } from "../../notebook-model/effective-notebook-model";
 import { fuseRanks, type RankedList } from "./fuse-ranks";
 import { loadVectorIndex, nearestChunks } from "./vector-index";
 
@@ -81,7 +81,7 @@ async function vectorCandidates(workspaceId: string, query: string) {
     QUERY_EMBED_WAIT_MS,
   );
   if (!vector) return null;
-  const index = await loadVectorIndex(workspaceId, notebookEmbedModel());
+  const index = await loadVectorIndex(workspaceId, await notebookEmbedModel());
   if (!index) return null;
   return nearestChunks(index, decodeEmbedding(vector), CANDIDATES).map(
     ({ id }) => id,

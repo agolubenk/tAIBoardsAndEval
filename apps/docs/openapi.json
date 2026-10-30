@@ -8389,6 +8389,132 @@
           "role",
           "joinedAt"
         ]
+      },
+      "NotebookModelSettings": {
+        "type": "object",
+        "properties": {
+          "baseUrl": {
+            "type": "string"
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "embedModel": {
+            "type": "string"
+          },
+          "dailyMax": {
+            "type": "integer"
+          },
+          "hasKey": {
+            "type": "boolean"
+          },
+          "keySource": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "settings",
+              "file",
+              null
+            ],
+            "description": "Where the model key comes from: these settings, or the server's key file. The key itself is never returned."
+          },
+          "keyUnreadable": {
+            "type": "boolean",
+            "description": "A key is stored but the server's settings key cannot open it; enter the key again."
+          },
+          "canStoreKey": {
+            "type": "boolean",
+            "description": "The server has a settings encryption key, so a model key can be saved here."
+          },
+          "callsToday": {
+            "type": "integer"
+          },
+          "usage": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "workspaceId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "calls": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "workspaceId",
+                "name",
+                "calls"
+              ]
+            }
+          }
+        },
+        "required": [
+          "baseUrl",
+          "model",
+          "embedModel",
+          "dailyMax",
+          "hasKey",
+          "keySource",
+          "keyUnreadable",
+          "canStoreKey",
+          "callsToday",
+          "usage"
+        ]
+      },
+      "UpdateNotebookModelSettings": {
+        "type": "object",
+        "properties": {
+          "baseUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500,
+            "format": "uri"
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "embedModel": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "dailyMax": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "A new model key; null removes the stored one, leaving it out keeps it."
+          }
+        }
       }
     },
     "parameters": {}
@@ -31153,6 +31279,124 @@
           },
           "404": {
             "description": "Workspace or member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/admin/notebook-model": {
+      "get": {
+        "operationId": "getNotebookModelSettings",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get the notebook model settings",
+        "description": "The answer model, embedding model, daily limit and today's calls per workspace, shared by every workspace on this instance. The model key is never returned, only whether one is set.",
+        "responses": {
+          "200": {
+            "description": "Notebook model settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookModelSettings"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The caller is not an instance administrator or is authenticated with an API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateNotebookModelSettings",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update the notebook model settings",
+        "description": "Sets the instance's answer model, embedding model, daily limit or model key. The key is stored encrypted with the server's settings key. Changing the embedding model re-embeds every notebook in the background.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotebookModelSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated notebook model settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookModelSettings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The caller is not an instance administrator or is authenticated with an API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The server cannot store a model key",
             "content": {
               "application/json": {
                 "schema": {

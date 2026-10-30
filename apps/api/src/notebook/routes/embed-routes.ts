@@ -11,7 +11,7 @@ import { requireWorkspacePermission } from "../../utils/require-workspace-permis
 import { workspaceAccess } from "../../utils/workspace-access-middleware";
 import { markWorkerSeen, waitForEmbedWork } from "../embed/embed-queue";
 import { claimEmbedWork, saveEmbeddings } from "../embed/embed-work";
-import { notebookEmbedModel } from "../notebook-config";
+import { notebookEmbedModel } from "../../notebook-model/effective-notebook-model";
 import {
   EMBED_RESULTS_BODY_BYTES,
   embedResultsBody,
@@ -72,7 +72,7 @@ export const embedRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(embedWorkRoute, async (c) => {
     const { workspaceId } = c.req.valid("param");
     const { wait } = c.req.valid("query");
-    const model = notebookEmbedModel();
+    const model = await notebookEmbedModel();
     markWorkerSeen(workspaceId);
     let items = await claimEmbedWork(workspaceId, model);
     if (!items.length && wait > 0) {
@@ -87,7 +87,7 @@ export const embedRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(embedResultsRoute, async (c) => {
     const { workspaceId } = c.req.valid("param");
     const body = c.req.valid("json");
-    const model = notebookEmbedModel();
+    const model = await notebookEmbedModel();
     if (body.model !== model) {
       throw new HTTPException(409, {
         message: `The notebook embeds with ${model}`,

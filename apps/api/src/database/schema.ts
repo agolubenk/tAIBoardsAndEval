@@ -155,6 +155,20 @@ export const verificationTable = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+// Instance-wide settings an administrator changes at runtime, one JSON value
+// per key. Secrets inside a value are sealed (notebook-model/secret-box.ts).
+export const instanceSettingTable = pgTable("instance_setting", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedBy: text("updated_by").references(() => userTable.id, {
+    onDelete: "set null",
+  }),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .default(utcNow)
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
 export const workspaceTable = pgTable("workspace", {
   id: text("id")
     .$defaultFn(() => createId())
