@@ -1,4 +1,5 @@
 import { AGENT_ROLE_NAME } from "@kaneo/permissions";
+import { splitRoles } from "../utils/split-roles";
 
 // Roles that grant at least what the agent role grants.
 const WIDER_THAN_AGENT = new Set(["owner", "admin", "member"]);
@@ -8,7 +9,8 @@ const WIDER_THAN_AGENT = new Set(["owner", "admin", "member"]);
 // so it never outranks its owner. Deleting a workspace, settings and people
 // stay with people (N-004).
 export function agentWorkspaceRole(ownerRole: string) {
-  return ownerRole.split(",").some((name) => WIDER_THAN_AGENT.has(name))
+  const names = splitRoles(ownerRole);
+  return names.some((name) => WIDER_THAN_AGENT.has(name.toLowerCase()))
     ? AGENT_ROLE_NAME
-    : ownerRole;
+    : names.join(",");
 }

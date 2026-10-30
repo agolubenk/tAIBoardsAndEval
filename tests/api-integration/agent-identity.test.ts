@@ -1,7 +1,10 @@
 import { randomUUID } from "node:crypto";
 import {
   AGENT_ROLE_NAME,
+  agent,
   defaultRolePayloads,
+  type WorkspaceCapability,
+  workspaceCapabilities,
 } from "../../apps/api/node_modules/@kaneo/permissions";
 import { and, eq } from "drizzle-orm";
 import {
@@ -12,6 +15,7 @@ import {
   it,
   vi,
 } from "vite-plus/test";
+import addWorkspaceMemberAsAdmin from "../../apps/api/src/admin/controllers/add-workspace-member";
 import { auth } from "../../apps/api/src/auth";
 import db, { schema } from "../../apps/api/src/database";
 import { realignAgentRoles } from "../../apps/api/src/agent-identity/realign-agent-roles";
@@ -21,6 +25,7 @@ import { handleMemberRemoved } from "../../apps/api/src/workspace-members/handle
 import { mockAuthenticatedSession } from "./helpers/auth";
 import { resetTestDatabase } from "./helpers/database";
 import { createWorkspaceMember } from "./helpers/fixtures";
+import { addWorkspaceMember } from "./helpers/project-access/add-workspace-member";
 
 type Issued = {
   agent: { id: string; name: string; harness: string; session: string };
@@ -341,8 +346,9 @@ describe("API integration: agents under their own name (R-010)", () => {
     expect(await realignAgentRoles()).toBe(0);
   });
 
-  it("gives a workspace's own older role named agent the agent role's permissions", async () => {
-    const { workspace } = await createWorkspaceMember({ role: "owner" });
+  it("keeps a workspace's own older agent role for the people on it and seeds the real one", async () => {
+    const { user, workspace } = await createWorkspaceMember({ role: "owner" });
+    const person = await addWorkspaceMember(workspace.id, "agent");
     const agentRole = and(
       eq(schema.workspaceRoleTable.workspaceId, workspace.id),
       eq(schema.workspaceRoleTable.role, AGENT_ROLE_NAME),
@@ -351,9 +357,51 @@ describe("API integration: agents under their own name (R-010)", () => {
     await db.insert(schema.workspaceRoleTable).values({
       workspaceId: workspace.id,
       role: AGENT_ROLE_NAME,
-      permission: JSON.stringify(defaultRolePayloads.admin),
+      permission: JSON.stringify(defaultRolePayloads.viewer),
       createdAt: new Date(),
     });
+    await db.insert(schema.invitationTable).values({
+      workspaceId: workspace.id,
+      email: "later@example.com",
+      role: "agent",
+      inviterId: user.id,
+      expiresAt: new Date(Date.now() + 86_400_000),
+    });
+
+    await seedDefaultWorkspaceRoles();
+
+    const roles = new Map(
+      (
+        await db
+          .select({
+            role: schema.workspaceRoleTable.role,
+            permission: schema.workspaceRoleTable.permission,
+          })
+          .from(schema.workspaceRoleTable)
+          .where(eq(schema.workspaceRoleTable.workspaceId, workspace.id))
+      ).map((row) => [row.role, JSON.parse(row.permission)]),
+    );
+    expect(roles.get("agent")).toEqual(defaultRolePayloads.agent);
+    expect(roles.get("custom-agent")).toEqual(defaultRolePayloads.viewer);
+    expect(await memberships(person.id)).toEqual([
+      { workspaceId: workspace.id, role: "custom-agent" },
+    ]);
+    const [invitation] = await db
+      .select({ role: schema.invitationTable.role })
+      .from(schema.invitationTable);
+    expect(invitation?.role).toBe("custom-agent");
+  });
+
+  it("resets an agent role nobody but agents holds", async () => {
+    const { workspace } = await createWorkspaceMember({ role: "owner" });
+    const agentRole = and(
+      eq(schema.workspaceRoleTable.workspaceId, workspace.id),
+      eq(schema.workspaceRoleTable.role, AGENT_ROLE_NAME),
+    );
+    await db
+      .update(schema.workspaceRoleTable)
+      .set({ permission: JSON.stringify(defaultRolePayloads.admin) })
+      .where(agentRole);
 
     await seedDefaultWorkspaceRoles();
 
@@ -364,5 +412,65 @@ describe("API integration: agents under their own name (R-010)", () => {
     expect(rows.map((row) => JSON.parse(row.permission))).toEqual([
       defaultRolePayloads.agent,
     ]);
+  });
+
+  it("never lets an agent do more than the agent role, whatever its owner's custom role allows", async () => {
+    const { user } = await createWorkspaceMember({ role: "owner" });
+    const lead = await addWorkspace(user.id, "lead");
+    await db.insert(schema.workspaceRoleTable).values({
+      workspaceId: lead.id,
+      role: "lead",
+      permission: JSON.stringify({
+        ...defaultRolePayloads.agent,
+        label: ["create", "read"],
+      }),
+      createdAt: new Date(),
+    });
+    const key = await ownerKey(user.id);
+    const issued = (await issue(key)).body as Issued;
+    expect(await memberships(issued.agent.id)).toContainEqual({
+      workspaceId: lead.id,
+      role: "lead",
+    });
+    const label = { name: "Urgent", color: "#f00", workspaceId: lead.id };
+
+    expect((await call("POST", "/label", key, label)).status).toBe(200);
+    const byAgent = await call("POST", "/label", issued.key, label);
+    expect(byAgent.status).toBe(403);
+    expect(byAgent.body.missingPermissions).toEqual(["label:create"]);
+
+    const caps = await call(
+      "GET",
+      `/workspace/${lead.id}/capabilities`,
+      issued.key,
+    );
+    expect(caps.status).toBe(200);
+    for (const [name, allowed] of Object.entries(
+      caps.body as Record<string, boolean>,
+    )) {
+      if (!allowed) continue;
+      const needs = workspaceCapabilities[name as WorkspaceCapability];
+      for (const [resource, actions] of Object.entries(needs)) {
+        for (const action of actions) {
+          expect(
+            (agent.statements as Record<string, readonly string[]>)[resource],
+            `${name} needs ${resource}:${action}`,
+          ).toContain(action);
+        }
+      }
+    }
+  });
+
+  it("refuses to add an agent to a workspace by hand", async () => {
+    const { user } = await createWorkspaceMember({ role: "owner" });
+    const stranger = await createWorkspaceMember({ role: "owner" });
+    const issued = (await issue(await ownerKey(user.id))).body as Issued;
+    await expect(
+      addWorkspaceMemberAsAdmin({
+        workspaceId: stranger.workspace.id,
+        userId: issued.agent.id,
+        role: "admin",
+      }),
+    ).rejects.toMatchObject({ status: 400 });
   });
 });

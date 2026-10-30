@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { AGENT_FOLLOWS_OWNER } from "../../agent-identity/is-agent-user";
 import db from "../../database";
 import { userTable, workspaceUserTable } from "../../database/schema";
 import { clearMemberProjectAccess } from "../../project-access/clear-member-project-access";
@@ -18,12 +19,16 @@ async function addWorkspaceMember(request: {
   await db.transaction(async (tx) => {
     const members = await lockWorkspace(tx, workspaceId);
     const [user] = await tx
-      .select({ id: userTable.id })
+      .select({ id: userTable.id, role: userTable.role })
       .from(userTable)
       .where(eq(userTable.id, userId))
       .limit(1);
     if (!user) {
       throw new HTTPException(404, { message: "User not found" });
+    }
+    // R-010: an agent joins a workspace only with its owner.
+    if (user.role === "agent") {
+      throw new HTTPException(400, { message: AGENT_FOLLOWS_OWNER });
     }
     if (members.some((member) => member.userId === userId)) {
       throw new HTTPException(409, {

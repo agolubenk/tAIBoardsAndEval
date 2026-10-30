@@ -55,6 +55,7 @@ import { isAgentEmail } from "./agent-identity/agent-naming";
 import {
   assertAgentRoleUntouched,
   assertNotAgentRole,
+  assertPlainRoleNames,
 } from "./agent-identity/agent-role-guard";
 import {
   AGENT_FOLLOWS_OWNER,
@@ -606,6 +607,7 @@ export const auth = betterAuth({
           );
         },
         beforeCreateInvitation: async ({ invitation }) => {
+          assertPlainRoleNames(invitation.role);
           assertNotAgentRole(invitation.role);
           const access = await resolveInvitationProjectAccess(invitation);
           return { data: access };
