@@ -19,6 +19,7 @@ export const PATHSPECS = [
   ":(glob)docs/**/*.md",
   ":(glob)**/CLAUDE.md",
   ":(glob).claude/rules/*.md",
+  ":(glob).claude/skills/**/*.md",
   ":(glob)t-boards/*.md",
   ":(glob)supertick-eval/pipeline/*.md",
   ":(exclude,glob)docs/plans/archive/**",
