@@ -91,6 +91,7 @@ export async function chatCompletion(
           messages,
           max_tokens: options.maxTokens ?? 1200,
           temperature: 0.2,
+          ...(config.thinking ? { thinking: { type: config.thinking } } : {}),
         }),
       }),
     );

@@ -11,6 +11,10 @@ export type LlmConfig = {
   model: string;
   keyFile: string;
   dailyMax: number;
+  // Sent as `thinking: { type }`. GLM reasons by default and can spend the
+  // whole token budget on it, leaving an empty answer; "disabled" stops that.
+  // Unset sends nothing, so OpenRouter and other endpoints see no new field.
+  thinking?: string;
 };
 
 export function notebookLlmConfig(): LlmConfig | null {
@@ -21,6 +25,7 @@ export function notebookLlmConfig(): LlmConfig | null {
   // would be capped. Only a written number counts; "0" turns calls off.
   const rawMax = process.env.NOTEBOOK_LLM_DAILY_MAX?.trim();
   const dailyMax = rawMax ? Number(rawMax) : Number.NaN;
+  const thinking = process.env.NOTEBOOK_LLM_THINKING?.trim();
   return {
     baseUrl: (
       process.env.NOTEBOOK_LLM_BASE_URL?.trim() || DEFAULT_LLM_BASE_URL
@@ -31,6 +36,7 @@ export function notebookLlmConfig(): LlmConfig | null {
       Number.isInteger(dailyMax) && dailyMax >= 0
         ? dailyMax
         : DEFAULT_LLM_DAILY_MAX,
+    ...(thinking ? { thinking } : {}),
   };
 }
 
