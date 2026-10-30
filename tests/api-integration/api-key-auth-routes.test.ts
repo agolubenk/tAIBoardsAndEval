@@ -102,6 +102,23 @@ describe("API integration: a person's API key on /auth", () => {
     expect(await session.json()).toMatchObject({ user: {} });
   });
 
+  it("answers a banned owner's key 401 before the route check", async () => {
+    const { app, userId, key } = await personWithKey();
+    await db
+      .update(schema.userTable)
+      .set({ banned: true })
+      .where(eq(schema.userTable.id, userId));
+
+    for (const send of [viaHeader, viaBearer]) {
+      const response = await app.request("/api/auth/delete-user", {
+        method: "POST",
+        headers: { ...send(key), "content-type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      expect(response.status).toBe(401);
+    }
+  });
+
   it("still lets the key read its session and workspaces", async () => {
     const { app, userId, key } = await personWithKey();
 
