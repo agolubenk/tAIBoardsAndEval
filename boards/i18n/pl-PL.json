@@ -3884,7 +3884,8 @@
 			"title": "Właściwości",
 			"dates": "Daty",
 			"project": "Projekt",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"relations": {
 			"blocks": "Blokuje",

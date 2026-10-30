@@ -3033,7 +3033,8 @@
 			"noDate": "Без датум",
 			"dates": "Датуми",
 			"project": "Проект",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Премести задача",

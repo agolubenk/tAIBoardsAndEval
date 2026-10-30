@@ -2982,7 +2982,8 @@
 			"noDate": "日付なし",
 			"dates": "日付",
 			"project": "プロジェクト",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "タスクを移動",

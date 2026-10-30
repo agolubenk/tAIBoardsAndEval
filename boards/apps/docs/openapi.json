@@ -1234,6 +1234,14 @@
             ],
             "format": "date-time"
           },
+          "completedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the task entered a final column; null while it sits in any other."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"

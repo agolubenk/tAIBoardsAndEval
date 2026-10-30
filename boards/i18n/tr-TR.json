@@ -3033,7 +3033,8 @@
 			"noDate": "Tarih yok",
 			"dates": "Tarihler",
 			"project": "Proje",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Talebi taşı",

@@ -2982,7 +2982,8 @@
 			"noDate": "Tanpa tanggal",
 			"dates": "Tanggal",
 			"project": "Proyek",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Pindahkan tugas",

@@ -554,6 +554,9 @@ export const taskTable = pgTable(
     revision: integer("revision").notNull().default(1),
     startDate: timestamp("start_date", { mode: "date" }),
     dueDate: timestamp("due_date", { mode: "date" }),
+    // t-boards (d-tb-card-fill): when the card entered a final column; empty
+    // outside one. The task_completed_at trigger keeps it on every write path.
+    completedAt: timestamp("completed_at", { mode: "date" }),
     createdAt: timestamp("created_at", { mode: "date" })
       .default(utcNow)
       .notNull(),

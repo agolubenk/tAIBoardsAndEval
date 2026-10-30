@@ -3033,7 +3033,8 @@
 			"noDate": "कोई तारीख नहीं",
 			"dates": "तारीखें",
 			"project": "प्रोजेक्ट",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "कार्य ले जाएँ",

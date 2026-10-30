@@ -3033,7 +3033,8 @@
 			"noDate": "Tarix yoxdur",
 			"dates": "Tarixlər",
 			"project": "Layihə",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Tapşırığı köçür",

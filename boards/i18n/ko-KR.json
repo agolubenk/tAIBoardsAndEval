@@ -2982,7 +2982,8 @@
 			"noDate": "날짜 없음",
 			"dates": "날짜",
 			"project": "프로젝트",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "작업 이동",

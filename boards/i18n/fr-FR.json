@@ -3084,7 +3084,8 @@
 			"noDate": "Pas de date",
 			"dates": "Dates",
 			"project": "Projet",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Déplacer la tâche",

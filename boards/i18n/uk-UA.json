@@ -3135,7 +3135,8 @@
 			"noDate": "Немає дати",
 			"dates": "Дати",
 			"project": "Проєкт",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "Перемістити завдання",

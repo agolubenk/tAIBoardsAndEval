@@ -12435,6 +12435,9 @@
 						},
 						"due": {
 							"type": "string"
+						},
+						"completed": {
+							"type": "string"
 						}
 					},
 					"required": [
@@ -12450,7 +12453,8 @@
 						"noDate",
 						"dates",
 						"project",
-						"due"
+						"due",
+						"completed"
 					]
 				},
 				"move": {

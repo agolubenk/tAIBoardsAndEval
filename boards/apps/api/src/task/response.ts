@@ -28,6 +28,10 @@ export const taskSchema = z
     priority: z.string().openapi({ description: priorityDescription }),
     startDate: nullableResponseTimestamp,
     dueDate: nullableResponseTimestamp,
+    completedAt: nullableResponseTimestamp.optional().openapi({
+      description:
+        "When the task entered a final column; null while it sits in any other.",
+    }),
     createdAt: responseTimestamp,
     customFields: z
       .array(z.object({ fieldId: z.string(), value: z.string() }))

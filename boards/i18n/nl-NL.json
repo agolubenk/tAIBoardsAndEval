@@ -3033,7 +3033,8 @@
 			"noDate": "Geen datum",
 			"dates": "Datums",
 			"project": "Project",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"popover": {
 			"assignee": {

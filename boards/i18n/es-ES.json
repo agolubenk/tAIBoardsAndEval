@@ -3084,7 +3084,8 @@
 			"noDate": "Sin fecha",
 			"dates": "Fechas",
 			"project": "Proyecto",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"popover": {
 			"assignee": {
