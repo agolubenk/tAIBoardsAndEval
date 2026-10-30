@@ -18,6 +18,7 @@ TLS_PORT=8443
 CONF=/etc/wireguard/$WG_IF.conf
 RULES=/etc/wireguard/t-boards-rules.sh
 SYSCTL=/etc/sysctl.d/99-t-boards-wg.conf
+TB_ENV=/opt/t-boards/.env
 FULL_DNS="1.1.1.1, 9.9.9.9"
 
 log() { printf '[%s] %s\n' "$(date '+%H:%M:%S')" "$*"; }
@@ -52,6 +53,21 @@ ext_if="$(awk '{for (i = 1; i < NF; i++) if ($i == "dev") print $(i + 1)}' <<<"$
 if [ -z "$public_ip" ] || [ -z "$ext_if" ]; then die "не нашёл публичный IP и внешний интерфейс"; fi
 log "внешний интерфейс $ext_if, адрес $public_ip"
 
+# The app reads the Mac's claude-mem proxy through the tunnel; install.sh keeps
+# its address in .env. Only that proxy may answer a container: every container
+# on the VPS leaves the tunnel as 10.77.0.1, so a wider rule would hand all of
+# them the Mac's other services.
+mem_host="" mem_port=""
+if [ -r "$TB_ENV" ]; then
+  mem_host="$(sed -n 's/^CLAUDE_MEM_WORKER_HOST=//p' "$TB_ENV" | tail -1)"
+  mem_port="$(sed -n 's/^CLAUDE_MEM_WORKER_PORT=//p' "$TB_ENV" | tail -1)"
+fi
+: "${mem_host:=$WG_NET.2}" "${mem_port:=37702}"
+if ! [[ "${mem_host#"$WG_NET".}" =~ ^[0-9]{1,3}$ && "$mem_port" =~ ^[0-9]{1,5}$ ]]; then
+  log "память $mem_host:$mem_port — не адрес туннеля, беру $WG_NET.2:37702"
+  mem_host=$WG_NET.2 mem_port=37702
+fi
+
 # Firewall rules live in one script that wg-quick runs on up and down, so an
 # upgrade rewrites them in one place.
 # - 443 to the tunnel address goes to the t-boards TLS terminator. Only that
@@ -60,6 +76,7 @@ log "внешний интерфейс $ext_if, адрес $public_ip"
 # - Full-tunnel devices leave through the external interface (NAT). The tunnel
 #   may forward only there and to the product's published ports (Docker DNAT,
 #   the same reach the internet has): its internal networks stay out of reach.
+#   The one way back in is the claude-mem proxy's replies to a container.
 #   The forwarding rules sit in their own chain, rebuilt in order on every up.
 # - Nothing from outside may address the tunnel network directly.
 write_rules() {
@@ -91,6 +108,7 @@ if [ "\$action" = up ]; then
   iptables -N "\$CHAIN" 2>/dev/null || iptables -F "\$CHAIN"
   iptables -A "\$CHAIN" -i "\$wg_if" -o "\$ext_if" -j ACCEPT
   iptables -A "\$CHAIN" -i "\$ext_if" -o "\$wg_if" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -A "\$CHAIN" -i "\$wg_if" -s $mem_host -p tcp --sport $mem_port -m conntrack --ctstate ESTABLISHED -j RETURN
   iptables -A "\$CHAIN" -i "\$wg_if" -m conntrack --ctstate DNAT -j RETURN
   iptables -A "\$CHAIN" -i "\$wg_if" -j DROP
 fi
