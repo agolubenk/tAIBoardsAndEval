@@ -3,8 +3,9 @@
 # container with real iptables, a dummy wg0 and stand-ins for wg and systemctl.
 # Checks a split and a full device, a re-run that changes nothing, the
 # claude-mem proxy address taken from .env, preshared keys and MTU from
-# wg-setup.sh and wg-issue.sh, wg-psk.sh behind the shared lock, backup
-# retention, the upgrade of a wg0 from the first kit and a clean down. Leaves
+# wg-setup.sh and wg-issue.sh, the shared lock in all three scripts, wg-psk.sh
+# live and its refusals, backup retention and file modes, the upgrade of a wg0
+# from the first kit and a clean down. Leaves
 # nothing behind.
 # Usage: deploy/vps/wg-selftest.sh
 set -euo pipefail
@@ -29,11 +30,21 @@ case "$1" in
   pubkey) echo "$(sha256sum | cut -c1-43)=" ;;
   show)
     case "${3:-}" in
-      peers | preshared-keys) awk -v what="$3" -f /stub/peers.awk /etc/wireguard/wg0.conf ;;
+      # /tmp/wg-lose-psk: the live interface "loses" the keys, as if wg set had not taken them.
+      preshared-keys) awk -v what="$3" -f /stub/peers.awk /etc/wireguard/wg0.conf |
+        { if [ -e /tmp/wg-lose-psk ]; then sed "s/\t.*/\t(none)/"; else cat; fi; } ;;
+      peers) awk -v what="$3" -f /stub/peers.awk /etc/wireguard/wg0.conf ;;
       *) echo "SERVERpublicKEYserverPUBLICkeySERVERpublic0=" ;;
     esac ;;
+  # The live change goes to a journal: peer and the key read from the file it was given.
+  set) printf "%s %s\n" "$4" "$(cat "$6")" >>/tmp/wg-set.log ;;
   syncconf) cat >/dev/null ;;
 esac
+EOF
+# FAKE_TS pins the backup timestamp, so two edits land in the same second.
+cat >/stub/date <<"EOF"
+#!/bin/sh
+if [ -n "${FAKE_TS:-}" ] && [ "$1" = "+%Y%m%d-%H%M%S" ]; then echo "$FAKE_TS"; else exec /bin/date "$@"; fi
 EOF
 cat >/stub/wg-quick <<"EOF"
 #!/bin/sh
@@ -139,19 +150,85 @@ backups="$(ls /etc/wireguard | grep -c "^wg0.conf.bak-")"
 ls /etc/wireguard | grep -q "^wg0.conf.bak-20200101-00000[123]$" && fail "oldest backups kept"
 echo "ok: wg-issue.sh PresharedKey in peer and profile, others untouched, three backups"
 
-# wg-psk.sh waits for the lock that wg-setup.sh and wg-issue.sh hold, then changes one peer.
+# Backups: a re-run that changes nothing keeps the last real state; edits within one
+# second or after the clock went back keep the newest three; both scripts share one backup().
+sed -n "/^backup() {/,/^}/p" /kit/wg-setup.sh >/tmp/backup.setup
+sed -n "/^backup() {/,/^}/p" /kit/wg-issue.sh | diff /tmp/backup.setup - || fail "backup() differs between wg-setup.sh and wg-issue.sh"
+has_backup() { for f in /etc/wireguard/wg0.conf.bak-[0-9]*; do cmp -s "$1" "$f" && return 0; done; return 1; }
+cp /etc/wireguard/wg0.conf /tmp/pre
+issue spare split
+for i in 1 2 3; do
+  export FAKE_TS=20991231-00000$i
+  setup "$k2" phone full
+done
+has_backup /tmp/pre || fail "idle re-runs pushed out the state before the last edit"
+rm -f /etc/wireguard/wg0.conf.bak-[0-9]*
+n=0
+for step in same1 same2 -same1 -same2 same3 -same3; do
+  n=$((n + 1))
+  cp /etc/wireguard/wg0.conf /tmp/state.$n
+  # Five edits in one second, the sixth after the clock went back.
+  export FAKE_TS=20991231-120000
+  [ "$n" -lt 6 ] || export FAKE_TS=20991231-110000
+  case "$step" in
+    -*) bash /kit/wg-issue.sh --revoke "${step#-}" >/dev/null 2>&1 </dev/null || fail "revoke ${step#-}" ;;
+    *) issue "$step" split ;;
+  esac
+done
+unset FAKE_TS
+for n in 4 5 6; do has_backup /tmp/state.$n || fail "edit $n of six lost its backup"; done
+[ -e /etc/wireguard/wg0.conf.bak-20991231-120000-05 ] || fail "backups out of order: $(ls /etc/wireguard | grep bak-)"
+bash /kit/wg-issue.sh --revoke spare >/dev/null 2>&1 </dev/null || fail "revoke spare"
+for f in /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.bak-[0-9]*; do
+  [ "$(stat -c %a "$f")" = 600 ] || fail "$f is $(stat -c %a "$f"), not 600"
+done
+echo "ok: backups keep the last real state and the newest three edits of one second, all 600"
+
+# Each of the three scripts waits for the lock another one holds.
+held() { rm -f /tmp/held; ( flock 9; sleep 3; : >/tmp/held ) 9>/etc/wireguard/wg0.conf.lock & sleep 1; }
+held; setup "$k2" phone full; [ -f /tmp/held ] || fail "wg-setup.sh did not wait for the lock"
+held; issue locked split; [ -f /tmp/held ] || fail "wg-issue.sh did not wait for the lock"
+bash /kit/wg-issue.sh --revoke locked >/dev/null 2>&1 </dev/null || fail "revoke locked"
+
+# wg-psk.sh changes one peer, live and in the file; the key shows up in no output.
+mac_pub="$(grep -A2 "^# mac (" /etc/wireguard/wg0.conf | sed -n "s/^PublicKey = //p")"
 new_psk="$(wg genpsk)"
-rm -f /tmp/held
-( flock 9; sleep 3; : >/tmp/held ) 9>/etc/wireguard/wg0.conf.lock &
-sleep 1
+held
 printf %s "$new_psk" | bash /kit/wg-psk.sh 10.77.0.2 >/tmp/out 2>&1 || { cat /tmp/out; fail "wg-psk.sh set"; }
 [ -f /tmp/held ] || fail "wg-psk.sh did not wait for the lock"
 [ "$(psk_of mac)" = "$new_psk" ] || fail "wg-psk.sh did not set the mac PresharedKey"
+[ "$(tail -1 /tmp/wg-set.log)" = "$mac_pub $new_psk" ] || fail "wg-psk.sh did not apply the key to the live peer"
+grep -qF "$new_psk" /tmp/out && fail "wg-psk.sh printed the key"
 [ "$(psk_of phone)" = "$(sed -n 2p /tmp/psk.before | sed "s/^PresharedKey = //")" ] || fail "wg-psk.sh changed another peer"
+[ "$(stat -c %a /etc/wireguard/wg0.conf)" = 600 ] || fail "wg-psk.sh left wg0.conf wider than 600"
 bash /kit/wg-psk.sh --remove 10.77.0.2 >/tmp/out 2>&1 </dev/null || { cat /tmp/out; fail "wg-psk.sh --remove"; }
 [ -z "$(psk_of mac)" ] || fail "wg-psk.sh --remove left the PresharedKey"
+[ "$(tail -1 /tmp/wg-set.log)" = "$mac_pub " ] || fail "wg-psk.sh --remove did not clear the live key"
 [ ! -e /etc/wireguard/wg0.conf.bak-psk ] || fail "wg-psk.sh left its backup"
-echo "ok: wg-psk.sh waits for the lock, sets and removes one peer key"
+
+# Refusals leave wg0.conf as it was.
+cp /etc/wireguard/wg0.conf /tmp/conf.before
+refused() {
+  if bash /kit/wg-psk.sh "$@" >/tmp/out 2>&1; then fail "wg-psk.sh $* went through"; fi
+  grep -q "СТОП" /tmp/out || fail "wg-psk.sh $*: no reason given"
+  cmp -s /tmp/conf.before /etc/wireguard/wg0.conf || fail "wg-psk.sh $* changed wg0.conf"
+}
+refused 10.77.0.2 </dev/null
+printf %s "$new_psk" | refused 10.77.0.99
+printf %s "$new_psk" | refused
+# A failed live check keeps the backup and the rollback; the next run will not overwrite it.
+: >/tmp/wg-lose-psk
+if printf %s "$new_psk" | bash /kit/wg-psk.sh 10.77.0.2 >/tmp/out 2>&1; then fail "wg-psk.sh passed a failed live check"; fi
+rm /tmp/wg-lose-psk
+[ -e /etc/wireguard/wg0.conf.bak-psk ] && grep -q "Откат: cp /etc/wireguard/wg0.conf.bak-psk" /tmp/out || fail "failed live check without backup and rollback"
+grep -qF "$new_psk" /tmp/out && fail "wg-psk.sh printed the key on failure"
+[ "$(stat -c %a /etc/wireguard/wg0.conf.bak-psk)" = 600 ] || fail "bak-psk wider than 600"
+cp /etc/wireguard/wg0.conf /tmp/conf.before
+printf %s "$new_psk" | refused 10.77.0.2
+cmp -s /tmp/conf.before /etc/wireguard/wg0.conf.bak-psk && fail "the next run overwrote bak-psk"
+mv /etc/wireguard/wg0.conf.bak-psk /etc/wireguard/wg0.conf
+[ -z "$(psk_of mac)" ] || fail "rollback from bak-psk did not restore the mac peer"
+echo "ok: wg-psk.sh waits for the lock, sets and removes one peer live, refuses bad input and keeps the backup of a failed run"
 
 # wg0 from the first kit: redirect for any destination, rules inline.
 /stub/systemctl stop

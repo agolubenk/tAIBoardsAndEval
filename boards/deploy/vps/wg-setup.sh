@@ -138,8 +138,20 @@ exec 9>"$CONF.lock"
 flock -w 60 9 || die "$CONF занят другим скриптом дольше минуты"
 # Backups hold the server PrivateKey: only the newest three stay.
 backup() {
-  cp -a "$CONF" "$CONF.bak-$(date +%Y%m%d-%H%M%S)"
-  local old=("$CONF".bak-[0-9]*)
+  local old=("$CONF".bak-[0-9]*) last dst base n=0
+  last="${old[${#old[@]}-1]}"
+  # A re-run that changes nothing must not push the last real state out.
+  [ -e "$last" ] && cmp -s "$CONF" "$last" && return 0
+  dst="$CONF.bak-$(date +%Y%m%d-%H%M%S)"
+  # The copy has to sort after every kept one, or the pruning below drops it first: an edit
+  # within the same second, or after the clock went back, takes the newest name plus -01, -02.
+  if [ -e "$last" ] && [[ ! "$dst" > "$last" ]]; then
+    base="${last%-[0-9][0-9]}"
+    [ "$base" = "$last" ] || n="${last##*-}"
+    printf -v dst '%s-%02d' "$base" $((10#$n + 1))
+  fi
+  cp -a "$CONF" "$dst"
+  old=("$CONF".bak-[0-9]*)
   [ "${#old[@]}" -le 3 ] || rm -f -- "${old[@]:0:${#old[@]}-3}"
 }
 write_rules
@@ -178,7 +190,7 @@ if grep -q "^PublicKey = $peer_pub\$" "$CONF"; then
   log "устройство уже есть: $peer_ip"
   # A key added here would cut off a device that does not have it yet; wg-psk.sh changes it.
   if awk -v k="$peer_pub" '/^\[/ {found = 0} $1 == "PublicKey" {found = ($3 == k)} found && $1 == "PresharedKey" {exit 1}' "$CONF"; then
-    log "PresharedKey у устройства нет. Добавить: ключ на stdin — printf %s \"\$KEY\" | bash wg-psk.sh $peer_ip —"
+    log "PresharedKey у устройства нет. Добавить: ssh -t root@<VPS> 'bash /opt/t-boards/wg-psk.sh $peer_ip' (ввод ключа скрыт)"
     log "и та же строка PresharedKey = <ключ> в туннеле на устройстве (README, wg-psk.sh)"
   else
     log "PresharedKey у устройства уже есть: строку PresharedKey на устройстве не трогайте"

@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Sets or removes the WireGuard preshared key of one wg0 peer, found by its tunnel address.
-# The key arrives on stdin, so it never shows up in argv, the terminal or logs.
-#   set:    printf %s "$KEY" | ssh root@vps '… bash "$f" 10.77.0.2'    (re-run replaces the key)
-#   remove: ssh -n root@vps '… bash "$f" --remove 10.77.0.2'           (the rollback)
+# The key arrives by hidden input or on stdin, so it never shows up in argv, the terminal or logs.
+#   set:    ssh -t root@vps 'bash /opt/t-boards/wg-psk.sh 10.77.0.2'                (asks for the key, hidden)
+#           wg genpsk | tee >(pbcopy) | ssh root@vps 'bash /opt/t-boards/wg-psk.sh 10.77.0.2'
+#   remove: ssh -n root@vps 'bash /opt/t-boards/wg-psk.sh --remove 10.77.0.2'      (the rollback)
+# Not through `base64 -d | bash`: stdin would be the script itself. A re-run replaces the key.
 set -euo pipefail
 umask 077
 
@@ -13,7 +15,7 @@ if [ "${1:-}" = --remove ]; then
   mode="remove"
   shift
 fi
-ip="${1:-10.77.0.2}"
+ip="${1:-}"
 
 log() { printf '[%s] %s\n' "$(date '+%H:%M:%S')" "$*"; }
 rollback=""
@@ -30,6 +32,10 @@ die() {
 exec 9>"$CONF.lock"
 flock -w 60 9 || die "$CONF занят другим скриптом дольше минуты"
 wg show "$WG_IF" >/dev/null 2>&1 || die "$WG_IF не поднят: systemctl status wg-quick@$WG_IF"
+# The backup holds the server PrivateKey: root-only, one file, kept only until the live check passes.
+# One left over is the only way back from a failed run; a new run must not overwrite it.
+backup="$CONF.bak-psk"
+[ ! -e "$backup" ] || die "остался $backup от прерванного запуска — сначала откат: cp $backup $CONF && wg syncconf $WG_IF <(wg-quick strip $WG_IF) && rm $backup"
 
 psk=""
 if [ "$mode" = set ]; then
@@ -86,8 +92,6 @@ if [ "$(peer_psk count "$tmp")" != "$want" ] || ! cmp -s <(peer_psk rest "$CONF"
   die "правка $CONF не сошлась — файл не тронут"
 fi
 
-# The backup holds the server PrivateKey: root-only, one file, kept only until the live check passes.
-backup="$CONF.bak-psk"
 cp "$CONF" "$backup"
 chmod 0600 "$backup" "$tmp"
 mv "$tmp" "$CONF"
@@ -110,7 +114,7 @@ rm -f "$backup" || log "Не удалил $backup (в нём PrivateKey серв
 
 if [ "$mode" = set ]; then
   log "PresharedKey для $ip (${pub:0:8}…) записан в $CONF и применён к живому $WG_IF; остальные устройства не тронуты."
-  log "Дальше — на Mac: в туннеле под строкой PublicKey добавить PresharedKey = <ключ из буфера обмена>. До этого туннель с Mac не соединится."
+  log "Дальше — на Mac: в туннеле под строкой PublicKey добавить PresharedKey = <ключ из буфера обмена>, затем очистите буфер. До этого туннель с Mac не соединится."
   log "Откат: этот же скрипт с --remove $ip, и на Mac удалить строку PresharedKey."
 else
   log "PresharedKey для $ip (${pub:0:8}…) снят из $CONF и из живого $WG_IF. На Mac удалите строку PresharedKey."
