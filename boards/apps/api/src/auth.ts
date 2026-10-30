@@ -10,7 +10,7 @@ import {
 } from "@kaneo/email";
 import {
   ac,
-  DEFAULT_ROLE_NAMES,
+  SEEDED_ROLE_NAMES,
   defaultRolePayloads,
   owner,
 } from "@kaneo/permissions";
@@ -52,6 +52,10 @@ import { publishMemberProjects } from "./project-access/publish-member-projects"
 import { handleMemberAdded } from "./workspace-members/handle-member-added";
 import { handleMemberRemoved } from "./workspace-members/handle-member-removed";
 import { isAgentEmail } from "./agent-identity/agent-naming";
+import {
+  assertAgentRoleUntouched,
+  assertNotAgentRole,
+} from "./agent-identity/agent-role-guard";
 import {
   AGENT_FOLLOWS_OWNER,
   AGENT_LEAVES_WITH_OWNER,
@@ -533,7 +537,7 @@ export const auth = betterAuth({
               );
             const taken = new Set(existing.map((r) => r.role));
             const now = new Date();
-            const rows = DEFAULT_ROLE_NAMES.filter(
+            const rows = SEEDED_ROLE_NAMES.filter(
               (name) => !taken.has(name),
             ).map((name) => ({
               workspaceId: organization.id,
@@ -602,6 +606,7 @@ export const auth = betterAuth({
           );
         },
         beforeCreateInvitation: async ({ invitation }) => {
+          assertNotAgentRole(invitation.role);
           const access = await resolveInvitationProjectAccess(invitation);
           return { data: access };
         },
@@ -616,7 +621,7 @@ export const auth = betterAuth({
             console.error("Project member refresh failed:", error);
           });
         },
-        beforeUpdateMemberRole: async ({ member }) => {
+        beforeUpdateMemberRole: async ({ member, newRole }) => {
           // R-010: an agent never holds a role of its own, owner least of all.
           if (await isAgentUser(member.userId)) {
             throw new APIError("BAD_REQUEST", {
@@ -624,6 +629,7 @@ export const auth = betterAuth({
               message: AGENT_FOLLOWS_OWNER,
             });
           }
+          assertNotAgentRole(newRole);
         },
         afterUpdateMemberRole: async ({ member }) => {
           if (isOwnerRole(member.role)) {
@@ -798,6 +804,20 @@ export const auth = betterAuth({
               message: "You cannot change your own role.",
             });
           }
+          // R-010: an agent's instance role is "agent" for its whole life;
+          // making it an admin would let it act past its owner.
+          if (
+            (ctx?.path === "/admin/set-role" ||
+              ctx?.path === "/admin/update-user") &&
+            Object.hasOwn(user, "role") &&
+            typeof ctx.body?.userId === "string" &&
+            (await isAgentUser(ctx.body.userId))
+          ) {
+            throw new APIError("BAD_REQUEST", {
+              code: "AGENT_ROLE_FOLLOWS_OWNER",
+              message: AGENT_FOLLOWS_OWNER,
+            });
+          }
           return clearEmailVerificationOnAdminChange(user, ctx);
         },
       },
@@ -841,6 +861,18 @@ export const auth = betterAuth({
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path === "/admin/remove-user") {
         await prepareAdminUserRemoval(ctx);
+      }
+
+      if (
+        ctx.path === "/organization/create-role" ||
+        ctx.path === "/organization/update-role" ||
+        ctx.path === "/organization/delete-role"
+      ) {
+        await assertAgentRoleUntouched(ctx.body);
+      }
+
+      if (ctx.path === "/organization/add-member") {
+        assertNotAgentRole(ctx.body?.role);
       }
 
       if (ctx.path === "/organization/invite-member") {

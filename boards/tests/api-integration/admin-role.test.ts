@@ -81,6 +81,30 @@ describe.each(["/admin/set-role", "/admin/update-user"])(
       expect(await getRole(admin.id)).toBe("admin");
     });
 
+    it("rejects changing an agent's role", async () => {
+      const admin = await createUser("admin");
+      // Agents never sign in, so this one is a plain account turned agent.
+      const signUp = await request("/sign-up/email", {
+        name: "Agent",
+        email: `${randomUUID()}@example.com`,
+        password: "admin-role-test-password",
+      });
+      const agent = ((await signUp.json()) as { user: { id: string } }).user;
+      await db
+        .update(schema.userTable)
+        .set({ role: "agent" })
+        .where(eq(schema.userTable.id, agent.id));
+      const response = await request(path, body(agent.id, "admin"), {
+        Cookie: admin.cookie,
+      });
+
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({
+        code: "AGENT_ROLE_FOLLOWS_OWNER",
+      });
+      expect(await getRole(agent.id)).toBe("agent");
+    });
+
     it("rejects changing your own role using a bearer token", async () => {
       const admin = await createUser("admin");
       const response = await request(path, body(admin.id, "user"), {

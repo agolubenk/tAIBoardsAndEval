@@ -10,6 +10,7 @@ import {
 } from "vite-plus/test";
 import { auth } from "../../apps/api/src/auth";
 import db, { schema } from "../../apps/api/src/database";
+import { realignAgentRoles } from "../../apps/api/src/agent-identity/realign-agent-roles";
 import { createApp } from "../../apps/api/src/index";
 import { handleMemberRemoved } from "../../apps/api/src/workspace-members/handle-member-removed";
 import { mockAuthenticatedSession } from "./helpers/auth";
@@ -113,9 +114,9 @@ describe("API integration: agents under their own name (R-010)", () => {
     const other = (await issue(key, "d9")).body as Issued;
     expect(other.agent.id).not.toBe(issued.agent.id);
 
-    // The owner role is capped at admin.
+    // An owner's agent holds the narrow agent role, never the owner's.
     expect(await memberships(issued.agent.id)).toEqual([
-      { workspaceId: workspace.id, role: "admin" },
+      { workspaceId: workspace.id, role: "agent" },
     ]);
 
     const put = await call(
@@ -241,8 +242,8 @@ describe("API integration: agents under their own name (R-010)", () => {
       ),
     ).toEqual(
       [
-        { workspaceId: workspace.id, role: "admin" },
-        { workspaceId: second.id, role: "member" },
+        { workspaceId: workspace.id, role: "agent" },
+        { workspaceId: second.id, role: "agent" },
       ].sort((a, b) => a.workspaceId.localeCompare(b.workspaceId)),
     );
 
@@ -261,7 +262,7 @@ describe("API integration: agents under their own name (R-010)", () => {
       userRole: null,
     });
     expect(await memberships(issued.agent.id)).toEqual([
-      { workspaceId: workspace.id, role: "admin" },
+      { workspaceId: workspace.id, role: "agent" },
     ]);
 
     for (let i = 0; i < 5; i += 1) {
@@ -295,5 +296,43 @@ describe("API integration: agents under their own name (R-010)", () => {
       }),
     ]);
     expect(JSON.stringify(list.body)).not.toContain(issued.key);
+  });
+
+  it("keeps a viewer's agent a viewer and moves older agents to the agent role", async () => {
+    const { user, workspace } = await createWorkspaceMember({ role: "owner" });
+    const viewing = await addWorkspace(user.id, "viewer");
+    const issued = (await issue(await ownerKey(user.id))).body as Issued;
+    const byWorkspace = async () =>
+      new Map(
+        (await memberships(issued.agent.id)).map((row) => [
+          row.workspaceId,
+          row.role,
+        ]),
+      );
+    expect(await byWorkspace()).toEqual(
+      new Map([
+        [workspace.id, "agent"],
+        [viewing.id, "viewer"],
+      ]),
+    );
+
+    // An agent issued before the agent role still holds its owner's admin.
+    await db
+      .update(schema.workspaceUserTable)
+      .set({ role: "admin" })
+      .where(
+        and(
+          eq(schema.workspaceUserTable.workspaceId, workspace.id),
+          eq(schema.workspaceUserTable.userId, issued.agent.id),
+        ),
+      );
+    expect(await realignAgentRoles()).toBe(1);
+    expect(await byWorkspace()).toEqual(
+      new Map([
+        [workspace.id, "agent"],
+        [viewing.id, "viewer"],
+      ]),
+    );
+    expect(await realignAgentRoles()).toBe(0);
   });
 });

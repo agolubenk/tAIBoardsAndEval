@@ -663,7 +663,8 @@
 			},
 			"roles": {
 				"admin": "Admin",
-				"user": "User"
+				"user": "User",
+				"agent": "AI agent"
 			},
 			"status": {
 				"active": "Active",
@@ -682,6 +683,7 @@
 				"email": "Email address",
 				"role": "Global role",
 				"selfRoleHint": "You cannot change your own global role.",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here.",
 				"save": "Save changes",
 				"saving": "Saving…"
 			},
@@ -3909,7 +3911,8 @@
 			"owner": "Owner",
 			"admin": "Admin",
 			"member": "Member",
-			"viewer": "Viewer"
+			"viewer": "Viewer",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "Members",

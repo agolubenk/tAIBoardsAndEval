@@ -1,4 +1,4 @@
-import { DEFAULT_ROLE_NAMES } from "@kaneo/permissions";
+import { AGENT_ROLE_NAME, DEFAULT_ROLE_NAMES } from "@kaneo/permissions";
 import { asc, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
@@ -23,7 +23,9 @@ async function listWorkspaceRoles(workspaceId: string) {
   return [
     ...new Set([
       ...DEFAULT_ROLE_NAMES,
-      ...custom.map((row) => row.role).filter((role) => role !== "owner"),
+      ...custom
+        .map((row) => row.role)
+        .filter((role) => role !== "owner" && role !== AGENT_ROLE_NAME),
     ]),
   ];
 }

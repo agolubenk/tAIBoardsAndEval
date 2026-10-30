@@ -1626,7 +1626,8 @@
 				"save": "Save changes",
 				"saving": "Saving…",
 				"selfRoleHint": "You cannot change your own global role.",
-				"title": "Edit user"
+				"title": "Edit user",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here."
 			},
 			"emptyDescription": "Try another name or email address.",
 			"emptyTitle": "No users found",
@@ -1638,7 +1639,8 @@
 			"retry": "Retry",
 			"roles": {
 				"admin": "İnzibatçı",
-				"user": "User"
+				"user": "User",
+				"agent": "AI agent"
 			},
 			"searchCount_one": "{{count}} matching user",
 			"searchCount_other": "{{count}} matching users",
@@ -3909,7 +3911,8 @@
 			"owner": "Sahib",
 			"admin": "İnzibatçı",
 			"member": "Üzv",
-			"viewer": "Baxışçı"
+			"viewer": "Baxışçı",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "Üzvlər",
