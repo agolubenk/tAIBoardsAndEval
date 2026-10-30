@@ -3,6 +3,7 @@ import {
   Bot,
   Building2,
   Code,
+  Cpu,
   CreditCard,
   Import,
   KeyRound,
@@ -171,6 +172,12 @@ export function buildSettingsNav({
               label: t("settings:adminWorkspaces.title"),
               to: "/dashboard/settings/admin/workspaces",
               icon: Building2,
+            },
+            {
+              id: "admin-notebook-model",
+              label: t("settings:adminNotebookModel.title"),
+              to: "/dashboard/settings/admin/notebook-model",
+              icon: Cpu,
             },
           ],
         }

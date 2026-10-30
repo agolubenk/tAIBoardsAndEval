@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 
 // Any OpenAI-compatible endpoint; the spec's choice is free NVIDIA models
-// through OpenRouter (R-052). Without a model or a key file the notebook still
-// answers with the sources it found, it only skips the written answer.
+// through OpenRouter (R-052). Without a model or a key the notebook still
+// answers with the sources it found, it only skips the written answer. This is
+// the server's environment; the admin's settings override it (TB-67).
 export const DEFAULT_LLM_BASE_URL = "https://openrouter.ai/api/v1";
 export const DEFAULT_LLM_DAILY_MAX = 500;
 

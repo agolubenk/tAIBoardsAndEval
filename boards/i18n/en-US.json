@@ -793,6 +793,64 @@
 				"transferError": "Failed to transfer ownership"
 			}
 		},
+		"adminNotebookModel": {
+			"title": "Notebook model",
+			"subtitle": "One model, key and daily limit for every workspace on this instance.",
+			"loadError": "Could not load the model settings.",
+			"retry": "Try again",
+			"fields": {
+				"title": "Model",
+				"description": "Leave a field empty to use the server's default.",
+				"save": "Save",
+				"baseUrl": {
+					"label": "API address",
+					"hint": "An OpenAI-compatible endpoint, OpenRouter by default."
+				},
+				"model": {
+					"label": "Answer model",
+					"hint": "For example openai/gpt-4o-mini. Without a model, answers come as sources only."
+				},
+				"embedModel": {
+					"label": "Embedding model",
+					"hint": "Changing it re-embeds every notebook in the background."
+				},
+				"dailyMax": {
+					"label": "Daily limit",
+					"hint": "Answers per day across all workspaces."
+				}
+			},
+			"key": {
+				"title": "Key",
+				"description": "The key is stored encrypted and is never shown again.",
+				"current": "Current key",
+				"status": {
+					"settings": "Saved here",
+					"file": "From the server's file",
+					"missing": "No key",
+					"unreadable": "Cannot be opened, enter it again"
+				},
+				"newLabel": "New key",
+				"save": "Save key",
+				"remove": "Remove key",
+				"note": "A key saved here takes priority over the server's key file.",
+				"noEncryptionKey": "The server has no settings encryption key, so a key cannot be saved here. Ask the server's operator to add SETTINGS_ENCRYPTION_KEY_FILE."
+			},
+			"usage": {
+				"title": "Today",
+				"total": "{{count}} of {{max}} answers today",
+				"calls_one": "{{count}} answer",
+				"calls_other": "{{count}} answers",
+				"empty": "No answers yet today."
+			},
+			"validation": {
+				"baseUrl": "Enter a full address, for example https://openrouter.ai/api/v1.",
+				"dailyMax": "Enter a whole number from 0 to {{max}}."
+			},
+			"toast": {
+				"saved": "Model settings saved",
+				"saveError": "Could not save the model settings"
+			}
+		},
 		"informationPage": {
 			"pageTitle": "Profile",
 			"title": "Profile",
@@ -2427,8 +2485,9 @@
 				"callsToday_one": "{{count}} call today",
 				"callsToday_other": "{{count}} calls today",
 				"callsOfMax": "{{count}} of {{max}} calls today",
-				"note": "The key is a file on the server and is never typed in here. The model and the daily limit come from the server's settings.",
-				"loadError": "Could not load the model status."
+				"note": "One model serves every workspace on this server. An instance admin sets the model, key and daily limit.",
+				"loadError": "Could not load the model status.",
+				"configure": "Configure"
 			}
 		}
 	},

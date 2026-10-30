@@ -3,6 +3,7 @@
 // background, keyword search covering the gap.
 export const DEFAULT_EMBED_MODEL = "nomic-embed-text";
 
-export function notebookEmbedModel(): string {
+// The server default; an administrator can name another one (TB-67).
+export function envEmbedModel(): string {
   return process.env.NOTEBOOK_EMBED_MODEL?.trim() || DEFAULT_EMBED_MODEL;
 }

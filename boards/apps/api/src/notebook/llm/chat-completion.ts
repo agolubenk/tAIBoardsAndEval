@@ -69,7 +69,7 @@ export function answerText(body: unknown): string {
 }
 
 export async function chatCompletion(
-  config: LlmConfig,
+  config: Pick<LlmConfig, "baseUrl" | "model">,
   key: string,
   messages: ChatMessage[],
   options: { timeoutMs?: number; maxTokens?: number } = {},
