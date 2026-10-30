@@ -11,6 +11,7 @@ import {
   vi,
 } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
+import { effectiveNotebookModel } from "../../apps/api/src/notebook-model/effective-notebook-model";
 import { mockAuthenticatedSession } from "./helpers/auth";
 import { createInstanceAdmin } from "./helpers/admin/create-instance-admin";
 import { resetTestDatabase } from "./helpers/database";
@@ -221,6 +222,29 @@ describe("API integration: notebook model settings", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+
+  it("sends the thinking switch only to the server's own address", async () => {
+    vi.stubEnv("NOTEBOOK_LLM_BASE_URL", "https://api.z.ai/api/coding/paas/v4");
+    vi.stubEnv("NOTEBOOK_LLM_THINKING", " disabled ");
+    const request = await asAdmin();
+    expect(await effectiveNotebookModel()).toMatchObject({
+      thinking: "disabled",
+    });
+
+    await request("/admin/notebook-model", {
+      method: "PUT",
+      body: { baseUrl: "https://collector.example/v1" },
+    });
+    expect(await effectiveNotebookModel()).toMatchObject({ thinking: null });
+
+    await request("/admin/notebook-model", {
+      method: "PUT",
+      body: { baseUrl: null },
+    });
+    expect(await effectiveNotebookModel()).toMatchObject({
+      thinking: "disabled",
+    });
   });
 
   it("keeps the stored key when another field is broken", async () => {

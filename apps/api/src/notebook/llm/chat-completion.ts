@@ -68,7 +68,7 @@ export function answerText(body: unknown): string {
 }
 
 export async function chatCompletion(
-  config: { baseUrl: string; model: string },
+  config: { baseUrl: string; model: string; thinking?: string },
   key: string,
   messages: ChatMessage[],
   options: { timeoutMs?: number; maxTokens?: number } = {},

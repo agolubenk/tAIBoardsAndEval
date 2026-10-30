@@ -78,6 +78,7 @@ async function writeAnswer(
     baseUrl: settings.baseUrl,
     model,
     dailyMax: settings.dailyMax,
+    ...(settings.thinking ? { thinking: settings.thinking } : {}),
   };
   const messages = buildPrompt(question, hits, history);
   // Holds a place under the daily cap; askNotebook releases it once the
