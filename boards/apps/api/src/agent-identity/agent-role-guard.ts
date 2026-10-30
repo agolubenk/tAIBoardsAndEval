@@ -2,6 +2,7 @@ import { AGENT_ROLE_NAME } from "@kaneo/permissions";
 import { APIError } from "better-auth/api";
 import { eq } from "drizzle-orm";
 import db, { schema } from "../database";
+import { splitRoles } from "../utils/split-roles";
 
 export const AGENT_ROLE_RESERVED =
   "The agent role belongs to agents: it cannot be given to people, edited or deleted";
@@ -13,13 +14,31 @@ function reserved() {
   });
 }
 
+// Role names are compared as better-auth stores and reads them: trimmed, and
+// lowercased when a role is created.
 export function namesAgentRole(role: unknown) {
   const names = Array.isArray(role)
-    ? role
+    ? role.flatMap((name) => (typeof name === "string" ? splitRoles(name) : []))
     : typeof role === "string"
-      ? role.split(",")
+      ? splitRoles(role)
       : [];
-  return names.includes(AGENT_ROLE_NAME);
+  return names.some((name) => name.toLowerCase() === AGENT_ROLE_NAME);
+}
+
+// better-auth checks an invitation's role as sent but stores it as is, and
+// roles are trimmed when read: " owner" would pass its owner check and then
+// grant owner, " agent" would pass ours. Such names are refused.
+export function assertPlainRoleNames(role: unknown) {
+  const names = Array.isArray(role) ? role : [role];
+  for (const name of names) {
+    if (typeof name !== "string") continue;
+    if (name.split(",").some((part) => part !== part.trim())) {
+      throw new APIError("BAD_REQUEST", {
+        code: "ROLE_NAME_SPACES",
+        message: "Role names cannot start or end with spaces",
+      });
+    }
+  }
 }
 
 // R-010: a person never holds the agent role; agents get it from their owner.

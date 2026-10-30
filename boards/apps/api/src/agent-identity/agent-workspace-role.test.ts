@@ -20,4 +20,10 @@ describe("agentWorkspaceRole", () => {
       );
     }
   });
+
+  it("reads role names as they are checked: trimmed, any case", () => {
+    expect(agentWorkspaceRole("admin ")).toBe("agent");
+    expect(agentWorkspaceRole(" Member,reviewer")).toBe("agent");
+    expect(agentWorkspaceRole(" viewer ")).toBe("viewer");
+  });
 });

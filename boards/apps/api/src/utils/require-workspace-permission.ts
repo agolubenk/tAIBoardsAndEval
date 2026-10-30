@@ -1,3 +1,4 @@
+import { agent } from "@kaneo/permissions";
 import { and, eq, inArray } from "drizzle-orm";
 import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -57,6 +58,27 @@ function assertApiKeyScope(c: Context, permissions: PermissionMap) {
   }
 }
 
+// R-010: whatever role an agent mirrors from its owner, a custom one too, it
+// never does more than the agent role allows. Agents work only with keys.
+function isAgentCaller(c: Context) {
+  const apiKey = c.get("apiKey") as { agent?: unknown } | undefined;
+  return Boolean(apiKey?.agent);
+}
+
+function agentMay(c: Context, permissions: PermissionMap) {
+  return !isAgentCaller(c) || satisfies(agent.statements, permissions);
+}
+
+function assertAgentMay(c: Context, permissions: PermissionMap) {
+  if (!agentMay(c, permissions)) {
+    throw new ApiError(403, {
+      message: "Insufficient permissions",
+      code: "MISSING_PERMISSION",
+      missingPermissions: missingPermissions(agent.statements, permissions),
+    });
+  }
+}
+
 export async function roleHasWorkspacePermission(
   workspaceId: string,
   role: string,
@@ -89,6 +111,7 @@ export async function hasWorkspacePermission(
   if (scope && !satisfies(scope, permissions)) {
     return false;
   }
+  if (!agentMay(c, permissions)) return false;
 
   if (await isInstanceAdmin(c)) {
     return true;
@@ -117,6 +140,7 @@ export async function workspacePermissionChecker(
 
   return (permissions) => {
     if (scope && !satisfies(scope, permissions)) return false;
+    if (!agentMay(c, permissions)) return false;
     return isAdmin || rolesAllow(roles, stored, permissions);
   };
 }
@@ -169,6 +193,7 @@ export function requireWorkspacePermission(permissions: PermissionMap) {
     }
 
     assertApiKeyScope(c, permissions);
+    assertAgentMay(c, permissions);
     assertKeyReachesWorkspace(c, workspaceId);
 
     if (await isInstanceAdmin(c)) {

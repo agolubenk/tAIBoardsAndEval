@@ -1,9 +1,6 @@
-import {
-  AGENT_ROLE_NAME,
-  defaultRolePayloads,
-  SEEDED_ROLE_NAMES,
-} from "@kaneo/permissions";
-import { and, eq, inArray, ne, sql } from "drizzle-orm";
+import { defaultRolePayloads, SEEDED_ROLE_NAMES } from "@kaneo/permissions";
+import { and, inArray, sql } from "drizzle-orm";
+import { reclaimAgentRoleName } from "../agent-identity/reclaim-agent-role-name";
 import db, { schema } from "../database";
 
 /**
@@ -18,8 +15,8 @@ import db, { schema } from "../database";
  * better-auth's dynamic-access-control resolution would treat them as
  * having an empty permission set on existing workspaces.
  *
- * Idempotent: only inserts rows that aren't already present, and resets the
- * agent role to its fixed permissions.
+ * Idempotent: only inserts rows that aren't already present, and gives the
+ * agent role back its fixed permissions.
  */
 export async function seedDefaultWorkspaceRoles() {
   try {
@@ -50,7 +47,7 @@ export async function seedDefaultWorkspaceRoles() {
     }
 
     const workspaceIds = workspaces.map((w) => w.id);
-    await resetAgentRolePermissions();
+    await reclaimAgentRoleName();
 
     const existingRows = await db
       .select({
@@ -103,28 +100,5 @@ export async function seedDefaultWorkspaceRoles() {
   } catch (error) {
     console.error("❌ Failed to seed default workspace roles:", error);
     throw error;
-  }
-}
-
-// Nobody may edit the agent role, so its permissions are always the built-in
-// ones. A workspace that made its own role named "agent" before the name was
-// reserved gets them too, or agents moved onto it would inherit whatever that
-// role allowed. Also carries a change of the built-in set to old workspaces.
-async function resetAgentRolePermissions() {
-  const permission = JSON.stringify(defaultRolePayloads[AGENT_ROLE_NAME]);
-  const reset = await db
-    .update(schema.workspaceRoleTable)
-    .set({ permission, updatedAt: new Date() })
-    .where(
-      and(
-        eq(schema.workspaceRoleTable.role, AGENT_ROLE_NAME),
-        ne(schema.workspaceRoleTable.permission, permission),
-      ),
-    )
-    .returning({ id: schema.workspaceRoleTable.id });
-  if (reset.length) {
-    console.log(
-      `✅ Reset the agent role's permissions in ${reset.length} workspace(s).`,
-    );
   }
 }
