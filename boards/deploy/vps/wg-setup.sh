@@ -178,7 +178,8 @@ if grep -q "^PublicKey = $peer_pub\$" "$CONF"; then
   log "устройство уже есть: $peer_ip"
   # A key added here would cut off a device that does not have it yet; wg-psk.sh changes it.
   if awk -v k="$peer_pub" '/^\[/ {found = 0} $1 == "PublicKey" {found = ($3 == k)} found && $1 == "PresharedKey" {exit 1}' "$CONF"; then
-    log "PresharedKey у устройства нет; добавить — wg-psk.sh $peer_ip"
+    log "PresharedKey у устройства нет. Добавить: ключ на stdin — printf %s \"\$KEY\" | bash wg-psk.sh $peer_ip —"
+    log "и та же строка PresharedKey = <ключ> в туннеле на устройстве (README, wg-psk.sh)"
   else
     log "PresharedKey у устройства уже есть: строку PresharedKey на устройстве не трогайте"
   fi
