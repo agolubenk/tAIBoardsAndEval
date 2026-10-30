@@ -1,4 +1,4 @@
-import { DEFAULT_ROLE_NAMES } from "@kaneo/permissions";
+import { AGENT_ROLE_NAME, DEFAULT_ROLE_NAMES } from "@kaneo/permissions";
 import {
   CopyIcon,
   EllipsisIcon,
@@ -87,7 +87,12 @@ const AVATAR_TONES = [
 // editable workspace_role rows on every workspace creation, and owner is a
 // static built-in. The Select already lists them as built-ins, so we filter
 // them out of the custom-roles tail to avoid duplicate options.
-const RESERVED_ROLE_NAMES = new Set<string>([...DEFAULT_ROLE_NAMES, "owner"]);
+// The agent role is held by agents only and follows their owner (R-010).
+const RESERVED_ROLE_NAMES = new Set<string>([
+  ...DEFAULT_ROLE_NAMES,
+  "owner",
+  AGENT_ROLE_NAME,
+]);
 
 function toneFor(value: string): string {
   let hash = 0;
@@ -254,7 +259,10 @@ function MembersTable({ workspaceId, invitations, users }: Props) {
           {sortedUsers.map((member) => {
             const isSelf = currentUser?.id === member.userId;
             const showRoleSelect =
-              canChangeRoles && !isSelf && member.role !== "owner";
+              canChangeRoles &&
+              !isSelf &&
+              member.role !== "owner" &&
+              member.role !== AGENT_ROLE_NAME;
             const access =
               member.role === "owner"
                 ? ALL_PROJECTS_ACCESS

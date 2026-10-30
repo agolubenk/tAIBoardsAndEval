@@ -1,11 +1,11 @@
-import { DEFAULT_ROLE_NAMES, defaultRolePayloads } from "@kaneo/permissions";
+import { defaultRolePayloads, SEEDED_ROLE_NAMES } from "@kaneo/permissions";
 import { and, inArray, sql } from "drizzle-orm";
 import db, { schema } from "../database";
 
 /**
- * Backfill the editable default roles (viewer/member/admin) for every
- * workspace that's missing them. Runs on API startup after Drizzle
- * migrations.
+ * Backfill the editable default roles (viewer/member/admin) and the agent
+ * role for every workspace that's missing them. Runs on API startup after
+ * Drizzle migrations.
  *
  * These three roles used to be static (compiled into better-auth's
  * `roles` config). They were converted to DB rows so admins can override
@@ -55,10 +55,7 @@ export async function seedDefaultWorkspaceRoles() {
       .where(
         and(
           inArray(schema.workspaceRoleTable.workspaceId, workspaceIds),
-          inArray(
-            schema.workspaceRoleTable.role,
-            DEFAULT_ROLE_NAMES as unknown as string[],
-          ),
+          inArray(schema.workspaceRoleTable.role, [...SEEDED_ROLE_NAMES]),
         ),
       );
 
@@ -69,7 +66,7 @@ export async function seedDefaultWorkspaceRoles() {
     const now = new Date();
     const rows: Array<typeof schema.workspaceRoleTable.$inferInsert> = [];
     for (const workspaceId of workspaceIds) {
-      for (const name of DEFAULT_ROLE_NAMES) {
+      for (const name of SEEDED_ROLE_NAMES) {
         if (present.has(`${workspaceId}:${name}`)) continue;
         rows.push({
           workspaceId,

@@ -1617,7 +1617,8 @@
 				"save": "保存更改",
 				"saving": "正在保存…",
 				"selfRoleHint": "不能修改你自己的全局角色。",
-				"title": "编辑用户"
+				"title": "编辑用户",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here."
 			},
 			"emptyDescription": "换一个姓名或邮箱试试。",
 			"emptyTitle": "没有找到用户",
@@ -1629,7 +1630,8 @@
 			"retry": "重试",
 			"roles": {
 				"admin": "管理员",
-				"user": "用户"
+				"user": "用户",
+				"agent": "AI agent"
 			},
 			"searchCount_other": "{{count}} 个匹配用户",
 			"searchLabel": "搜索用户",
@@ -3828,7 +3830,8 @@
 			"owner": "所有者",
 			"admin": "管理员",
 			"member": "成员",
-			"viewer": "访客"
+			"viewer": "访客",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "成员",

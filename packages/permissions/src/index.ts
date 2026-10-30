@@ -48,7 +48,19 @@ export const owner = ac.newRole({
   workspace: ["read", "update", "delete", "manage_settings"],
 });
 
-export const builtInRoles = { viewer, member, admin, owner } as const;
+// R-010: a session's agent works cards, comments, leases and its work state,
+// and reads the notebook. Projects, labels, settings and people stay with
+// the owner; closing a card waits for the owner's approval in the forest.
+// Never more than `member`, so an agent never outranks its owner.
+export const agent = ac.newRole({
+  ...memberAc.statements,
+  project: ["read"],
+  task: ["create", "read", "update"],
+  label: ["read"],
+  workspace: ["read"],
+});
+
+export const builtInRoles = { viewer, member, admin, owner, agent } as const;
 
 export type BuiltInRoleName = keyof typeof builtInRoles;
 
@@ -59,6 +71,15 @@ export type BuiltInRoleName = keyof typeof builtInRoles;
 // stays a true static role on the better-auth side.
 export const DEFAULT_ROLE_NAMES = ["viewer", "member", "admin"] as const;
 export type DefaultRoleName = (typeof DEFAULT_ROLE_NAMES)[number];
+
+// Seeded next to the defaults in every workspace, but held only by agents:
+// people are never offered it and agents get it from their owner's role.
+export const AGENT_ROLE_NAME = "agent";
+export const SEEDED_ROLE_NAMES = [
+  ...DEFAULT_ROLE_NAMES,
+  AGENT_ROLE_NAME,
+] as const;
+export type SeededRoleName = (typeof SEEDED_ROLE_NAMES)[number];
 
 function toMutablePayload(
   statements: Record<string, readonly string[]>,
@@ -75,12 +96,13 @@ function toMutablePayload(
 // member/team/invitation/ac defaults) so a workspace_role row that uses one
 // of these has parity with the prior static definition.
 export const defaultRolePayloads: Record<
-  DefaultRoleName,
+  SeededRoleName,
   Record<string, string[]>
 > = {
   viewer: toMutablePayload(viewer.statements),
   member: toMutablePayload(member.statements),
   admin: toMutablePayload(admin.statements),
+  agent: toMutablePayload(agent.statements),
 };
 
 export {

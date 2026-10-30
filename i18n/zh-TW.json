@@ -1616,7 +1616,8 @@
 				"save": "儲存變更",
 				"saving": "儲存中…",
 				"selfRoleHint": "你無法變更自己的全域角色。",
-				"title": "編輯使用者"
+				"title": "編輯使用者",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here."
 			},
 			"emptyDescription": "試試其他姓名或電子郵件地址。",
 			"emptyTitle": "找不到使用者",
@@ -1628,7 +1629,8 @@
 			"retry": "重試",
 			"roles": {
 				"admin": "管理員",
-				"user": "使用者"
+				"user": "使用者",
+				"agent": "AI agent"
 			},
 			"searchCount_other": "{{count}} 位符合的使用者",
 			"searchLabel": "搜尋使用者",
@@ -3828,7 +3830,8 @@
 			"owner": "擁有者",
 			"admin": "管理員",
 			"member": "成員",
-			"viewer": "檢視者"
+			"viewer": "檢視者",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "成員",

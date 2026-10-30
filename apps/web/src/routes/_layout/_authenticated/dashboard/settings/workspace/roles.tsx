@@ -1,4 +1,8 @@
-import { DEFAULT_ROLE_NAMES, statement } from "@kaneo/permissions";
+import {
+  AGENT_ROLE_NAME,
+  DEFAULT_ROLE_NAMES,
+  statement,
+} from "@kaneo/permissions";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Plus,
@@ -215,7 +219,8 @@ const PERMISSION_LABELS: Record<
 // stays a static role on the auth side and is hidden from this UI, but its
 // name is still reserved here.
 const DEFAULT_ROLE_NAME_SET = new Set<string>(DEFAULT_ROLE_NAMES);
-const RESERVED_ROLE_NAMES = [...DEFAULT_ROLE_NAMES, "owner"];
+// The agent role is fixed and held by agents only, so it is not listed here.
+const RESERVED_ROLE_NAMES = [...DEFAULT_ROLE_NAMES, "owner", AGENT_ROLE_NAME];
 
 const DEFAULT_ROLE_DESCRIPTIONS: Record<string, string> = {
   viewer: "Read-only access to projects, tasks, and workspace.",
@@ -270,6 +275,7 @@ function RouteComponent() {
     const defaults: WorkspaceRole[] = [];
     const custom: WorkspaceRole[] = [];
     for (const role of customRoles) {
+      if (role.role === AGENT_ROLE_NAME) continue;
       if (isDefaultRole(role.role)) defaults.push(role);
       else custom.push(role);
     }

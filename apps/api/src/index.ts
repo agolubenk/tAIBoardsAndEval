@@ -94,6 +94,7 @@ import timeEntry from "./time-entry";
 import user from "./user";
 import getAvatar from "./user/controllers/get-avatar";
 import { assertAgentAuthRoute } from "./agent-identity/agent-auth-routes";
+import { realignAgentRoles } from "./agent-identity/realign-agent-roles";
 import { assertApiKeyAuthRoute } from "./utils/api-key-auth-routes";
 import { apiKeyRejection } from "./utils/api-key-rejection";
 import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
@@ -1087,6 +1088,7 @@ export async function runStartupTasks() {
   await migrateGitHubIntegration();
   await migrateColumns();
   await seedDefaultWorkspaceRoles();
+  await realignAgentRoles();
 
   initializePlugins();
   initializeScheduler();

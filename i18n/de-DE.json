@@ -596,7 +596,8 @@
 			},
 			"roles": {
 				"admin": "Administrator",
-				"user": "Benutzer"
+				"user": "Benutzer",
+				"agent": "AI agent"
 			},
 			"status": {
 				"active": "Aktiv",
@@ -616,7 +617,8 @@
 				"role": "Globale Rolle",
 				"selfRoleHint": "Du kannst deine eigene globale Rolle nicht ändern.",
 				"save": "Änderungen speichern",
-				"saving": "Wird gespeichert…"
+				"saving": "Wird gespeichert…",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here."
 			},
 			"confirm": {
 				"working": "Wird ausgeführt…",
@@ -3892,7 +3894,8 @@
 			"owner": "Eigentümer",
 			"admin": "Admin",
 			"member": "Mitglied",
-			"viewer": "Betrachter"
+			"viewer": "Betrachter",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "Mitglieder",
