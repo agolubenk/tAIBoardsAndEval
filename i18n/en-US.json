@@ -3619,6 +3619,7 @@
 				"pulse": "Pulse",
 				"trees": "Trees",
 				"sectors": "Sectors",
+				"graph": "Graph",
 				"logs": "Logs and seeds",
 				"approvals": "«Да» requests",
 				"leases": "Leases",
@@ -3630,6 +3631,7 @@
 				"pulse": "What needs you now: «да» requests and sessions waiting for an answer, open bugs and urgent cards, and what was refused in the last day.",
 				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
+				"graph": "Cards, the files they touched and the decisions they cite (D-records, ADRs), joined by their links; sectors are shaded rings.",
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"approvals": "Agents ask for «да» before they close a card, change its priority or fell a tree or sector. Only the owner can answer.",
 				"leases": "Who is working on which card right now. A lease ends on its own when its holder stops renewing it.",
@@ -3673,6 +3675,36 @@
 				"toast": {
 					"detected": "New sectors: {{created}}",
 					"detectError": "Could not find sectors"
+				}
+			},
+			"graph": {
+				"files": "Files",
+				"decisions": "Decisions",
+				"counts": "Cards: {{cards}} · files: {{files}} · decisions: {{decisions}}",
+				"empty": "Nothing to draw yet: there are no cards you can open.",
+				"loadMore": "Load more",
+				"clustered": "Over {{max}} nodes, so groups are collapsed: select a group to open it.",
+				"collapseAll": "Collapse groups",
+				"expand": "Open group ({{size}})",
+				"canvasLabel": "Links graph",
+				"hint": "Select a node to see what it links to.",
+				"noLinks": "No links.",
+				"node": {
+					"card": "Card {{label}}",
+					"file": "File {{label}}",
+					"decision": "Decision {{label}}",
+					"cluster": "Group {{label}}: {{size}} nodes"
+				},
+				"relation": {
+					"subtask": "Subtask",
+					"parent": "Parent",
+					"blocks": "Blocks",
+					"blockedBy": "Blocked by",
+					"related": "Related",
+					"file": "File",
+					"decision": "Decision",
+					"card": "Card",
+					"cluster": "Group"
 				}
 			},
 			"logs": {
