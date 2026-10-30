@@ -3734,7 +3734,8 @@
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
 				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
-				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs."
+				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs.",
+				"graph": "Cards, the files they touched and the decisions they cite (D-records, ADRs), joined by their links; sectors are shaded rings."
 			},
 			"pulse": {
 				"fires": "What is on fire",
@@ -3808,7 +3809,8 @@
 				"logs": "Logs and seeds",
 				"sectors": "Sectors",
 				"trees": "Trees",
-				"mirror": "Notion mirror"
+				"mirror": "Notion mirror",
+				"graph": "Graph"
 			},
 			"trees": {
 				"allProjects": "All projects",
@@ -3870,6 +3872,36 @@
 				"trigger": {
 					"manual": "Manual",
 					"schedule": "Scheduled"
+				}
+			},
+			"graph": {
+				"canvasLabel": "Links graph",
+				"clustered": "Over {{max}} nodes, so groups are collapsed: select a group to open it.",
+				"collapseAll": "Collapse groups",
+				"counts": "Cards: {{cards}} · files: {{files}} · decisions: {{decisions}}",
+				"decisions": "Decisions",
+				"empty": "Nothing to draw yet: there are no cards you can open.",
+				"expand": "Open group ({{size}})",
+				"files": "Files",
+				"hint": "Select a node to see what it links to.",
+				"loadMore": "Load more",
+				"node": {
+					"card": "Card {{label}}",
+					"cluster": "Group {{label}}: {{size}} nodes",
+					"decision": "Decision {{label}}",
+					"file": "File {{label}}"
+				},
+				"noLinks": "No links.",
+				"relation": {
+					"blockedBy": "Blocked by",
+					"blocks": "Blocks",
+					"card": "Card",
+					"cluster": "Group",
+					"decision": "Decision",
+					"file": "File",
+					"parent": "Parent",
+					"related": "Related",
+					"subtask": "Subtask"
 				}
 			}
 		},
