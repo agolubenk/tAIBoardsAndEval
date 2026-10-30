@@ -81,6 +81,8 @@ The mirror is off until `NOTION_MIRROR_WORKSPACE_ID` and `NOTION_MIRROR_DATABASE
 `/opt/t-boards/.env` and the token file exists. `bash /opt/t-boards/mirror-setup.sh` does all three. It mirrors into
 the HR Helper / Lavaeon product, which `install.sh` creates. By default it lists «Задачи» and «Ошибки» plus `all`: every other
 database shared with the integration (… → Connections in Notion) is looked up on each run and mirrored after them.
+If the connect form refuses a database, it now names it: open that database in Notion → ⋯ → Connections and add the
+integration. A wrong token gets its own message.
 
 ## Products
 
