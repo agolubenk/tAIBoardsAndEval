@@ -48,7 +48,7 @@ the tunnel:
 |---|---|---|
 | `wg-setup.sh` | VPS | `wg-setup.sh <public key> <device> split\|full`. The first run creates wg0 (10.77.0.0/24, UDP 51820) and the rules script. Later runs add a peer and upgrade a wg0 from the first kit. Prints the config block for the device with `MTU = 1380`. A new peer gets a PresharedKey, printed once in that block; a peer that is already there is never given one, since that would cut off the device |
 | `wg-issue.sh` | VPS | `wg-issue.sh <device> split\|full` makes the keypair and the PresharedKey on the VPS and prints a ready profile (stdout) and a QR (stderr). `--revoke <device>` removes the peer |
-| `wg-psk.sh` | VPS | Sets or removes the PresharedKey of one peer by its tunnel address. The key arrives on stdin, never in argv: `printf %s "$KEY" \| bash wg-psk.sh 10.77.0.2`, rollback `bash wg-psk.sh --remove 10.77.0.2` |
+| `wg-psk.sh` | VPS | Sets or removes the PresharedKey of one peer by its tunnel address. The key arrives on stdin, never in argv: `printf %s "$KEY" \| bash wg-psk.sh 10.77.0.2`, rollback `bash wg-psk.sh --remove 10.77.0.2`. Not through `base64 -d \| bash`: there stdin is the script itself, and wg-psk.sh would read its tail as the key. Run it by path, `/opt/t-boards/wg-psk.sh` |
 | `wg-selftest.sh` | Mac | Runs the three scripts above in a privileged container with real iptables. Covers split, full, a re-run, PresharedKey and MTU, the shared lock, backup retention, the first-kit upgrade and stop |
 | `bundle.sh` | Mac | Packs the amd64 image and these files into `t-boards-<tag>.tar` and writes its sha256 |
 | `install.sh` | VPS | Preflight, certificate, secrets, `docker load`, a dump before the update, `up`, health, migrations = journal, admin seed, products seed, a smoke check through TLS |

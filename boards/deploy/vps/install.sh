@@ -109,6 +109,8 @@ write_files() {
   install -m 0644 "$here/backup.sh" "$ROOT/backup.sh"
   install -m 0700 "$here/backup-key.sh" "$ROOT/backup-key.sh"
   install -m 0700 "$here/wg-setup.sh" "$ROOT/wg-setup.sh"
+  install -m 0700 "$here/wg-issue.sh" "$ROOT/wg-issue.sh"
+  install -m 0700 "$here/wg-psk.sh" "$ROOT/wg-psk.sh"
   install -m 0700 "$here/mirror-setup.sh" "$ROOT/mirror-setup.sh"
   bash "$here/render-tls.sh" "$here/tls.conf.template" "$ROOT/tls.conf" \
     "$WG_ADDR:$TLS_PORT" "$DOMAIN" 127.0.0.1:5180 || die "tls.conf не отрендерился"
