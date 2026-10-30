@@ -23,6 +23,7 @@ const GraphTab = lazy(() =>
 type ForestPageProps = {
   workspaceId: string;
   tab: ForestTab;
+  sectorId?: string;
   onTabChange: (tab: ForestTab) => void;
 };
 
@@ -31,7 +32,12 @@ type ForestPageProps = {
 // (R-028, R-029, N-011), what each session is doing (R-037), the agents' feed
 // and the links graph (R-090), and the Notion mirror's reconciliation runs
 // (AC-002, AC-003).
-export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
+export function ForestPage({
+  workspaceId,
+  tab,
+  sectorId,
+  onTabChange,
+}: ForestPageProps) {
   const { t } = useTranslation();
   const { data: pending } = useApprovals(workspaceId, "pending");
   const pendingCount = pending?.items.length ?? 0;
@@ -65,7 +71,7 @@ export function ForestPage({ workspaceId, tab, onTabChange }: ForestPageProps) {
         <TreesTab workspaceId={workspaceId} />
       </TabsPanel>
       <TabsPanel value="sectors">
-        <SectorsTab workspaceId={workspaceId} />
+        <SectorsTab workspaceId={workspaceId} sectorId={sectorId} />
       </TabsPanel>
       <TabsPanel value="graph">
         <Suspense
