@@ -20,12 +20,20 @@ import TaskRow from "./task-row";
 
 const useExternalLinks = vi.fn((_taskId: string) => ({ data: [] }));
 const useGetLabelsByTask = vi.fn((_taskId: string) => ({ data: [] }));
+const useBoardBugs = vi.fn(
+  (_workspaceId: string, _projectId: string) =>
+    ({ data: undefined }) as {
+      data?: Map<string, { taskId: string; severity: string | null }>;
+    },
+);
 const { navigate } = vi.hoisted(() => ({
   navigate: vi.fn(),
 }));
 
 beforeEach(() => {
   useBulkSelectionStore.setState(useBulkSelectionStore.getInitialState());
+  // clearAllMocks keeps a return value set by a test; the next one starts unmarked.
+  useBoardBugs.mockReturnValue({ data: undefined });
 });
 
 afterEach(() => {
@@ -53,6 +61,18 @@ vi.mock("@/hooks/queries/label/use-get-labels-by-task", () => ({
   default: function useMockTaskLabels(taskId: string) {
     return useGetLabelsByTask(taskId);
   },
+}));
+
+// The bug mark on a board card reads one cached map per board (bebf03a).
+vi.mock("@/hooks/queries/forest/use-board-bugs", () => ({
+  default: function useMockBoardBugs(workspaceId: string, projectId: string) {
+    return useBoardBugs(workspaceId, projectId);
+  },
+}));
+
+// Who works the card is one cached map per board too (R-037); nobody here.
+vi.mock("@/hooks/queries/forest/use-card-workers", () => ({
+  default: () => ({ data: undefined }),
 }));
 
 vi.mock("@/hooks/mutations/task/use-delete-task", () => ({
@@ -280,6 +300,22 @@ describe("TaskRow", () => {
       expect(useGetLabelsByTask).not.toHaveBeenCalled();
     },
   );
+
+  it("marks a bug card with its severity and leaves a task card unmarked", () => {
+    useBoardBugs.mockReturnValue({
+      data: new Map([[task.id, { taskId: task.id, severity: "high" }]]),
+    });
+    render(
+      <>
+        <TaskCard task={task} />
+        <TaskCard task={{ ...task, id: "task-2", title: "Second task" }} />
+      </>,
+    );
+
+    expect(screen.getAllByText("tasks:card.kind.bug")).toHaveLength(1);
+    expect(screen.getByText("· high")).toBeVisible();
+    expect(useBoardBugs).toHaveBeenCalledWith("workspace-1", "project-1");
+  });
 
   it("renders labels and pull requests from the task payload without per-row requests", () => {
     render(<TaskRow task={task} projectSlug="kan" />);
