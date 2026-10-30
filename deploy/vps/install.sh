@@ -130,6 +130,16 @@ write_files() {
   chmod 0600 "$ROOT/.env"
 }
 
+# wg-setup.sh lets the claude-mem proxy's replies through the tunnel firewall
+# for the address in .env; this script does not re-run it.
+check_tunnel_rules() {
+  local host port
+  host="$(sed -n 's/^CLAUDE_MEM_WORKER_HOST=//p' "$ROOT/.env" | tail -1)"
+  port="$(sed -n 's/^CLAUDE_MEM_WORKER_PORT=//p' "$ROOT/.env" | tail -1)"
+  grep -qF -e "-s $host -p tcp --sport $port " /etc/wireguard/t-boards-rules.sh 2>/dev/null ||
+    log "ВНИМАНИЕ: туннель не пропускает ответы памяти $host:$port — перезапустите $ROOT/wg-setup.sh с ключом Mac"
+}
+
 load_image() {
   log "загружаю образ t-boards:$TB_TAG"
   docker load -i "$here/image.tar.gz" | tail -1
@@ -206,6 +216,7 @@ main() {
   load_image
   backup_before_update
   write_files
+  check_tunnel_rules
   start_and_wait
   check_migrations
   seed_admin

@@ -35,7 +35,10 @@ the tunnel:
 - nothing from outside may address `10.77.0.0/24`;
 - the `TB-WG` chain is hooked into `FORWARD` and Docker's `DOCKER-USER` and rebuilt in order on every start. It lets
   the tunnel reach the internet and the product's published ports, the same reach the internet has, and drops the
-  rest, so the VPS's internal Docker networks stay out of reach.
+  rest, so the VPS's internal Docker networks stay out of reach. The one exception is the Mac's claude-mem proxy
+  (`CLAUDE_MEM_WORKER_HOST:PORT` from `/opt/t-boards/.env`): its replies reach the app container. Any VPS container
+  can read that proxy (all leave the tunnel as 10.77.0.1), none can reach the Mac's other ports. After changing that
+  address in `.env`, re-run `wg-setup.sh` with the Mac's key; `install.sh` warns while the rules disagree.
 
 `ip_forward` stays on through `/etc/sysctl.d/99-t-boards-wg.conf`.
 
