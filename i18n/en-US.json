@@ -2375,6 +2375,50 @@
 			"newField": "New field",
 			"fieldsTitle": "Fields",
 			"fieldsDescription": "Drag to change the order they appear in on a task."
+		},
+		"agentsPage": {
+			"pageTitle": "Agents and MCP",
+			"title": "Agents and MCP",
+			"subtitle": "Agents that work under their own names, the tools MCP sessions see, and the model.",
+			"agentsTitle": "Session agents",
+			"agentsNote": "Each MCP session gets its own agent and a key for a day. Turning an agent off revokes its keys at once; its work stays under its name.",
+			"emptyTitle": "No agents yet",
+			"emptyDescription": "An agent appears when an MCP session connects with your key.",
+			"loadError": "Could not load agents. Please try again.",
+			"row": {
+				"keys_one": "{{count}} live key",
+				"keys_other": "{{count}} live keys",
+				"disabled": "Off",
+				"lastKey": "last key {{time}}",
+				"noKey": "no key yet",
+				"toggle": "Agent {{name}} may work"
+			},
+			"toast": {
+				"enabled": "Agent turned on",
+				"disabled_one": "Agent turned off, {{count}} key revoked",
+				"disabled_other": "Agent turned off, {{count}} keys revoked",
+				"error": "Could not change the agent"
+			},
+			"tools": {
+				"title": "MCP tool sets",
+				"description": "What a session of each role sees in its tool list.",
+				"count_one": "{{count}} tool",
+				"count_other": "{{count}} tools",
+				"note": "A client names its role in the {{header}} header. A session may add up to {{extra}} more tools nearest to its request. A role trims the list; the server still checks every call.",
+				"loadError": "Could not load the tool sets."
+			},
+			"model": {
+				"title": "Model",
+				"description": "The model the notebook answers with, and its daily limit.",
+				"none": "No model set",
+				"keyFound": "Key found",
+				"keyMissing": "No key",
+				"callsToday_one": "{{count}} call today",
+				"callsToday_other": "{{count}} calls today",
+				"callsOfMax": "{{count}} of {{max}} calls today",
+				"note": "The key is a file on the server and is never typed in here. The model and the daily limit come from the server's settings.",
+				"loadError": "Could not load the model status."
+			}
 		}
 	},
 	"navigation": {
@@ -3309,7 +3353,8 @@
 				"notion": "Notion fields",
 				"agent": "Agent report",
 				"history": "History",
-				"memory": "Memory"
+				"memory": "Memory",
+				"place": "Tree and sector"
 			},
 			"lease": {
 				"free": "Nobody is working on it now",
@@ -3398,6 +3443,18 @@
 				"saveError": "Could not save the card fields",
 				"rolledBack": "Change undone",
 				"rollbackError": "Could not undo the change"
+			},
+			"place": {
+				"loadError": "Could not load where the card sits in the forest.",
+				"path": "Path",
+				"isRoot": "This card is a tree's root",
+				"hidden_one": "{{count}} hidden",
+				"hidden_other": "{{count}} hidden",
+				"subcards": "Subcards",
+				"tree": "Whole tree",
+				"sector": "Sector",
+				"progress": "{{done}} of {{total}} done",
+				"none": "None"
 			}
 		}
 	},

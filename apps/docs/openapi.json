@@ -5670,6 +5670,113 @@
           "truncated"
         ]
       },
+      "ForestCardPlace": {
+        "type": "object",
+        "properties": {
+          "rootId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The root of the card's tree, the card itself when it has no parent; null when the root is in a project the caller cannot see."
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "projectSlug": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "number",
+                "title",
+                "projectId",
+                "projectSlug"
+              ]
+            },
+            "description": "Parents from the root down, visible ones."
+          },
+          "hiddenAncestors": {
+            "type": "number"
+          },
+          "subcards": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "done": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "total",
+              "done"
+            ],
+            "description": "Subcards under this card at any depth, and how many are done."
+          },
+          "tree": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "done": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "total",
+              "done"
+            ],
+            "description": "The same for the whole tree under the root."
+          },
+          "sectors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "rootId",
+          "ancestors",
+          "hiddenAncestors",
+          "subcards",
+          "tree",
+          "sectors"
+        ]
+      },
       "ForestLiveLeases": {
         "type": "array",
         "items": {
@@ -6327,6 +6434,45 @@
         },
         "required": [
           "enabled"
+        ]
+      },
+      "McpToolSets": {
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "string",
+            "description": "The request header an MCP client names its role in."
+          },
+          "extraMax": {
+            "type": "number",
+            "description": "Tools a session may take beyond its role over its whole life."
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string"
+                },
+                "tools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "role",
+                "tools"
+              ]
+            }
+          }
+        },
+        "required": [
+          "header",
+          "extraMax",
+          "roles"
         ]
       },
       "NotebookSources": {
@@ -26020,6 +26166,79 @@
         }
       }
     },
+    "/forest/{workspaceId}/cards/{taskId}/place": {
+      "get": {
+        "operationId": "getForestCardPlace",
+        "tags": [
+          "Forest"
+        ],
+        "summary": "Get where a card sits in the forest",
+        "description": "The parents up to the card's tree root, how many subcards it and the whole tree have and how many are done, and the active sectors of the tree. Parents in projects the caller cannot see are only counted.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "taskId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The card's place",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForestCardPlace"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing task:read permission or project access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
     "/forest/{workspaceId}/work-state": {
       "get": {
         "operationId": "listForestWorkState",
@@ -26699,6 +26918,41 @@
           },
           "404": {
             "description": "Agent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/agent-identity/tool-sets": {
+      "get": {
+        "operationId": "listMcpToolSets",
+        "tags": [
+          "Agents"
+        ],
+        "summary": "List the MCP tool sets",
+        "description": "The tools an MCP session of each role sees in tools/list (R-034) and the header that names the role. A role trims the list to save tokens; the API still checks every call.",
+        "responses": {
+          "200": {
+            "description": "Tool sets by role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpToolSets"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
             "content": {
               "application/json": {
                 "schema": {

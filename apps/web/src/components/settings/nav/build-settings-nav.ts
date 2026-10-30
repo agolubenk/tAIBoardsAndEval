@@ -1,5 +1,6 @@
 import {
   Bell,
+  Bot,
   Building2,
   Code,
   CreditCard,
@@ -100,6 +101,12 @@ export function buildSettingsNav({
           label: t("settings:apiKeys"),
           to: "/dashboard/settings/account/developer",
           icon: Code,
+        },
+        {
+          id: "agents",
+          label: t("settings:agentsPage.title"),
+          to: "/dashboard/settings/account/agents",
+          icon: Bot,
         },
       ],
     },

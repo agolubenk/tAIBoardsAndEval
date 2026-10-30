@@ -9700,6 +9700,230 @@
 						"fieldsTitle",
 						"fieldsDescription"
 					]
+				},
+				"agentsPage": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"pageTitle": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"subtitle": {
+							"type": "string"
+						},
+						"agentsTitle": {
+							"type": "string"
+						},
+						"agentsNote": {
+							"type": "string"
+						},
+						"emptyTitle": {
+							"type": "string"
+						},
+						"emptyDescription": {
+							"type": "string"
+						},
+						"loadError": {
+							"type": "string"
+						},
+						"row": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"keys_one": {
+									"type": "string"
+								},
+								"keys_zero": {
+									"type": "string"
+								},
+								"keys_two": {
+									"type": "string"
+								},
+								"keys_few": {
+									"type": "string"
+								},
+								"keys_many": {
+									"type": "string"
+								},
+								"keys_other": {
+									"type": "string"
+								},
+								"disabled": {
+									"type": "string"
+								},
+								"lastKey": {
+									"type": "string"
+								},
+								"noKey": {
+									"type": "string"
+								},
+								"toggle": {
+									"type": "string"
+								}
+							},
+							"required": ["disabled", "lastKey", "noKey", "toggle"]
+						},
+						"toast": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"enabled": {
+									"type": "string"
+								},
+								"disabled_one": {
+									"type": "string"
+								},
+								"disabled_zero": {
+									"type": "string"
+								},
+								"disabled_two": {
+									"type": "string"
+								},
+								"disabled_few": {
+									"type": "string"
+								},
+								"disabled_many": {
+									"type": "string"
+								},
+								"disabled_other": {
+									"type": "string"
+								},
+								"error": {
+									"type": "string"
+								}
+							},
+							"required": ["enabled", "error"]
+						},
+						"tools": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"title": {
+									"type": "string"
+								},
+								"description": {
+									"type": "string"
+								},
+								"count_one": {
+									"type": "string"
+								},
+								"count_zero": {
+									"type": "string"
+								},
+								"count_two": {
+									"type": "string"
+								},
+								"count_few": {
+									"type": "string"
+								},
+								"count_many": {
+									"type": "string"
+								},
+								"count_other": {
+									"type": "string"
+								},
+								"note": {
+									"type": "string"
+								},
+								"loadError": {
+									"type": "string"
+								}
+							},
+							"required": ["title", "description", "note", "loadError"]
+						},
+						"model": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"title": {
+									"type": "string"
+								},
+								"description": {
+									"type": "string"
+								},
+								"none": {
+									"type": "string"
+								},
+								"keyFound": {
+									"type": "string"
+								},
+								"keyMissing": {
+									"type": "string"
+								},
+								"callsToday_one": {
+									"type": "string"
+								},
+								"callsToday_zero": {
+									"type": "string"
+								},
+								"callsToday_two": {
+									"type": "string"
+								},
+								"callsToday_few": {
+									"type": "string"
+								},
+								"callsToday_many": {
+									"type": "string"
+								},
+								"callsToday_other": {
+									"type": "string"
+								},
+								"callsOfMax": {
+									"type": "string"
+								},
+								"callsOfMax_zero": {
+									"type": "string"
+								},
+								"callsOfMax_one": {
+									"type": "string"
+								},
+								"callsOfMax_two": {
+									"type": "string"
+								},
+								"callsOfMax_few": {
+									"type": "string"
+								},
+								"callsOfMax_many": {
+									"type": "string"
+								},
+								"callsOfMax_other": {
+									"type": "string"
+								},
+								"note": {
+									"type": "string"
+								},
+								"loadError": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"title",
+								"description",
+								"none",
+								"keyFound",
+								"keyMissing",
+								"note",
+								"loadError"
+							]
+						}
+					},
+					"required": [
+						"pageTitle",
+						"title",
+						"subtitle",
+						"agentsTitle",
+						"agentsNote",
+						"emptyTitle",
+						"emptyDescription",
+						"loadError",
+						"row",
+						"toast",
+						"tools",
+						"model"
+					]
 				}
 			},
 			"required": [
@@ -9751,7 +9975,8 @@
 				"chatIntegrations",
 				"codeHosting",
 				"shared",
-				"projectCustomFields"
+				"projectCustomFields",
+				"agentsPage"
 			]
 		},
 		"navigation": {
@@ -13702,6 +13927,9 @@
 								},
 								"memory": {
 									"type": "string"
+								},
+								"place": {
+									"type": "string"
 								}
 							},
 							"required": [
@@ -13710,7 +13938,8 @@
 								"notion",
 								"agent",
 								"history",
-								"memory"
+								"memory",
+								"place"
 							]
 						},
 						"lease": {
@@ -14034,6 +14263,64 @@
 								}
 							},
 							"required": ["saved", "saveError", "rolledBack", "rollbackError"]
+						},
+						"place": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"loadError": {
+									"type": "string"
+								},
+								"path": {
+									"type": "string"
+								},
+								"isRoot": {
+									"type": "string"
+								},
+								"hidden_one": {
+									"type": "string"
+								},
+								"hidden_zero": {
+									"type": "string"
+								},
+								"hidden_two": {
+									"type": "string"
+								},
+								"hidden_few": {
+									"type": "string"
+								},
+								"hidden_many": {
+									"type": "string"
+								},
+								"hidden_other": {
+									"type": "string"
+								},
+								"subcards": {
+									"type": "string"
+								},
+								"tree": {
+									"type": "string"
+								},
+								"sector": {
+									"type": "string"
+								},
+								"progress": {
+									"type": "string"
+								},
+								"none": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"loadError",
+								"path",
+								"isRoot",
+								"subcards",
+								"tree",
+								"sector",
+								"progress",
+								"none"
+							]
 						}
 					},
 					"required": [
@@ -14054,7 +14341,8 @@
 						"history",
 						"memory",
 						"historyField",
-						"toast"
+						"toast",
+						"place"
 					]
 				}
 			},

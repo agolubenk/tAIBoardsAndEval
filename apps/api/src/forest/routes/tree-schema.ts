@@ -79,3 +79,34 @@ export const leasesSchema = z
     }),
   )
   .openapi("ForestLiveLeases");
+
+const countSchema = z.object({ total: z.number(), done: z.number() });
+
+export const cardPlaceSchema = z
+  .object({
+    rootId: z.string().nullable().openapi({
+      description:
+        "The root of the card's tree, the card itself when it has no parent; null when the root is in a project the caller cannot see.",
+    }),
+    ancestors: z
+      .array(
+        z.object({
+          id: z.string(),
+          number: z.number().nullable(),
+          title: z.string(),
+          projectId: z.string(),
+          projectSlug: z.string(),
+        }),
+      )
+      .openapi({ description: "Parents from the root down, visible ones." }),
+    hiddenAncestors: z.number(),
+    subcards: countSchema.openapi({
+      description:
+        "Subcards under this card at any depth, and how many are done.",
+    }),
+    tree: countSchema.openapi({
+      description: "The same for the whole tree under the root.",
+    }),
+    sectors: z.array(z.object({ id: z.string(), name: z.string() })),
+  })
+  .openapi("ForestCardPlace");

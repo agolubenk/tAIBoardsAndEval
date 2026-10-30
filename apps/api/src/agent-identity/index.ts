@@ -16,8 +16,10 @@ import {
   issueAgentKeyBody,
   issuedAgentKeySchema,
   setAgentEnabledBody,
+  toolSetsSchema,
 } from "./schema";
 import { setAgentEnabled } from "./set-agent-enabled";
+import { toolSets } from "./tool-sets";
 
 const issueAgentKeyRoute = createRoute({
   method: "post",
@@ -78,6 +80,19 @@ const setAgentEnabledRoute = createRoute({
   },
 });
 
+const toolSetsRoute = createRoute({
+  method: "get",
+  operationId: "listMcpToolSets",
+  path: "/tool-sets",
+  tags: ["Agents"],
+  summary: "List the MCP tool sets",
+  description:
+    "The tools an MCP session of each role sees in tools/list (R-034) and the header that names the role. A role trims the list to save tokens; the API still checks every call.",
+  responses: {
+    200: jsonResponse("Tool sets by role", toolSetsSchema),
+  },
+});
+
 // R-010: every session works under its own name, several at once if need be.
 const agentIdentity = apiRouter()
   .openapi(issueAgentKeyRoute, async (c) => {
@@ -106,6 +121,7 @@ const agentIdentity = apiRouter()
     const { agentId } = c.req.valid("param");
     const { enabled } = c.req.valid("json");
     return c.json(await setAgentEnabled(ownerId, agentId, enabled), 200);
-  });
+  })
+  .openapi(toolSetsRoute, (c) => c.json(toolSets(), 200));
 
 export default agentIdentity;

@@ -41,6 +41,7 @@ import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceRouteImport } fro
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId'
 import { Route as LayoutAuthenticatedDashboardWorkspaceCreateRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/create'
 import { Route as LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125RouteImport } from './routes/_layout/_authenticated/$workspaceSlug/task.$ticketId.{-$title}'
+import { Route as LayoutAuthenticatedDashboardSettingsAccountAgentsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/agents'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountDeveloperRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/developer'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountInformationRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/information'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountNotificationsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/notifications'
@@ -249,6 +250,12 @@ const LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125Route =
       getParentRoute: () => LayoutAuthenticatedRoute,
     } as any,
   )
+const LayoutAuthenticatedDashboardSettingsAccountAgentsRoute =
+  LayoutAuthenticatedDashboardSettingsAccountAgentsRouteImport.update({
+    id: '/agents',
+    path: '/agents',
+    getParentRoute: () => LayoutAuthenticatedDashboardSettingsAccountRoute,
+  } as any)
 const LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute =
   LayoutAuthenticatedDashboardSettingsAccountDeveloperRouteImport.update({
     id: '/developer',
@@ -503,6 +510,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/workspace/$workspaceId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteWithChildren
   '/dashboard/workspace/create': typeof LayoutAuthenticatedDashboardWorkspaceCreateRoute
   '/$workspaceSlug/task/$ticketId/{-$title}': typeof LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125Route
+  '/dashboard/settings/account/agents': typeof LayoutAuthenticatedDashboardSettingsAccountAgentsRoute
   '/dashboard/settings/account/developer': typeof LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute
   '/dashboard/settings/account/information': typeof LayoutAuthenticatedDashboardSettingsAccountInformationRoute
   '/dashboard/settings/account/notifications': typeof LayoutAuthenticatedDashboardSettingsAccountNotificationsRoute
@@ -564,6 +572,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings/workspace': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRouteWithChildren
   '/dashboard/workspace/create': typeof LayoutAuthenticatedDashboardWorkspaceCreateRoute
   '/$workspaceSlug/task/$ticketId/{-$title}': typeof LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125Route
+  '/dashboard/settings/account/agents': typeof LayoutAuthenticatedDashboardSettingsAccountAgentsRoute
   '/dashboard/settings/account/developer': typeof LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute
   '/dashboard/settings/account/information': typeof LayoutAuthenticatedDashboardSettingsAccountInformationRoute
   '/dashboard/settings/account/notifications': typeof LayoutAuthenticatedDashboardSettingsAccountNotificationsRoute
@@ -631,6 +640,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated/dashboard/workspace/$workspaceId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteWithChildren
   '/_layout/_authenticated/dashboard/workspace/create': typeof LayoutAuthenticatedDashboardWorkspaceCreateRoute
   '/_layout/_authenticated/$workspaceSlug/task/$ticketId/{-$title}': typeof LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125Route
+  '/_layout/_authenticated/dashboard/settings/account/agents': typeof LayoutAuthenticatedDashboardSettingsAccountAgentsRoute
   '/_layout/_authenticated/dashboard/settings/account/developer': typeof LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute
   '/_layout/_authenticated/dashboard/settings/account/information': typeof LayoutAuthenticatedDashboardSettingsAccountInformationRoute
   '/_layout/_authenticated/dashboard/settings/account/notifications': typeof LayoutAuthenticatedDashboardSettingsAccountNotificationsRoute
@@ -697,6 +707,7 @@ export interface FileRouteTypes {
     | '/dashboard/workspace/$workspaceId'
     | '/dashboard/workspace/create'
     | '/$workspaceSlug/task/$ticketId/{-$title}'
+    | '/dashboard/settings/account/agents'
     | '/dashboard/settings/account/developer'
     | '/dashboard/settings/account/information'
     | '/dashboard/settings/account/notifications'
@@ -758,6 +769,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace'
     | '/dashboard/workspace/create'
     | '/$workspaceSlug/task/$ticketId/{-$title}'
+    | '/dashboard/settings/account/agents'
     | '/dashboard/settings/account/developer'
     | '/dashboard/settings/account/information'
     | '/dashboard/settings/account/notifications'
@@ -824,6 +836,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId'
     | '/_layout/_authenticated/dashboard/workspace/create'
     | '/_layout/_authenticated/$workspaceSlug/task/$ticketId/{-$title}'
+    | '/_layout/_authenticated/dashboard/settings/account/agents'
     | '/_layout/_authenticated/dashboard/settings/account/developer'
     | '/_layout/_authenticated/dashboard/settings/account/information'
     | '/_layout/_authenticated/dashboard/settings/account/notifications'
@@ -1096,6 +1109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedWorkspaceSlugTaskTicketIdChar123TitleChar125RouteImport
       parentRoute: typeof LayoutAuthenticatedRoute
     }
+    '/_layout/_authenticated/dashboard/settings/account/agents': {
+      id: '/_layout/_authenticated/dashboard/settings/account/agents'
+      path: '/agents'
+      fullPath: '/dashboard/settings/account/agents'
+      preLoaderRoute: typeof LayoutAuthenticatedDashboardSettingsAccountAgentsRouteImport
+      parentRoute: typeof LayoutAuthenticatedDashboardSettingsAccountRoute
+    }
     '/_layout/_authenticated/dashboard/settings/account/developer': {
       id: '/_layout/_authenticated/dashboard/settings/account/developer'
       path: '/developer'
@@ -1324,6 +1344,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface LayoutAuthenticatedDashboardSettingsAccountRouteChildren {
+  LayoutAuthenticatedDashboardSettingsAccountAgentsRoute: typeof LayoutAuthenticatedDashboardSettingsAccountAgentsRoute
   LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute: typeof LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute
   LayoutAuthenticatedDashboardSettingsAccountInformationRoute: typeof LayoutAuthenticatedDashboardSettingsAccountInformationRoute
   LayoutAuthenticatedDashboardSettingsAccountNotificationsRoute: typeof LayoutAuthenticatedDashboardSettingsAccountNotificationsRoute
@@ -1333,6 +1354,8 @@ interface LayoutAuthenticatedDashboardSettingsAccountRouteChildren {
 
 const LayoutAuthenticatedDashboardSettingsAccountRouteChildren: LayoutAuthenticatedDashboardSettingsAccountRouteChildren =
   {
+    LayoutAuthenticatedDashboardSettingsAccountAgentsRoute:
+      LayoutAuthenticatedDashboardSettingsAccountAgentsRoute,
     LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute:
       LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute,
     LayoutAuthenticatedDashboardSettingsAccountInformationRoute:

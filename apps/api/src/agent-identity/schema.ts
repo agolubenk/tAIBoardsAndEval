@@ -61,3 +61,16 @@ export const setAgentEnabledBody = z
 export const agentEnabledSchema = z
   .object({ id: z.string(), enabled: z.boolean(), revokedKeys: z.number() })
   .openapi("AgentEnabled");
+
+export const toolSetsSchema = z
+  .object({
+    header: z.string().openapi({
+      description: "The request header an MCP client names its role in.",
+    }),
+    extraMax: z.number().openapi({
+      description:
+        "Tools a session may take beyond its role over its whole life.",
+    }),
+    roles: z.array(z.object({ role: z.string(), tools: z.array(z.string()) })),
+  })
+  .openapi("McpToolSets");

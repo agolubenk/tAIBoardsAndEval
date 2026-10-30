@@ -2375,6 +2375,50 @@
 		},
 		"shared": {
 			"autosave": "Dəyişikliklər avtomatik yadda saxlanılır"
+		},
+		"agentsPage": {
+			"agentsNote": "Each MCP session gets its own agent and a key for a day. Turning an agent off revokes its keys at once; its work stays under its name.",
+			"agentsTitle": "Session agents",
+			"emptyDescription": "An agent appears when an MCP session connects with your key.",
+			"emptyTitle": "No agents yet",
+			"loadError": "Could not load agents. Please try again.",
+			"model": {
+				"callsOfMax": "{{count}} of {{max}} calls today",
+				"callsToday_one": "{{count}} call today",
+				"callsToday_other": "{{count}} calls today",
+				"description": "The model the notebook answers with, and its daily limit.",
+				"keyFound": "Key found",
+				"keyMissing": "No key",
+				"loadError": "Could not load the model status.",
+				"none": "No model set",
+				"note": "The key is a file on the server and is never typed in here. The model and the daily limit come from the server's settings.",
+				"title": "Model"
+			},
+			"pageTitle": "Agents and MCP",
+			"row": {
+				"disabled": "Off",
+				"keys_one": "{{count}} live key",
+				"keys_other": "{{count}} live keys",
+				"lastKey": "last key {{time}}",
+				"noKey": "no key yet",
+				"toggle": "Agent {{name}} may work"
+			},
+			"subtitle": "Agents that work under their own names, the tools MCP sessions see, and the model.",
+			"title": "Agents and MCP",
+			"toast": {
+				"disabled_one": "Agent turned off, {{count}} key revoked",
+				"disabled_other": "Agent turned off, {{count}} keys revoked",
+				"enabled": "Agent turned on",
+				"error": "Could not change the agent"
+			},
+			"tools": {
+				"count_one": "{{count}} tool",
+				"count_other": "{{count}} tools",
+				"description": "What a session of each role sees in its tool list.",
+				"loadError": "Could not load the tool sets.",
+				"note": "A client names its role in the {{header}} header. A session may add up to {{extra}} more tools nearest to its request. A role trims the list; the server still checks every call.",
+				"title": "MCP tool sets"
+			}
 		}
 	},
 	"navigation": {
@@ -3370,7 +3414,8 @@
 				"history": "History",
 				"lease": "Lease",
 				"notion": "Notion fields",
-				"memory": "Memory"
+				"memory": "Memory",
+				"place": "Tree and sector"
 			},
 			"showAll": "Show all ({{total}})",
 			"showLess": "Show less",
@@ -3398,6 +3443,18 @@
 				"label": "Who works on the card",
 				"session": "{{name}}: {{step}}",
 				"sessionAt": "Last update {{time}}"
+			},
+			"place": {
+				"hidden_one": "{{count}} hidden",
+				"hidden_other": "{{count}} hidden",
+				"isRoot": "This card is a tree's root",
+				"loadError": "Could not load where the card sits in the forest.",
+				"none": "None",
+				"path": "Path",
+				"progress": "{{done}} of {{total}} done",
+				"sector": "Sector",
+				"subcards": "Subcards",
+				"tree": "Whole tree"
 			}
 		}
 	},

@@ -12,6 +12,7 @@ import { CardLeaseRows } from "./card-lease-rows";
 import { CardMemory } from "./card-memory";
 import { CardMetaDialog } from "./card-meta-dialog";
 import { CardNotionRows } from "./card-notion-rows";
+import { CardPlaceRows } from "./card-place-rows";
 import { CardSection } from "./card-section";
 
 type CardPanelProps = {
@@ -20,9 +21,9 @@ type CardPanelProps = {
   className?: string;
 };
 
-// The t-boards side of a card: what waits for the owner's «да», who works on
-// it, the Notion and agent fields, its edits with undo and what agents
-// remembered about it.
+// The t-boards side of a card: what waits for the owner's «да», where it
+// sits in the forest, who works on it, the Notion and agent fields, its edits
+// with undo and what agents remembered about it.
 export function CardPanel({ workspaceId, taskId, className }: CardPanelProps) {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useCardContext(workspaceId, taskId);
@@ -63,6 +64,10 @@ export function CardPanel({ workspaceId, taskId, className }: CardPanelProps) {
           </div>
         </CardSection>
       ) : null}
+
+      <CardSection title={t("tasks:card.sections.place")}>
+        <CardPlaceRows workspaceId={workspaceId} taskId={taskId} />
+      </CardSection>
 
       <CardSection title={t("tasks:card.sections.lease")}>
         <CardLeaseRows lease={data.lease} />
