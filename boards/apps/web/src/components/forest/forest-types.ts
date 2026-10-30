@@ -1,4 +1,5 @@
 import type listApprovals from "@/fetchers/forest/list-approvals";
+import type getGraph from "@/fetchers/forest/get-graph";
 import type listFires from "@/fetchers/forest/list-fires";
 import type listJournal from "@/fetchers/forest/list-journal";
 import type listLeases from "@/fetchers/forest/list-leases";
@@ -22,6 +23,7 @@ export type ForestJournalEntry = Awaited<
   ReturnType<typeof listJournal>
 >["items"][number];
 export type ForestFire = Awaited<ReturnType<typeof listFires>>["items"][number];
+export type ForestGraphPage = Awaited<ReturnType<typeof getGraph>>;
 export type ForestMirror = Awaited<ReturnType<typeof listMirrorRuns>>;
 export type ForestMirrorRun = ForestMirror["runs"][number];
 export type ForestMirrorDatabase = NonNullable<
@@ -32,6 +34,7 @@ export const FOREST_TABS = [
   "pulse",
   "trees",
   "sectors",
+  "graph",
   "logs",
   "approvals",
   "leases",
