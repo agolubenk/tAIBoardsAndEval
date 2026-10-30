@@ -4,6 +4,7 @@ import {
   type ImportSourceId,
 } from "@kaneo/importers";
 import { HTTPException } from "hono/http-exception";
+import { ApiError } from "../../errors/api-error";
 import { createGuardedFetch } from "../guarded-fetch";
 import type { ImportConnectionInput } from "../schema";
 import {
@@ -21,8 +22,15 @@ export type OpenedImportSource = {
   resetFailure(): void;
 };
 
-export function importHttpError({ status, message }: DescribedImportError) {
-  return new HTTPException(status, { message });
+export function importHttpError({
+  status,
+  message,
+  code,
+  target,
+}: DescribedImportError) {
+  return code
+    ? new ApiError(status, { message, code, ...(target ? { target } : {}) })
+    : new HTTPException(status, { message });
 }
 
 export async function openImportSource(

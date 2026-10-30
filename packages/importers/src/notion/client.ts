@@ -51,6 +51,10 @@ export class NotionClient {
     });
   }
 
+  get aborted(): boolean {
+    return this.options.signal?.aborted ?? false;
+  }
+
   me(): Promise<NotionUser> {
     return this.http.request<NotionUser>("/v1/users/me");
   }
@@ -82,6 +86,22 @@ export class NotionClient {
       cursor = response.has_more ? response.next_cursor : null;
     } while (cursor);
     return databases;
+  }
+
+  // One search page, for telling "nothing shared yet" from a wrong ID.
+  async hasSharedDatabase(): Promise<boolean> {
+    const response: NotionListResponse<NotionDatabase> =
+      await this.http.request("/v1/search", {
+        method: "POST",
+        body: JSON.stringify({
+          filter: { property: "object", value: "database" },
+          page_size: 10,
+        }),
+      });
+    return (
+      response.has_more ||
+      response.results.some((d) => !d.archived && !d.in_trash)
+    );
   }
 
   async queryDatabase(

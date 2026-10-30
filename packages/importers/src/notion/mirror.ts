@@ -1,4 +1,5 @@
 import type { ImportedProject } from "../types.js";
+import { readSharedDatabase } from "./access.js";
 import type { NotionDatabase, NotionPage } from "./api-types.js";
 import { blocksToMarkdown } from "./body.js";
 import type { NotionClient } from "./client.js";
@@ -32,7 +33,7 @@ export async function readNotionMirror(
 ): Promise<NotionMirrorRead> {
   const { onProgress } = options;
   onProgress?.("Reading database");
-  const database = await client.getDatabase(databaseId);
+  const database = await readSharedDatabase(client, databaseId);
 
   onProgress?.("Reading pages");
   const pages = await client.queryDatabase(databaseId, (count) =>

@@ -1607,7 +1607,16 @@
 				"openSettings": "Open Notion integrations",
 				"stepCreate": "In Notion, create an internal integration with Read content.",
 				"stepShare": "Open each database, then ⋯ › Connections, and add the integration.",
-				"stepPaste": "Copy the token and the database links and paste them above."
+				"stepPaste": "Copy the token and the database links and paste them above.",
+				"errors": {
+					"tokenInvalid": "Notion did not accept this token. Copy the Internal Integration Secret again from the integration's page in Notion.",
+					"contentUnreadable": "The token works, but the integration may not read content. In Notion, open the integration's Capabilities and turn on Read content.",
+					"nothingShared": "The token works, but no database is shared with the integration yet. Open the database in Notion, then ⋯ › Connections, and add the integration.",
+					"databaseNotShared": "The token works, but one of these databases is not shared with the integration, or its link is wrong. Open it in Notion, then ⋯ › Connections, and add the integration.",
+					"databaseNotSharedNamed": "The token works, but database {{databaseId}} is not shared with the integration, or its link is wrong. Open it in Notion, then ⋯ › Connections, and add the integration.",
+					"notADatabase": "One of these links is a page, not a database. Open the database as a full page and copy its link.",
+					"notADatabaseNamed": "{{databaseId}} is a page, not a database. Open the database as a full page and copy its link."
+				}
 			}
 		},
 		"projectGeneral": {

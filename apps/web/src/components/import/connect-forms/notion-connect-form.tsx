@@ -3,6 +3,7 @@ import { ConnectFieldRow } from "@/components/import/connect-forms/connect-field
 import type { ConnectFormProps } from "@/components/import/connect-forms/connect-form-props";
 import { ConnectHelpSteps } from "@/components/import/connect-forms/connect-help-steps";
 import { fieldDescribedBy } from "@/components/import/connect-forms/field-ids";
+import { notionConnectError } from "@/components/import/connect-forms/notion-connect-error";
 import { SecretInput } from "@/components/import/connect-forms/secret-input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -13,9 +14,21 @@ export function NotionConnectForm({
   values,
   onChange,
   error,
+  errorCode,
+  errorTarget,
 }: ConnectFormProps) {
   const { t } = useTranslation();
   const tokenLabel = t("settings:workspaceImport.notion.tokenLabel");
+  const placed = notionConnectError(errorCode);
+  const message = !error
+    ? error
+    : errorTarget && placed.namedMessageKey
+      ? t(placed.namedMessageKey, { databaseId: errorTarget })
+      : placed.messageKey
+        ? t(placed.messageKey)
+        : error;
+  const tokenError = placed.field === "token" ? message : null;
+  const databasesError = placed.field === "databases" ? message : null;
 
   return (
     <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
@@ -24,7 +37,7 @@ export function NotionConnectForm({
         labelFor={TOKEN_ID}
         label={tokenLabel}
         description={t("settings:workspaceImport.notion.tokenDescription")}
-        error={error}
+        error={tokenError}
       >
         <SecretInput
           id={TOKEN_ID}
@@ -32,7 +45,7 @@ export function NotionConnectForm({
           value={values.token}
           onValueChange={(token) => onChange({ token })}
           placeholder="ntn_..."
-          invalid={Boolean(error)}
+          invalid={Boolean(tokenError)}
         />
       </ConnectFieldRow>
       <ConnectFieldRow
@@ -40,6 +53,7 @@ export function NotionConnectForm({
         labelFor={DATABASES_ID}
         label={t("settings:workspaceImport.notion.databasesLabel")}
         description={t("settings:workspaceImport.notion.databasesDescription")}
+        error={databasesError}
       >
         <Textarea
           id={DATABASES_ID}
@@ -50,7 +64,11 @@ export function NotionConnectForm({
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          aria-describedby={fieldDescribedBy(DATABASES_ID, false)}
+          aria-invalid={databasesError ? true : undefined}
+          aria-describedby={fieldDescribedBy(
+            DATABASES_ID,
+            Boolean(databasesError),
+          )}
         />
       </ConnectFieldRow>
       <ConnectHelpSteps

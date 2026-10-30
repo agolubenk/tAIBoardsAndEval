@@ -5,6 +5,7 @@ import type {
   ReadProjectOptions,
   SourceProject,
 } from "../types.js";
+import { checkNotionToken, readSharedDatabase } from "./access.js";
 import { plainText } from "./api-types.js";
 import { NotionClient } from "./client.js";
 import { DEFAULT_PRODUCT } from "./idempotency.js";
@@ -44,13 +45,13 @@ export async function connectNotion(
     fetch: options.fetch,
     signal: options.signal,
   });
-  await client.me();
+  await checkNotionToken(client);
 
   return {
     async listProjects(): Promise<SourceProject[]> {
       const projects: SourceProject[] = [];
       for (const databaseId of databaseIds) {
-        const database = await client.getDatabase(databaseId);
+        const database = await readSharedDatabase(client, databaseId);
         const fields = Object.keys(database.properties).length;
         projects.push({
           id: database.id,
