@@ -57,9 +57,11 @@ WHEN (OLD."is_final" IS DISTINCT FROM NEW."is_final")
 EXECUTE FUNCTION "t_boards_column_completed_at"();--> statement-breakpoint
 -- Cards already done take the time of their last move into the current
 -- status from the activity log; with no such entry the date stays empty
--- rather than guessed. Only the server's own status entries count: POST
--- /activity takes any type and eventData from a client. Only completed_at
--- changes, so the revision and history triggers stay quiet.
+-- rather than guessed. Only status_changed and moved entries count. A
+-- client with task:update can post one too (POST /activity refuses only
+-- comments), but created_at is always the server's, so such an entry dates
+-- a card no earlier than that POST. Only completed_at changes, so the
+-- revision and history triggers stay quiet.
 UPDATE "task" t
 SET "completed_at" = moved."at"
 FROM (
