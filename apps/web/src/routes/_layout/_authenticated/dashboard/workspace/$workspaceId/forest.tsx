@@ -5,13 +5,19 @@ import { ForestPage } from "@/components/forest/forest-page";
 import { type ForestTab, isForestTab } from "@/components/forest/forest-types";
 import PageTitle from "@/components/page-title";
 
-type ForestSearch = { tab?: ForestTab };
+// `sector` comes from the command palette (R-090): the sectors tab scrolls to
+// that sector and focuses it.
+type ForestSearch = { tab?: ForestTab; sector?: string };
 
 export const Route = createFileRoute(
   "/_layout/_authenticated/dashboard/workspace/$workspaceId/forest",
 )({
   validateSearch: (search: Record<string, unknown>): ForestSearch => ({
     tab: isForestTab(search.tab) ? search.tab : undefined,
+    sector:
+      typeof search.sector === "string" && search.sector
+        ? search.sector
+        : undefined,
   }),
   component: RouteComponent,
 });
@@ -19,7 +25,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { t } = useTranslation();
   const { workspaceId } = Route.useParams();
-  const { tab = "pulse" } = Route.useSearch();
+  const { tab = "pulse", sector } = Route.useSearch();
   const navigate = Route.useNavigate();
 
   return (
@@ -30,6 +36,7 @@ function RouteComponent() {
           <ForestPage
             workspaceId={workspaceId}
             tab={tab}
+            sectorId={sector}
             onTabChange={(next) =>
               navigate({ search: { tab: next }, replace: true })
             }

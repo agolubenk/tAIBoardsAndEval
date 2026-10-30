@@ -940,7 +940,7 @@
 							"title": "Облачная модель блокнота: ключ файлом и дневной лимит",
 							"status": "to-do",
 							"priority": "medium",
-							"description": "R-052, R-053. `NOTEBOOK_LLM_MODEL`, `NOTEBOOK_LLM_KEY_FILE`, `NOTEBOOK_LLM_DAILY_MAX`. Без ключа блокнот отвечает только источниками.",
+							"description": "R-052, R-053. `NOTEBOOK_LLM_MODEL`, `NOTEBOOK_LLM_KEY_FILE`, `NOTEBOOK_LLM_DAILY_MAX`, `NOTEBOOK_LLM_THINKING` (`disabled` для GLM). Без ключа блокнот отвечает только источниками.",
 							"parent": "TB-121"
 						},
 						{

@@ -87,6 +87,19 @@ describe("chatCompletion", () => {
     });
   });
 
+  it("sends a thinking mode only when one is set", async () => {
+    const fetch = vi.fn(async () => reply("Ответ"));
+    vi.stubGlobal("fetch", fetch);
+
+    await chatCompletion(CONFIG, KEY, ASK);
+    await chatCompletion({ ...CONFIG, thinking: "disabled" }, KEY, ASK);
+    const bodies = (fetch.mock.calls as unknown as [string, RequestInit][]).map(
+      ([, init]) => JSON.parse(String(init.body)),
+    );
+    expect(bodies[0]).not.toHaveProperty("thinking");
+    expect(bodies[1].thinking).toEqual({ type: "disabled" });
+  });
+
   it("reports a rate limit with the time to wait", async () => {
     vi.stubGlobal(
       "fetch",

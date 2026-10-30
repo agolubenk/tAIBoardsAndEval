@@ -10,6 +10,7 @@ function configWith(env: Record<string, string>) {
   vi.stubEnv("NOTEBOOK_LLM_KEY_FILE", "/run/key");
   vi.stubEnv("NOTEBOOK_LLM_BASE_URL", "");
   vi.stubEnv("NOTEBOOK_LLM_DAILY_MAX", "");
+  vi.stubEnv("NOTEBOOK_LLM_THINKING", "");
   for (const [name, value] of Object.entries(env)) vi.stubEnv(name, value);
   return notebookLlmConfig();
 }
@@ -55,6 +56,15 @@ describe("notebook LLM config", () => {
     ["many", DEFAULT_LLM_DAILY_MAX],
   ])("takes a daily max of %j as %d", (raw, expected) => {
     expect(configWith({ NOTEBOOK_LLM_DAILY_MAX: raw }).dailyMax).toBe(expected);
+  });
+
+  it("passes a thinking mode through and leaves it out when unset", () => {
+    expect(configWith({ NOTEBOOK_LLM_THINKING: " disabled " })?.thinking).toBe(
+      "disabled",
+    );
+    expect(configWith({ NOTEBOOK_LLM_THINKING: " " })).not.toHaveProperty(
+      "thinking",
+    );
   });
 
   it("drops trailing slashes from the base URL", () => {

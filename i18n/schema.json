@@ -15087,6 +15087,9 @@
 								"sectors": {
 									"type": "string"
 								},
+								"graph": {
+									"type": "string"
+								},
 								"logs": {
 									"type": "string"
 								},
@@ -15110,6 +15113,7 @@
 								"pulse",
 								"trees",
 								"sectors",
+								"graph",
 								"logs",
 								"approvals",
 								"leases",
@@ -15131,6 +15135,9 @@
 								"sectors": {
 									"type": "string"
 								},
+								"graph": {
+									"type": "string"
+								},
 								"logs": {
 									"type": "string"
 								},
@@ -15154,6 +15161,7 @@
 								"pulse",
 								"trees",
 								"sectors",
+								"graph",
 								"logs",
 								"approvals",
 								"leases",
@@ -15310,6 +15318,123 @@
 								"detectedBy",
 								"hidden",
 								"toast"
+							]
+						},
+						"graph": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"files": {
+									"type": "string"
+								},
+								"decisions": {
+									"type": "string"
+								},
+								"counts": {
+									"type": "string"
+								},
+								"empty": {
+									"type": "string"
+								},
+								"loadMore": {
+									"type": "string"
+								},
+								"clustered": {
+									"type": "string"
+								},
+								"collapseAll": {
+									"type": "string"
+								},
+								"expand": {
+									"type": "string"
+								},
+								"canvasLabel": {
+									"type": "string"
+								},
+								"hint": {
+									"type": "string"
+								},
+								"noLinks": {
+									"type": "string"
+								},
+								"node": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"card": {
+											"type": "string"
+										},
+										"file": {
+											"type": "string"
+										},
+										"decision": {
+											"type": "string"
+										},
+										"cluster": {
+											"type": "string"
+										}
+									},
+									"required": ["card", "file", "decision", "cluster"]
+								},
+								"relation": {
+									"type": "object",
+									"additionalProperties": false,
+									"properties": {
+										"subtask": {
+											"type": "string"
+										},
+										"parent": {
+											"type": "string"
+										},
+										"blocks": {
+											"type": "string"
+										},
+										"blockedBy": {
+											"type": "string"
+										},
+										"related": {
+											"type": "string"
+										},
+										"file": {
+											"type": "string"
+										},
+										"decision": {
+											"type": "string"
+										},
+										"card": {
+											"type": "string"
+										},
+										"cluster": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"subtask",
+										"parent",
+										"blocks",
+										"blockedBy",
+										"related",
+										"file",
+										"decision",
+										"card",
+										"cluster"
+									]
+								}
+							},
+							"required": [
+								"files",
+								"decisions",
+								"counts",
+								"empty",
+								"loadMore",
+								"clustered",
+								"collapseAll",
+								"expand",
+								"canvasLabel",
+								"hint",
+								"noLinks",
+								"node",
+								"relation"
 							]
 						},
 						"logs": {
@@ -15855,6 +15980,7 @@
 						"pulse",
 						"trees",
 						"sectors",
+						"graph",
 						"logs",
 						"fell",
 						"grow",
