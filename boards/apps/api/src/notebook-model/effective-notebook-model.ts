@@ -18,6 +18,9 @@ export type NotebookModel = {
   // The server's key file holds a key for the server's own address, and the
   // admin's address differs, so the file key is not sent there.
   fileKeyWithheld: boolean;
+  // GLM's reasoning switch (`NOTEBOOK_LLM_THINKING`). Like the key file it is
+  // set for the server's own address and is not sent to another one.
+  thinking: string | null;
 };
 
 // The admin's settings first, then the server's environment, then defaults.
@@ -41,6 +44,7 @@ export async function effectiveNotebookModel(): Promise<NotebookModel> {
     keySource: storedKey ? "settings" : usedFileKey ? "file" : null,
     keyUnreadable: Boolean(stored.key) && !storedKey,
     fileKeyWithheld: fileKey !== null && !fileFits,
+    thinking: fileFits ? (env.thinking ?? null) : null,
   };
 }
 
