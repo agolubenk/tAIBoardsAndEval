@@ -46,8 +46,10 @@ the tunnel:
 
 | File | Where it runs | What it does |
 |---|---|---|
-| `wg-setup.sh` | VPS | `wg-setup.sh <public key> <device> split\|full`. The first run creates wg0 (10.77.0.0/24, UDP 51820) and the rules script. Later runs add a peer and upgrade a wg0 from the first kit. Prints the config block for the device |
-| `wg-selftest.sh` | Mac | Runs `wg-setup.sh` in a privileged container with real iptables. Covers split, full, a re-run, the first-kit upgrade and stop |
+| `wg-setup.sh` | VPS | `wg-setup.sh <public key> <device> split\|full`. The first run creates wg0 (10.77.0.0/24, UDP 51820) and the rules script. Later runs add a peer and upgrade a wg0 from the first kit. Prints the config block for the device with `MTU = 1380`. A new peer gets a PresharedKey, printed once in that block; a peer that is already there is never given one, since that would cut off the device |
+| `wg-issue.sh` | VPS | `wg-issue.sh <device> split\|full` makes the keypair and the PresharedKey on the VPS and prints a ready profile (stdout) and a QR (stderr). `--revoke <device>` removes the peer |
+| `wg-psk.sh` | VPS | Sets or removes the PresharedKey of one peer by its tunnel address. The key arrives on stdin, never in argv: `printf %s "$KEY" \| bash wg-psk.sh 10.77.0.2`, rollback `bash wg-psk.sh --remove 10.77.0.2` |
+| `wg-selftest.sh` | Mac | Runs the three scripts above in a privileged container with real iptables. Covers split, full, a re-run, PresharedKey and MTU, the shared lock, backup retention, the first-kit upgrade and stop |
 | `bundle.sh` | Mac | Packs the amd64 image and these files into `t-boards-<tag>.tar` and writes its sha256 |
 | `install.sh` | VPS | Preflight, certificate, secrets, `docker load`, a dump before the update, `up`, health, migrations = journal, admin seed, products seed, a smoke check through TLS |
 | `seed/products.json` | VPS, app container | The products (workspaces), their projects and the starting cards. Re-running adds only what is missing and never changes an existing card |
@@ -102,7 +104,9 @@ edited to the plan (journaled under `seed:products`, undone from the card's hist
   update lies in `backups/pre-<tag>-*.dump`.
 - **Stop everything:** `docker compose -p t-boards down`. Never add `-v`: the database volume is the only live copy.
 - **WireGuard:** `systemctl disable --now wg-quick@wg0 && mv /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.off && rm -f /etc/sysctl.d/99-t-boards-wg.conf`.
-  Stopping wg0 removes every rule. Each run of `wg-setup.sh` keeps the previous config as `wg0.conf.bak-<time>`.
+  Stopping wg0 removes every rule. Each change by `wg-setup.sh` or `wg-issue.sh` keeps the previous config as
+  `wg0.conf.bak-<time>`; only the newest three stay, since they hold the server PrivateKey. The three scripts take one
+  lock, `wg0.conf.lock`, so they never rewrite the file over each other.
 - **Backup key:** `sed -i '/t-boards-backup$/d' /root/.ssh/authorized_keys`.
 
 ## Known limits
