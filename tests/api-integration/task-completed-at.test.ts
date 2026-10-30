@@ -95,6 +95,25 @@ describe("API integration: a card's end date (d-tb-card-fill)", () => {
     expect(created?.completedAt).toEqual(expect.any(Date));
   });
 
+  it("gives a copy of a done card its own end date", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Card");
+    if (!task) throw new Error("fixture");
+    await forest.ownerApi("PUT", `/task/status/${task.id}`, { status: "done" });
+    await stamp(task.id, LONG_AGO);
+
+    const copy = await forest.ownerApi(
+      "POST",
+      `/task/duplicate/${task.id}`,
+      {},
+    );
+    expect(copy.status).toBe(200);
+    const copiedAt = await completedAt(copy.body.id);
+    expect(copiedAt).toEqual(expect.any(Date));
+    expect(copiedAt?.getTime()).toBeGreaterThan(LONG_AGO.getTime());
+    expect(await completedAt(task.id)).toEqual(LONG_AGO);
+  });
+
   it("follows a column turning final or not and a move to another project", async () => {
     const forest = await createForest();
     const task = await addTask(forest.project.id, "Card");
@@ -108,10 +127,33 @@ describe("API integration: a card's end date (d-tb-card-fill)", () => {
       eq(schema.columnTable.projectId, forest.project.id),
       eq(schema.columnTable.slug, "in-review"),
     );
+    // The move into review is in the journal; a card put there without one
+    // has nothing to go back to.
+    await db
+      .update(schema.activityTable)
+      .set({ createdAt: LONG_AGO })
+      .where(eq(schema.activityTable.taskId, task.id));
+    const [unlogged] = await db
+      .insert(schema.taskTable)
+      .values({
+        projectId: forest.project.id,
+        title: "No journal",
+        status: "in-review",
+        number: null,
+      })
+      .returning();
+    if (!unlogged) throw new Error("fixture");
+
     await db.update(schema.columnTable).set({ isFinal: true }).where(review);
-    expect(await completedAt(task.id)).not.toBeNull();
+    expect(await completedAt(task.id)).toEqual(LONG_AGO);
+    expect(await completedAt(unlogged.id)).toEqual(expect.any(Date));
     await db.update(schema.columnTable).set({ isFinal: false }).where(review);
     expect(await completedAt(task.id)).toBeNull();
+    expect(await completedAt(unlogged.id)).toBeNull();
+    // Off and on again by mistake: the real date comes back, not now.
+    await db.update(schema.columnTable).set({ isFinal: true }).where(review);
+    expect(await completedAt(task.id)).toEqual(LONG_AGO);
+    await db.update(schema.columnTable).set({ isFinal: false }).where(review);
 
     await forest.ownerApi("PUT", `/task/status/${task.id}`, { status: "done" });
     expect(await completedAt(task.id)).not.toBeNull();

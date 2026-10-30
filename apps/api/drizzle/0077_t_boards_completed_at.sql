@@ -28,13 +28,27 @@ END;
 $$ LANGUAGE plpgsql;--> statement-breakpoint
 CREATE TRIGGER "task_completed_at" BEFORE INSERT OR UPDATE OF "status", "project_id" ON "task" FOR EACH ROW
 EXECUTE FUNCTION "t_boards_task_completed_at"();--> statement-breakpoint
--- A column that becomes final finishes its cards now; one that stops being
--- final clears them.
+-- A column that becomes final dates its cards by their last move into it,
+-- the same way the backfill below does, so a final flag switched off and
+-- back on by mistake gives the old dates back; a card with no such entry
+-- gets now. A column that stops being final clears them.
 CREATE OR REPLACE FUNCTION "t_boards_column_completed_at"() RETURNS trigger AS $$
 BEGIN
-	UPDATE "task"
-	SET "completed_at" = CASE WHEN NEW."is_final" THEN now() AT TIME ZONE 'utc' END
-	WHERE "project_id" = NEW."project_id" AND "status" = NEW."slug";
+	IF NEW."is_final" THEN
+		UPDATE "task" t
+		SET "completed_at" = COALESCE((
+			SELECT a."created_at" FROM "activity" a
+			WHERE a."task_id" = t."id"
+				AND a."type" IN ('status_changed', 'moved')
+				AND a."event_data"->>'newStatus' = NEW."slug"
+			ORDER BY a."created_at" DESC
+			LIMIT 1
+		), now() AT TIME ZONE 'utc')
+		WHERE t."project_id" = NEW."project_id" AND t."status" = NEW."slug";
+	ELSE
+		UPDATE "task" SET "completed_at" = NULL
+		WHERE "project_id" = NEW."project_id" AND "status" = NEW."slug";
+	END IF;
 	RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;--> statement-breakpoint
