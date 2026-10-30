@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
 import { resetTestDatabase } from "./helpers/database";
 import { addTask, createForest } from "./helpers/forest";
@@ -128,7 +128,20 @@ describe("API integration: a card's end date (d-tb-card-fill)", () => {
       eq(schema.columnTable.slug, "in-review"),
     );
     // The move into review is in the journal; a card put there without one
-    // has nothing to go back to.
+    // has nothing to go back to. An event handler writes the entry after the
+    // response, so wait for it before dating it.
+    await vi.waitFor(async () => {
+      const entries = await db
+        .select({ id: schema.activityTable.id })
+        .from(schema.activityTable)
+        .where(
+          and(
+            eq(schema.activityTable.taskId, task.id),
+            eq(schema.activityTable.type, "status_changed"),
+          ),
+        );
+      expect(entries).toHaveLength(1);
+    });
     await db
       .update(schema.activityTable)
       .set({ createdAt: LONG_AGO })
