@@ -70,10 +70,14 @@ environment variables (N-007).
 |---|---|
 | `postgres_password` | 0440, owner 70:1001. Postgres reads it as uid 70, the app as gid 1001 |
 | `auth_secret` | 0400, owner 1001 |
+| `settings_key` | 0400, owner 1001. Seals the notebook model key an instance admin saves in the settings |
 | `notion_token` | 0400, owner 1001. Optional: the owner puts it there |
+| `notebook_llm_key` | 0400, owner 1001. Optional: the model key for the server's own API address |
 
-`install.sh` generates the first two once and never overwrites them. The database password only takes effect when the
-volume is first initialised.
+`install.sh` generates the first three once and never overwrites them. The database password only takes effect when the
+volume is first initialised. A replaced `settings_key` leaves the saved model key unreadable: the admin enters it again.
+The app reads `settings_key` once at start, so a new one needs `docker compose -p t-boards up -d app`; anything shorter
+than 32 characters counts as no key.
 
 ## Notion mirror
 

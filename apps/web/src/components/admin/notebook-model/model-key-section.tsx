@@ -1,4 +1,5 @@
-import { KeyRoundIcon, LockIcon } from "lucide-react";
+import { useIsMutating } from "@tanstack/react-query";
+import { KeyRoundIcon, LockIcon, TriangleAlertIcon } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SettingsCard } from "@/components/settings/settings-card";
@@ -9,7 +10,9 @@ import { StatusBadge } from "@/components/settings/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { NotebookModelSettings } from "@/fetchers/admin/get-notebook-model";
-import useUpdateNotebookModel from "@/hooks/mutations/admin/use-update-notebook-model";
+import useUpdateNotebookModel, {
+  NOTEBOOK_MODEL_MUTATION_KEY,
+} from "@/hooks/mutations/admin/use-update-notebook-model";
 import { MODEL_KEY_TONE, modelKeyStatus } from "./model-key-status";
 
 // The key is write-only: the API says where it comes from, never what it is.
@@ -21,6 +24,8 @@ export function ModelKeySection({
   const { t } = useTranslation();
   const [key, setKey] = useState("");
   const { mutate, isPending, variables } = useUpdateNotebookModel();
+  const saving =
+    useIsMutating({ mutationKey: NOTEBOOK_MODEL_MUTATION_KEY }) > 0;
   const status = modelKeyStatus(settings);
   const canRemove = settings.keySource === "settings" || settings.keyUnreadable;
 
@@ -51,7 +56,7 @@ export function ModelKeySection({
               size="sm"
               variant="destructive-outline"
               loading={isPending && variables?.key === null}
-              disabled={isPending}
+              disabled={saving}
               onClick={() => mutate({ key: null })}
             >
               {t("settings:adminNotebookModel.key.remove")}
@@ -76,19 +81,24 @@ export function ModelKeySection({
               maxLength={500}
               value={key}
               onChange={(event) => setKey(event.target.value)}
-              disabled={!settings.canStoreKey || isPending}
+              disabled={!settings.canStoreKey || saving}
             />
             <Button
               type="submit"
               size="sm"
               loading={isPending && typeof variables?.key === "string"}
-              disabled={!settings.canStoreKey || key.trim() === ""}
+              disabled={!settings.canStoreKey || key.trim() === "" || saving}
             >
               {t("settings:adminNotebookModel.key.save")}
             </Button>
           </SettingsRow>
         </form>
       </SettingsCard>
+      {settings.fileKeyWithheld ? (
+        <SettingsNote icon={TriangleAlertIcon}>
+          {t("settings:adminNotebookModel.key.fileWithheld")}
+        </SettingsNote>
+      ) : null}
       <SettingsNote icon={LockIcon}>
         {settings.canStoreKey
           ? t("settings:adminNotebookModel.key.note")

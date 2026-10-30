@@ -1,5 +1,4 @@
 import { withoutOutboundTelemetry } from "../../utils/sensitive-outbound";
-import type { LlmConfig } from "./llm-config";
 
 const RESPONSE_MAX_BYTES = 512 * 1024;
 
@@ -69,7 +68,7 @@ export function answerText(body: unknown): string {
 }
 
 export async function chatCompletion(
-  config: Pick<LlmConfig, "baseUrl" | "model">,
+  config: { baseUrl: string; model: string },
   key: string,
   messages: ChatMessage[],
   options: { timeoutMs?: number; maxTokens?: number } = {},

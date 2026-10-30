@@ -2389,16 +2389,16 @@
 		"adminNotebookModel": {
 			"fields": {
 				"baseUrl": {
-					"hint": "An OpenAI-compatible endpoint, OpenRouter by default.",
+					"hint": "An https address of an OpenAI-compatible API, OpenRouter by default. A saved key is tied to its host: a new host needs the key again.",
 					"label": "API address"
 				},
 				"dailyMax": {
-					"hint": "Answers per day across all workspaces.",
+					"hint": "Requests to the model per day across all workspaces. Answers made of sources only do not count.",
 					"label": "Daily limit"
 				},
 				"description": "Leave a field empty to use the server's default.",
 				"embedModel": {
-					"hint": "Changing it re-embeds every notebook in the background.",
+					"hint": "Changing it re-embeds every notebook in the background on the computer that runs the notebook agent, which needs this model. Until that finishes, search leans on words.",
 					"label": "Embedding model"
 				},
 				"model": {
@@ -2412,7 +2412,7 @@
 				"current": "Current key",
 				"description": "The key is stored encrypted and is never shown again.",
 				"newLabel": "New key",
-				"noEncryptionKey": "The server has no settings encryption key, so a key cannot be saved here. Ask the server's operator to add SETTINGS_ENCRYPTION_KEY_FILE.",
+				"noEncryptionKey": "The server has no settings encryption key, so a key cannot be saved here. The server's operator creates secrets/settings_key with 32 or more random characters (for example from openssl rand -base64 32) and restarts the app.",
 				"note": "A key saved here takes priority over the server's key file.",
 				"remove": "Remove key",
 				"save": "Save key",
@@ -2422,7 +2422,8 @@
 					"settings": "Saved here",
 					"unreadable": "Cannot be opened, enter it again"
 				},
-				"title": "Key"
+				"title": "Key",
+				"fileWithheld": "The server's key file is meant for the server's own API address and is not sent to the address set above. Save a key for this address here."
 			},
 			"loadError": "Could not load the model settings.",
 			"retry": "Try again",
@@ -2430,16 +2431,18 @@
 			"title": "Notebook model",
 			"toast": {
 				"saved": "Model settings saved",
-				"saveError": "Could not save the model settings"
+				"saveError": "Could not save the model settings",
+				"keyForOldAddress": "The saved key is tied to the previous API address. Remove the key, change the address, then save the key again.",
+				"noEncryptionKey": "The key was not saved: the server has no settings encryption key."
 			},
 			"usage": {
-				"calls_other": "{{count}} answers",
-				"empty": "No answers yet today.",
+				"calls_other": "{{count}} requests",
+				"empty": "No requests to the model yet today.",
 				"title": "Today",
-				"total": "{{count}} of {{max}} answers today"
+				"total": "{{count}} of {{max}} model requests today"
 			},
 			"validation": {
-				"baseUrl": "Enter a full address, for example https://openrouter.ai/api/v1.",
+				"baseUrl": "Enter a full https address, for example https://openrouter.ai/api/v1.",
 				"dailyMax": "Enter a whole number from 0 to {{max}}."
 			}
 		}

@@ -1,3 +1,4 @@
+import { isHttpsUrl } from "../notebook/llm/base-url";
 import { z } from "../openapi";
 
 export const notebookModelSchema = z
@@ -13,7 +14,11 @@ export const notebookModelSchema = z
     }),
     keyUnreadable: z.boolean().openapi({
       description:
-        "A key is stored but the server's settings key cannot open it; enter the key again.",
+        "A key is stored but cannot be opened: the server's settings key or the API address changed since it was saved. Enter the key again.",
+    }),
+    fileKeyWithheld: z.boolean().openapi({
+      description:
+        "The server's key file holds a key for the server's own API address; it is not sent to the address set here.",
     }),
     canStoreKey: z.boolean().openapi({
       description:
@@ -35,7 +40,18 @@ const optionalText = (max: number) =>
 
 export const updateNotebookModelBody = z
   .object({
-    baseUrl: z.string().trim().url().max(500).nullable().optional(),
+    baseUrl: z
+      .string()
+      .trim()
+      .url()
+      .max(500)
+      .refine(isHttpsUrl, { message: "The API address must use https" })
+      .nullable()
+      .optional()
+      .openapi({
+        description:
+          "An https address of an OpenAI-compatible API. A stored key is bound to it: changing it needs the key again.",
+      }),
     model: optionalText(200),
     embedModel: optionalText(200),
     dailyMax: z.number().int().min(0).max(100_000).nullable().optional(),
