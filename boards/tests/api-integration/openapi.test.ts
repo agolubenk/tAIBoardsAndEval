@@ -43,10 +43,10 @@ beforeAll(async () => {
   spec = (await response.json()) as Spec;
 });
 
-describe("Kaneo API OpenAPI spec", () => {
+describe("tAI-Boards API OpenAPI spec", () => {
   it("is a valid OpenAPI 3.1 document", () => {
     expect(spec.openapi).toBe("3.1.0");
-    expect(spec.info.title).toBe("Kaneo API");
+    expect(spec.info.title).toBe("tAI-Boards API");
   });
 
   it("requires bearer auth globally", () => {
