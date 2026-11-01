@@ -27,6 +27,7 @@ class Board(http.server.BaseHTTPRequestHandler):
     body = {}
     seen = []
     redirect = None
+    missing = set()
     workspaces = [{'id': 'ws 1', 'name': 'tAIBE', 'slug': 'taibe'}]
 
     def do_GET(self):  # noqa: N802
@@ -34,6 +35,10 @@ class Board(http.server.BaseHTTPRequestHandler):
         if Board.redirect:
             self.send_response(302)
             self.send_header('location', Board.redirect)
+            self.end_headers()
+            return
+        if self.path in Board.missing:
+            self.send_response(404)
             self.end_headers()
             return
         data = json.dumps(Board.workspaces if self.path == '/api/workspace' else Board.body).encode()
@@ -55,7 +60,7 @@ class PipelineSettingsTest(unittest.TestCase):
         for k in ('TAIBE_PIPELINE', 'T_BOARDS_URL', 'T_BOARDS_API_KEY', 'T_BOARDS_WORKSPACE', 'T_BOARDS_PRODUCT',
                   'T_BOARDS_ALLOWED_HOSTS'):
             os.environ.pop(k, None)
-        Board.redirect, Board.seen = None, []
+        Board.redirect, Board.seen, Board.missing = None, [], set()
         Board.workspaces = [{'id': 'ws 1', 'name': 'tAIBE', 'slug': 'taibe'}]
         self.server = http.server.HTTPServer(('127.0.0.1', 0), Board)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
@@ -172,6 +177,31 @@ class PipelineSettingsTest(unittest.TestCase):
         self.assertIn(('/api/pipeline-settings/workspace/ws-b', 'k-1'), Board.seen)
         os.environ['T_BOARDS_PRODUCT'] = 'nope'
         self.assertIn("no single product named 'nope'", ps.fetch(self.root)[1])
+
+    def test_unresolved_product_is_asked_once_per_ttl(self):
+        self.connect()
+        del os.environ['T_BOARDS_WORKSPACE']
+        Board.workspaces = [{'id': 'ws-a', 'name': 'HR Helper', 'slug': 'hr'},
+                            {'id': 'ws-b', 'name': 'tAIBE', 'slug': 'taibe'}]
+        for _ in range(5):
+            self.assertTrue(ps.enabled('councilReview', self.root))  # no single product → defaults
+        self.assertEqual(len(Board.seen), 1)  # the failure is remembered, not retried by every hook
+        self.assertIn('several products', ps.load(self.root, refresh=False)[1])
+
+    def test_resolved_id_is_reused_and_found_again_when_gone(self):
+        self.connect()
+        del os.environ['T_BOARDS_WORKSPACE']
+        Board.workspaces = [{'id': 'ws-a', 'name': 'HR Helper', 'slug': 'hr'}]
+        self.assertIsNotNone(ps.fetch(self.root)[0])
+        Board.seen = []
+        self.assertIsNotNone(ps.fetch(self.root)[0])
+        self.assertEqual([p for p, _ in Board.seen], ['/api/pipeline-settings/workspace/ws-a'])  # one call
+        Board.missing = {'/api/pipeline-settings/workspace/ws-a'}
+        self.assertEqual(ps.fetch(self.root)[1], 'HTTP 404')
+        Board.missing, Board.seen = set(), []
+        Board.workspaces = [{'id': 'ws-c', 'name': 'HR Helper', 'slug': 'hr'}]
+        self.assertIsNotNone(ps.fetch(self.root)[0])
+        self.assertEqual([p for p, _ in Board.seen], ['/api/workspace', '/api/pipeline-settings/workspace/ws-c'])
 
     def test_cache_of_another_workspace_is_ignored(self):
         self.connect()

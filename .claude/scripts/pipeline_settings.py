@@ -204,18 +204,29 @@ def fetch(root=ROOT, timeout=TIMEOUT_SECONDS):
         return None, 'T_BOARDS_URL must be https (http only to localhost)'
     opener = urllib.request.build_opener(_NoRedirect)
 
+    deadline = time.monotonic() + timeout  # one budget for the whole refresh, however many calls it takes
+
     def get(path):
         req = urllib.request.Request(url + path, headers={'x-api-key': key, 'accept': 'application/json'})
-        with opener.open(req, timeout=timeout) as resp:  # noqa: S310 — the board's own URL, checked above
+        left = max(0.05, deadline - time.monotonic())
+        with opener.open(req, timeout=left) as resp:  # noqa: S310 — the board's own URL, checked above
             return resp.status, json.loads(resp.read().decode('utf-8'))
 
+    product = _product(root)
+    data = _read_cache(root)
+    if data.get('broken'):
+        data = {}
     error, settings = None, None
     ws = _workspace(root)
+    resolved = None  # the id found by name: kept in the cache, so a refresh is one call, not two
+    if not ws and data.get('product', '') == product and data.get('workspace'):
+        ws = resolved = str(data['workspace'])
     try:
         if not ws:
             # People see products by name; the system needs the id — take it from what the key reaches.
             _, workspaces = get('/api/workspace')
-            ws, error = pick_workspace(workspaces if isinstance(workspaces, list) else [], _product(root))
+            ws, error = pick_workspace(workspaces if isinstance(workspaces, list) else [], product)
+            resolved = ws
         if ws:
             status, body = get('/api/pipeline-settings/workspace/%s' % urllib.parse.quote(ws, safe=''))
             settings = complete(body)
@@ -223,14 +234,14 @@ def fetch(root=ROOT, timeout=TIMEOUT_SECONDS):
                 error = 'HTTP %s: incomplete settings in the answer' % status
     except urllib.error.HTTPError as e:
         error = 'HTTP %s' % e.code
+        if resolved and e.code in (403, 404):
+            ws = None  # the product is gone or renamed: find it again on the next refresh
     except Exception as e:  # noqa: BLE001 — any failure keeps the last known switches
         error = '%s: %s' % (type(e).__name__, str(e)[:120])
-    if not ws:
-        return None, error
-    data = _read_cache(root)
-    if data.get('broken') or data.get('workspace') not in (None, ws):
+    if data.get('workspace') not in (None, ws) or (not _workspace(root) and data.get('product', product) != product):
         data = {}
-    data.update({'workspace': ws, 'product': _product(root), 'lastAttempt': time.time()})
+    # A failure is remembered too — unresolved product included — so the board is asked once per TTL, not per hook.
+    data.update({'workspace': ws, 'product': product, 'lastAttempt': time.time()})
     if settings is not None:
         data.update({'fetchedAt': data['lastAttempt'], 'settings': settings, 'lastError': None})
     else:
