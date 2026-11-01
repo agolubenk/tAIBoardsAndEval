@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "author": "hr-helper-v2-e895 (Claude), 29.10.2026",
+  "source": "Сверка доски (сид 5959515 + plan-65 + plan-d1) с t-boards/t-boards-spec.md (R, AC, Q, D), t-boards/impl-*.md и t-boards/architecture-overview2.0.md",
+  "product": "aiboards-eval",
+  "format": "Как plan-65.json: key, title, status, priority, parent, related, description, backlogId = key; halfBaked: true — идея.",
+  "projects": [
+    {
+      "key": "CF",
+      "name": "ContextFlow: общение сервисов",
+      "icon": "Share2",
+      "cards": [
+        {
+          "key": "CF-001",
+          "title": "ContextFlow: сверить t-boards с архитектурой асинхронного взаимодействия",
+          "status": "to-do",
+          "priority": "high",
+          "related": [
+            "GL-001",
+            "GL-004"
+          ],
+          "description": "Источник — `t-boards/architecture-overview2.0.md` (v1.0-draft; при расхождении действует спека, её таблица «Согласование с архитектурой»).\n\nШаг первый — карта «есть / нет» по компонентам §4.2 и объёму MVP §16.2, до любого кода.\n\nУже есть в форке: аренда и fencing (`apps/api/src/forest/lease`), журнал агентов (`forest/journal.ts`), капсула = `card_meta.context_pack`, сборка контекста карточки (`forest/context`), секторы = Canopy View (`forest/sector`), TOON (R-033), инструменты по роли (R-034).\n\nНе найдено в коде: Prompt Packet с бюджетом и обязательными секциями, inbox и coalescing (§7.2), backpressure (§7.3), планировщик с hard constraints и score (§8), checkpoint и resume, отчёт reconciliation.\n\nВыход — таблица в `t-boards/impl/` и уточнённые этапы CF-002…CF-006.",
+          "backlogId": "CF-001"
+        },
+        {
+          "key": "CF-002",
+          "title": "Этап A ContextFlow — контракты и property tests",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "description": "`t-boards/architecture-overview2.0.md` §16.3 A и §17.1. Зафиксировать состояния, команды, события и инварианты.\n\nProperty tests:\n- любая цепочка допустимых команд оставляет задачу в достижимом состоянии;\n- из done, cancelled и failed нет выхода без явной политики reopen;\n- `depends_on` остаётся ацикличным при параллельном добавлении рёбер;\n- повтор команды с тем же ключом даёт тот же результат;\n- старый fencing token не меняет новую ревизию;\n- очистка кэшей не меняет итог reconciliation;\n- обязательный ребёнок или зависимость не дают закрыть родителя;\n- у каждого открытого обязательства есть владелец.",
+          "backlogId": "CF-002"
+        },
+        {
+          "key": "CF-003",
+          "title": "Этап B ContextFlow — надёжное ядро задач: restart и chaos",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "description": "`t-boards/architecture-overview2.0.md` §16.3 B и §17.2. Критерии выхода: restart не теряет ни одной подтверждённой задачи; дубли и chaos-тесты проходят без потерянных задач и stale writes; на доске видна любая принятая задача и причина её состояния.\n\nChaos-тесты: падение после commit, но до ответа; падение после внешнего эффекта, но до результата; одновременные lease, cancel, heartbeat и result; дубли и перестановка событий; обрыв реалтайма и replay по курсору (в продукте — WebSocket); смена провайдера посреди прогона; недоступное хранилище артефактов; долгая очередь high-priority задач (aging и fairness).",
+          "backlogId": "CF-003"
+        },
+        {
+          "key": "CF-004",
+          "title": "Этап C ContextFlow — асинхронные исполнители и handoff между адаптерами",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "related": [
+            "SE-005",
+            "SE-008"
+          ],
+          "description": "`t-boards/architecture-overview2.0.md` §16.3 C и §17.3. Критерии выхода: исполнитель не получает в prompt чужие задачи; resume после падения идёт с checkpoint и не повторяет подтверждённые эффекты; handoff между двумя адаптерами (Claude ↔ рой через llm-gateway) сохраняет цель, ограничения и acceptance.\n\nHandoff A→B и B→A оценивается по выполненной приёмке, а не по похожести текста.",
+          "backlogId": "CF-004"
+        },
+        {
+          "key": "CF-005",
+          "title": "Этап D ContextFlow — Context Compiler и Prompt Packet в бюджете",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "related": [
+            "SE-005",
+            "TB-005"
+          ],
+          "description": "`t-boards/architecture-overview2.0.md` §10 и §16.3 D.\n\n- Logical compression проходит coverage tests: ни одно активное обязательство не пропадает в новой ревизии капсулы.\n- Prompt Packet укладывается в бюджет (по спеке — не больше 2500 входящих токенов на задачу), не теряя обязательных секций.\n- Golden cases §17.3: много вопросов в одном сообщении, противоречивые решения, повторы, ссылки на файлы, пустые значения, Unicode.\n- Понижение возможностей протокола даёт понятный loss report.",
+          "backlogId": "CF-005"
+        },
+        {
+          "key": "CF-006",
+          "title": "Этап E ContextFlow — оптимизация по телеметрии",
+          "status": "to-do",
+          "priority": "low",
+          "parent": "CF-001",
+          "description": "`t-boards/architecture-overview2.0.md` §16.3 E. По телеметрии настраиваются affinity, coalescing, материализация Canopy и paging. TOON — только после round-trip и бенчмарка токенизатора (для MCP-ответов уже сделано в R-033 — сверить). Семантический dedup работает только как рекомендация, пока не накоплены достоверные данные.",
+          "backlogId": "CF-006"
+        },
+        {
+          "key": "CF-007",
+          "title": "Token benchmark ContextFlow: четыре варианта на одном наборе задач",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "related": [
+            "TB-005",
+            "SE-011",
+            "GL-001"
+          ],
+          "description": "`t-boards/architecture-overview2.0.md` §17.4. Варианты: 1) полный диалог и polling; 2) полный диалог и обычный summary; 3) Work Packet t-boards и капсулы; 4) то же плюс компактная сериализация.\n\nМетрики: входные и выходные токены, стоимость, задержка, вызовы модели на запрос статуса, качество приёмки, пропущенные обязательства, повторные эффекты. Экономия засчитывается, только если качество не упало ниже порога.\n\nНе путать с TB-005 (AC-001, MCP против Notion на 10 карточках).",
+          "backlogId": "CF-007"
+        },
+        {
+          "key": "CF-008",
+          "title": "Готовность ContextFlow к продуктовому пилоту — 12 критериев",
+          "status": "to-do",
+          "priority": "medium",
+          "parent": "CF-001",
+          "related": [
+            "CF-007"
+          ],
+          "description": "`t-boards/architecture-overview2.0.md` §18, все критерии пока открыты:\n- [ ] подтверждённая задача восстанавливается после полного restart;\n- [ ] reconciliation не находит принятых задач без владельца, состояния или причины финального статуса;\n- [ ] бэклог и запросы статуса не раздувают prompt активной задачи;\n- [ ] пять задач из исходного сценария (§13) не теряются и не дублируются при повторных отправках;\n- [ ] старый исполнитель не перезаписывает результат новой попытки;\n- [ ] handoff между провайдерами сохраняет приёмку и открытые обязательства;\n- [ ] вытеснение кэша, потеря уведомления и сбой сжатия не ломают истину;\n- [ ] у каждой финальной задачи есть результат или машиночитаемая причина;\n- [ ] при понижении протокола не теряются обязательные поля;\n- [ ] token benchmark (CF-007) подтверждает выгоду на реальных сценариях;\n- [ ] общие Canopy не дают утечек между продуктами и ACL;\n- [ ] планировщик объясним и не голодает под нагрузкой.",
+          "backlogId": "CF-008"
+        },
+        {
+          "key": "CF-009",
+          "title": "Параметры ContextFlow, которые подбираются экспериментом",
+          "status": "to-do",
+          "priority": "low",
+          "parent": "CF-001",
+          "description": "`t-boards/architecture-overview2.0.md` §20. Безопасные defaults уже заданы: JSON для хранения и RPC, без автоматического semantic merge, без опроса модели ради статуса, канон не удаляется при нехватке кэша, явные критерии приёмки, резерв бюджета на ответ, человек или отдельный verifier для критичных эффектов, минимальные права на общий контекст, детерминированный планировщик.\n\nПодобрать по замерам: бюджеты токенов по классам задач; веса priority, aging и affinity; пороги переключения Sticker, Board и Aggregate (§9); хранение сырых сообщений; уровень автопроверки приёмки; список обязательных адаптеров; пороги dedup (если он вообще будет разрешён); частоту checkpoint.",
+          "backlogId": "CF-009"
+        }
+      ]
+    },
+    {
+      "key": "TB",
+      "name": "t-boards",
+      "icon": "FolderKanban",
+      "cards": [
+        {
+          "key": "TB-201",
+          "title": "Вход по passkey — отпечаток или Face ID (R-007)",
+          "status": "to-do",
+          "priority": "medium",
+          "related": [
+            "GL-004"
+          ],
+          "description": "`t-boards/t-boards-spec.md` R-007: после первого деплоя — собственная безопасная аутентификация, вход по passkey. Сейчас better-auth 1.6.26 с плагином api-key; слова passkey в `apps/api/src` нет. Пока внутри WireGuard действует admin/admin.\n\nAuth-флоу — только с планом и ревью владельца до кода.",
+          "backlogId": "TB-201"
+        },
+        {
+          "key": "TB-202",
+          "title": "Секреты t-boards из Vault, а не из файлов (R-008)",
+          "status": "to-do",
+          "priority": "low",
+          "description": "`t-boards/t-boards-spec.md` R-008. Сейчас секреты лежат файлами `*_FILE` в `/opt/t-boards/secrets` (N-007). Vault на все сервисы — отдельная задача из раздела «Не входит», так что карточка ждёт общий Vault.",
+          "backlogId": "TB-202"
+        },
+        {
+          "key": "TB-203",
+          "title": "Закреплённые комментарии и изображения в описаниях (R-025)",
+          "status": "to-do",
+          "priority": "medium",
+          "description": "`t-boards/t-boards-spec.md` R-025: описания в Markdown с изображениями и ссылками, комментарии можно закреплять.\n\nПоля закрепления в схеме нет. Изображения проверить на всём пути: загрузка, показ на доске, чтение через MCP (что получает агент вместо картинки).",
+          "backlogId": "TB-203"
+        },
+        {
+          "key": "TB-204",
+          "title": "Баланс «агенты против человека» — 3 из 5, человек не больше 40 % (R-030)",
+          "status": "to-do",
+          "priority": "low",
+          "description": "`t-boards/t-boards-spec.md` R-030. Нужна метрика доли содержания, которое задал человек, против агентов — по продукту, из истории правок (R-023) и журнала агентов. Порог 40 % — сигнал, а не запрет.",
+          "backlogId": "TB-204"
+        },
+        {
+          "key": "TB-205",
+          "title": "Где идут проверки: статические — на VPS, LLM и тяжёлые — на Mac (R-071)",
+          "status": "to-do",
+          "priority": "low",
+          "related": [
+            "TB-207"
+          ],
+          "description": "`t-boards/t-boards-spec.md` R-071. Развести прогоны по месту и записать, какая проверка где идёт и кто её запускает.",
+          "backlogId": "TB-205"
+        },
+        {
+          "key": "TB-206",
+          "title": "Находки react-doctor не попадают в данные агентов-улучшателей (R-072, N-005, AC-015)",
+          "status": "to-do",
+          "priority": "medium",
+          "description": "`t-boards/t-boards-spec.md` R-072 и запрет N-005: разрешение у Million не запрашиваем, поэтому результаты react-doctor не идут в улучшение ИИ.\n\nНужны фильтр по источнику находки и тест AC-015: в выборке входных данных для агентов-улучшателей нет ни одной находки react-doctor.",
+          "backlogId": "TB-206"
+        },
+        {
+          "key": "TB-207",
+          "title": "abide: каждая находка ревью — отдельная карточка «Ошибки» (R-073, R-074, AC-017)",
+          "status": "to-do",
+          "priority": "medium",
+          "related": [
+            "TB-205"
+          ],
+          "description": "`t-boards/t-boards-spec.md` R-073 и R-074. Первые проверки abide — семь правил: raw fetch, findMany без take, `body: unknown`, `process.env` вне `config/`, `$transaction` без timeout и maxWait, `dangerouslySetInnerHTML` без DOMPurify и отправка в Telegram без parse_mode.\n\nНа каждую находку — одна карточка «Ошибки». Находки не склеиваются и не закрываются автоматически. Порог роста ошибок задаёт главный админ отдельно для каждого продукта.\n\nПриёмка AC-017: PR с нарушениями правил 1–7 → прогон abide → по одной карточке на находку.",
+          "backlogId": "TB-207"
+        },
+        {
+          "key": "TB-208",
+          "title": "Приёмка вырубки и «вырастить лес»: AC-019, AC-020, AC-021, AC-025",
+          "status": "to-do",
+          "priority": "medium",
+          "description": "Код есть: `apps/api/src/forest/fell`, `forest/grow`, `forest/find-felled-log.ts`. В `t-boards/impl-progress.md` нет строк про R-028 и R-029, а на доске нет приёмки этих AC.\n\nПрогнать и отметить:\n- AC-019 — бревно в отдельном плоском хранилище; новые подзадачи, правки и смена статуса отклоняются;\n- AC-020 — вырубка сектора, затем новый лес из семян;\n- AC-021 — без «да» владельца вырубка отклоняется и пишется в журнал;\n- AC-025 — при живом захвате другой сессии отказ называет владельца захвата, запись по старому fencing отклоняется.",
+          "backlogId": "TB-208"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "parent": "GL-004",
+      "children": [
+        "CF-001"
+      ]
+    },
+    {
+      "parent": "CF-001",
+      "children": [
+        "CF-002",
+        "CF-003",
+        "CF-004",
+        "CF-005",
+        "CF-006",
+        "CF-007",
+        "CF-008",
+        "CF-009"
+      ]
+    }
+  ],
+  "forTb2c": [
+    "ContextFlow (architecture-overview2.0.md) на доске не было совсем — ни одного упоминания Context Compiler, Prompt Packet, inbox, backpressure, Canopy. Отдельный проект CF — чтобы трек «общение сервисов» был виден. Если лишний — переложить в TB, ключи TB-3xx.",
+    "TB-201…TB-208 — требования спеки и AC без карточки и без строки в impl-progress. Остальные R без карточки покрыты: R-001, R-003 — сама основа форка; R-006 — OPS-001, OPS-013; R-009 — OPS-002; R-091 — визуальный язык kaneo по факту; R-092 — через AC-018.",
+    "AC-012 закрыт замером в t-boards/impl/impl-r031-context.md (1686 токенов по умолчанию, «не изменилось» — 17 токенов) — карточка не нужна, можно отметить в приёмке.",
+    "Q-/D- в спеке — журнал решений, не задачи. Открытые (Q-104, Q-107, D-014…D-016, D-018) на доске уже есть.",
+    "Дедуп plan-65 проверен: все 18 его карточек вне сида слиты с TB-112…117, IDEA-*, SE-111, OPS-101, OPS-104, текст не потерян."
+  ]
+}

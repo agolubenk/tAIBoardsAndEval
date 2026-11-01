@@ -1,0 +1,1220 @@
+{
+	"version": "2026-10-30.1",
+	"products": [
+		{
+			"slug": "hr-helper-lavaeon",
+			"name": "HR Helper / Lavaeon",
+			"description": "HR-платформа полного цикла: подбор, онбординг, развитие, C&B, оффбординг. Сюда переносятся «Задачи» и «Ошибки» Notion (проект HRH; ошибка — вид карточки, не отдельный проект) через MCP; до перехода канон — Notion.",
+			"projects": [
+				{
+					"key": "HRH",
+					"name": "HR Helper v2",
+					"icon": "Briefcase",
+					"cards": [
+						{
+							"key": "HRH-001",
+							"title": "`ci-frontend` на main красный с 07.10",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Циклы madge до тестов и сборки, фронтенд-гейт — локально. Кандидат в перманентный «фокус». Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"kind": "bug",
+							"severity": "medium"
+						}
+					]
+				},
+				{
+					"key": "ADM",
+					"name": "Админка admin.hrhelper.space",
+					"icon": "Settings",
+					"cards": [
+						{
+							"key": "GL-005",
+							"title": "Цель: админка на отдельном хосте admin.hrhelper.space с 2FA администраторов",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "План — `~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/FINAL-PROMPT.md`, `admin-host/HANDOFF.md`; планы в репозитории — `docs/plans/roadmap/session-epoch.md`, `platform-admin-mfa.md`, `extension-token-renewal.md`. Ветки — проект ADM."
+						},
+						{
+							"key": "ADM-001",
+							"title": "Этапы 1–4 и «а» влиты: #351, #405, #404, #406",
+							"status": "done",
+							"priority": "high",
+							"description": "29.10: #351 — план 2FA (`310fec7ee`, `[skip ci]`); #405 — nginx; #404 — бэкенд; #406 — фронтенд (`9e8f73570`). Этап «а»: свой сертификат до 27.01.2027, свой server-блок nginx, CSP с `wss://admin…`; `/health` и `/admin/login` — 200.\n\nСессии: 02286257 (hr-helper-v2-d1) → 074b4e3e (hr-helper-v2-2a, наследник)",
+							"parent": "GL-005",
+							"executor": "Claude Opus 5.5",
+							"branch": "feature/admin-host-nginx, feature/admin-host-backend, feature/admin-host-frontend, docs/platform-admin-mfa-plan",
+							"contextPack": "~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/admin-host/HANDOFF.md §3, §4.3–4.4",
+							"pullRequests": [
+								"#351 docs/platform-admin-mfa-plan → 310fec7ee (29.10 12:55 UTC)",
+								"#405 feature/admin-host-nginx → dc6a271d4 (29.10 12:56 UTC)",
+								"#404 feature/admin-host-backend → 7d1e2e185 (29.10 13:36 UTC)",
+								"#406 feature/admin-host-frontend → 9e8f73570 (29.10 14:01 UTC)"
+							],
+							"files": [
+								"infra/nginx/admin-host.sh",
+								"infra/nginx/nginx.contabo.conf.template",
+								"infra/docker/frontend-site-config.sh",
+								"apps/backend/src/common/host/host-role.service.ts",
+								"apps/backend/src/common/host/same-host-origin.guard.ts",
+								"apps/backend/src/common/realtime/ws-session-auth.ts",
+								"apps/backend/src/config/admin-host.config.ts",
+								"apps/frontend/src/app/routing/appRouter.tsx",
+								"apps/frontend/src/features/auth/ProtectedRoute.tsx"
+							]
+						},
+						{
+							"key": "ADM-002",
+							"title": "Этап 5: включить 2FA и войти на admin-хост (c-admin-mfa-s1)",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Действие владельца, пункт `c-admin-mfa-s1`. Обход до этапа 6 — сразу https://admin.hrhelper.space/admin/login: `site-config.js` отдаёт `admin: \"\"`, и гостя уводит на `/account/login` — ожидаемо, не регрессия.",
+							"parent": "GL-005",
+							"contextPack": "admin-host/HANDOFF.md §4.5; пункт владельца c-admin-mfa-s1"
+						},
+						{
+							"key": "ADM-003",
+							"title": "Ревью GLM PR #405, #404, #406 и PR-фиксы подтверждённого",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Ночной прогон — после сброса квоты GLM (22:51). Если сессия-владелец закрыта: `bash ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/final/glm-review-night.sh`; результаты — `rv-*.json` или `final/review/`.\n\nКаждую находку проверить по коду main; подтверждённые — отдельными PR от свежего main, по одному на тему, с блоком адверсариальной проверки (≥ 3) и m-пунктом с полным SHA и `base: main`.",
+							"parent": "GL-005",
+							"related": ["ADM-008"],
+							"contextPack": "handoff/2026-10-29/FINAL-PROMPT.md §4.1",
+							"files": [
+								"~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/final/glm-review-night.sh",
+								"final/f404.txt",
+								"final/f405.txt",
+								"final/f406.txt",
+								"final/review/"
+							]
+						},
+						{
+							"key": "ADM-004",
+							"title": "Код по плану #365: эпоха сессий + 2FA администраторов + продление токена расширения — одна миграция",
+							"status": "to-do",
+							"priority": "high",
+							"description": "План #365 влит 27.10 (2ac0d7c74, только документы); кода ещё нет. Планы: `docs/plans/roadmap/session-epoch.md`, `platform-admin-mfa.md` (утверждён, `enforce`), `extension-token-renewal.md`.\n\nПеред кодом — d-пункт с планом миграции (поля, бэкфилл, откат); без «да» владельца не начинать. Оценка — 2–2.5 дня агента. Ревью — `security-expert` и `code-reviewer`, третья линза — консилиум (≥ 4–5 участников: auth и миграция). Скрипт сдвига эпохи агент сам не запускает — только s-пунктом при владельце.",
+							"parent": "GL-005",
+							"blocks": ["ADM-006"],
+							"contextPack": "FINAL-PROMPT.md §4.2; admin-host/HANDOFF.md §4.6",
+							"pullRequests": [
+								"#365 docs/session-epoch-plan → 2ac0d7c74 (план, 27.10)",
+								"#351 → 310fec7ee (план 2FA, 29.10)"
+							],
+							"files": [
+								"docs/plans/roadmap/session-epoch.md",
+								"docs/plans/roadmap/platform-admin-mfa.md",
+								"docs/plans/roadmap/extension-token-renewal.md"
+							]
+						},
+						{
+							"key": "ADM-005",
+							"title": "QA PR: матрица «хосты × роли» на curl и Playwright",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "`admin-host/HANDOFF.md` §4.7.",
+							"parent": "GL-005",
+							"blocks": ["ADM-007"],
+							"contextPack": "admin-host/HANDOFF.md §4.7; FINAL-PROMPT.md §4.3"
+						},
+						{
+							"key": "ADM-006",
+							"title": "Этап 6: ADMIN_DOMAIN при владельце, переадресации 302",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Предлагаю переписать «после влитого #365» как «после влитого кода по плану #365 (ADM-004)». PR #365 — это план, его влили 27.10 (`2ac0d7c74`). Без уточнения карточка читается как уже разблокированная.",
+							"parent": "GL-005",
+							"blocks": ["ADM-007"],
+							"contextPack": "admin-host/HANDOFF.md §4.8; FINAL-PROMPT.md §4.3"
+						},
+						{
+							"key": "ADM-007",
+							"title": "Этап 7: приёмка по сценариям 1–13 и запись в done/",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Сценарии — FINAL-PROMPT §4.9. После приёмки — запись в `docs/plans/done/` и статус карточки, только по «да» владельца.",
+							"parent": "GL-005",
+							"contextPack": "admin-host/HANDOFF.md §4.9; FINAL-PROMPT.md §4.3"
+						},
+						{
+							"key": "ADM-008",
+							"title": "Проверки PR на GitHub не запускаются: оплата или лимит Actions",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Пункт владельца `c-gh-actions-billing`. Пока нет ответа — гейты гонять локально (узкий `turbo run lint|typecheck|test:run --filter=<pkg>`).",
+							"parent": "GL-005",
+							"kind": "bug",
+							"contextPack": "admin-host/HANDOFF.md §4.11; пункт владельца c-gh-actions-billing",
+							"severity": "high"
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "aiboards-eval",
+			"name": "aiBoards&eval",
+			"description": "t-boards — доски для ИИ-сессий с дешёвым MCP, и supertick-eval — пайплайн экономии токенов. Цель: команда сессий тратит меньше токенов без потери скорости и качества.",
+			"projects": [
+				{
+					"key": "TB",
+					"name": "t-boards",
+					"icon": "FolderKanban",
+					"cards": [
+						{
+							"key": "TB-001",
+							"title": "Блокнот: страница в интерфейсе — чат, источники, статус",
+							"status": "done",
+							"priority": "high",
+							"description": "API блокнота готово (R-050–R-053): источники, эмбеддинги на Mac, гибридный поиск, чат с цитатами [n].\n\nОсталось: страница `/dashboard/workspace/$id/notebook` — треды, вопрос, ответ с раскрываемыми источниками, список источников, статус воркера и лимита облачных вызовов. Строки — в `i18n/en-US.json`, RU по умолчанию.\n\nСделано 29.10: `e981589` — страница блокнота с цитатами, поиском и источниками.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-002",
+							"title": "Блокнот: источники из карточек, PR GitHub и ссылок",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "Срез 3 блокнота. Виды источников `card`, `pr`, `link` рядом с `repo-doc`. Обновление при правке карточки. Ссылки — только по явному добавлению, с лимитом размера.\n\n29.10: карточки как источники — `8d4a96e`. Осталось: PR GitHub и ссылки.",
+							"parent": "TB-121"
+						},
+						{
+							"key": "TB-003",
+							"title": "Блокнот: MCP-инструмент notebook_search и GLM-бриф по кнопке",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "Агент ищет по блокноту тем же гибридным поиском, ответ — в бюджете токенов (R-031). Бриф GOAL/CONSTRAINTS/ACCEPTANCE по кнопке из треда.\n\n29.10: `notebook_search` — `8d4a96e`. Осталось: GLM-бриф по кнопке.",
+							"parent": "TB-121"
+						},
+						{
+							"key": "TB-004",
+							"title": "Граница продукта: ключ продукта A не видит данные B",
+							"status": "in-review",
+							"priority": "high",
+							"description": "R-002, AC-011. Сейчас ключи better-auth привязаны к пользователю, а не к пространству. Нужна привязка ключа к пространству-продукту и тест: ключ A запрашивает данные B — пусто или отказ.",
+							"blocks": ["TB-033"],
+							"parent": "GL-013",
+							"related": ["TB-102"]
+						},
+						{
+							"key": "TB-005",
+							"title": "Бенчмарк MCP: 10 реальных карточек вдвое дешевле Notion",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-001. После импорта: те же 10 карточек через Notion MCP и через t-boards MCP, счётчик o200k, отчёт в `t-boards/`.",
+							"related": ["SE-011", "TB-105"],
+							"parent": "GL-013"
+						},
+						{
+							"key": "TB-006",
+							"title": "Перенос Notion сверен по количеству на реальной базе",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-002. Зеркала не будет (s-tb-mirror, 29.10): владелец выбрал продуманный перенос через MCP. Сверка количества по всем базам интеграции (TB-025), не только «Задачи» и «Ошибки».",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-007",
+							"title": "Перенос Notion: сверка на выборке и повторный прогон",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Критерий перехода AC-003 вместо серии чистых прогонов зеркала. Зеркала не будет (s-tb-mirror, 29.10): владелец выбрал продуманный перенос через MCP.\n\nПредложение, ждёт ОК владельца:\n- выборка — 10 карточек на базу, сверка поле в поле: свойства, текст, метки, связи, комментарии, файлы;\n- повторный прогон переноса ничего не создаёт и не меняет (идемпотентность по id страницы и комментария);\n- отчёт — в `t-boards/`.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-008",
+							"title": "Правила и скиллы переписать с Notion на t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Критерий перехода AC-005. Правка `.claude/**` основного репозитория — только в момент перехода, с «да» владельца.",
+							"parent": "GL-015"
+						},
+						{
+							"key": "TB-009",
+							"title": "Ключ на сессию автоматически и подпись агента",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-010. Сейчас есть только метка сессии в заголовке. Нужно: ключ выдаётся на сессию, агент подписан ролью, ключом, именем, id и номером сессии по роли.",
+							"parent": "GL-013",
+							"related": ["TB-102"]
+						},
+						{
+							"key": "TB-010",
+							"title": "Наследник: пакет передачи и проверка приёма",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-011, Q-104. t-boards собирает пакет наследника (капсула, ссылки, «не делать») и отмечает, что новая сессия его прочитала.",
+							"parent": "GL-013",
+							"related": ["TB-106"]
+						},
+						{
+							"key": "TB-011",
+							"title": "Диалог связанных сессий в карточке с архивом",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-026, AC-010. Лента сообщений сессий, работавших над карточкой, с архивом закрытых.",
+							"parent": "GL-013",
+							"related": ["TB-106"]
+						},
+						{
+							"key": "TB-012",
+							"title": "MCP-инструмент памяти карточки и work_state на доске",
+							"status": "done",
+							"priority": "medium",
+							"description": "Хвост K-5 и R-037. Наблюдения claude-mem, привязанные к карточке, — через MCP; списки work_state — видны на доске.\n\nСделано 29.10: `6ead678` — work_state на доске и MCP-инструмент памяти карточки.",
+							"parent": "GL-006"
+						},
+						{
+							"key": "TB-013",
+							"title": "Вычистка секретов в транскриптах",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-036, AC-023. Фильтр K-2 уже подключён к журналу MCP; подключить к приёму транскриптов.",
+							"parent": "GL-013",
+							"related": ["TB-107"]
+						},
+						{
+							"key": "TB-014",
+							"title": "Панели: граф связей, лента агентов, «что горит», ⌘K",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "R-090. ⌘K в kaneo не проверен.\n\n29.10: «Пульс» и лента агентов — `8bf6ee4`. Осталось: граф связей R-090, «что горит», ⌘K.",
+							"parent": "GL-013",
+							"related": ["TB-109"]
+						},
+						{
+							"key": "TB-015",
+							"title": "Замеры: 400 px, 3G, вес JS, память процесса",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "AC-016, AC-018 (K-6). На VPS в первые сутки — `docker stats`, затем правка лимитов памяти в `compose.yml`.\n\n29.10: K-6 больше не ждёт Kimi — делаем сами.",
+							"parent": "GL-013"
+						},
+						{
+							"key": "TB-016",
+							"title": "Память агентов: что видно владельцу и агентам",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-041. Интерфейс видимости наблюдений.",
+							"parent": "GL-013",
+							"related": ["TB-107"]
+						},
+						{
+							"key": "TB-017",
+							"title": "Эпики, вехи, чек-листы, страницы-документы — сверить с kaneo",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-020. Частично есть в kaneo, не сверено со спекой.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-018",
+							"title": "Счётчик токенов o200k с закреплённой версией",
+							"status": "to-do",
+							"priority": "low",
+							"description": "D-018. Сейчас gpt-tokenizer 4.1.0, временно.",
+							"related": ["TB-005", "TB-105"],
+							"parent": "GL-013"
+						},
+						{
+							"key": "TB-019",
+							"title": "Каналы уведомлений с секретами: ключ шифрования файлом",
+							"status": "to-do",
+							"priority": "low",
+							"description": "`NOTIFICATION_SECRET_ENCRYPTION_KEY` читается только из env. Нужен вариант `_FILE` (N-007), до этого каналы с секретами выключены.",
+							"parent": "GL-016",
+							"related": ["TB-110"]
+						},
+						{
+							"key": "TB-020",
+							"title": "Вложения: хранилище файлов на VPS",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Загрузки требуют S3. Нужен проверенный бэкап тома до включения.",
+							"parent": "TB-120",
+							"blocks": ["TB-032"]
+						},
+						{
+							"key": "TB-021",
+							"title": "Сжатие памяти через 92 дня и удаление через 9 месяцев",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-043, AC-024. Не раньше 2027-01: первые наблюдения ещё молодые.",
+							"parent": "GL-016",
+							"related": ["TB-107"]
+						},
+						{
+							"key": "TB-022",
+							"title": "Этап 2: библиотека скиллов",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-060, R-061. После перехода.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-023",
+							"title": "Этап 2: ревью и abide",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-070–R-074. После перехода.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-024",
+							"title": "Этап 2: hetty, конструктор форм, облачные сессии, очередь владельца",
+							"status": "to-do",
+							"priority": "low",
+							"description": "R-075, R-027, R-035, R-083. После перехода.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-025",
+							"title": "Перенос Notion: все базы интеграции, не две",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G8: базы — через поиск Notion MCP по базам интеграции; проект на базу. Сейчас — только «Задачи» и «Ошибки» из 7.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-026",
+							"title": "Перенос: метки и связи карточек",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G5: метки из набора Notion и связи между перенесёнными карточками; заведённое на доске не трогается.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-027",
+							"title": "Перенос: страницы в корзине Notion и пропавшие при повторе",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G6: страницы из корзины Notion не переносятся; страница, пропавшая из выдачи при повторном прогоне, уходит в архив с причиной «удалена или в корзине Notion», вернулась — из архива. Больше max(5, 10 %) за прогон — прогон останавливается с предупреждением.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-028",
+							"title": "Перенос: комментарии Notion",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G2: комментарии с автором и датой, идемпотентно по id комментария (`notion_comment_link`) — повторный прогон не дублирует.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-029",
+							"title": "Перенос: все типы свойств в полях карточки",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G7: formula, rollup, files, relation текстом, created/edited time и by, place, verification → `extraFields`.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-030",
+							"title": "Перенос: таблицы, колонки, embed и другие блоки в описании",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G4: table → markdown, column_list подряд, bookmark/embed → ссылка, equation, synced_block, child_page, файлы ссылкой.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-031",
+							"title": "Перенос: связи между базами одного продукта",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G1, фаза 2: id страниц целей → карточка через `card_meta.notion_page_id`; наружу продукта не пишется (R-002).",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-032",
+							"title": "Перенос: файлы и картинки в хранилище доски",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Спека: `t-boards/impl/impl-s6-notion-full.md` (писалась для зеркала, требования к полноте те же). G3, фаза 2, после TB-020: скачивать в том же прогоне (ссылка Notion живёт час), 25 МБ на файл, 500 МБ на прогон.",
+							"parent": "TB-120"
+						},
+						{
+							"key": "TB-033",
+							"title": "Переход с Notion: заморозка, финальный импорт, Notion только чтение",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Фаза B плана перехода: заморозить запись в Notion → финальный импорт и сверка → канон на t-boards (правила 17, `docs/plans/notion-board.md`, CLAUDE.md, 00-task-ingress, скиллы `grill-task`, `pr-review`; см. TB-008) → Notion только чтение. Условия — R-084.",
+							"parent": "GL-015"
+						},
+						{
+							"key": "TB-034",
+							"title": "R-023: массовый откат по ключу и версии документов",
+							"status": "to-do",
+							"priority": "low",
+							"description": "История с откатом одной правки готова; осталось — откатить всё, что сделал один ключ, и версии страниц-документов.",
+							"parent": "GL-016",
+							"related": ["TB-104"]
+						},
+						{
+							"key": "TB-035",
+							"title": "R-036: стоимость по задаче и журнал через API",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Токены и деньги на карточку из журнала агентов, чтение журнала через REST/MCP — для AC-001 и итога пилота.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-036",
+							"title": "Перманентные вопросы R-100…R-105",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C: поле `permanence`, эпизоды по расписанию, прогоны сторожей, «известно, не чинить», разбор импорта пачкой. Первые: parse_mode на всех путях, refresh-токен только в cookie, апстрим kaneo раз в 2 месяца, восстановление бэкапа, обрывы Telegram-сессий, красный ci-frontend, остаток npm audit.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-037",
+							"title": "Разбор «кладбища» Notion после перехода",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Фаза C: закрытые и брошенные страницы — в архив доски с причиной или в `done/`, без потери истории.",
+							"parent": "GL-016"
+						},
+						{
+							"key": "TB-101",
+							"title": "Лес: деревья, сектора, lease и fencing",
+							"status": "done",
+							"priority": "medium",
+							"description": "Модель леса и аренда карточки агентом с fencing-токеном. Сделано 28–29.10 (§4.2, «Готово»). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-102",
+							"title": "Права агента: guard записи и одобрения владельца",
+							"status": "done",
+							"priority": "high",
+							"description": "Агент не правит текст карточки владельца, закрытие, переоткрытие и приоритет — только с одобрением из сессии владельца (N-004, N-011). Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-103",
+							"title": "Поля Notion и агента в карточке",
+							"status": "done",
+							"priority": "medium",
+							"description": "Поля карточки: ключ бэклога, поля Notion, подпись агента. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-104",
+							"title": "История карточки с откатом",
+							"status": "done",
+							"priority": "medium",
+							"description": "Журнал изменений карточки и откат версии. Массовый откат — TB-034. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-105",
+							"title": "MCP: бюджеты ответов и TOON",
+							"status": "done",
+							"priority": "medium",
+							"description": "Лимиты размера ответа MCP и компактный формат TOON. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-106",
+							"title": "Набор инструментов роли и контекст-пакет",
+							"status": "done",
+							"priority": "medium",
+							"description": "MCP отдаёт роли только её инструменты; контекст-пакет карточки для старта сессии. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-107",
+							"title": "Читатель claude-mem на доске",
+							"status": "done",
+							"priority": "medium",
+							"description": "`apps/api/src/forest/memory/memory-reader.ts`, кэш «последнего известного» (R-042). Подключение на d4dev — TB-112. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-108",
+							"title": "Сверка зеркала Notion каждые 2 часа",
+							"status": "done",
+							"priority": "high",
+							"description": "Сверка по расписанию готова; на настоящем Notion ещё не прогонялась — TB-006, TB-007. Сделано 28–29.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-109",
+							"title": "Лента агентов и «Пульс»",
+							"status": "done",
+							"priority": "medium",
+							"description": "Часть R-090, коммит `8bf6ee4`. Граф связей и ⌘K — TB-014. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-110",
+							"title": "Набор для VPS и d4dev за WireGuard",
+							"status": "done",
+							"priority": "high",
+							"description": "`install.sh`, `bundle.sh`, бэкап, `wg-setup.sh`, `wg-issue.sh`. 29.10 19:52 `s-tb-install` v5: 76 миграций, три продукта, 42 карточки; `/`, `/auth/sign-in` и `/api/health` — 200 через туннель. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-111",
+							"title": "Сид продуктов: три продукта и стартовые карточки",
+							"status": "done",
+							"priority": "medium",
+							"description": "`deploy/vps/seed/products.json`, сид только добавляет недостающее по ключу. Живую доску к плану подводит `apply-plan.mjs`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "TB-112",
+							"title": "claude-mem строго локально для t-boards на d4dev",
+							"status": "to-do",
+							"priority": "high",
+							"description": "R-040: экземпляров два — на сервере и на Mac; t-boards только читает через воркеры (GET), базу не трогает.\n\nСейчас (29.10, проверено): воркер Mac 15.6.0 слушает только 127.0.0.1:37701, облачная синхронизация пуста (токена нет). На d4dev claude-mem нет: в deploy/vps/compose.yml сервиса нет, читатель (apps/api/src/forest/memory/memory-reader.ts) без настроек идёт на 127.0.0.1:37777 и получает отказ.\n\nЧто сделать:\n1. Сервер: контейнер claude-mem в compose — без cmem.ai и cloud sync, с лимитом памяти; расход замерить на VPS до включения (R-005).\n2. Mac → сервер: воркер Mac виден серверу только по туннелю 10.77.0.2 и только на чтение — способ выбирает владелец (d-tb-claude-mem). Пока Mac спит — последняя копия (кэш читателя), t-boards не падает.\n3. Читатель t-boards: два адреса воркеров вместо одного; проект HR Helper не отдавать в чужой продукт (граница R-002).\n\nКоманды на VPS — s-пунктами с откатом (сессия t-boards). Правка воркера на Mac — после решения владельца.",
+							"parent": "GL-006",
+							"related": ["OPS-004", "TB-012", "TB-016", "OPS-001"]
+						},
+						{
+							"key": "TB-113",
+							"title": "План перехода: ответы d-tb-plan-* и проверка ≥ 4 участников",
+							"status": "to-do",
+							"priority": "high",
+							"description": "План собирается в t-boards (`d-tb-plan-home`): GL-010 и дерево под ним. Срок — по условиям, цель — 01.11; очередь переезжает после перехода (`d-tb-plan-queue`).\n\nПеред этим — проверка ≥ 4 участниками с линзами: реалистичность сроков, порядок по ценности, риск и обратимость, ресурсы (3G, 400 px). Блок «участники → возражения → решение, отклонённые альтернативы, цифры» — в описании GL-010.\n\nБольше двух агентов — только по «да» владельца с ценой (d-spend).",
+							"parent": "GL-010",
+							"blocks": ["GL-013"]
+						},
+						{
+							"key": "TB-114",
+							"title": "Условия перехода R-084",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Переходим, когда выполнено всё; цель — 01.11 (`d-tb-plan-deadline`: по условиям):\n- перенос через MCP сверен по количеству (TB-006);\n- AC-001 — MCP минимум вдвое дешевле Notion на 10 реальных карточках (TB-005);\n- перенос сверен поле в поле на выборке и повторный прогон ничего не меняет (TB-007);\n- бэкап поднимается на чистой машине (OPS-003);\n- правила и скиллы переписаны (TB-008).\n\nОткрыто: что делать, если блокнот не успеет.",
+							"parent": "GL-010",
+							"blocks": ["TB-033"],
+							"related": ["TB-005", "TB-006", "TB-007", "OPS-003", "TB-008"]
+						},
+						{
+							"key": "TB-115",
+							"title": "Лес и боковая панель карточки: замечания владельца",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "`c-tb-ui-check` — ответ на жалобу 28.10 «неаккуратно, не видно, как управлять деревьями». Ждёт списка того, чего не хватает. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-013",
+							"related": ["TB-101"]
+						},
+						{
+							"key": "TB-116",
+							"title": "Первые перманентные карточки",
+							"status": "to-do",
+							"priority": "low",
+							"description": "| Категория | Карточка | Продукт |\n|---|---|---|\n| check | `parse_mode` на всех путях отправки Telegram | HR Helper |\n| check | refresh-токен только в httpOnly cookie | HR Helper |\n| periodic | апстрим kaneo раз в 2 месяца (R-004) | aiBoards&eval |\n| periodic | восстановление бэкапа на чистой машине (AC-004) | aiBoards&eval |\n| focus | обрывы Telegram-сессий | HR Helper |\n| focus | красный `ci-frontend` на main с 07.10 (циклы madge) | HR Helper |\n| accepted | остаток `npm audit` (4: 0 critical, 2 high) | HR Helper |\n\nКарточки продукта HR Helper заводятся в HR Helper / Lavaeon после импорта (граница R-002); здесь — только план.",
+							"parent": "GL-016",
+							"related": ["TB-036"]
+						},
+						{
+							"key": "TB-117",
+							"title": "Открытые решения спеки — спрашивать, когда блокируют",
+							"status": "to-do",
+							"priority": "low",
+							"description": "| ID | Вопрос | Рекомендация | Блокирует |\n|---|---|---|---|\n| Q-107 | стек ядра | бэкенд kaneo, один процесс — фактически уже так | — |\n| D-018 | счётчик токенов | `o200k` с закреплённой версией (TB-018) | AC-001 |\n| Q-104 | наследник | через t-boards | R-011 (TB-010) |\n| D-014 | деревья из нескольких секторов | рубить только по явной отметке | — |\n| D-015 | незавершённое при вырубке | «вырублено» с причиной, обязательства — в семена | — |\n| D-016 | транскрипты | 9 месяцев, отдельный зашифрованный том | — |\n| новый | переход, если блокнот не успеет | — | R-084 |",
+							"parent": "GL-004",
+							"related": ["TB-010", "TB-018"]
+						},
+						{
+							"key": "TB-118",
+							"title": "Миграция считается применённой, хотя её файл потом дописали (ловушка dev-базы 0069)",
+							"status": "to-do",
+							"priority": "low",
+							"description": "28.10: dev-сервер API в режиме watch применил 0069 сразу после `drizzle-kit generate`, до того как в файл дописали функции и триггеры. Drizzle счёл миграцию применённой — в dev-базе была только таблица, история карточек молчала. Починено вручную (`t-boards/impl/impl-r023-history.md` §«Ловушка dev-базы»); свежие базы и VPS это не задевает.\n\nСтраховка: при старте API (или в тесте) сверять хэш каждой применённой миграции с хэшем файла и падать с понятной ошибкой при расхождении. До неё — правило: миграцию с ручным SQL дописывать при остановленном dev-сервере.",
+							"related": ["TB-034", "TB-104"],
+							"kind": "bug",
+							"severity": "low"
+						},
+						{
+							"key": "TB-120",
+							"title": "Перенос Notion через MCP: все базы, поля, связи, комментарии, файлы",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Владелец 29.10 (`s-tb-mirror`): зеркала не будет — продуманный, качественный и корректный перенос через MCP. Код зеркала (TB-108) — основа переноса: те же сопоставления полей и идемпотентность по id страницы.\n\nДети — что перенос должен уметь (спека S6 `t-boards/impl/impl-s6-notion-full.md`, писалась для зеркала, требования к полноте те же) и как его сверить: TB-006 по количеству, TB-007 на выборке поле в поле.\n\nКуда: «Задачи» и «Ошибки» Notion → HR Helper / Lavaeon, проект HRH. Ошибка — вид карточки (`kind: bug`) с серьёзностью, на той же доске и в тех же колонках, что задачи.",
+							"parent": "GL-013",
+							"related": ["TB-108"]
+						},
+						{
+							"key": "TB-121",
+							"title": "Блокнот: источники, поиск по смыслу, модели",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "Страница блокнота сделана (TB-001); здесь — что осталось: источники из PR и ссылок, поиск для агентов, связка Mac ↔ сервер, модели.\n\nВладелец 29.10 (`s-tb-notebook`): смысловые векторы — через OpenRouter, сильные модели по API, с настройкой среди интеграций в настройках доски; если эмбеддинг-модель критична — локальные модели на Mac (строго по одной). Это меняет ответ `d-tb-q105` («mac»): OpenRouter — основной путь, Mac — запасной (TB-122).",
+							"parent": "GL-013",
+							"related": ["TB-001"]
+						},
+						{
+							"key": "TB-122",
+							"title": "Блокнот: эмбеддинги через OpenRouter с настройкой в интеграциях",
+							"status": "grilling",
+							"priority": "medium",
+							"description": "Владелец 29.10 (`s-tb-notebook`): ключ и модель OpenRouter задаются в настройках интеграций доски (`/dashboard/settings`), не в env. Запасной путь — локальная модель на Mac через туннель, строго последовательно.\n\nПрожарка: где хранить ключ (в базе только зашифрованным, ключ шифрования — файлом, как TB-019), какую модель брать по умолчанию, что уходит наружу (текст карточек — не PII, секреты вычищаются до отправки, TB-013), дневной лимит (OPS-005).",
+							"parent": "TB-121",
+							"related": ["OPS-005", "TB-019"]
+						}
+					]
+				},
+				{
+					"key": "SE",
+					"name": "supertick-eval",
+					"icon": "FlaskConical",
+					"cards": [
+						{
+							"key": "SE-001",
+							"title": "Замер пилотного дня 28.10 и вывод в PIPELINE.md",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "А8. `tools/context_audit.py` за окно пилота → `pipeline/data/audit-pilot-2810.json`; раздел «Пилот 28.10» в `pipeline/PIPELINE.md`; итог владельцу в заметках d1–d3. Ворота: $/единицу работы, средний контекст ≤ 120K, база ≤ 55K против Т3 26.10.",
+							"parent": "SE-100",
+							"blocks": ["SE-013"]
+						},
+						{
+							"key": "SE-002",
+							"title": "Геном роли: ворота первого вызова ≤ 55K и skill_listing ≤ 2K",
+							"status": "to-do",
+							"priority": "high",
+							"description": "П1 + П3, `pipeline/genome/author.json`. Проверить на пилоте; при провале — сузить плагины и скиллы роли.",
+							"parent": "SE-100",
+							"blocks": ["SE-013"]
+						},
+						{
+							"key": "SE-003",
+							"title": "Усилие по роли: coord и control на medium",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П4. Профили `genome/coord.json`, `genome/control.json` — на следующем запуске команды. Проверить `/effort` на 2.1.311.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-004",
+							"title": "Рефлексы: дедуп DAMS-вставок и пропуск сообщений агентов",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П5. Требует правки `.claude/scripts` основного репозитория — отдельный PR с «да» владельца.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-005",
+							"title": "Капсула и наследник: неделя пилота на авторе t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П6. Единица работы — шаг трека; после неё капсула ≤ 2K токенов и новая сессия. Наблюдать возвраты работы и повторные вопросы владельцу.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-006",
+							"title": "Нерв: журнал, стигмергия, кворум — наблюдение после запуска",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П7. LaunchAgent одобрен d4. Проверить журнал за сутки и ложные срабатывания.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-007",
+							"title": "Сторож",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П8 (задание B).\n\n29.10: автор сторожа — Kimi; его результатам не доверяем, перед опорой — перепроверка по коду (`shadow/watchdog.py`, `reports/shadow-watchdog.md`).",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-008",
+							"title": "Рой: ключи OpenRouter и первый прогон",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "П9. Ждёт пункт владельца `c-swarm-openrouter-keys`. Ключи только файлами.",
+							"parent": "SE-100",
+							"blocks": ["IDEA-007"]
+						},
+						{
+							"key": "SE-009",
+							"title": "Циркадный бюджет",
+							"status": "to-do",
+							"priority": "low",
+							"description": "П10.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-010",
+							"title": "Обновление Claude Code CLI после пилота",
+							"status": "to-do",
+							"priority": "low",
+							"description": "П11. Терминальный CLI 2.1.237, расширение VS Code 2.1.311. Обновлять после итогов пилота.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-011",
+							"title": "Итог: стоимость PR против Т3",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Цель пайплайна ≈ $20 на PR против ≈ $37 у Т3 и $68 у Т2. Отчёт по неделе пилота.",
+							"parent": "SE-100",
+							"related": ["GL-001"]
+						},
+						{
+							"key": "SE-012",
+							"title": "Линза 3 (продукт и простота) без Kimi — прогнать самим",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Раздел «Адверсариальная проверка» в `supertick-eval/EVALUATION.md` закрыть своей третьей линзой (субагент или консилиум). `reports/lens-3-kimi.md` — только как непроверенный черновик: Kimi выбыл 29.10.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-013",
+							"title": "Геном на остальные роли после пилота",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Фаза 4: пилот автора прошёл ворота (средний контекст ≤ 120K, база ≤ 55K) → `--settings` с геномом Координатору, Контролю и остальным.",
+							"parent": "SE-100"
+						},
+						{
+							"key": "SE-014",
+							"title": "Связь с Kimi: сессия в Claude Code или общий файл",
+							"status": "done",
+							"priority": "low",
+							"description": "SendMessage к Kimi не доходит. Варианты: запуск Kimi внутри Claude Code или `pipeline/BRIDGE.md`.",
+							"report": "Владелец 29.10 в чате (через сессию hr-helper-v2-65): «Насчет кими — закрываем». Связь с Kimi не строим.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-101",
+							"title": "Оценка supertick: «не брать»",
+							"status": "done",
+							"priority": "medium",
+							"description": "`EVALUATION.md`, 26.10. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-102",
+							"title": "Аудит токенов Т2 и Т3 и классы вызовов",
+							"status": "done",
+							"priority": "medium",
+							"description": "`tools/context_audit.py` (`--match` с 29.10), `tools/call_purpose.py`, `pipeline/data/*`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-103",
+							"title": "Протокол Claude × Kimi и синтез R3",
+							"status": "done",
+							"priority": "medium",
+							"description": "`pipeline/PROTOCOL.md`, R1 обоих, R2 Claude о Kimi, синтез в `PIPELINE.md`. R2 Kimi о Claude не написан — его заменяет §7 PIPELINE и SE-111. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-104",
+							"title": "Сданное Kimi — перепроверить по коду и цифрам",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "Kimi выбыл 29.10, его результаты непроверены: `reports/lens-3-kimi.md`, `shadow/watchdog.py`, `pipeline/r1-kimi.md`, `t-boards/kimi-tasks.md`. Опираться только после перепроверки (§4.5, §6.5). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-105",
+							"title": "Нерв: демон, журнал, кворум, пауза по лимиту, ночной режим",
+							"status": "done",
+							"priority": "high",
+							"description": "П7, П8: `nerve/` (15 тестов), LaunchAgent `space.hrhelper.nerve`, пачки на 60% окна, тапы ролей. Работает с 28.10 (d4 «да, всё сразу»). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-106",
+							"title": "Рой через llm-gateway с фильтром исходящих",
+							"status": "done",
+							"priority": "medium",
+							"description": "П9, `swarm/` (9 тестов), d5 «free-code». Собран; без ключей OpenRouter не работает — SE-008. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-107",
+							"title": "Геном ролей: author, coord, control",
+							"status": "done",
+							"priority": "high",
+							"description": "П1, П3: `pipeline/genome/*.json`. Проба: база 83K → 42K, список скиллов 8.7K → 1.3K. Пилот — SE-001, SE-002. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-108",
+							"title": "«Био»-память и антигены",
+							"status": "done",
+							"priority": "medium",
+							"description": "П2: `MEMORY.md` 18.3 КБ → 1 КБ, индекс `MEMORY-index.md`, 15 ловушек в `genome/antigens.json`. Включено. Откат: `MEMORY.before-2026-10-28.md` поверх `MEMORY.md`. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-109",
+							"title": "Время хуком и рефлексы",
+							"status": "done",
+							"priority": "medium",
+							"description": "П5: `pipeline/reflex/` (`now.sh`, `pr_state.py`, `wt_state.py`, `handoff_read.py`), 20 тестов. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-110",
+							"title": "Капсула",
+							"status": "done",
+							"priority": "medium",
+							"description": "П6: `pipeline/capsule.py`, `capsules/author.md` (6 тестов), пересобрана под R-090. Применение вместо сжатия — SE-005. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-001"
+						},
+						{
+							"key": "SE-111",
+							"title": "Атаки несостоявшегося R2 Kimi — сами",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "`PIPELINE.md` §7: модель стоимости «под нагрузкой», срез базы на 30K, пересечения П6 (капсула) и П7 (Нерв). Kimi выбыл 29.10 — R2 `r2-kimi-on-claude.md` не пишется; атаки прогоняем сами (субагент или консилиум).",
+							"parent": "SE-100",
+							"related": ["SE-005", "SE-006"]
+						},
+						{
+							"key": "SE-112",
+							"title": "Стоп-критерии пилота",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Любой — откат на запуск без `--settings`: заметное снаружи изменение; вернувшаяся работа или пропущенная находка; повторный вопрос владельцу; потерянное событие Нерва (§5.4). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-002"
+						},
+						{
+							"key": "SE-024",
+							"title": "Решение: что не строим (PIPELINE §9)",
+							"status": "done",
+							"priority": "low",
+							"description": "Решение пилота: что команда сознательно не строит. Обоснование и список — в report.",
+							"parent": "GL-001",
+							"report": "Не строим: supertick как операционную модель; второй MCP-шлюз; универсальный оркестратор; графовую БД; миграцию Notion до пилота; переписывание claude-mem или headroom. «Колония» реализуется через t-boards: журнал → `agent_journal`, капсула → `card_meta.context_pack`, capsule_get/put → MCP `forest_*`, дайджест → проекция журнала."
+						},
+						{
+							"key": "SE-100",
+							"title": "Пилот supertick: замер, геном, нерв, рой — неделя на авторе t-boards",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "Открытая работа пилота, начатого 28.10 (`supertick-eval/HANDOFF-2026-10-28.md`, трек А). Сделанное — SE-101…SE-110 и SE-024 под целью GL-001; стоп-критерии — GL-002.",
+							"parent": "GL-001"
+						}
+					]
+				},
+				{
+					"key": "OPS",
+					"name": "Инфраструктура",
+					"icon": "Shield",
+					"cards": [
+						{
+							"key": "OPS-001",
+							"title": "WireGuard: раздельный и полный туннель через VPS",
+							"status": "in-progress",
+							"priority": "urgent",
+							"description": "Один ключ устройства, два профиля: раздельный (только сеть t-boards) и полный (весь трафик и выход в интернет с IP сервера). Скрипт `deploy/vps/wg-setup.sh`, пункт владельца `s-tb-wg`.\n\n29.10: полный режим работает (весь трафик Mac через VPS). Ветки: OPS-012 — PresharedKey для Mac; OPS-013 — PSK и MTU для новых устройств. Закрывать после OPS-012, только по «да» владельца.\n\nСессии: 02286257 (hr-helper-v2-d1)",
+							"contextPack": "admin-host/HANDOFF.md §4.10",
+							"files": [
+								"t-boards/app/deploy/vps/wg-setup.sh",
+								"t-boards/app/deploy/vps/wg-selftest.sh"
+							],
+							"parent": "OPS-100"
+						},
+						{
+							"key": "OPS-002",
+							"title": "Субдомен d4dev.admin.hrhelper.space только через VPN",
+							"status": "done",
+							"priority": "urgent",
+							"description": "Схема А: публичная A-запись — только для сертификата; t-boards слушает адрес туннеля. Остальные поддомены — без VPN, как раньше. Пункт `s-tb-install`.\n\nСделано 29.10 19:52: d4dev открывается через VPN, без туннеля — отказ соединения.\n\nСессии: 02286257 (hr-helper-v2-d1)",
+							"contextPack": "admin-host/HANDOFF.md §4.10",
+							"parent": "OPS-100"
+						},
+						{
+							"key": "OPS-003",
+							"title": "Бэкап на Mac каждые 2 часа и проверка восстановлением",
+							"status": "to-do",
+							"priority": "high",
+							"description": "AC-004. Пункт `s-tb-backup`: ключ забора, LaunchAgent, восстановление дампа в чистый Postgres.",
+							"blocks": ["TB-114"],
+							"parent": "OPS-100"
+						},
+						{
+							"key": "OPS-004",
+							"title": "Связка Mac ↔ сервер для блокнота",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Воркер эмбеддингов (Ollama, строго последовательно) и синк документов репозитория — по туннелю, только исходящие соединения с Mac. `deploy/vps/mac/notebook-agent.sh`.",
+							"parent": "TB-121"
+						},
+						{
+							"key": "OPS-005",
+							"title": "Облачная модель блокнота: ключ файлом и дневной лимит",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "R-052, R-053. `NOTEBOOK_LLM_MODEL`, `NOTEBOOK_LLM_KEY_FILE`, `NOTEBOOK_LLM_DAILY_MAX`. Без ключа блокнот отвечает только источниками.",
+							"parent": "TB-121"
+						},
+						{
+							"key": "OPS-006",
+							"title": "Удалённый git для форка t-boards",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Сейчас коммиты только локальные: единственный remote — upstream kaneo, туда не пушим. Решение владельца: приватный репозиторий или зеркало на VPS.",
+							"parent": "OPS-100"
+						},
+						{
+							"key": "OPS-007",
+							"title": "Второе устройство в VPN",
+							"status": "in-progress",
+							"priority": "low",
+							"description": "Телефон или второй ноутбук: `wg-setup.sh <ключ> <имя>`, те же два профиля.\n\n29.10: `wg-issue.sh` (`1a0ab42`) выпускает готовый конфиг и QR на VPS; пункт очереди `s-vpn-issue`.",
+							"contextPack": "пункт владельца s-vpn-issue",
+							"files": ["t-boards/app/deploy/vps/wg-issue.sh"],
+							"parent": "OPS-001"
+						},
+						{
+							"key": "OPS-101",
+							"title": "PR #402: claude-mem в хабе, одна копия mcp-search",
+							"status": "in-review",
+							"priority": "medium",
+							"description": "Открыт. Линзы и ревью на GLM, мёрж с `[skip ci]` по «Влить», затем `npm run mcp-hub:sync` и живая проверка `work_state_read` (§6.1). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "GL-006"
+						},
+						{
+							"key": "OPS-104",
+							"title": "Осиротевшие процессы 75978, 44462, 5397",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Сначала проверить, живы ли. Остановить или оставить — решение владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-105",
+							"title": "Сессии Т2: прощание и «пауза снята»",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Т2 закрыты, SendMessage не доходит — способ не выбран. «Пауза снята» для остальных сессий — тоже ждёт ответа. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "OPS-106",
+							"title": "K-7: контейнер open-notebook",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Бывшая задача Kimi из `t-boards/kimi-tasks.md`, делает Claude без отдельного старта (§4.5). Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"parent": "TB-121"
+						},
+						{
+							"key": "OPS-012",
+							"title": "PresharedKey для Mac (10.77.0.2): постквантовый слой туннеля «France & Dev VPN»",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "Зачем: трафик, записанный сегодня, не расшифровать и будущим квантовым компьютером. Скорость и расход трафика не меняются: ключ участвует только в рукопожатии. Решение владельца 29.10: «добавляем».\n\nКак:\n- Ключ создаётся на Mac (`openssl rand`).\n- На VPS он уходит только по ssh, на stdin, с принудительно постквантовым обменом ключами (`mlkem768x25519-sha256`, `sntrup761x25519-sha512@openssh.com`). Без них ssh отказывает и ничего не меняется.\n- В буфер обмена ключ попадает только после подтверждения сервера и стирается через 5 минут.\n- Ключ не проходит через очередь, чат, argv, историю терминала и логи.\n- На VPS меняется только PresharedKey пира 10.77.0.2; остальной конфиг проверяется на неизменность, ключ применяется к живому `wg0`.\n- Бэкап с PrivateKey сервера удаляется после проверки. Любая остановка после записи печатает строку отката.\n\nСостояние на 29.10 21:57:\n- Скрипты и тесты готовы. Пункт `s-tb-wg-psk` (версия 1) ждёт владельца.\n- Шаг владельца на Mac: в профиль добавить `PresharedKey` и `MTU = 1380`.\n\nПроверено локально, с заглушкой `wg`:\n- shellcheck 0.10.0;\n- `run-tests.sh`: 52 проверки (macOS bash 3.2; Ubuntu 24.04 bash 5.2 + mawk);\n- `e2e.sh` под `dash`;\n- `cmd-test.sh`: 18 проверок под `zsh -f`.\n\nНе проверено: живой VPS, настоящий `wg`, приложение WireGuard на macOS, поддержка mlkem/sntrup в sshd VPS.\n\nАдверсариальная проверка, 3 участника:\n- security-expert — секрет и отказы;\n- tiel-coder локально — корректность shell;\n- code-reviewer — простота и откат.\n\nВсе находки применены.\n\nПриёмка (агент, после отметки владельца):\n1. С Mac `ping 10.77.0.1`.\n2. Внешний IP — 173.212.238.170.\n3. DNS работает.\n4. https://d4dev.admin.hrhelper.space/api/health — 200.\n5. Профиль fsn1-4 вернуть, если он менялся.\n6. `oq_agent_status s-tb-wg-psk done`.\n\nОткат: `cmd2` пункта (`--remove`), сначала выключить туннель.\n\nСессии: 02286257 (hr-helper-v2-d1)",
+							"parent": "OPS-001",
+							"related": ["OPS-013", "OPS-007"],
+							"executor": "Claude Opus 5.5",
+							"contextPack": "handoff/2026-10-29/vpn/REVIEW-PACKET.md; пункт владельца s-tb-wg-psk",
+							"files": [
+								"~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/vpn/wg-psk.sh",
+								"vpn/build.sh",
+								"vpn/cmd.txt",
+								"vpn/rollback.txt",
+								"vpn/REVIEW-PACKET.md"
+							]
+						},
+						{
+							"key": "OPS-013",
+							"title": "Новые устройства WireGuard получают туннель без PresharedKey и без MTU",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Найдено 29.10 при сверке OPS-012 с `deploy/vps`.\n\n`wg-issue.sh` (`1a0ab42`, строка 75) и `wg-setup.sh` (строка 155) дописывают `[Peer]` без `PresharedKey`. В клиентском профиле нет `MTU`. После OPS-012 у Mac будет постквантовый слой, у телефона из OPS-007 — нет.\n\nЧто сделать:\n- `wg-issue.sh`: на каждое устройство `wg genpsk`, одна и та же строка — в пир сервера и в выдаваемый конфиг/QR. Это канал, по которому устройство и так получает свой PrivateKey, так что новой утечки нет. В профиль клиента — `MTU = 1380`.\n- `wg-psk.sh` (OPS-012) не берёт замок `$CONF.lock`, который держит `wg-issue.sh` (строка 38). Взять тот же `flock`, чтобы параллельная выдача устройства и смена ключа не переписали конфиг друг другу.\n- `wg-setup.sh` (строка 136) и `wg-issue.sh` (строка 43) оставляют `wg0.conf.bak-*` с PrivateKey сервера и никогда их не удаляют. Нужен срок хранения: например, последние 3.\n\nПриёмка: `wg-selftest.sh` проверяет PSK у нового пира и в выданном профиле; повторная выдача не трогает чужие PSK.",
+							"parent": "OPS-001",
+							"related": ["OPS-007"]
+						},
+						{
+							"key": "OPS-100",
+							"title": "d4dev: туннель, бэкап, поставка наборов",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "Набор для VPS сделан (TB-110); здесь — то, что держит d4dev живым: туннель и устройства, бэкап с проверкой восстановлением, удалённый git форка, поставка очередного набора.",
+							"parent": "GL-004",
+							"related": ["TB-110"]
+						}
+					]
+				},
+				{
+					"key": "IDEA",
+					"name": "Банк идей",
+					"icon": "Lightbulb",
+					"cards": [
+						{
+							"key": "IDEA-001",
+							"title": "Антиген «длинный вывод Bash»",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "Б4 28.10: результаты Bash — самая крупная статья: 836 вызовов, 363K токенов, хвост 12.8M — в 1.5 раза больше списка скиллов. Урок вставляется, когда команда без `tail`/`grep`/файла в scratchpad может дать много строк. Кандидат в `pipeline/genome/antigens.json`.\n\nИсточник: `supertick-eval/pipeline/data/audit-b4-2810.*`.",
+							"related": ["SE-004"]
+						},
+						{
+							"key": "IDEA-002",
+							"title": "Стигмергия и кворум для всей команды",
+							"status": "new",
+							"priority": "low",
+							"description": "Статусы в PR и `work_state`, сообщения только «нервные». Сейчас пилот одной роли (d2); для всех — правка правил 2 и 3 TEAM-0. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"related": ["SE-006", "GL-003"],
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-003",
+							"title": "Автоматический work_state хуком",
+							"status": "new",
+							"priority": "low",
+							"description": "Механику (ветка, голова, pid) пишет PostToolUse, а не ход модели. В Т2 — 661 вызов `work_state`, 9.6% вызовов. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"related": ["TB-012"],
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-004",
+							"title": "Ночная консолидация",
+							"status": "new",
+							"priority": "low",
+							"description": "Локальная Ollama или Haiku, строго по одной модели: капсулы из транскриптов дня, отметки устаревших документов, кандидаты в уроки. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"related": ["SE-005", "SE-009"],
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-005",
+							"title": "AUTH-сигнал сторожа — в Нерв",
+							"status": "new",
+							"priority": "low",
+							"description": "По желанию. Сторож `shadow/watchdog.py` писал Kimi — сначала перепроверка (SE-007).",
+							"related": ["SE-006", "SE-007"],
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-006",
+							"title": "«Колония» как продукт через t-boards",
+							"status": "to-do",
+							"priority": "low",
+							"description": "Отдельного сервера нет: журнал Нерва → `agent_journal`, капсула → `card_meta.context_pack`, `capsule_get/put` → MCP `forest_*`, дайджест → проекция журнала. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`."
+						},
+						{
+							"key": "IDEA-007",
+							"title": "Бесплатные провайдеры для несекретного текста",
+							"status": "new",
+							"priority": "low",
+							"description": "Только несекретный текст через `swarm/egress.py`. Groq и Cerebras (триаж, классификация), OpenRouter `:free`, Google AI Studio (на бесплатном уровне данные могут идти на обучение), Mistral, GitHub Models, Cloudflare Workers AI; NVIDIA NIM, SambaNova, Hugging Face — стартовые кредиты. Проверять при подключении.",
+							"related": ["SE-008", "OPS-005"],
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-008",
+							"title": "Внешний CLI (GLM) для разовых ролей на чтение",
+							"status": "new",
+							"priority": "low",
+							"description": "Тень вручную на 2–3 прошлых PR с замером. Запуск — по `d-spend` с «да» владельца. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"halfBaked": true
+						},
+						{
+							"key": "IDEA-009",
+							"title": "Ядро команды — не больше 5 сессий",
+							"status": "new",
+							"priority": "medium",
+							"description": "Урок недельного лимита: 23–24.10 четырнадцать сессий сожгли его за 42 часа. Источник: `supertick-eval/ALL-TASKS-2026-10-29.md`.",
+							"halfBaked": true
+						}
+					]
+				},
+				{
+					"key": "GL",
+					"name": "Цели и планы",
+					"icon": "Target",
+					"cards": [
+						{
+							"key": "GL-001",
+							"title": "Цель: команда ИИ-сессий тратит меньше токенов без потери скорости и качества",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "23–24.10 четырнадцать сессий сожгли недельный лимит за 42 часа; команда стояла до 29.10.\n\n| | Т2 23–24.10 | Т3 26.10 | Цель |\n|---|---|---|---|\n| $ на PR | $68 | ≈ $37 | ≈ $20 |\n| Средний контекст | 515K | 141K | ≤ 120K |\n| Первый вызов | 86–96K | 83K | ≤ 55K (проба генома — 42K) |\n| Список скиллов | ≈ 8.7K | ≈ 8.7K | ≤ 2K (проба — 1.3K) |\n\nЭкономия на входе (отрезать лишнее, сжимать без потери смысла, один источник с коротким «био») и на выходе (без промежуточных отчётов). Рутина — дешёвым исполнителям: Haiku, бесплатные модели OpenRouter, Groq, GLM, локальная Ollama строго по одной. **Kimi выбыл 29.10** — лимиты исчерпаны, его результатам не доверяем.\n\nИсточник: `supertick-eval/pipeline/PIPELINE.md` §0–1, `supertick-eval/ALL-TASKS-2026-10-29.md` §1."
+						},
+						{
+							"key": "GL-002",
+							"title": "Инвариант: снаружи ничего не меняется",
+							"status": "to-do",
+							"priority": "high",
+							"description": "PR, карточки, очередь, бот, «мёрж = деплой» и прод выглядят как раньше; меняется только внутренняя механика.\n\nСторож — стоп-критерии пилота: заметное снаружи изменение; вернувшаяся работа или пропущенная находка; повторный вопрос владельцу; потерянное событие Нерва. Любой сработал — откат (запуск без `--settings`).\n\nОбычная карточка до R-100; когда появится поле permanence — станет перманентной проверкой (check).",
+							"parent": "GL-001",
+							"related": ["SE-001", "SE-005", "SE-006"]
+						},
+						{
+							"key": "GL-003",
+							"title": "Цель: владелец решает только через очередь и Telegram-бот",
+							"status": "in-progress",
+							"priority": "medium",
+							"description": "Полуавтономность: решения, мёржи, команды на VPS и ручные проверки — пунктами очереди ops-консоли (`oq_*`) и бота @hrhelper_owner_queue_bot; остальное агенты решают сами. Сообщения между сессиями — только «нервные» (прод НЕ ОК, стоп, назначение, d-ответ).\n\nПеренос очереди в t-boards — TB-038 (R-083), после перехода.",
+							"related": ["SE-006", "GL-001"]
+						},
+						{
+							"key": "GL-004",
+							"title": "Цель: t-boards — своя замена Notion для агентов",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "Форк kaneo на `d4dev.admin.hrhelper.space` за WireGuard: дешёвый по токенам MCP, лес задач, память claude-mem, блокнот. Notion и очередь остаются каноном до перехода (GL-010).\n\nСпека — `t-boards/t-boards-spec.md` v0.3, остаток — `t-boards/impl-remaining.md`. Деревья этапа 1 и 2 — проект TB, инфраструктура — OPS.",
+							"related": ["GL-001"]
+						},
+						{
+							"key": "GL-006",
+							"title": "Цель: claude-mem строго локально — и на Mac, и для t-boards",
+							"status": "in-progress",
+							"priority": "high",
+							"description": "Владелец 29.10: claude-mem должен быть подключён, строго локальный, и на Mac, и для t-boards. Без облака: cmem.ai и cloud sync выключены.\n\nСостояние 29.10 21:50: воркер Mac `127.0.0.1:37701` (15.6.0) отвечает `ok`, `work_state` пишется. t-boards на d4dev читает claude-mem Mac через туннель: прокси только на чтение `10.77.0.2:37702` (GET health, projects, observations; остальное 405/403), адрес — в наборе b8 (`CLAUDE_MEM_WORKER_HOST/PORT`). Живая проверка — пункт поставки b8 (TB-112). R-040: экземпляров два, на сервере и на Mac; t-boards только читает через воркеры.",
+							"related": ["TB-012", "TB-016", "TB-021", "OPS-004"]
+						},
+						{
+							"key": "GL-010",
+							"title": "План перехода с Notion: фазы A, B, C",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Резюме плана владелец одобрил (FINAL-PROMPT §6); ответы `d-tb-plan-*` получены 29.10 (GL-011). План живёт здесь, в t-boards: эта карточка, GL-013…GL-016 и их дети.\n\n- **A — до перехода** (GL-013): граница продуктов, наследник, связанные сессии, подпись агента, видимость памяти, вычистка секретов, PR в блокнот, граф R-090, замеры K-6, бенчмарк AC-001, перенос настоящего Notion через MCP на копии.\n- **B — переход** (GL-015): заморозка записи в Notion → финальный перенос и сверка → канон с Notion на t-boards → Notion только чтение.\n- **C — после** (GL-016): перманентные вопросы, «кладбище» Notion, перенос очереди (вся, постепенно; ops-консоль строит очереди из t-boards), доки, роадмапы и планы, библиотека скиллов, ревью, hetty, формы, облачные сессии.\n\nСрок — по условиям R-084 (TB-114); цель — закрыть вопросы продукта до вс 01.11.",
+							"parent": "GL-004"
+						},
+						{
+							"key": "GL-011",
+							"title": "Решения владельца по переходу: срок, дом плана, перенос очереди",
+							"status": "done",
+							"priority": "high",
+							"description": "Пункты очереди:\n- `d-tb-plan-deadline` — 01.11 строго · по условиям · 08.11; рекомендация — «по условиям» (R-084);\n- `d-tb-plan-home` — ops-консоль + `docs/plans/roadmap/t-boards-transition.md` или сразу t-boards; рекомендация — ops;\n- `d-tb-plan-queue` — очередь в t-boards после перехода или сейчас; рекомендация — «после».\n- `d-tb-ac003-streak` — длина серии чистых сверок зеркала (TB-007).\n\nКарточку двигает только ответ владельца в очереди.",
+							"parent": "GL-010",
+							"blocks": ["TB-113"],
+							"report": "Ответы владельца 29.10:\n- `d-tb-plan-deadline` — по условиям R-084; цель — закрыть вопросы продукта до 01.11 и вернуться к основной работе;\n- `d-tb-plan-home` — сразу t-boards: плавный и полный перевод данных; Notion в очереди задач заменяет t-boards; доки, роадмапы и планы — туда же, когда будут готовы функции и инфраструктура;\n- `d-tb-plan-queue` — после перехода: очередь переносится вся, аккуратно и постепенно; t-boards — единственный источник правды, очереди строятся из его данных, ops-консоль остаётся одним из основных инструментов общения с владельцем;\n- `s-tb-mirror` — зеркало не нужно, перенос через MCP. Серия сверок зеркала (`d-tb-ac003-streak`) теряет смысл, вместо неё — сверка переноса (TB-007)."
+						},
+						{
+							"key": "GL-013",
+							"title": "Фаза A перехода — до переключения",
+							"status": "to-do",
+							"priority": "high",
+							"description": "Порядок: TB-004 (граница продуктов, безопасность — первой) → TB-010, TB-011, TB-009, TB-016 → TB-013, TB-002, TB-014, TB-015, TB-005 → TB-006 (импорт настоящего Notion на копии, сверка по количеству).\n\nКарточки фазы — дети этой карточки; перенос Notion — TB-120, блокнот — TB-121. Сделанное этапа 1 (TB-101…TB-111) осталось под GL-004, открытые хвосты ссылаются на него связью.",
+							"parent": "GL-010"
+						},
+						{
+							"key": "GL-015",
+							"title": "Фаза B перехода — переключение",
+							"status": "to-do",
+							"priority": "high",
+							"description": "1. Заморозить запись в Notion.\n2. Финальный импорт и сверка.\n3. Переписать канон с Notion на t-boards: `.claude/rules/17-notion-board.md`, `docs/plans/notion-board.md`, строки про Notion в корневом `CLAUDE.md` и `.claude/rules/00-task-ingress.md`, скиллы `grill-task` и `pr-review` (TB-008). PR в основной репозиторий — с `[skip ci]`, вливает владелец.\n4. Notion — только чтение (TB-033).",
+							"parent": "GL-010"
+						},
+						{
+							"key": "GL-016",
+							"title": "Фаза C перехода — после переключения",
+							"status": "to-do",
+							"priority": "medium",
+							"description": "1. Перманентные вопросы R-100…R-105, срезы П1–П5: поле `permanence`, эпизоды по расписанию, прогоны сторожей, «известно, не чинить», разбор импорта пачкой (TB-036, GL-017).\n2. Разбор «кладбища» Notion (TB-037).\n3. Перенос очереди R-083 — по `d-tb-plan-queue` (TB-038).\n4. Библиотека скиллов, ревью и abide, hetty, конструктор форм, облачные сессии (TB-022…024).",
+							"parent": "GL-010"
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "financial-terminal",
+			"name": "Financial terminal",
+			"description": "Финансовый терминал. Задачи появятся после постановки.",
+			"projects": [
+				{
+					"key": "FT",
+					"name": "Financial terminal",
+					"icon": "PieChart",
+					"cards": []
+				}
+			]
+		}
+	]
+}

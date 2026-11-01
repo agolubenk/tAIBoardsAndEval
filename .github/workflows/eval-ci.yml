@@ -1,0 +1,32 @@
+name: eval CI
+
+on:
+  push:
+    branches: [board-agents, main]
+    paths: ["eval/**", ".github/workflows/eval-ci.yml"]
+  pull_request:
+    paths: ["eval/**", ".github/workflows/eval-ci.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: eval-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: nerve tests
+        run: python3 -I -m unittest discover -s eval/nerve -p 'test_*.py'
+      - name: pipeline tests
+        run: python3 -I -m unittest discover -s eval/pipeline -p 'test_*.py'
+      - name: swarm tests
+        run: python3 -I -m unittest discover -s eval/swarm -p 'test_*.py'

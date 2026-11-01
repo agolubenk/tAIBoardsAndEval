@@ -1,0 +1,141 @@
+---
+title: "Authentication"
+description: "Use an API key for scripts or device authorization for interactive clients."
+---
+
+Most application requests need an `Authorization: Bearer` credential. Your credential is still subject to workspace membership and permissions.
+
+## API keys
+
+1. Sign in and open **Settings → Account → API Keys**, under the Developer section.
+2. Create a key and give it a name that identifies the script or service using it.
+3. Copy the full key when it is shown. You cannot retrieve it again later.
+4. Store it in a secret manager or private environment variable.
+
+Send it with each request:
+
+```bash
+curl --fail-with-body 'https://kaneo.example.com/api/task/tasks/PROJECT_ID' \
+  -H "Authorization: Bearer $KANEO_API_KEY"
+```
+
+Replace `PROJECT_ID` with the ID from a project URL. See [Make your first API request](/api-reference/introduction) for the complete sequence.
+
+Under `/api/auth/*` a key only reads who it belongs to and which workspaces it sees: `GET /api/auth/get-session` and `GET /api/auth/organization/list`. Managing the account, its keys, sessions and workspaces there needs a signed-in session; a key gets `403` with `SESSION_REQUIRED`. To read the current user with a key, call `GET /api/user/me`; for a workspace's members, `GET /api/workspace/WORKSPACE_ID/members`.
+
+### JavaScript on a server
+
+```javascript
+const response = await fetch(
+  'https://kaneo.example.com/api/task/tasks/PROJECT_ID',
+  { headers: { Authorization: `Bearer ${process.env.KANEO_API_KEY}` } }
+);
+if (!response.ok) {
+  throw new Error(`Kaneo request failed: ${response.status}`);
+}
+const board = await response.json();
+```
+
+### Revoke or rotate a key
+
+Return to **API Keys** to remove a credential you no longer use. To rotate one, create a replacement, update the service that uses it, check a request succeeds, then revoke the old key.
+
+## Rate limits
+
+Each API key can make 100 requests per 60 seconds by default. Requests made with a browser session or a device access token do not count against it.
+
+The window follows the key's most recent successful request. Every successful request starts the 60 seconds again, and the count resets only after a full window passes without a successful request. A steady stream of requests, even one per second, keeps the window open, so the key is limited after 100 requests until it has been idle for 60 seconds.
+
+Successful requests made with an API key include these headers:
+
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit` | Requests the key can make per window. |
+| `X-RateLimit-Remaining` | Requests left in the current window. |
+| `X-RateLimit-Reset` | Unix time in seconds when the window resets if the key makes no further requests. |
+
+When a key goes over its limit, Kaneo answers `429 Too Many Requests` with the error code `RATE_LIMITED`, the same headers, `X-RateLimit-Remaining: 0`, and a `Retry-After` header with the number of seconds to wait. Wait at least that long before you retry, and pace bulk jobs rather than retrying in a loop. A `429` does not mean the key is invalid. An unknown, disabled, or expired key still gets `401` with `UNAUTHORIZED`.
+
+A key with a usage quota also gets `429` with `RATE_LIMITED` once the quota runs out, with the message `API key usage limit exceeded`. `Retry-After` is included when the quota refills at a known time.
+
+Auth endpoints under `/api/auth` can also have their own per-IP limits, for example on sign-up and invitations. Those `429` responses include `Retry-After` but no `X-RateLimit` headers, because the request did not count against the key.
+
+## Device authorization
+
+By default, self-hosted Kaneo allows the built-in device clients `kaneo-cli` and `kaneo-mcp`.
+
+If you want to use a different device client ID, the instance operator must allow it through `DEVICE_AUTH_CLIENT_IDS`.
+
+### Flow overview
+
+1. Your app requests a device code from `/api/auth/device/code`
+2. Kaneo returns a `device_code`, `user_code`, polling interval, and verification URL
+3. The user opens the verification URL in a browser and signs in
+4. The user approves the request
+5. Your app polls `/api/auth/device/token` until an access token is issued
+6. Your app sends API requests with `Authorization: Bearer <token>`
+
+### Request a device code
+
+```bash
+curl -X POST https://kaneo.example.com/api/auth/device/code \
+  -H "Content-Type: application/json" \
+  -d '{"client_id":"kaneo-cli"}'
+```
+
+Example response:
+
+```json
+{
+  "device_code": "dev_123",
+  "user_code": "ABCD-1234",
+  "verification_uri": "https://kaneo.example.com/device",
+  "verification_uri_complete": "https://kaneo.example.com/device?user_code=ABCD-1234",
+  "interval": 5,
+  "expires_in": 600
+}
+```
+
+### Poll for a token
+
+```bash
+curl -X POST https://kaneo.example.com/api/auth/device/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "grant_type":"urn:ietf:params:oauth:grant-type:device_code",
+    "device_code":"dev_123",
+    "client_id":"kaneo-cli"
+  }'
+```
+
+While waiting for approval, Kaneo may return:
+
+- `authorization_pending`
+- `slow_down`
+- `invalid_client`
+- `expired_token`
+
+Once approved, Kaneo returns an access token:
+
+```json
+{
+  "access_token": "your-access-token",
+  "token_type": "Bearer"
+}
+```
+
+### Use the returned token
+
+```bash
+curl -X GET https://kaneo.example.com/api/task/tasks/PROJECT_ID \
+  -H "Authorization: Bearer your-access-token"
+```
+
+
+The examples use the built-in `kaneo-cli` client ID so they work with the default allowlist. A separately named client needs its own allowed ID in `DEVICE_AUTH_CLIENT_IDS`.
+
+Respect the polling interval returned by the server. On `slow_down`, increase the interval; stop when the code expires or access is denied. Do not log device codes or access tokens.
+
+## Keep credentials private
+
+Use a different key for each integration so you can revoke one without interrupting the others. If a key leaks, revoke it immediately and replace it in the affected service. Device access tokens are secrets too.

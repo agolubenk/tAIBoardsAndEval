@@ -1,0 +1,8988 @@
+[
+{
+"role": "Т2:qa",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T12:01:06.507Z",
+"calls": 111,
+"cost": 13.618267399999992,
+"write_cost": 4.956480000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 88,
+"Read": 5,
+"ToolSearch": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 6,
+"SendMessage": 3,
+"Write": 9,
+"Edit": 7
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 15:40",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T12:40:26.579Z",
+"calls": 206,
+"cost": 27.786044399999998,
+"write_cost": 2.905984000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 160,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 12,
+"Read": 6,
+"Write": 21,
+"Edit": 12,
+"SendMessage": 14
+}
+},
+{
+"role": "Т2:qa",
+"kind": "монитор/фон",
+"at": "23.10 16:43",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T13:43:35.743Z",
+"calls": 21,
+"cost": 3.4492509999999994,
+"write_cost": 0.230664,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 18,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 16:50",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T13:50:35.950Z",
+"calls": 8,
+"cost": 1.4533984,
+"write_cost": 0.10850399999999999,
+"action": true,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 3,
+"Write": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 16:55",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T13:55:13.267Z",
+"calls": 69,
+"cost": 12.9383582,
+"write_cost": 0.8814239999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 59,
+"Write": 3,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"Edit": 5,
+"Read": 2
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 17:28",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T14:28:33.391Z",
+"calls": 25,
+"cost": 10.516238800000002,
+"write_cost": 5.955375999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 21,
+"Write": 1,
+"Read": 2,
+"ToolSearch": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 20:17",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:17:07.246Z",
+"calls": 53,
+"cost": 16.093426200000003,
+"write_cost": 6.514351999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 45,
+"mcp__owner-queue__oq_put": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"SendMessage": 7,
+"Write": 2
+}
+},
+{
+"role": "Т2:qa",
+"kind": "монитор/фон",
+"at": "23.10 20:38",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:38:44.333Z",
+"calls": 11,
+"cost": 2.4617492000000003,
+"write_cost": 0.21259200000000003,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 10,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "монитор/фон",
+"at": "23.10 20:44",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:44:07.810Z",
+"calls": 25,
+"cost": 11.569426400000001,
+"write_cost": 6.880744000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 18,
+"mcp__owner-queue__oq_put": 1,
+"SendMessage": 3,
+"ToolSearch": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"Read": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 20:54",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:54:28.694Z",
+"calls": 6,
+"cost": 1.2175228,
+"write_cost": 0.06732,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 20:57",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:57:05.491Z",
+"calls": 7,
+"cost": 1.4361512,
+"write_cost": 0.081976,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Read": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 20:59",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T17:59:14.943Z",
+"calls": 10,
+"cost": 2.0438142,
+"write_cost": 0.103632,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 8,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 21:04",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:04:13.886Z",
+"calls": 28,
+"cost": 9.1654136,
+"write_cost": 0.41407999999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 24,
+"Write": 1,
+"Read": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 21:20",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:20:54.699Z",
+"calls": 5,
+"cost": 1.1116312,
+"write_cost": 0.064288,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 21:32",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:32:05.947Z",
+"calls": 5,
+"cost": 1.0977180000000002,
+"write_cost": 0.046383999999999995,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"Write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сжатие",
+"at": "23.10 21:35",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:35:28.743Z",
+"calls": 54,
+"cost": 3.1094528,
+"write_cost": 1.084392,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 43,
+"TaskStop": 2,
+"mcp__plugin_context-mode_context-mode__ctx_search": 2,
+"Read": 2,
+"ToolSearch": 2,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Edit": 3
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 21:49",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:49:55.372Z",
+"calls": 13,
+"cost": 0.8304332,
+"write_cost": 0.18501599999999996,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 9,
+"ListAgents": 1,
+"SendMessage": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 21:55",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T18:55:07.573Z",
+"calls": 99,
+"cost": 7.912807,
+"write_cost": 1.108024,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 88,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"SendMessage": 6,
+"Write": 2,
+"Read": 6,
+"TaskStop": 3,
+"Edit": 2
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 22:20",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T19:20:43.315Z",
+"calls": 2,
+"cost": 0.1807872,
+"write_cost": 0.024832,
+"action": true,
+"sent": false,
+"tools": {
+"Edit": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "23.10 22:31",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-23T19:31:32.302Z",
+"calls": 197,
+"cost": 34.94016640000001,
+"write_cost": 10.594024000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 179,
+"Read": 6,
+"ToolSearch": 1,
+"mcp__postgres-readonly__execute_sql": 2,
+"SendMessage": 23,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 8,
+"Write": 4,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"TaskStop": 4
+}
+},
+{
+"role": "Т2:qa",
+"kind": "монитор/фон",
+"at": "24.10 04:17",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-24T01:17:48.081Z",
+"calls": 9,
+"cost": 1.530528,
+"write_cost": 0.076432,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"TaskStop": 2
+}
+},
+{
+"role": "Т2:qa",
+"kind": "человек/прочее",
+"at": "24.10 07:29",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-24T04:29:31.558Z",
+"calls": 8,
+"cost": 0.9563982,
+"write_cost": 0.035664,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 6
+}
+},
+{
+"role": "Т2:devops",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T12:01:15.091Z",
+"calls": 77,
+"cost": 11.0155492,
+"write_cost": 5.594527999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 59,
+"Read": 4,
+"ToolSearch": 4,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 4,
+"mcp__ai-council__council_queue_status": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 5,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 2,
+"SendMessage": 9,
+"Write": 6,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"mcp__hub__notion_1mcp_notion-get-self": 1,
+"Edit": 2
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 15:34",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T12:34:16.992Z",
+"calls": 3,
+"cost": 0.2854548,
+"write_cost": 0.043264000000000004,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 15:34",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T12:34:57.320Z",
+"calls": 7,
+"cost": 0.7109814000000001,
+"write_cost": 0.114944,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"mcp__owner-queue__oq_put": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 15:39",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T12:39:56.769Z",
+"calls": 53,
+"cost": 9.128996800000001,
+"write_cost": 3.625816000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 37,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 3,
+"Write": 4,
+"mcp__owner-queue__oq_agent_status": 1,
+"SendMessage": 11,
+"ToolSearch": 2,
+"mcp__hub__sentry_1mcp_find_organizations": 1,
+"mcp__hub__cloudflare_1mcp_whoami": 1,
+"mcp__hub__context7_1mcp_resolve-library-id": 1,
+"mcp__docker__list_containers": 1,
+"mcp__github__get_me": 1,
+"mcp__headroom__headroom_stats": 1,
+"mcp__postgres-readonly__list_schemas": 1,
+"mcp__serena__list_memories": 1,
+"mcp__serena__find_symbol": 1,
+"mcp__plugin_playwright_playwright__browser_navigate": 1,
+"mcp__plugin_playwright_playwright__browser_close": 1,
+"mcp__notion__notion-get-self": 1,
+"Read": 2,
+"Edit": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 16:00",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T13:00:37.710Z",
+"calls": 19,
+"cost": 2.7593183999999993,
+"write_cost": 0.47201599999999994,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 13,
+"SendMessage": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 2,
+"Read": 1,
+"Edit": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 16:07",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T13:07:19.835Z",
+"calls": 2,
+"cost": 0.23644220000000002,
+"write_cost": 0.018096,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 16:16",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T13:16:35.513Z",
+"calls": 116,
+"cost": 22.480874599999996,
+"write_cost": 5.687672000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 93,
+"SendMessage": 11,
+"mcp__owner-queue__oq_list": 1,
+"ToolSearch": 1,
+"mcp__hub__notion_1mcp_notion-search": 2,
+"mcp__hub__notion_1mcp_notion-fetch": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 6,
+"Write": 5,
+"Edit": 10,
+"Read": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 16:50",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T13:50:36.302Z",
+"calls": 67,
+"cost": 18.082604000000007,
+"write_cost": 6.868448000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 55,
+"mcp__hub__notion_1mcp_notion-fetch": 1,
+"Write": 2,
+"SendMessage": 5,
+"mcp__postgres-readonly__execute_sql": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 2,
+"Read": 1,
+"Edit": 2,
+"ToolSearch": 1,
+"TaskStop": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 17:10",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T14:10:03.055Z",
+"calls": 4,
+"cost": 0.6819592000000001,
+"write_cost": 0.027952,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 17:20",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T14:20:50.959Z",
+"calls": 3,
+"cost": 0.5912374,
+"write_cost": 0.041639999999999996,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 17:22",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T14:22:02.750Z",
+"calls": 9,
+"cost": 1.7969912000000001,
+"write_cost": 0.139752,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 8,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 17:32",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T14:32:40.163Z",
+"calls": 7,
+"cost": 1.3778704000000002,
+"write_cost": 0.083104,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 19:30",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T16:30:12.823Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:09",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:09:15.641Z",
+"calls": 34,
+"cost": 15.032897600000002,
+"write_cost": 7.062232,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 24,
+"Read": 1,
+"Write": 3,
+"SendMessage": 6,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"mcp__owner-queue__oq_agent_status": 5,
+"Monitor": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"TaskStop": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:24:23.665Z",
+"calls": 3,
+"cost": 1.1116384,
+"write_cost": 0.050824,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 20:26",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:26:42.582Z",
+"calls": 6,
+"cost": 2.0034700000000005,
+"write_cost": 0.089184,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 20:28",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:28:44.255Z",
+"calls": 6,
+"cost": 1.7527686,
+"write_cost": 0.06852000000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:30",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:30:53.147Z",
+"calls": 1,
+"cost": 0.2555154,
+"write_cost": 0.008504,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:31",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:31:28.329Z",
+"calls": 2,
+"cost": 0.493215,
+"write_cost": 0.010424,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:36",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:36:09.643Z",
+"calls": 3,
+"cost": 0.8463318000000001,
+"write_cost": 0.066728,
+"action": true,
+"sent": true,
+"tools": {
+"Write": 1,
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:46",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:46:06.788Z",
+"calls": 3,
+"cost": 0.7276572000000001,
+"write_cost": 0.05436,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 20:48",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:48:38.606Z",
+"calls": 2,
+"cost": 0.3970846,
+"write_cost": 0.009368,
+"action": false,
+"sent": false,
+"tools": {
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 20:56",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T17:56:46.828Z",
+"calls": 2,
+"cost": 0.40706620000000004,
+"write_cost": 0.011976,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 21:00",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:00:34.789Z",
+"calls": 3,
+"cost": 0.5967206,
+"write_cost": 0.011432,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 21:07",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:07:51.374Z",
+"calls": 9,
+"cost": 1.8965526,
+"write_cost": 0.065472,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 21:18",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:18:46.198Z",
+"calls": 2,
+"cost": 0.409412,
+"write_cost": 0.011456000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сжатие",
+"at": "23.10 21:43",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:43:28.517Z",
+"calls": 19,
+"cost": 2.5049878,
+"write_cost": 1.2059999999999997,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 13,
+"ToolSearch": 2,
+"Monitor": 1,
+"Write": 1,
+"ListAgents": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 21:50",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:50:37.033Z",
+"calls": 4,
+"cost": 0.3688348,
+"write_cost": 0.12236,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 21:54",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T18:54:59.769Z",
+"calls": 2,
+"cost": 0.11305860000000001,
+"write_cost": 0.014784,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 22:02",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T19:02:08.630Z",
+"calls": 2,
+"cost": 0.1136488,
+"write_cost": 0.015416000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 22:15",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T19:15:18.193Z",
+"calls": 5,
+"cost": 0.3394558,
+"write_cost": 0.055832,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 22:19",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T19:19:07.119Z",
+"calls": 4,
+"cost": 0.2288428,
+"write_cost": 0.026416000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 22:37",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T19:37:21.432Z",
+"calls": 10,
+"cost": 1.8727608,
+"write_cost": 1.3063440000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"ToolSearch": 1,
+"mcp__postgres-readonly__execute_sql": 1,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 22:49",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T19:49:29.829Z",
+"calls": 2,
+"cost": 0.09738720000000001,
+"write_cost": 0.011744000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "23.10 23:19",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T20:19:36.265Z",
+"calls": 9,
+"cost": 0.6280214,
+"write_cost": 0.10020799999999999,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 6,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"SendMessage": 4
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 23:36",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T20:36:02.405Z",
+"calls": 56,
+"cost": 6.086225599999998,
+"write_cost": 1.2355759999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 47,
+"ToolSearch": 1,
+"mcp__hub__notion_1mcp_notion-fetch": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"Read": 1,
+"Edit": 13,
+"Write": 2,
+"SendMessage": 5,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "23.10 23:57",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T20:57:09.986Z",
+"calls": 3,
+"cost": 0.29128560000000003,
+"write_cost": 0.036928,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "монитор/фон",
+"at": "24.10 00:34",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T21:34:11.186Z",
+"calls": 1,
+"cost": 0.0719278,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:devops",
+"kind": "человек/прочее",
+"at": "24.10 01:23",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-23T22:23:24.994Z",
+"calls": 3,
+"cost": 0.24718520000000002,
+"write_cost": 0.007568,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "24.10 04:18",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-24T01:18:14.322Z",
+"calls": 20,
+"cost": 1.7430893999999997,
+"write_cost": 0.21139999999999998,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 14,
+"Read": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T12:01:28.858Z",
+"calls": 215,
+"cost": 33.52453820000001,
+"write_cost": 9.604687999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 181,
+"Read": 7,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"ToolSearch": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 3,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 19,
+"mcp__plugin_claude-mem_mcp-search__search": 2,
+"mcp__plugin_claude-mem_mcp-search__get_observations": 1,
+"SendMessage": 36,
+"Write": 5,
+"Edit": 30,
+"CronCreate": 1,
+"mcp__postgres-readonly__execute_sql": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:23",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:23:36.972Z",
+"calls": 5,
+"cost": 0.7607234,
+"write_cost": 0.068776,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:24",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:24:57.081Z",
+"calls": 3,
+"cost": 0.49332600000000004,
+"write_cost": 0.04524,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:25",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:25:59.952Z",
+"calls": 17,
+"cost": 2.9031186000000004,
+"write_cost": 0.266752,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 16,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:35",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:35:06.168Z",
+"calls": 8,
+"cost": 1.5203008000000002,
+"write_cost": 0.170832,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:39",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:39:19.618Z",
+"calls": 3,
+"cost": 0.497674,
+"write_cost": 0.03244,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:44",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:44:17.557Z",
+"calls": 6,
+"cost": 1.037576,
+"write_cost": 0.09605599999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:46",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:46:32.800Z",
+"calls": 5,
+"cost": 0.8945042,
+"write_cost": 0.067552,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:48",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:48:18.167Z",
+"calls": 5,
+"cost": 0.8781844,
+"write_cost": 0.057008,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:49",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:49:59.437Z",
+"calls": 4,
+"cost": 0.7672696,
+"write_cost": 0.06467200000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:51",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:51:59.170Z",
+"calls": 5,
+"cost": 0.8666914000000002,
+"write_cost": 0.050424000000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"Read": 1,
+"Edit": 1,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:53",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:53:33.918Z",
+"calls": 3,
+"cost": 0.5142176,
+"write_cost": 0.025312,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 16:58",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T13:58:21.089Z",
+"calls": 4,
+"cost": 0.6709032,
+"write_cost": 0.027743999999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 17:00",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T14:00:47.060Z",
+"calls": 11,
+"cost": 1.9199418000000001,
+"write_cost": 0.11099999999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 9,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 17:12",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T14:12:18.695Z",
+"calls": 4,
+"cost": 0.7371484,
+"write_cost": 0.05112,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 17:22",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T14:22:08.506Z",
+"calls": 5,
+"cost": 0.9517862000000001,
+"write_cost": 0.07515999999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 17:39",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T14:39:14.964Z",
+"calls": 4,
+"cost": 0.5518526,
+"write_cost": 0.038856,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3
+}
+},
+{
+"role": "Т2:security",
+"kind": "крон",
+"at": "23.10 20:07",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:07:00.673Z",
+"calls": 16,
+"cost": 8.846104599999999,
+"write_cost": 6.20608,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 14,
+"SendMessage": 3,
+"Edit": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:13",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:13:19.673Z",
+"calls": 6,
+"cost": 1.2941568000000003,
+"write_cost": 0.182832,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:16",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:16:57.345Z",
+"calls": 7,
+"cost": 1.4226456,
+"write_cost": 0.107864,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:21",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:21:04.240Z",
+"calls": 6,
+"cost": 1.1891154000000002,
+"write_cost": 0.106928,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:23",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:23:13.777Z",
+"calls": 2,
+"cost": 0.36518300000000004,
+"write_cost": 0.015544,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:24:23.231Z",
+"calls": 10,
+"cost": 2.2694232000000003,
+"write_cost": 0.23018399999999997,
+"action": true,
+"sent": true,
+"tools": {
+"SendMessage": 4,
+"Bash": 6,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:29",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:29:56.066Z",
+"calls": 5,
+"cost": 1.0085236,
+"write_cost": 0.056224,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"Read": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:33",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:33:09.173Z",
+"calls": 4,
+"cost": 0.7896172000000001,
+"write_cost": 0.043816,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:35",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:35:01.451Z",
+"calls": 9,
+"cost": 1.8631692,
+"write_cost": 0.11956800000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:41",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:41:11.990Z",
+"calls": 4,
+"cost": 0.8507271999999999,
+"write_cost": 0.070656,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:45",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:45:40.918Z",
+"calls": 5,
+"cost": 0.969793,
+"write_cost": 0.035288,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:47",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:47:28.469Z",
+"calls": 4,
+"cost": 0.8690736000000001,
+"write_cost": 0.06973599999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:49",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:49:32.312Z",
+"calls": 3,
+"cost": 0.6045378,
+"write_cost": 0.031096,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:54",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:54:28.551Z",
+"calls": 3,
+"cost": 1.2243748,
+"write_cost": 0.040712,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:56",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:56:50.793Z",
+"calls": 4,
+"cost": 1.5207938,
+"write_cost": 0.067928,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 20:58",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T17:58:58.563Z",
+"calls": 8,
+"cost": 2.6306004000000005,
+"write_cost": 0.078248,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 21:01",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T18:01:28.986Z",
+"calls": 3,
+"cost": 0.9362834,
+"write_cost": 0.034576,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 21:03",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T18:03:13.797Z",
+"calls": 2,
+"cost": 0.6284514000000001,
+"write_cost": 0.037112,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 21:04",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T18:04:41.434Z",
+"calls": 3,
+"cost": 0.8272362,
+"write_cost": 0.041192000000000006,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 21:06",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T18:06:40.970Z",
+"calls": 3,
+"cost": 0.7521720000000001,
+"write_cost": 0.026624000000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 22:31",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T19:31:32.107Z",
+"calls": 24,
+"cost": 14.4836936,
+"write_cost": 7.294384000000003,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 22,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 22:46",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T19:46:10.311Z",
+"calls": 17,
+"cost": 3.8504534000000006,
+"write_cost": 0.20054399999999997,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 17,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "человек/прочее",
+"at": "23.10 22:51",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T19:51:12.429Z",
+"calls": 5,
+"cost": 8.687663,
+"write_cost": 7.474728,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 22:53",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T19:53:32.463Z",
+"calls": 2,
+"cost": 0.5185584000000001,
+"write_cost": 0.014735999999999999,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:00",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:00:24.223Z",
+"calls": 5,
+"cost": 1.2810388000000001,
+"write_cost": 0.053368000000000006,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:02",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:02:12.905Z",
+"calls": 12,
+"cost": 2.5908712,
+"write_cost": 0.11385600000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 10,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:17",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:17:17.079Z",
+"calls": 4,
+"cost": 0.8231600000000001,
+"write_cost": 0.025,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:20",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:20:39.365Z",
+"calls": 4,
+"cost": 0.9663396000000001,
+"write_cost": 0.050408,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сжатие",
+"at": "23.10 23:25",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:25:31.527Z",
+"calls": 5,
+"cost": 1.6271866,
+"write_cost": 1.07504,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"ListAgents": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:31",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:31:29.290Z",
+"calls": 19,
+"cost": 3.4957770000000004,
+"write_cost": 1.1122,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 20,
+"Read": 5,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "23.10 23:50",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T20:50:43.018Z",
+"calls": 12,
+"cost": 4.7199574,
+"write_cost": 3.0153519999999996,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 9,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"ToolSearch": 1,
+"mcp__github__add_issue_comment": 4
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "24.10 00:03",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-23T21:03:41.430Z",
+"calls": 7,
+"cost": 0.7065108000000001,
+"write_cost": 0.028744,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 5,
+"Read": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "человек/прочее",
+"at": "24.10 06:01",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-24T03:01:43.806Z",
+"calls": 1,
+"cost": 0.08978860000000001,
+"write_cost": 0.009192,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:security",
+"kind": "человек/прочее",
+"at": "24.10 06:12",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-24T03:12:32.305Z",
+"calls": 2,
+"cost": 0.2587766,
+"write_cost": 0.026464,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__github__add_issue_comment": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "24.10 06:17",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-24T03:17:55.807Z",
+"calls": 4,
+"cost": 0.5223798000000001,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {
+"Read": 2,
+"Bash": 2,
+"Grep": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T12:01:37.128Z",
+"calls": 100,
+"cost": 15.639385800000001,
+"write_cost": 7.274408,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 61,
+"Read": 3,
+"ToolSearch": 3,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 3,
+"mcp__hub__notion_1mcp_notion-get-self": 1,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 8,
+"SendMessage": 16,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 27,
+"Write": 10,
+"Monitor": 1,
+"mcp__hub__notion_1mcp_notion-update-comment": 6
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 15:44",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T12:44:54.123Z",
+"calls": 10,
+"cost": 1.0671448000000001,
+"write_cost": 0.11778399999999999,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 15:47",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T12:47:07.199Z",
+"calls": 4,
+"cost": 0.3989028,
+"write_cost": 0.027568000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 15:54",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T12:54:10.951Z",
+"calls": 5,
+"cost": 0.5757684,
+"write_cost": 0.052888000000000004,
+"action": true,
+"sent": false,
+"tools": {
+"Write": 1,
+"Bash": 2,
+"Edit": 2,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 15:55",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T12:55:28.747Z",
+"calls": 19,
+"cost": 2.2445196000000003,
+"write_cost": 0.25383199999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 14,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"SendMessage": 3,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:05",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:05:49.503Z",
+"calls": 18,
+"cost": 2.7543958,
+"write_cost": 0.4138,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 13,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 5,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:13",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:13:49.402Z",
+"calls": 11,
+"cost": 1.5097892000000002,
+"write_cost": 0.16548,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 8,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:16",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:16:56.293Z",
+"calls": 12,
+"cost": 1.6258938,
+"write_cost": 0.16015999999999997,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 10,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:21",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:21:32.388Z",
+"calls": 3,
+"cost": 0.384331,
+"write_cost": 0.026056000000000003,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:22",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:22:12.525Z",
+"calls": 6,
+"cost": 0.7632906000000002,
+"write_cost": 0.04156000000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:25",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:25:04.022Z",
+"calls": 3,
+"cost": 0.37554540000000003,
+"write_cost": 0.0162,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:28",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:28:02.841Z",
+"calls": 4,
+"cost": 0.5153552,
+"write_cost": 0.0332,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:29",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:29:43.182Z",
+"calls": 4,
+"cost": 0.5327744,
+"write_cost": 0.040104,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:30",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:30:43.419Z",
+"calls": 10,
+"cost": 1.5289666000000002,
+"write_cost": 0.16402400000000003,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 8,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:41",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:41:23.643Z",
+"calls": 4,
+"cost": 0.5445,
+"write_cost": 0.037344,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:47",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:47:30.653Z",
+"calls": 4,
+"cost": 0.5676418000000001,
+"write_cost": 0.042088,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:49",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:49:05.882Z",
+"calls": 5,
+"cost": 0.7114644,
+"write_cost": 0.048119999999999996,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:50",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:50:36.176Z",
+"calls": 4,
+"cost": 0.5859468000000001,
+"write_cost": 0.042336,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:52",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:52:55.792Z",
+"calls": 3,
+"cost": 0.4602222,
+"write_cost": 0.036407999999999996,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 16:54",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:54:05.149Z",
+"calls": 3,
+"cost": 0.42166300000000007,
+"write_cost": 0.029328,
+"action": true,
+"sent": false,
+"tools": {
+"Read": 1,
+"Edit": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 16:55",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T13:55:21.569Z",
+"calls": 3,
+"cost": 0.4145818,
+"write_cost": 0.017072,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 17:12",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T14:12:32.891Z",
+"calls": 5,
+"cost": 0.7460326,
+"write_cost": 0.055951999999999995,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 17:20",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T14:20:50.742Z",
+"calls": 6,
+"cost": 0.9210880000000001,
+"write_cost": 0.065392,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 17:25",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T14:25:37.793Z",
+"calls": 3,
+"cost": 0.4053514,
+"write_cost": 0.012032,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 17:55",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T14:55:52.005Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 20:19",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:19:04.659Z",
+"calls": 15,
+"cost": 6.9766172,
+"write_cost": 4.893528000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 12,
+"Monitor": 1,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"ToolSearch": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:24:26.765Z",
+"calls": 4,
+"cost": 0.682774,
+"write_cost": 0.072144,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 2,
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 20:26",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:26:57.379Z",
+"calls": 4,
+"cost": 0.5804618,
+"write_cost": 0.04408,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"Read": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 20:27",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:27:46.965Z",
+"calls": 4,
+"cost": 0.6260555999999999,
+"write_cost": 0.041800000000000004,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 20:31",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:31:25.929Z",
+"calls": 3,
+"cost": 0.44230060000000004,
+"write_cost": 0.022191999999999996,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 20:36",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:36:26.847Z",
+"calls": 4,
+"cost": 0.5956016,
+"write_cost": 0.02792,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 20:44",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:44:48.632Z",
+"calls": 6,
+"cost": 0.9927352,
+"write_cost": 0.08460000000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 20:48",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T17:48:23.707Z",
+"calls": 6,
+"cost": 0.9732029999999999,
+"write_cost": 0.063928,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 4,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 21:20",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T18:20:07.125Z",
+"calls": 6,
+"cost": 1.0221906,
+"write_cost": 0.076144,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Monitor": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 21:22",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T18:22:42.470Z",
+"calls": 4,
+"cost": 0.6214438000000001,
+"write_cost": 0.03632,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 21:31",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T18:31:04.031Z",
+"calls": 4,
+"cost": 0.6121498000000001,
+"write_cost": 0.027583999999999997,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 21:44",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T18:44:06.179Z",
+"calls": 4,
+"cost": 0.6246666000000001,
+"write_cost": 0.034552,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 21:52",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T18:52:02.203Z",
+"calls": 3,
+"cost": 0.4609644,
+"write_cost": 0.016551999999999997,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 22:19",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:19:42.280Z",
+"calls": 7,
+"cost": 1.0795338,
+"write_cost": 0.04840800000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 5,
+"mcp__hub__notion_1mcp_notion-get-self": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 22:22",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:22:20.737Z",
+"calls": 3,
+"cost": 0.4667004,
+"write_cost": 0.017392,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 22:31",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:31:51.084Z",
+"calls": 4,
+"cost": 0.6514286000000001,
+"write_cost": 0.03608,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 22:37",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:37:18.699Z",
+"calls": 4,
+"cost": 0.640779,
+"write_cost": 0.034536000000000004,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 22:38",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:38:59.025Z",
+"calls": 7,
+"cost": 1.2123622,
+"write_cost": 0.074192,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 22:46",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:46:25.887Z",
+"calls": 3,
+"cost": 0.487316,
+"write_cost": 0.024527999999999998,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 22:47",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:47:09.934Z",
+"calls": 2,
+"cost": 0.3245248,
+"write_cost": 0.014504,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 22:52",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:52:35.894Z",
+"calls": 6,
+"cost": 0.9837460000000001,
+"write_cost": 0.049496,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 5,
+"Monitor": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 22:59",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T19:59:33.781Z",
+"calls": 6,
+"cost": 1.0305508,
+"write_cost": 0.062383999999999995,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 23:01",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:01:19.531Z",
+"calls": 2,
+"cost": 0.34220760000000006,
+"write_cost": 0.021248,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:08",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:08:56.290Z",
+"calls": 3,
+"cost": 0.5001972,
+"write_cost": 0.023752,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:22",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:22:51.164Z",
+"calls": 4,
+"cost": 0.6892005999999999,
+"write_cost": 0.033159999999999995,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:29",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:29:50.688Z",
+"calls": 6,
+"cost": 1.0522398000000002,
+"write_cost": 0.055016,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 23:31",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:31:28.368Z",
+"calls": 3,
+"cost": 0.5187786000000001,
+"write_cost": 0.028536,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "сообщение",
+"at": "23.10 23:32",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:32:12.564Z",
+"calls": 4,
+"cost": 0.6537322,
+"write_cost": 0.017912,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:40",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:40:32.881Z",
+"calls": 5,
+"cost": 0.8602582000000001,
+"write_cost": 0.041656,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:50",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:50:15.472Z",
+"calls": 3,
+"cost": 0.5150592,
+"write_cost": 0.02264,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "23.10 23:52",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T20:52:55.866Z",
+"calls": 5,
+"cost": 0.8963750000000001,
+"write_cost": 0.053815999999999996,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Monitor": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "24.10 00:03",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T21:03:09.954Z",
+"calls": 5,
+"cost": 6.769325,
+"write_cost": 6.065968000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "24.10 02:24",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-23T23:24:36.229Z",
+"calls": 3,
+"cost": 0.524661,
+"write_cost": 0.012664,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:notion",
+"kind": "монитор/фон",
+"at": "24.10 07:29",
+"sid": "f24b2393-a165-4190-aa55-b89a1969cdc0",
+"ts": "2026-10-24T04:29:55.372Z",
+"calls": 2,
+"cost": 0.1607146,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:01:38.773Z",
+"calls": 70,
+"cost": 8.1018134,
+"write_cost": 3.4000879999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 66,
+"Read": 6,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 1,
+"ToolSearch": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 5,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"SendMessage": 6,
+"mcp__postgres-readonly__execute_sql": 1,
+"Write": 2,
+"Edit": 9
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 15:30",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:30:28.283Z",
+"calls": 21,
+"cost": 2.8778958000000006,
+"write_cost": 0.530536,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 15,
+"Write": 1,
+"Edit": 11,
+"Read": 5,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 15:43",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:43:38.370Z",
+"calls": 13,
+"cost": 3.4327688000000003,
+"write_cost": 2.3851120000000003,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 8,
+"ToolSearch": 1,
+"TaskStop": 1,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 15:48",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:48:07.121Z",
+"calls": 18,
+"cost": 2.1230376,
+"write_cost": 0.35258399999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 14,
+"Read": 1,
+"Write": 1,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 15:54",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:54:27.806Z",
+"calls": 2,
+"cost": 0.1993096,
+"write_cost": 0.0242,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 15:58",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T12:58:16.561Z",
+"calls": 97,
+"cost": 17.55204220000001,
+"write_cost": 5.9304000000000014,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 82,
+"SendMessage": 1,
+"Read": 19,
+"Write": 11,
+"Edit": 27,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"ToolSearch": 1,
+"mcp__notion__notion-fetch": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 16:30",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T13:30:20.058Z",
+"calls": 5,
+"cost": 0.7294062000000001,
+"write_cost": 0.064984,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 16:48",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T13:48:21.576Z",
+"calls": 6,
+"cost": 0.8461578000000002,
+"write_cost": 0.055112,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 16:57",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T13:57:41.897Z",
+"calls": 13,
+"cost": 2.0219974,
+"write_cost": 0.168368,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 9,
+"SendMessage": 4,
+"Write": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 17:01",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T14:01:44.429Z",
+"calls": 6,
+"cost": 0.9979660000000001,
+"write_cost": 0.08903199999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Write": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 17:05",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T14:05:24.941Z",
+"calls": 7,
+"cost": 1.2593264,
+"write_cost": 0.123272,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1,
+"Write": 2,
+"Edit": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 17:09",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T14:09:17.409Z",
+"calls": 4,
+"cost": 0.6189632,
+"write_cost": 0.050608,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3,
+"TaskStop": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 17:11",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T14:11:57.587Z",
+"calls": 2,
+"cost": 0.31460940000000004,
+"write_cost": 0.027136,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 17:16",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T14:16:01.955Z",
+"calls": 55,
+"cost": 14.170809599999998,
+"write_cost": 5.935360000000003,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 38,
+"Edit": 4,
+"SendMessage": 5,
+"ToolSearch": 1,
+"mcp__plugin_playwright_playwright__browser_resize": 1,
+"mcp__plugin_playwright_playwright__browser_navigate": 4,
+"mcp__plugin_playwright_playwright__browser_console_messages": 1,
+"mcp__plugin_playwright_playwright__browser_snapshot": 3,
+"mcp__plugin_playwright_playwright__browser_take_screenshot": 5,
+"mcp__plugin_playwright_playwright__browser_click": 2,
+"mcp__plugin_playwright_playwright__browser_close": 1,
+"TaskStop": 1,
+"Read": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"Agent": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T17:24:26.077Z",
+"calls": 99,
+"cost": 29.648367200000003,
+"write_cost": 7.487688000000003,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 71,
+"SendMessage": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 6,
+"Read": 3,
+"Edit": 49,
+"Write": 19
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сжатие",
+"at": "23.10 21:05",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T18:05:42.713Z",
+"calls": 74,
+"cost": 9.073402199999999,
+"write_cost": 2.6271280000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Edit": 13,
+"Bash": 73,
+"ToolSearch": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Write": 4
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 21:31",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T18:31:39.311Z",
+"calls": 17,
+"cost": 4.12376,
+"write_cost": 2.5446400000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Edit": 1,
+"Bash": 15,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"ToolSearch": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 21:57",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T18:57:59.728Z",
+"calls": 25,
+"cost": 3.3820296,
+"write_cost": 0.600928,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 22,
+"Monitor": 2,
+"Edit": 10,
+"Write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 22:30",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T19:30:07.762Z",
+"calls": 52,
+"cost": 10.0463806,
+"write_cost": 4.0366159999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 46,
+"ListAgents": 1,
+"SendMessage": 11,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"ToolSearch": 1,
+"mcp__notion__notion-fetch": 1,
+"Monitor": 2,
+"Write": 4
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 22:47",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T19:47:08.888Z",
+"calls": 28,
+"cost": 4.585769,
+"write_cost": 0.5324960000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 23,
+"ToolSearch": 1,
+"TaskStop": 1,
+"SendMessage": 3,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 23:01",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T20:01:51.746Z",
+"calls": 2,
+"cost": 0.2695824,
+"write_cost": 0.02112,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "монитор/фон",
+"at": "23.10 23:05",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T20:05:22.149Z",
+"calls": 63,
+"cost": 12.0090722,
+"write_cost": 1.46804,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 57,
+"SendMessage": 15,
+"mcp__notion__notion-search": 1,
+"Monitor": 3,
+"mcp__notion__notion-fetch": 1,
+"Write": 2,
+"TaskStop": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 23:37",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T20:37:09.523Z",
+"calls": 9,
+"cost": 1.8733794,
+"write_cost": 0.17786399999999997,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"TaskStop": 1,
+"SendMessage": 3,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "23.10 23:42",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T20:42:12.302Z",
+"calls": 42,
+"cost": 11.403637800000002,
+"write_cost": 1.182,
+"action": true,
+"sent": true,
+"tools": {
+"SendMessage": 4,
+"Bash": 36,
+"mcp__notion__notion-fetch": 1,
+"Write": 1,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сообщение",
+"at": "24.10 00:03",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-23T21:03:43.656Z",
+"calls": 10,
+"cost": 2.2098968,
+"write_cost": 0.042887999999999996,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 9
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "человек/прочее",
+"at": "24.10 07:39",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-24T04:39:44.906Z",
+"calls": 2,
+"cost": 0.258583,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "человек/прочее",
+"at": "23.10 15:00",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T12:00:48.339Z",
+"calls": 119,
+"cost": 12.432436400000002,
+"write_cost": 4.3571599999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 91,
+"Read": 5,
+"ToolSearch": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 5,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 10,
+"Write": 6,
+"SendMessage": 10,
+"mcp__owner-queue__oq_get": 2,
+"Edit": 2,
+"Skill": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "человек/прочее",
+"at": "23.10 15:41",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T12:41:11.033Z",
+"calls": 18,
+"cost": 2.1856844000000004,
+"write_cost": 0.380112,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 10,
+"Read": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1,
+"Write": 2,
+"Edit": 2,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 15:53",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T12:53:24.574Z",
+"calls": 37,
+"cost": 4.571711799999999,
+"write_cost": 0.705632,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 30,
+"Write": 4,
+"Edit": 2,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 6,
+"Read": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 16:16",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T13:16:34.766Z",
+"calls": 44,
+"cost": 6.321019000000001,
+"write_cost": 0.8335840000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 32,
+"Read": 2,
+"SendMessage": 6,
+"Edit": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"Write": 2
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 16:33",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T13:33:03.112Z",
+"calls": 2,
+"cost": 0.2669178,
+"write_cost": 0.027471999999999996,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 17:18",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T14:18:04.999Z",
+"calls": 11,
+"cost": 1.6164324,
+"write_cost": 0.15696000000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 8,
+"Read": 2,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 17:22",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T14:22:08.047Z",
+"calls": 7,
+"cost": 1.0613596,
+"write_cost": 0.112816,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Read": 3,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 17:25",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T14:25:04.847Z",
+"calls": 2,
+"cost": 0.30352060000000003,
+"write_cost": 0.031608,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 17:28",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T14:28:18.907Z",
+"calls": 5,
+"cost": 0.7247338000000002,
+"write_cost": 0.05084,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 20:16",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T17:16:57.633Z",
+"calls": 7,
+"cost": 4.9366167999999995,
+"write_cost": 4.076248,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Edit": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 20:56",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T17:56:51.297Z",
+"calls": 8,
+"cost": 1.5248914,
+"write_cost": 0.25140799999999996,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Read": 2,
+"Write": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 21:01",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T18:01:58.011Z",
+"calls": 4,
+"cost": 0.6232526,
+"write_cost": 0.065136,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 21:04",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T18:04:14.216Z",
+"calls": 12,
+"cost": 2.0182329999999995,
+"write_cost": 0.26902400000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Read": 3,
+"Bash": 8,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Write": 1,
+"Edit": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 21:20",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T18:20:55.229Z",
+"calls": 3,
+"cost": 0.49423319999999993,
+"write_cost": 0.065272,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 21:32",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T18:32:06.234Z",
+"calls": 13,
+"cost": 1.9519394,
+"write_cost": 0.149344,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 10,
+"Read": 2,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 21:58",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T18:58:00.181Z",
+"calls": 8,
+"cost": 1.2839732,
+"write_cost": 0.113688,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"Read": 2,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 22:31",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T19:31:32.735Z",
+"calls": 19,
+"cost": 3.4905958000000004,
+"write_cost": 0.38089600000000007,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 15,
+"Read": 1,
+"Write": 1,
+"SendMessage": 3,
+"Edit": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 22:41",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T19:41:00.118Z",
+"calls": 2,
+"cost": 0.32381800000000005,
+"write_cost": 0.029072,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 22:46",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T19:46:10.020Z",
+"calls": 4,
+"cost": 0.6991046000000001,
+"write_cost": 0.065736,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "23.10 23:08",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-23T20:08:45.283Z",
+"calls": 10,
+"cost": 1.7471226000000002,
+"write_cost": 0.133168,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 9,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:analyst",
+"kind": "сообщение",
+"at": "24.10 04:18",
+"sid": "0e98c134-f0fd-4c70-bf4d-72d86723c681",
+"ts": "2026-10-24T01:18:14.958Z",
+"calls": 13,
+"cost": 1.5755964,
+"write_cost": 0.02908,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"Read": 3,
+"Write": 2
+}
+},
+{
+"role": "Т2:backend",
+"kind": "человек/прочее",
+"at": "23.10 15:01",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T12:01:21.015Z",
+"calls": 346,
+"cost": 70.9544778,
+"write_cost": 21.822455999999992,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 273,
+"Read": 32,
+"ToolSearch": 4,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 17,
+"Edit": 121,
+"Write": 30,
+"SendMessage": 40,
+"Monitor": 3,
+"TaskStop": 1,
+"mcp__notion__notion-search": 1,
+"mcp__notion__notion-fetch": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 6
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сжатие",
+"at": "23.10 16:49",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T13:49:59.947Z",
+"calls": 137,
+"cost": 12.8805332,
+"write_cost": 2.8396159999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 109,
+"ToolSearch": 3,
+"ListAgents": 1,
+"TaskStop": 3,
+"Monitor": 3,
+"SendMessage": 10,
+"Read": 4,
+"Edit": 24,
+"Write": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 17:29",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T14:29:33.363Z",
+"calls": 32,
+"cost": 4.3098954,
+"write_cost": 0.863096,
+"action": true,
+"sent": true,
+"tools": {
+"ToolSearch": 2,
+"Bash": 25,
+"mcp__notion__notion-fetch": 1,
+"Read": 2,
+"Write": 2,
+"Edit": 2,
+"SendMessage": 4,
+"TaskStop": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 18:09",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T15:09:25.933Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 20:10",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T17:10:59.887Z",
+"calls": 158,
+"cost": 33.777095,
+"write_cost": 10.132471999999996,
+"action": true,
+"sent": true,
+"tools": {
+"Monitor": 6,
+"Bash": 140,
+"Write": 13,
+"Edit": 22,
+"SendMessage": 42,
+"TaskStop": 5,
+"mcp__notion__notion-fetch": 2,
+"ToolSearch": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"mcp__notion__notion-search": 1,
+"Read": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 21:05",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:05:35.223Z",
+"calls": 1,
+"cost": 0.17661120000000002,
+"write_cost": 0.014096,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 21:05",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:05:44.962Z",
+"calls": 3,
+"cost": 0.6037822,
+"write_cost": 0.045104,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 21:07",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:07:05.404Z",
+"calls": 1,
+"cost": 0.1674552,
+"write_cost": 0.00516,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 21:07",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:07:13.821Z",
+"calls": 1,
+"cost": 0.1658282,
+"write_cost": 0.003584,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 21:07",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:07:23.847Z",
+"calls": 1,
+"cost": 0.16719380000000003,
+"write_cost": 0.00452,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 21:08",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:08:14.308Z",
+"calls": 2,
+"cost": 0.37338220000000005,
+"write_cost": 0.018368000000000002,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 21:11",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:11:38.721Z",
+"calls": 1,
+"cost": 0.168426,
+"write_cost": 0.00512,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 21:28",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:28:59.294Z",
+"calls": 2,
+"cost": 0.352317,
+"write_cost": 0.011088,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 21:41",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T18:41:42.464Z",
+"calls": 3,
+"cost": 0.6336548000000001,
+"write_cost": 0.06128,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 22:15",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T19:15:18.402Z",
+"calls": 3,
+"cost": 0.5433060000000001,
+"write_cost": 0.025599999999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 22:47",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T19:47:08.786Z",
+"calls": 45,
+"cost": 11.5608268,
+"write_cost": 0.8105279999999999,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__notion__notion-search": 1,
+"Bash": 41,
+"mcp__notion__notion-fetch": 1,
+"Write": 3,
+"Read": 1,
+"SendMessage": 4,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:03",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:03:50.175Z",
+"calls": 1,
+"cost": 0.3040224,
+"write_cost": 0.018664,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:04",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:04:22.381Z",
+"calls": 1,
+"cost": 0.289433,
+"write_cost": 0.005776,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 23:04",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:04:39.568Z",
+"calls": 1,
+"cost": 0.2855374,
+"write_cost": 0.005152,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:16",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:16:22.735Z",
+"calls": 3,
+"cost": 0.9066442,
+"write_cost": 0.042088,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 3
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 23:17",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:17:35.797Z",
+"calls": 1,
+"cost": 0.2623104,
+"write_cost": 0.005296,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 23:17",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:17:52.091Z",
+"calls": 1,
+"cost": 0.2589188,
+"write_cost": 0.003384,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:18",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:18:06.808Z",
+"calls": 1,
+"cost": 0.2595794,
+"write_cost": 0.00812,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:18",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:18:25.765Z",
+"calls": 1,
+"cost": 0.2552584,
+"write_cost": 0.005112,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 23:18",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:18:48.272Z",
+"calls": 2,
+"cost": 0.5072106000000001,
+"write_cost": 0.009816,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:30",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:30:38.827Z",
+"calls": 12,
+"cost": 2.9877591999999997,
+"write_cost": 0.197296,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 12,
+"Write": 2
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сжатие",
+"at": "23.10 23:35",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:35:56.885Z",
+"calls": 34,
+"cost": 4.3117938,
+"write_cost": 2.6273439999999995,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 29,
+"Write": 1,
+"ToolSearch": 2,
+"ListAgents": 1,
+"SendMessage": 5,
+"Monitor": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "23.10 23:42",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:42:45.543Z",
+"calls": 2,
+"cost": 0.182195,
+"write_cost": 0.088008,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "23.10 23:46",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T20:46:46.072Z",
+"calls": 55,
+"cost": 5.590598000000001,
+"write_cost": 0.9946400000000004,
+"action": true,
+"sent": true,
+"tools": {
+"ToolSearch": 2,
+"Bash": 47,
+"mcp__notion__notion-fetch": 1,
+"Write": 5,
+"SendMessage": 11,
+"Edit": 6,
+"Monitor": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "24.10 02:40",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-23T23:40:21.336Z",
+"calls": 3,
+"cost": 0.24276999999999999,
+"write_cost": 0.01696,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "24.10 03:42",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-24T00:42:55.039Z",
+"calls": 2,
+"cost": 0.1513568,
+"write_cost": 0.008496,
+"action": false,
+"sent": false,
+"tools": {
+"Monitor": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "24.10 03:48",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-24T00:48:36.397Z",
+"calls": 22,
+"cost": 2.1816372,
+"write_cost": 0.254152,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 13,
+"ToolSearch": 1,
+"mcp__notion__notion-search": 2,
+"SendMessage": 1,
+"Monitor": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "24.10 08:46",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-24T05:46:45.503Z",
+"calls": 2,
+"cost": 0.0905698,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {
+"Monitor": 1
+}
+},
+{
+"role": "Т2:backend",
+"kind": "монитор/фон",
+"at": "24.10 09:48",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-24T06:48:16.568Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:designer",
+"kind": "человек/прочее",
+"at": "23.10 15:02",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T12:02:10.504Z",
+"calls": 73,
+"cost": 7.351102000000001,
+"write_cost": 3.2712399999999997,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 50,
+"Read": 6,
+"ToolSearch": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 4,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"SendMessage": 3,
+"mcp__owner-queue__oq_get": 3,
+"Write": 5,
+"TaskStop": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 15:34",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T12:34:17.439Z",
+"calls": 2,
+"cost": 0.20416020000000001,
+"write_cost": 0.05868,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 15:43",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T12:43:38.112Z",
+"calls": 9,
+"cost": 0.8075092,
+"write_cost": 0.13623999999999997,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"TaskStop": 1,
+"Edit": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 15:50",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T12:50:58.918Z",
+"calls": 6,
+"cost": 0.6106336,
+"write_cost": 0.089944,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5,
+"Edit": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 15:54",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T12:54:08.694Z",
+"calls": 21,
+"cost": 2.2424364000000003,
+"write_cost": 0.32498400000000016,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 16,
+"Edit": 5,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 16:06",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T13:06:19.524Z",
+"calls": 3,
+"cost": 0.261303,
+"write_cost": 0.028224000000000003,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 16:16",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T13:16:35.142Z",
+"calls": 132,
+"cost": 21.012452799999995,
+"write_cost": 5.065696,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"Bash": 100,
+"ToolSearch": 1,
+"mcp__notion__notion-fetch": 5,
+"mcp__notion__notion-search": 1,
+"SendMessage": 5,
+"Write": 13,
+"Read": 9,
+"Edit": 40,
+"TaskStop": 2
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 17:05",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T14:05:04.487Z",
+"calls": 5,
+"cost": 0.8035924000000001,
+"write_cost": 0.05592,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"Edit": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 17:11",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T14:11:35.476Z",
+"calls": 41,
+"cost": 7.076378400000002,
+"write_cost": 0.54832,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 34,
+"SendMessage": 6,
+"Edit": 9,
+"Write": 7,
+"Read": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 17:26",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T14:26:13.693Z",
+"calls": 26,
+"cost": 5.184569799999999,
+"write_cost": 0.4406400000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 14,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Write": 10,
+"Edit": 13,
+"Read": 2
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 17:36",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T14:36:25.096Z",
+"calls": 3,
+"cost": 0.5066348,
+"write_cost": 0.016632,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 17:37",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T14:37:20.305Z",
+"calls": 9,
+"cost": 1.4775578,
+"write_cost": 0.08856,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"Edit": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T17:24:26.513Z",
+"calls": 9,
+"cost": 6.860989400000001,
+"write_cost": 5.446143999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 1,
+"Edit": 2,
+"Read": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 20:29",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T17:29:05.674Z",
+"calls": 5,
+"cost": 0.943172,
+"write_cost": 0.078,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 20:32",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T17:32:10.871Z",
+"calls": 14,
+"cost": 2.7226452,
+"write_cost": 0.215456,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 9,
+"Write": 4,
+"Read": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 20:44",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T17:44:51.505Z",
+"calls": 38,
+"cost": 6.893855800000002,
+"write_cost": 0.37587199999999993,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 35,
+"Read": 3,
+"Edit": 4
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:01",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:01:12.141Z",
+"calls": 6,
+"cost": 1.0987576000000001,
+"write_cost": 0.0526,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Read": 1,
+"TaskStop": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:03",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:03:06.736Z",
+"calls": 28,
+"cost": 5.558604400000001,
+"write_cost": 0.38072000000000006,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 21,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Read": 7,
+"Write": 3,
+"Edit": 4,
+"TaskStop": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 21:13",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:13:39.485Z",
+"calls": 18,
+"cost": 4.108664800000001,
+"write_cost": 0.358224,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 11,
+"Read": 4,
+"Edit": 12,
+"Write": 3,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 21:21",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:21:49.140Z",
+"calls": 3,
+"cost": 0.6399862000000001,
+"write_cost": 0.039312,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:31",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:31:12.656Z",
+"calls": 14,
+"cost": 4.8616974,
+"write_cost": 0.218928,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Read": 4,
+"Edit": 6,
+"Write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:39",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:39:47.141Z",
+"calls": 5,
+"cost": 1.55756,
+"write_cost": 0.044952,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "23.10 21:44",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:44:15.193Z",
+"calls": 2,
+"cost": 0.594922,
+"write_cost": 0.047168,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:45",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:45:47.765Z",
+"calls": 9,
+"cost": 2.3161828,
+"write_cost": 0.10560800000000001,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"Read": 3,
+"TaskStop": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 21:57",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T18:57:05.731Z",
+"calls": 10,
+"cost": 2.3221366,
+"write_cost": 0.14688,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"mcp__notion__notion-fetch": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сжатие",
+"at": "23.10 22:01",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T19:01:44.594Z",
+"calls": 104,
+"cost": 9.801163800000001,
+"write_cost": 2.54348,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1,
+"Bash": 79,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 3,
+"Edit": 12,
+"Write": 6,
+"Read": 5,
+"ToolSearch": 1,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "монитор/фон",
+"at": "23.10 22:49",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-23T19:49:00.388Z",
+"calls": 195,
+"cost": 29.9266216,
+"write_cost": 3.3197040000000007,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 156,
+"Read": 24,
+"SendMessage": 12,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 3,
+"ToolSearch": 2,
+"Monitor": 1,
+"Write": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"TaskStop": 3,
+"Edit": 5
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "24.10 06:17",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-24T03:17:57.645Z",
+"calls": 9,
+"cost": 1.4070034,
+"write_cost": 0.03884,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 8
+}
+},
+{
+"role": "Т2:manager",
+"kind": "человек/прочее",
+"at": "23.10 15:00",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:00:41.684Z",
+"calls": 69,
+"cost": 10.6144516,
+"write_cost": 4.796511999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 42,
+"Read": 4,
+"ToolSearch": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 6,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 7,
+"SendMessage": 22,
+"CronCreate": 7,
+"Write": 4,
+"Edit": 3,
+"CronDelete": 2,
+"CronList": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 15:37",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:37:58.986Z",
+"calls": 6,
+"cost": 0.9181282,
+"write_cost": 0.19439199999999998,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"ListAgents": 1,
+"SendMessage": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 15:42",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:42:54.932Z",
+"calls": 5,
+"cost": 0.531273,
+"write_cost": 0.08135200000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 15:46",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:46:03.348Z",
+"calls": 8,
+"cost": 0.8280790000000001,
+"write_cost": 0.108312,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 15:54",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:54:37.385Z",
+"calls": 6,
+"cost": 0.697613,
+"write_cost": 0.105432,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 15:59",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T12:59:07.980Z",
+"calls": 3,
+"cost": 0.3200906,
+"write_cost": 0.041264,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:04",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:04:55.909Z",
+"calls": 4,
+"cost": 0.5298574,
+"write_cost": 0.08609599999999999,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Bash": 2
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:11",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:11:47.734Z",
+"calls": 11,
+"cost": 1.9609155999999999,
+"write_cost": 0.393944,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 7,
+"Write": 1,
+"SendMessage": 11,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Edit": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:18",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:18:50.895Z",
+"calls": 8,
+"cost": 1.4649302,
+"write_cost": 0.28456800000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Read": 1,
+"Bash": 3,
+"Edit": 6,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:25",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:25:45.078Z",
+"calls": 3,
+"cost": 0.4232746,
+"write_cost": 0.053504,
+"action": true,
+"sent": true,
+"tools": {
+"Edit": 1,
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:29",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:29:07.764Z",
+"calls": 3,
+"cost": 0.38365540000000004,
+"write_cost": 0.036712,
+"action": true,
+"sent": false,
+"tools": {
+"CronDelete": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:31",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:31:29.612Z",
+"calls": 3,
+"cost": 0.392302,
+"write_cost": 0.040232,
+"action": true,
+"sent": false,
+"tools": {
+"Edit": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:33",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:33:03.630Z",
+"calls": 3,
+"cost": 0.39426300000000003,
+"write_cost": 0.040272,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:37",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:37:46.230Z",
+"calls": 4,
+"cost": 0.49822040000000006,
+"write_cost": 0.041088,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:50",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:50:07.554Z",
+"calls": 3,
+"cost": 0.3973824,
+"write_cost": 0.038744,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 16:53",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T13:53:33.747Z",
+"calls": 4,
+"cost": 0.492377,
+"write_cost": 0.039688,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 17:28",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T14:28:42.760Z",
+"calls": 3,
+"cost": 0.42919340000000006,
+"write_cost": 0.048431999999999996,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 17:39",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T14:39:15.576Z",
+"calls": 2,
+"cost": 0.25207620000000003,
+"write_cost": 0.02204,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:10",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:10:39.009Z",
+"calls": 10,
+"cost": 4.692237799999999,
+"write_cost": 3.52,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 5,
+"Edit": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "крон",
+"at": "23.10 20:15",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:15:39.925Z",
+"calls": 4,
+"cost": 0.4847254,
+"write_cost": 0.043352,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:23",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:23:14.160Z",
+"calls": 4,
+"cost": 0.6224062000000001,
+"write_cost": 0.07855999999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"Write": 1,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:25",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:25:33.968Z",
+"calls": 4,
+"cost": 0.5106812000000001,
+"write_cost": 0.065536,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:28",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:28:36.930Z",
+"calls": 2,
+"cost": 0.2178306,
+"write_cost": 0.010168,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:30",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:30:02.067Z",
+"calls": 3,
+"cost": 0.445743,
+"write_cost": 0.050752000000000005,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 3,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:31",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:31:28.484Z",
+"calls": 3,
+"cost": 0.40255420000000003,
+"write_cost": 0.037247999999999996,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 2,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:41",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:41:12.482Z",
+"calls": 3,
+"cost": 0.43910059999999995,
+"write_cost": 0.045264,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:46",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:46:23.667Z",
+"calls": 3,
+"cost": 0.3622702,
+"write_cost": 0.023167999999999998,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 20:50",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T17:50:42.071Z",
+"calls": 3,
+"cost": 0.40172300000000005,
+"write_cost": 0.03368,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 21:07",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T18:07:51.705Z",
+"calls": 2,
+"cost": 0.3303918,
+"write_cost": 0.0436,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 21:09",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T18:09:44.389Z",
+"calls": 2,
+"cost": 0.26659180000000005,
+"write_cost": 0.022768,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 21:11",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T18:11:00.829Z",
+"calls": 2,
+"cost": 0.24431420000000004,
+"write_cost": 0.014367999999999999,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 21:22",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T18:22:02.146Z",
+"calls": 2,
+"cost": 0.29685379999999995,
+"write_cost": 0.029128,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 22:31",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T19:31:51.316Z",
+"calls": 2,
+"cost": 4.1927674,
+"write_cost": 4.042976,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 22:46",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T19:46:26.033Z",
+"calls": 3,
+"cost": 0.4765688,
+"write_cost": 0.051784000000000004,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 3,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 22:59",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T19:59:30.650Z",
+"calls": 4,
+"cost": 0.660773,
+"write_cost": 0.082256,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:30",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:30:56.439Z",
+"calls": 3,
+"cost": 0.5111594,
+"write_cost": 0.066536,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:36",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:36:26.820Z",
+"calls": 2,
+"cost": 0.2983992,
+"write_cost": 0.029240000000000002,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:38",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:38:50.026Z",
+"calls": 2,
+"cost": 0.31416900000000003,
+"write_cost": 0.032064,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:40",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:40:06.161Z",
+"calls": 3,
+"cost": 0.4378094,
+"write_cost": 0.035168000000000005,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:41",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:41:15.389Z",
+"calls": 2,
+"cost": 0.2652712,
+"write_cost": 0.015376,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:46",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:46:46.322Z",
+"calls": 3,
+"cost": 0.4364044,
+"write_cost": 0.032704,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 1,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "23.10 23:54",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T20:54:10.589Z",
+"calls": 2,
+"cost": 0.2844992,
+"write_cost": 0.02076,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "24.10 00:03",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-23T21:03:43.221Z",
+"calls": 8,
+"cost": 0.7966012,
+"write_cost": 0.011776,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 3,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "24.10 05:44",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-24T02:44:28.621Z",
+"calls": 3,
+"cost": 4.808180800000001,
+"write_cost": 4.49048,
+"action": false,
+"sent": true,
+"tools": {
+"SendMessage": 2,
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "крон",
+"at": "24.10 09:15",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-24T06:15:39.624Z",
+"calls": 3,
+"cost": 4.5322144,
+"write_cost": 4.526784,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:researcher",
+"kind": "человек/прочее",
+"at": "23.10 15:03",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T12:03:24.152Z",
+"calls": 12,
+"cost": 1.3113897999999997,
+"write_cost": 0.9712080000000001,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Read": 2,
+"ToolSearch": 1,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:researcher",
+"kind": "человек/прочее",
+"at": "23.10 15:19",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T12:19:38.092Z",
+"calls": 1,
+"cost": 0.1388842,
+"write_cost": 0.096736,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:researcher",
+"kind": "сообщение",
+"at": "23.10 15:23",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T12:23:46.442Z",
+"calls": 2,
+"cost": 0.1308648,
+"write_cost": 0.031464,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:researcher",
+"kind": "сообщение",
+"at": "23.10 15:48",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T12:48:09.493Z",
+"calls": 4,
+"cost": 0.6287648,
+"write_cost": 0.218688,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Read": 1,
+"Skill": 1
+}
+},
+{
+"role": "Т2:researcher",
+"kind": "человек/прочее",
+"at": "23.10 15:50",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T12:50:54.467Z",
+"calls": 106,
+"cost": 14.351799799999995,
+"write_cost": 4.514624000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 63,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"ToolSearch": 2,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 2,
+"Read": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"mcp__plugin_context-mode_context-mode__ctx_fetch_and_index": 3,
+"mcp__plugin_context-mode_context-mode__ctx_search": 4,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 9,
+"Write": 11,
+"Edit": 7,
+"WebSearch": 4,
+"SendMessage": 2
+}
+},
+{
+"role": "Т2:researcher",
+"kind": "сообщение",
+"at": "23.10 16:24",
+"sid": "648a4712-cf62-4224-98ce-cfa1a472a38e",
+"ts": "2026-10-23T13:24:01.671Z",
+"calls": 2,
+"cost": 0.22549500000000003,
+"write_cost": 0.039167999999999994,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "человек/прочее",
+"at": "23.10 15:03",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T12:03:08.050Z",
+"calls": 79,
+"cost": 9.727533,
+"write_cost": 3.3446160000000007,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 49,
+"Read": 4,
+"ToolSearch": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 9,
+"SendMessage": 7,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 7,
+"Write": 5,
+"Edit": 5,
+"mcp__plugin_context-mode_context-mode__ctx_search": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 15:33",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T12:33:28.443Z",
+"calls": 2,
+"cost": 0.2597958,
+"write_cost": 0.0552,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 15:40",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T12:40:25.846Z",
+"calls": 66,
+"cost": 11.851435200000001,
+"write_cost": 2.3591439999999992,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 48,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 7,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 5,
+"Write": 4,
+"Edit": 19,
+"SendMessage": 7,
+"Read": 2
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:07",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:07:01.278Z",
+"calls": 4,
+"cost": 0.6740294,
+"write_cost": 0.053304000000000004,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"Read": 1,
+"Edit": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:08",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:08:06.504Z",
+"calls": 1,
+"cost": 0.1585306,
+"write_cost": 0.008256,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:11",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:11:44.973Z",
+"calls": 7,
+"cost": 1.3413926,
+"write_cost": 0.14236,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"Read": 1,
+"Edit": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:15",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:15:52.029Z",
+"calls": 32,
+"cost": 6.377551599999999,
+"write_cost": 0.680368,
+"action": true,
+"sent": true,
+"tools": {
+"Read": 5,
+"Edit": 17,
+"Bash": 21,
+"SendMessage": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 1,
+"Write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:27",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:27:59.464Z",
+"calls": 3,
+"cost": 0.6441546,
+"write_cost": 0.080352,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:32",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:32:59.040Z",
+"calls": 7,
+"cost": 1.4923236000000002,
+"write_cost": 0.12716,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Read": 3,
+"Edit": 3,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:37",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:37:40.500Z",
+"calls": 4,
+"cost": 0.847825,
+"write_cost": 0.068112,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"Edit": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:39",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:39:49.614Z",
+"calls": 7,
+"cost": 1.3986234,
+"write_cost": 0.078488,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"Edit": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 16:45",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T13:45:10.521Z",
+"calls": 3,
+"cost": 0.560073,
+"write_cost": 0.018976,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 17:13",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T14:13:48.221Z",
+"calls": 4,
+"cost": 0.8310118,
+"write_cost": 0.060768,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 20:47",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T17:47:28.858Z",
+"calls": 8,
+"cost": 7.9220706000000005,
+"write_cost": 6.623728,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"Edit": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 20:56",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T17:56:51.087Z",
+"calls": 5,
+"cost": 0.9281174000000001,
+"write_cost": 0.05408799999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "23.10 21:10",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-23T18:10:10.714Z",
+"calls": 3,
+"cost": 0.5432214000000001,
+"write_cost": 0.022175999999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "человек/прочее",
+"at": "23.10 15:00",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:00:35.316Z",
+"calls": 42,
+"cost": 5.9827634000000005,
+"write_cost": 2.486040000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 26,
+"Read": 5,
+"ToolSearch": 3,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 20,
+"SendMessage": 20,
+"Monitor": 1,
+"mcp__owner-queue__oq_list": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute_file": 1,
+"CronCreate": 3,
+"mcp__owner-queue__oq_get": 2,
+"mcp__owner-queue__oq_patch": 1,
+"mcp__owner-queue__oq_agent_status": 1,
+"CronDelete": 2,
+"CronList": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:25",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:25:19.538Z",
+"calls": 2,
+"cost": 0.22153240000000002,
+"write_cost": 0.054272,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:28",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:28:04.999Z",
+"calls": 8,
+"cost": 2.9585885999999997,
+"write_cost": 2.2886960000000003,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"ToolSearch": 1,
+"Write": 1,
+"TaskStop": 1,
+"Monitor": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:32",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:32:44.706Z",
+"calls": 6,
+"cost": 0.7754486,
+"write_cost": 0.167144,
+"action": false,
+"sent": true,
+"tools": {
+"ToolSearch": 1,
+"Bash": 3,
+"ListAgents": 1,
+"SendMessage": 1,
+"PushNotification": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 3
+}
+},
+{
+"role": "Т2:owner",
+"kind": "человек/прочее",
+"at": "23.10 15:36",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:36:06.955Z",
+"calls": 6,
+"cost": 0.8752696,
+"write_cost": 0.17813600000000002,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:39",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:39:32.898Z",
+"calls": 4,
+"cost": 0.4188548,
+"write_cost": 0.069464,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:40",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:40:26.568Z",
+"calls": 2,
+"cost": 0.20160260000000002,
+"write_cost": 0.024744,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:42",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:42:54.765Z",
+"calls": 2,
+"cost": 0.2577692,
+"write_cost": 0.053544,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:46",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:46:16.228Z",
+"calls": 5,
+"cost": 0.6131856,
+"write_cost": 0.107384,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Read": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:48",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:48:09.586Z",
+"calls": 2,
+"cost": 0.1968702,
+"write_cost": 0.026320000000000003,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 15:58",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T12:58:59.490Z",
+"calls": 10,
+"cost": 1.2503419999999998,
+"write_cost": 0.17924800000000002,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"mcp__owner-queue__oq_get": 1,
+"Edit": 1,
+"Monitor": 1,
+"SendMessage": 2,
+"Write": 1,
+"CronList": 1,
+"CronDelete": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:02",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:02:05.207Z",
+"calls": 2,
+"cost": 0.20331140000000003,
+"write_cost": 0.025792000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 16:04",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:04:20.711Z",
+"calls": 5,
+"cost": 0.6879826,
+"write_cost": 0.105328,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__owner-queue__oq_get": 1,
+"mcp__owner-queue__oq_agent_status": 3,
+"SendMessage": 2,
+"Bash": 2,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:05",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:05:55.361Z",
+"calls": 5,
+"cost": 0.6616603999999999,
+"write_cost": 0.10567200000000002,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Bash": 1,
+"Edit": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:07",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:07:40.799Z",
+"calls": 3,
+"cost": 0.3264308,
+"write_cost": 0.02808,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"Edit": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:15",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:15:54.275Z",
+"calls": 4,
+"cost": 0.5530438,
+"write_cost": 0.084952,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"Read": 1,
+"Edit": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:18",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:18:38.374Z",
+"calls": 6,
+"cost": 0.7012292,
+"write_cost": 0.072384,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Edit": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:20",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:20:11.916Z",
+"calls": 1,
+"cost": 0.10097160000000001,
+"write_cost": 0.006552,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:22",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:22:40.852Z",
+"calls": 6,
+"cost": 0.7629092000000001,
+"write_cost": 0.088664,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Edit": 4,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:25",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:25:44.302Z",
+"calls": 3,
+"cost": 0.3881812,
+"write_cost": 0.046048,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Edit": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:27",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:27:12.690Z",
+"calls": 6,
+"cost": 0.9701124000000001,
+"write_cost": 0.13935999999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Edit": 1,
+"CronDelete": 4,
+"CronCreate": 8,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 16:30",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:30:49.540Z",
+"calls": 4,
+"cost": 0.49927440000000006,
+"write_cost": 0.049768,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1,
+"mcp__owner-queue__oq_agent_status": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:32",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:32:06.176Z",
+"calls": 1,
+"cost": 0.11363940000000002,
+"write_cost": 0.00728,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:35",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:35:15.345Z",
+"calls": 2,
+"cost": 0.24797360000000002,
+"write_cost": 0.02044,
+"action": true,
+"sent": false,
+"tools": {
+"Edit": 3
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:38",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:38:23.962Z",
+"calls": 4,
+"cost": 0.5008382,
+"write_cost": 0.037744,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 2,
+"Edit": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:41",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:41:23.824Z",
+"calls": 4,
+"cost": 0.48187920000000006,
+"write_cost": 0.031,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Edit": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:42",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:42:09.596Z",
+"calls": 3,
+"cost": 0.3990492,
+"write_cost": 0.044544,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:49",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:49:23.638Z",
+"calls": 2,
+"cost": 0.30051020000000006,
+"write_cost": 0.047591999999999995,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:51",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:51:04.027Z",
+"calls": 4,
+"cost": 0.5941818000000001,
+"write_cost": 0.06750400000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Edit": 1,
+"Bash": 2,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 16:52",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T13:52:42.363Z",
+"calls": 2,
+"cost": 0.2321916,
+"write_cost": 0.012688000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 17:01",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T14:01:01.609Z",
+"calls": 3,
+"cost": 0.3411532,
+"write_cost": 0.00944,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 17:31",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T14:31:10.400Z",
+"calls": 3,
+"cost": 0.3915134,
+"write_cost": 0.032736,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 18:16",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T15:16:13.904Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:09",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:09:15.806Z",
+"calls": 7,
+"cost": 4.700762800000001,
+"write_cost": 3.873216,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"mcp__owner-queue__oq_get": 1,
+"mcp__owner-queue__oq_agent_status": 1,
+"SendMessage": 1,
+"Monitor": 1,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:12",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:12:41.091Z",
+"calls": 2,
+"cost": 0.2962348,
+"write_cost": 0.045208,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__owner-queue__oq_agent_status": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:14",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:14:33.768Z",
+"calls": 2,
+"cost": 0.3035208,
+"write_cost": 0.043192,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__owner-queue__oq_agent_status": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:15",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:15:19.520Z",
+"calls": 10,
+"cost": 1.9062506,
+"write_cost": 0.316472,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"mcp__owner-queue__oq_agent_status": 3,
+"SendMessage": 2,
+"Edit": 3,
+"Read": 2,
+"Write": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:20",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:20:02.857Z",
+"calls": 2,
+"cost": 0.27076500000000003,
+"write_cost": 0.020768000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "человек/прочее",
+"at": "23.10 20:22",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:22:47.356Z",
+"calls": 5,
+"cost": 0.9422335999999999,
+"write_cost": 0.13876,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 1,
+"ListAgents": 1,
+"SendMessage": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Edit": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:25",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:25:14.905Z",
+"calls": 8,
+"cost": 1.3453684,
+"write_cost": 0.191,
+"action": true,
+"sent": true,
+"tools": {
+"SendMessage": 5,
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Edit": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 20:28",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:28:30.126Z",
+"calls": 2,
+"cost": 0.28617420000000005,
+"write_cost": 0.023728,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__owner-queue__oq_agent_status": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 20:40",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:40:39.254Z",
+"calls": 4,
+"cost": 0.5137274000000001,
+"write_cost": 0.013032,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "крон",
+"at": "23.10 20:53",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T17:53:00.930Z",
+"calls": 8,
+"cost": 5.677760600000002,
+"write_cost": 4.655616,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 1,
+"mcp__owner-queue__oq_agent_status": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 21:00",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T18:00:41.566Z",
+"calls": 3,
+"cost": 5.2332096,
+"write_cost": 4.9094880000000005,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Edit": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 21:09",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T18:09:32.223Z",
+"calls": 2,
+"cost": 0.3103846,
+"write_cost": 0.026119999999999997,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 21:10",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T18:10:54.230Z",
+"calls": 3,
+"cost": 0.40584200000000004,
+"write_cost": 0.01056,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 21:41",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T18:41:04.822Z",
+"calls": 3,
+"cost": 0.4042422,
+"write_cost": 0.007968,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 22:11",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T19:11:17.114Z",
+"calls": 3,
+"cost": 0.41289560000000003,
+"write_cost": 0.011032,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 22:41",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T19:41:30.122Z",
+"calls": 3,
+"cost": 0.4045208,
+"write_cost": 0.007848,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 23:11",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T20:11:42.958Z",
+"calls": 3,
+"cost": 0.4048478,
+"write_cost": 0.007904,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "23.10 23:21",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T20:21:13.421Z",
+"calls": 2,
+"cost": 0.30977980000000005,
+"write_cost": 0.025599999999999998,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "23.10 23:41",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T20:41:56.191Z",
+"calls": 3,
+"cost": 0.4082674,
+"write_cost": 0.00892,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 00:18",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T21:18:55.785Z",
+"calls": 3,
+"cost": 0.4025862000000001,
+"write_cost": 0.00204,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 02:24",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-23T23:24:34.054Z",
+"calls": 5,
+"cost": 0.5458462000000001,
+"write_cost": 0.002896,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 03:58",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T00:58:58.085Z",
+"calls": 6,
+"cost": 0.6879831999999999,
+"write_cost": 0.016376,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 2
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 05:08",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T02:08:09.355Z",
+"calls": 3,
+"cost": 0.4121154,
+"write_cost": 0.008736,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 05:44",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T02:44:00.355Z",
+"calls": 4,
+"cost": 0.5470550000000001,
+"write_cost": 0.006928,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 06:50",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T03:50:09.215Z",
+"calls": 3,
+"cost": 0.4097006,
+"write_cost": 0.005024000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 07:39",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T04:39:44.606Z",
+"calls": 3,
+"cost": 0.4077408,
+"write_cost": 0.00204,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"Monitor": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "24.10 08:46",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T05:46:45.325Z",
+"calls": 2,
+"cost": 0.1365,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "крон",
+"at": "24.10 09:31",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-24T06:31:58.681Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:data",
+"kind": "человек/прочее",
+"at": "23.10 15:02",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T12:02:37.977Z",
+"calls": 66,
+"cost": 9.343013800000001,
+"write_cost": 3.1821679999999994,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 30,
+"Read": 6,
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 11,
+"ToolSearch": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 3,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"SendMessage": 4,
+"Write": 5,
+"Edit": 14
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 15:38",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T12:38:13.628Z",
+"calls": 8,
+"cost": 1.006206,
+"write_cost": 0.15099200000000002,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 15:43",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T12:43:15.709Z",
+"calls": 7,
+"cost": 0.8488751999999999,
+"write_cost": 0.089928,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"Edit": 1,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 15:53",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T12:53:38.777Z",
+"calls": 13,
+"cost": 2.4456455999999998,
+"write_cost": 0.537288,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 2,
+"Bash": 7,
+"Read": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 16:05",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T13:05:27.291Z",
+"calls": 8,
+"cost": 1.2969878000000001,
+"write_cost": 0.202072,
+"action": true,
+"sent": false,
+"tools": {
+"mcp__plugin_context-mode_context-mode__ctx_batch_execute": 1,
+"Bash": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 17:35",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T14:35:41.179Z",
+"calls": 10,
+"cost": 4.6785190000000005,
+"write_cost": 3.5379040000000006,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"Edit": 2
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 18:03",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T15:03:35.224Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 20:27",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T17:27:43.239Z",
+"calls": 42,
+"cost": 9.474341199999996,
+"write_cost": 4.146327999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 27,
+"SendMessage": 5,
+"Read": 3,
+"Edit": 10,
+"Write": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 20:46",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T17:46:14.256Z",
+"calls": 6,
+"cost": 4.6049752,
+"write_cost": 4.000128,
+"action": false,
+"sent": false,
+"tools": {
+"ToolSearch": 1,
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 21:02",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:02:58.713Z",
+"calls": 6,
+"cost": 1.01855,
+"write_cost": 0.14004799999999998,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5,
+"Write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 21:14",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:14:53.343Z",
+"calls": 22,
+"cost": 3.8028600000000017,
+"write_cost": 0.5352079999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 14,
+"Read": 4,
+"Edit": 11,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 21:23",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:23:19.425Z",
+"calls": 2,
+"cost": 0.27930600000000005,
+"write_cost": 0.016952000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 21:39",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:39:38.647Z",
+"calls": 7,
+"cost": 1.1237876,
+"write_cost": 0.08889599999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 21:42",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:42:42.648Z",
+"calls": 3,
+"cost": 0.5241758,
+"write_cost": 0.05537600000000001,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 21:44",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:44:15.521Z",
+"calls": 2,
+"cost": 0.2759942,
+"write_cost": 0.010728,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 21:49",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T18:49:40.175Z",
+"calls": 10,
+"cost": 1.9244206000000001,
+"write_cost": 0.243712,
+"action": true,
+"sent": false,
+"tools": {
+"Edit": 6,
+"Write": 1,
+"Bash": 6,
+"Read": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "монитор/фон",
+"at": "23.10 22:14",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T19:14:21.449Z",
+"calls": 6,
+"cost": 1.0037732,
+"write_cost": 0.073496,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 22:15",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T19:15:48.856Z",
+"calls": 2,
+"cost": 0.30135520000000005,
+"write_cost": 0.017368,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 22:16",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T19:16:11.152Z",
+"calls": 2,
+"cost": 0.301926,
+"write_cost": 0.013544,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:data",
+"kind": "сообщение",
+"at": "23.10 23:21",
+"sid": "aeb3f633-37b1-435a-8416-017cba8ea2cc",
+"ts": "2026-10-23T20:21:13.858Z",
+"calls": 2,
+"cost": 5.049990000000001,
+"write_cost": 4.88868,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "человек/прочее",
+"at": "23.10 15:00",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:00:54.648Z",
+"calls": 94,
+"cost": 10.688831999999998,
+"write_cost": 4.107392,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 75,
+"Read": 2,
+"ToolSearch": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 14,
+"SendMessage": 7,
+"Write": 4,
+"mcp__owner-queue__oq_get": 1,
+"CronCreate": 4
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:34",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:34:47.682Z",
+"calls": 12,
+"cost": 1.2008592,
+"write_cost": 0.167424,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 11,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:40",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:40:26.249Z",
+"calls": 2,
+"cost": 0.21484799999999998,
+"write_cost": 0.029232,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:42",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:42:35.426Z",
+"calls": 5,
+"cost": 0.5348292,
+"write_cost": 0.065456,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:44",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:44:28.444Z",
+"calls": 3,
+"cost": 0.2782462,
+"write_cost": 0.026088,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 15:45",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:45:10.138Z",
+"calls": 8,
+"cost": 0.7749320000000001,
+"write_cost": 0.07593599999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 6,
+"Edit": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:46",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:46:53.901Z",
+"calls": 5,
+"cost": 2.8764459999999996,
+"write_cost": 2.534328,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"ToolSearch": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 15:50",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T12:50:39.010Z",
+"calls": 45,
+"cost": 7.670086599999999,
+"write_cost": 3.537288,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 37,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"Edit": 1,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 4,
+"ToolSearch": 2,
+"mcp__plugin_claude-mem_mcp-search__search": 1,
+"mcp__plugin_claude-mem_mcp-search__get_observations": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:03",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:03:57.628Z",
+"calls": 7,
+"cost": 0.8686914000000001,
+"write_cost": 0.11188799999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 16:06",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:06:27.099Z",
+"calls": 6,
+"cost": 0.7108324,
+"write_cost": 0.07307999999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:08",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:08:35.307Z",
+"calls": 3,
+"cost": 0.3386,
+"write_cost": 0.033648,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:09",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:09:32.970Z",
+"calls": 2,
+"cost": 0.2086786,
+"write_cost": 0.013760000000000001,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:11",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:11:26.389Z",
+"calls": 8,
+"cost": 0.9846452000000001,
+"write_cost": 0.121848,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 16:13",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:13:29.829Z",
+"calls": 5,
+"cost": 0.6006404000000001,
+"write_cost": 0.055431999999999995,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:14",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:14:34.489Z",
+"calls": 3,
+"cost": 0.35029140000000003,
+"write_cost": 0.027344,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:16",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:16:25.676Z",
+"calls": 13,
+"cost": 5.1944926,
+"write_cost": 3.7058559999999994,
+"action": true,
+"sent": true,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"ToolSearch": 1,
+"Bash": 6,
+"SendMessage": 4,
+"Write": 1,
+"CronDelete": 2,
+"CronCreate": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:23",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:23:22.985Z",
+"calls": 3,
+"cost": 0.355915,
+"write_cost": 0.027392,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:25",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:25:39.343Z",
+"calls": 17,
+"cost": 2.333394,
+"write_cost": 0.270688,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 14,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"SendMessage": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:33",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:33:03.324Z",
+"calls": 1,
+"cost": 0.11355080000000001,
+"write_cost": 0.00812,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:35",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:35:05.946Z",
+"calls": 9,
+"cost": 1.1986888,
+"write_cost": 0.11200800000000001,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 16:37",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:37:34.586Z",
+"calls": 3,
+"cost": 0.4011866,
+"write_cost": 0.029472,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:42",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:42:09.201Z",
+"calls": 2,
+"cost": 0.25516059999999996,
+"write_cost": 0.016472,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:44",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:44:17.872Z",
+"calls": 7,
+"cost": 0.9727928,
+"write_cost": 0.104336,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 16:46",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:46:35.593Z",
+"calls": 4,
+"cost": 0.520672,
+"write_cost": 0.028728,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:48",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:48:21.765Z",
+"calls": 12,
+"cost": 1.7066824,
+"write_cost": 0.14077599999999998,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 8,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"SendMessage": 4
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:55",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:55:13.069Z",
+"calls": 9,
+"cost": 1.3830950000000002,
+"write_cost": 0.14379999999999996,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 16:58",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T13:58:20.570Z",
+"calls": 5,
+"cost": 0.7205100000000001,
+"write_cost": 0.046864,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:00",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:00:47.418Z",
+"calls": 9,
+"cost": 1.3657672,
+"write_cost": 0.11266399999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"Write": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:03",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:03:46.744Z",
+"calls": 4,
+"cost": 0.5880284,
+"write_cost": 0.034912,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:06",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:06:49.464Z",
+"calls": 9,
+"cost": 1.4378465999999999,
+"write_cost": 0.11827199999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 8,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:10",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:10:55.283Z",
+"calls": 6,
+"cost": 0.9440574,
+"write_cost": 0.07524,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:12",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:12:19.026Z",
+"calls": 5,
+"cost": 0.7960148,
+"write_cost": 0.061368000000000006,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:14",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:14:16.984Z",
+"calls": 4,
+"cost": 0.5860913999999999,
+"write_cost": 0.025832,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:16",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:16:54.798Z",
+"calls": 2,
+"cost": 0.30851400000000007,
+"write_cost": 0.017655999999999998,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:18",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:18:03.276Z",
+"calls": 4,
+"cost": 0.6365474,
+"write_cost": 0.046424,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:19",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:19:37.691Z",
+"calls": 8,
+"cost": 1.2324824,
+"write_cost": 0.063552,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 6,
+"SendMessage": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:22",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:22:02.561Z",
+"calls": 2,
+"cost": 0.34299100000000005,
+"write_cost": 0.026696,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:28",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:28:19.510Z",
+"calls": 6,
+"cost": 0.9361134,
+"write_cost": 0.04888,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:32",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:32:48.444Z",
+"calls": 4,
+"cost": 0.646308,
+"write_cost": 0.041496000000000005,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 17:39",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:39:15.109Z",
+"calls": 8,
+"cost": 1.3262562,
+"write_cost": 0.092976,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:42",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:42:30.359Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 17:49",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T14:49:33.650Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "23.10 20:12",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:12:00.850Z",
+"calls": 15,
+"cost": 7.662726799999999,
+"write_cost": 5.336783999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 12,
+"CronCreate": 1,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"Write": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:17",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:17:07.077Z",
+"calls": 2,
+"cost": 5.4998553999999995,
+"write_cost": 5.330255999999999,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:21",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:21:04.651Z",
+"calls": 6,
+"cost": 1.0230546,
+"write_cost": 0.085136,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:22",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:22:31.328Z",
+"calls": 2,
+"cost": 0.3393996,
+"write_cost": 0.023864,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 20:23",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:23:07.112Z",
+"calls": 5,
+"cost": 0.8387138000000001,
+"write_cost": 0.044888000000000004,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:24",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:24:24.066Z",
+"calls": 4,
+"cost": 0.6922140000000001,
+"write_cost": 0.041151999999999994,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:28",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:28:30.358Z",
+"calls": 3,
+"cost": 0.4803992,
+"write_cost": 0.019568000000000002,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:29",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:29:18.719Z",
+"calls": 10,
+"cost": 1.7639373999999999,
+"write_cost": 0.11952800000000001,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 8,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"SendMessage": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "23.10 20:32",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:32:48.493Z",
+"calls": 2,
+"cost": 5.823336800000001,
+"write_cost": 5.660768,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:33",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:33:12.355Z",
+"calls": 12,
+"cost": 2.1465228,
+"write_cost": 0.148384,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 10,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:37",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:37:51.557Z",
+"calls": 2,
+"cost": 0.3346384,
+"write_cost": 0.015823999999999998,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:41",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:41:37.971Z",
+"calls": 9,
+"cost": 1.5549148000000002,
+"write_cost": 0.07996799999999998,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 7,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 20:44",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:44:44.896Z",
+"calls": 6,
+"cost": 1.0625744000000001,
+"write_cost": 0.053384,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 4,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"CronDelete": 1,
+"CronCreate": 1,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:46",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:46:23.506Z",
+"calls": 5,
+"cost": 0.9237446000000001,
+"write_cost": 0.056432,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:51",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:51:10.202Z",
+"calls": 2,
+"cost": 0.3885394,
+"write_cost": 0.029944,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:54",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:54:28.331Z",
+"calls": 5,
+"cost": 0.8921144,
+"write_cost": 0.04228,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 20:56",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:56:09.067Z",
+"calls": 5,
+"cost": 0.912047,
+"write_cost": 0.04544000000000001,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"CronDelete": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 20:58",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T17:58:50.601Z",
+"calls": 6,
+"cost": 1.1206588000000002,
+"write_cost": 0.07372799999999999,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:02",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:02:07.004Z",
+"calls": 2,
+"cost": 0.34974380000000005,
+"write_cost": 0.015648,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:03",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:03:10.047Z",
+"calls": 3,
+"cost": 0.505037,
+"write_cost": 0.010735999999999999,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "23.10 21:04",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:04:00.533Z",
+"calls": 3,
+"cost": 6.680546400000001,
+"write_cost": 6.230752,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "23.10 21:07",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:07:04.121Z",
+"calls": 9,
+"cost": 1.8424376,
+"write_cost": 0.156488,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 3,
+"CronDelete": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2,
+"Write": 2,
+"Edit": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:20",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:20:56.056Z",
+"calls": 2,
+"cost": 0.38421400000000006,
+"write_cost": 0.027048000000000003,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:23",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:23:08.257Z",
+"calls": 5,
+"cost": 0.9612012000000001,
+"write_cost": 0.049448,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:32",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:32:05.689Z",
+"calls": 7,
+"cost": 1.297067,
+"write_cost": 0.053104,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 5,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:41",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:41:42.756Z",
+"calls": 2,
+"cost": 0.3814776,
+"write_cost": 0.017048,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:44",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:44:14.907Z",
+"calls": 2,
+"cost": 0.4116002000000001,
+"write_cost": 0.031328,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 21:57",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T18:57:59.117Z",
+"calls": 5,
+"cost": 1.0062761999999998,
+"write_cost": 0.05828,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 22:15",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T19:15:18.773Z",
+"calls": 2,
+"cost": 0.38688100000000003,
+"write_cost": 0.022992,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 22:35",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T19:35:21.865Z",
+"calls": 2,
+"cost": 0.38491800000000004,
+"write_cost": 0.017832,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:01",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:01:58.620Z",
+"calls": 7,
+"cost": 1.4155237999999999,
+"write_cost": 0.08736,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 6,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:16",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:16:22.509Z",
+"calls": 2,
+"cost": 0.4208316,
+"write_cost": 0.030208,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:17",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:17:17.436Z",
+"calls": 4,
+"cost": 0.7748198000000001,
+"write_cost": 0.02756,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:18",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:18:21.156Z",
+"calls": 1,
+"cost": 0.18688580000000002,
+"write_cost": 0.005304,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:18",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:18:56.276Z",
+"calls": 2,
+"cost": 0.3700818,
+"write_cost": 0.009663999999999999,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:21",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:21:13.958Z",
+"calls": 2,
+"cost": 0.39251880000000006,
+"write_cost": 0.014504,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:24",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:24:39.548Z",
+"calls": 3,
+"cost": 0.6070066000000001,
+"write_cost": 0.028136,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:31",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:31:59.639Z",
+"calls": 2,
+"cost": 0.4189832,
+"write_cost": 0.022696,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:40",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:40:05.754Z",
+"calls": 4,
+"cost": 0.8434958000000001,
+"write_cost": 0.053712,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 3,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:50",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:50:43.258Z",
+"calls": 5,
+"cost": 1.2139275999999999,
+"write_cost": 0.054335999999999995,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:52",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:52:09.891Z",
+"calls": 3,
+"cost": 1.1589892,
+"write_cost": 0.024968,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:53",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:53:01.455Z",
+"calls": 2,
+"cost": 0.7542706000000001,
+"write_cost": 0.0224,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:56",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:56:30.000Z",
+"calls": 3,
+"cost": 1.0898866,
+"write_cost": 0.023607999999999997,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 1,
+"SendMessage": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "23.10 23:59",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T20:59:12.283Z",
+"calls": 5,
+"cost": 1.7574832,
+"write_cost": 0.043984,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 4,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "24.10 00:01",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T21:01:05.103Z",
+"calls": 2,
+"cost": 0.6544184,
+"write_cost": 0.01216,
+"action": false,
+"sent": false,
+"tools": {
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "24.10 00:02",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T21:02:26.110Z",
+"calls": 3,
+"cost": 1.0307568000000003,
+"write_cost": 0.041544,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1,
+"CronCreate": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "24.10 00:03",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-23T21:03:42.815Z",
+"calls": 9,
+"cost": 16.231007400000003,
+"write_cost": 14.236152,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 6
+}
+},
+{
+"role": "Т2:control",
+"kind": "человек/прочее",
+"at": "24.10 03:48",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-24T00:48:33.691Z",
+"calls": 2,
+"cost": 0.7508896,
+"write_cost": 0.026392,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "24.10 04:34",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-24T01:34:06.129Z",
+"calls": 4,
+"cost": 1.327169,
+"write_cost": 0.010328,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 2
+}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "24.10 06:12",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-24T03:12:58.373Z",
+"calls": 3,
+"cost": 0.9799184000000001,
+"write_cost": 0.024288,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "24.10 09:00",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-24T06:00:03.946Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+}
+]

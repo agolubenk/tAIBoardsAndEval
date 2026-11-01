@@ -1,0 +1,550 @@
+{
+ "money": {
+  "вход": 29.65240000000316,
+  "запись кэша 5 мин": 0.0,
+  "запись кэша 1 ч": 395.6993840000001,
+  "чтение кэша": 703.4943404000015,
+  "выход": 169.17607999999916
+ },
+ "cold": {
+  "старт": {
+   "n": 14,
+   "usd": 8.186856
+  },
+  "прочее": {
+   "n": 40,
+   "usd": 129.449288
+  },
+  "сон > 60 мин": {
+   "n": 20,
+   "usd": 97.413968
+  },
+  "сжатие": {
+   "n": 7,
+   "usd": 4.6808320000000005
+  },
+  "сон 5–60 мин": {
+   "n": 5,
+   "usd": 28.758696000000004
+  }
+ },
+ "held": {
+  "хук:SessionStart": {
+   "n": 21,
+   "tok": 42557,
+   "tail_tok": 13706671
+  },
+  "сообщение:человек/прочее": {
+   "n": 59,
+   "tok": 73250,
+   "tail_tok": 25025928
+  },
+  "вложение:skill_listing": {
+   "n": 21,
+   "tok": 183351,
+   "tail_tok": 61474971
+  },
+  "хук:UserPromptSubmit": {
+   "n": 902,
+   "tok": 342652,
+   "tail_tok": 84183977
+  },
+  "вложение:instructions": {
+   "n": 28,
+   "tok": 436623,
+   "tail_tok": 107297476
+  },
+  "хук:PreToolUse": {
+   "n": 104,
+   "tok": 17386,
+   "tail_tok": 3963860
+  },
+  "результат:Bash": {
+   "n": 4994,
+   "tok": 2034981,
+   "tail_tok": 467261414
+  },
+  "результат:Read": {
+   "n": 299,
+   "tok": 412397,
+   "tail_tok": 103741518
+  },
+  "результат:ToolSearch": {
+   "n": 82,
+   "tok": 0,
+   "tail_tok": 0
+  },
+  "результат:ListAgents": {
+   "n": 23,
+   "tok": 9040,
+   "tail_tok": 2749701
+  },
+  "результат:mcp:plugin_claude-mem_mcp-search": {
+   "n": 661,
+   "tok": 227910,
+   "tail_tok": 56986395
+  },
+  "результат:SendMessage": {
+   "n": 883,
+   "tok": 89478,
+   "tail_tok": 15704220
+  },
+  "вложение:nested_memory": {
+   "n": 373,
+   "tok": 1237074,
+   "tail_tok": 253330515
+  },
+  "результат:Write": {
+   "n": 352,
+   "tok": 23484,
+   "tail_tok": 4729078
+  },
+  "результат:Edit": {
+   "n": 707,
+   "tok": 40823,
+   "tail_tok": 7829477
+  },
+  "сообщение:сообщение": {
+   "n": 346,
+   "tok": 139450,
+   "tail_tok": 19423186
+  },
+  "сообщение:монитор/фон": {
+   "n": 136,
+   "tok": 15597,
+   "tail_tok": 2109350
+  },
+  "результат:mcp:owner-queue": {
+   "n": 37,
+   "tok": 19037,
+   "tail_tok": 3425769
+  },
+  "результат:mcp:plugin_context-mode_context-mode": {
+   "n": 131,
+   "tok": 317469,
+   "tail_tok": 71166587
+  },
+  "результат:TaskStop": {
+   "n": 42,
+   "tok": 9785,
+   "tail_tok": 1682306
+  },
+  "результат:mcp:postgres-readonly": {
+   "n": 7,
+   "tok": 549,
+   "tail_tok": 164983
+  },
+  "результат:mcp:ai-council": {
+   "n": 1,
+   "tok": 276,
+   "tail_tok": 121716
+  },
+  "результат:mcp:hub:notion": {
+   "n": 15,
+   "tok": 13154,
+   "tail_tok": 3077159
+  },
+  "результат:mcp:docker": {
+   "n": 1,
+   "tok": 10685,
+   "tail_tok": 3729065
+  },
+  "результат:mcp:github": {
+   "n": 6,
+   "tok": 275,
+   "tail_tok": 46145
+  },
+  "результат:mcp:hub:context7": {
+   "n": 1,
+   "tok": 479,
+   "tail_tok": 167171
+  },
+  "результат:mcp:hub:cloudflare": {
+   "n": 1,
+   "tok": 22,
+   "tail_tok": 7678
+  },
+  "результат:mcp:hub:sentry": {
+   "n": 1,
+   "tok": 43,
+   "tail_tok": 15007
+  },
+  "результат:mcp:headroom": {
+   "n": 1,
+   "tok": 235,
+   "tail_tok": 82015
+  },
+  "результат:mcp:serena": {
+   "n": 2,
+   "tok": 53,
+   "tail_tok": 18444
+  },
+  "результат:mcp:plugin_playwright_playwright": {
+   "n": 19,
+   "tok": 1683,
+   "tail_tok": 269369
+  },
+  "результат:mcp:notion": {
+   "n": 24,
+   "tok": 45950,
+   "tail_tok": 9850036
+  },
+  "хук:PostToolUse": {
+   "n": 30,
+   "tok": 3281,
+   "tail_tok": 398812
+  },
+  "результат:Monitor": {
+   "n": 79,
+   "tok": 7167,
+   "tail_tok": 816180
+  },
+  "результат:CronCreate": {
+   "n": 32,
+   "tok": 1597,
+   "tail_tok": 387186
+  },
+  "результат:Grep": {
+   "n": 1,
+   "tok": 48,
+   "tail_tok": 192
+  },
+  "результат:Agent": {
+   "n": 1,
+   "tok": 310,
+   "tail_tok": 40610
+  },
+  "результат:Skill": {
+   "n": 2,
+   "tok": 15,
+   "tail_tok": 2467
+  },
+  "результат:CronDelete": {
+   "n": 16,
+   "tok": 109,
+   "tail_tok": 20795
+  },
+  "результат:CronList": {
+   "n": 3,
+   "tok": 417,
+   "tail_tok": 87523
+  },
+  "результат:WebSearch": {
+   "n": 4,
+   "tok": 4355,
+   "tail_tok": 163225
+  },
+  "результат:PushNotification": {
+   "n": 1,
+   "tok": 13,
+   "tail_tok": 3120
+  }
+ },
+ "ups_by_wake": {
+  "человек/прочее": {
+   "n": 203,
+   "tok": 148242
+  },
+  "сообщение": {
+   "n": 607,
+   "tok": 167868
+  },
+  "монитор/фон": {
+   "n": 71,
+   "tok": 22372
+  },
+  "сжатие": {
+   "n": 21,
+   "tok": 4170
+  }
+ },
+ "hook_src": {
+  "SessionStart/context_window_protection": {
+   "n": 14,
+   "tok": 28718
+  },
+  "UserPromptSubmit/dams-context": {
+   "n": 337,
+   "tok": 277035
+  },
+  "PreToolUse/context_guidance": {
+   "n": 82,
+   "tok": 11180
+  },
+  "UserPromptSubmit/persisted-output": {
+   "n": 13,
+   "tok": 10417
+  },
+  "UserPromptSubmit/grill-task-auto": {
+   "n": 552,
+   "tok": 55200
+  },
+  "SessionStart/persisted-output": {
+   "n": 7,
+   "tok": 13839
+  },
+  "PreToolUse/claude-mem-retrieved-data": {
+   "n": 7,
+   "tok": 2997
+  },
+  "PreToolUse/без тега": {
+   "n": 15,
+   "tok": 3209
+  },
+  "PostToolUse/без тега": {
+   "n": 28,
+   "tok": 1802
+  },
+  "PostToolUse/ide_diagnostics": {
+   "n": 2,
+   "tok": 1479
+  }
+ },
+ "nested": {
+  "apps/frontend/CLAUDE.md": {
+   "n": 13,
+   "tok": 22719,
+   "dup": 8752
+  },
+  ".claude/rules/04-type-safety.md": {
+   "n": 23,
+   "tok": 31346,
+   "dup": 15005
+  },
+  ".claude/rules/03-frontend.md": {
+   "n": 13,
+   "tok": 152147,
+   "dup": 58532
+  },
+  "infra/CLAUDE.md": {
+   "n": 12,
+   "tok": 22654,
+   "dup": 7558
+  },
+  "infra/ops-console/CLAUDE.md": {
+   "n": 3,
+   "tok": 2857,
+   "dup": 0
+  },
+  ".claude/rules/10-db-topology.md": {
+   "n": 25,
+   "tok": 89486,
+   "dup": 50105
+  },
+  "infra/ai-council/CLAUDE.md": {
+   "n": 1,
+   "tok": 2225,
+   "dup": 0
+  },
+  "CLAUDE.md": {
+   "n": 37,
+   "tok": 164814,
+   "dup": 106906
+  },
+  ".claude/rules/00-antipatterns.md": {
+   "n": 37,
+   "tok": 298791,
+   "dup": 193810
+  },
+  ".claude/rules/00-task-ingress.md": {
+   "n": 37,
+   "tok": 60910,
+   "dup": 39510
+  },
+  ".claude/rules/01-base.md": {
+   "n": 37,
+   "tok": 41848,
+   "dup": 27144
+  },
+  ".claude/rules/07-worktrees.md": {
+   "n": 12,
+   "tok": 23400,
+   "dup": 0
+  },
+  "docs/CLAUDE.md": {
+   "n": 16,
+   "tok": 26250,
+   "dup": 13130
+  },
+  ".claude/rules/06-testing.md": {
+   "n": 24,
+   "tok": 49841,
+   "dup": 33201
+  },
+  "apps/backend/CLAUDE.md": {
+   "n": 10,
+   "tok": 17638,
+   "dup": 7068
+  },
+  "apps/backend/prisma/CLAUDE.md": {
+   "n": 1,
+   "tok": 1178,
+   "dup": 0
+  },
+  ".claude/rules/09-cache-redis.md": {
+   "n": 10,
+   "tok": 30005,
+   "dup": 12015
+  },
+  ".claude/rules/08-database-prisma.md": {
+   "n": 10,
+   "tok": 48885,
+   "dup": 19567
+  },
+  ".claude/rules/02-backend.md": {
+   "n": 10,
+   "tok": 17546,
+   "dup": 7031
+  },
+  ".claude/rules/05-security.md": {
+   "n": 10,
+   "tok": 36616,
+   "dup": 14659
+  },
+  "docs/plans/CLAUDE.md": {
+   "n": 9,
+   "tok": 10876,
+   "dup": 6042
+  },
+  "apps/extension/CLAUDE.md": {
+   "n": 4,
+   "tok": 4654,
+   "dup": 3492
+  },
+  ".claude/rules/16-telegram.md": {
+   "n": 2,
+   "tok": 25443,
+   "dup": 12722
+  },
+  "packages/CLAUDE.md": {
+   "n": 2,
+   "tok": 2044,
+   "dup": 0
+  },
+  "packages/types/CLAUDE.md": {
+   "n": 2,
+   "tok": 718,
+   "dup": 0
+  },
+  ".claude/CLAUDE.local.md": {
+   "n": 2,
+   "tok": 3112,
+   "dup": 0
+  },
+  ".claude/rules/14-realtime.md": {
+   "n": 2,
+   "tok": 22223,
+   "dup": 0
+  },
+  "docs/specs/CLAUDE.md": {
+   "n": 2,
+   "tok": 2343,
+   "dup": 0
+  },
+  ".claude/rules/13-agents-mcp.md": {
+   "n": 3,
+   "tok": 18567,
+   "dup": 6189
+  },
+  "apps/backend/src/modules/ai/CLAUDE.md": {
+   "n": 2,
+   "tok": 3886,
+   "dup": 1943
+  },
+  "docs/architecture/CLAUDE.md": {
+   "n": 1,
+   "tok": 1140,
+   "dup": 0
+  },
+  "apps/diarization/CLAUDE.md": {
+   "n": 1,
+   "tok": 912,
+   "dup": 0
+  }
+ },
+ "instr": {
+  "~/.claude/CLAUDE.md": 51639,
+  "CLAUDE.md": 91686,
+  ".claude/rules/00-antipatterns.md": 73542,
+  ".claude/rules/00-task-ingress.md": 16212,
+  ".claude/rules/01-base.md": 22218,
+  "CLAUDE.local.md": 36183,
+  "~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/memory/MEMORY.md": 145143
+ },
+ "tools": {
+  "Bash": 4994,
+  "Read": 299,
+  "ToolSearch": 82,
+  "mcp:plugin_claude-mem_mcp-search": 661,
+  "ListAgents": 23,
+  "SendMessage": 883,
+  "Write": 352,
+  "Edit": 707,
+  "mcp:owner-queue": 37,
+  "mcp:plugin_context-mode_context-mode": 131,
+  "TaskStop": 42,
+  "mcp:postgres-readonly": 7,
+  "mcp:ai-council": 1,
+  "mcp:hub:notion": 15,
+  "mcp:hub:sentry": 1,
+  "mcp:hub:cloudflare": 1,
+  "mcp:hub:context7": 1,
+  "mcp:docker": 1,
+  "mcp:github": 6,
+  "mcp:headroom": 1,
+  "mcp:serena": 2,
+  "mcp:plugin_playwright_playwright": 19,
+  "mcp:notion": 24,
+  "Monitor": 79,
+  "CronCreate": 32,
+  "Grep": 1,
+  "Agent": 1,
+  "Skill": 2,
+  "CronDelete": 16,
+  "CronList": 3,
+  "WebSearch": 4,
+  "PushNotification": 1
+ },
+ "skills": {
+  "grill-task": 1,
+  "task-observer": 1
+ },
+ "models": {
+  "claude-opus-5-5": 6817,
+  "<synthetic>": 41,
+  "claude-opus-4-8": 80
+ },
+ "base": [
+  86216,
+  88904,
+  93152,
+  93741,
+  94153,
+  94162,
+  94308,
+  94344,
+  94386,
+  95453,
+  95482,
+  95740,
+  96355,
+  96421
+ ],
+ "sessions": 20,
+ "calls": 6938,
+ "ctx_avg": 515184,
+ "observer": {
+  "files": 114,
+  "calls": 114,
+  "money": {
+   "вход": 0.0013680000000000014,
+   "запись кэша 5 мин": 0.0,
+   "запись кэша 1 ч": 11.575208000000003,
+   "чтение кэша": 0.025281600000000005,
+   "выход": 5.58312
+  },
+  "models": {
+   "claude-haiku-4-5-20251001": 114
+  }
+ }
+}

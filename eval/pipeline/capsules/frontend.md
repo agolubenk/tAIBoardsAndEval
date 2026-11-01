@@ -1,0 +1,31 @@
+# Капсула: frontend
+
+**Цель.** Роль 3 (frontend): довести PR #449 undo-v1 (⌘Z/Ctrl+Z) до мёржа ролью 5; дальше полоса L1–L13 из work_state frontend-t3.
+
+**Приёмка.**
+- Спека undo-v1 пп. 1–12; приёмка 12: entry ≤ +1 КиБ gzip — выполнена, +295 Б (JS +200, CSS +95)
+- Гейт fe-gate.sh --baseline зелёный на f0a2985de: vitest, eslint, build, bundle:check — exit 0, 30.10 22:03
+- Живая проверка QA (роль 1) пп. 1–9 — ждём
+
+**Решения.**
+- Подсказка ⌘Z гаснет таймером в ActionButton (data-expired), не updateToast: тот сбрасывает settled и морфит тост заново (IslandToastActions.tsx)
+- Линзы GLM на PR #449: 29 находок, 15 исправлены, 2 частично, 12 отклонены — обоснования в теле PR (PR #449)
+- Сброс фокуса при удалении тоста — существовал до PR, вынесен отдельной карточкой (t-boards Ошибки #627)
+- Цифры гейта и приёмки 12 записаны в описание PR #449 (таблица в «Проверках») (PR #449)
+
+**Механика.**
+- /Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/feature/undo-v1 [feature/undo-v1] f0a2985de, грязных 1
+  node_modules
+
+**Следующий шаг.** Ждать линзы роли 5 (hr-helper-v2-f8) на f0a2985de и QA роли 1. «changes на <SHA>» → правка в worktrees/feature/undo-v1, fe-gate.sh, новая голова и цифры в описание PR. Остальная полоса — work_state frontend-t3 (L13 c34b — только после P0 по правам).
+
+**Не делать.**
+- Не править worktree во время fe-gate.sh --baseline: он подменяет файлы версиями main
+- Не вливать PR и не делать force-push
+- Не запускать сборку в обход гейта памяти
+
+**Оригиналы.**
+- ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-23/analyst/undo-v1.md
+- ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-23/frontend/fe-gate-undo-v1.log
+- https://github.com/agolubenk/HR_Helper-v2/pull/449
+- supertick-eval/prompts/launch-3010/roles/3-frontend.md

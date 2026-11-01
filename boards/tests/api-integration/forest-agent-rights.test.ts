@@ -1,0 +1,460 @@
+import { and, eq } from "drizzle-orm";
+import { beforeEach, describe, expect, it } from "vite-plus/test";
+import db, { schema } from "../../apps/api/src/database";
+import {
+  agentJournalTable,
+  ownerApprovalTable,
+} from "../../apps/api/src/database/forest-schema";
+import { resetTestDatabase } from "./helpers/database";
+import { addTask, createForest } from "./helpers/forest";
+
+type Forest = Awaited<ReturnType<typeof createForest>>;
+
+async function lease(forest: Forest, taskId: string, session = "dev-1") {
+  const res = await forest.agent("/leases", { taskId }, session);
+  expect(res.status).toBe(200);
+  return String(res.body.fencingToken);
+}
+
+async function approve(
+  forest: Forest,
+  action: "close_task" | "reopen_task" | "set_priority",
+  targetId: string,
+  value: string,
+) {
+  const requested = await forest.agent("/approvals", {
+    action,
+    targetId,
+    value,
+    reason: "agent asks",
+  });
+  expect(requested.status).toBe(200);
+  expect(requested.body.params).toEqual(
+    action === "set_priority" ? { priority: value } : { status: value },
+  );
+  const decided = await forest.owner(`/approvals/${requested.body.id}/decide`, {
+    decision: "approved",
+  });
+  expect(decided.status).toBe(200);
+  return String(requested.body.id);
+}
+
+async function journal(action: string, targetId: string) {
+  return db
+    .select()
+    .from(agentJournalTable)
+    .where(
+      and(
+        eq(agentJournalTable.action, action),
+        eq(agentJournalTable.targetId, targetId),
+      ),
+    );
+}
+
+async function taskRow(id: string) {
+  const [row] = await db
+    .select()
+    .from(schema.taskTable)
+    .where(eq(schema.taskTable.id, id));
+  return row;
+}
+
+describe("API integration: agent rights on kaneo routes", () => {
+  beforeEach(resetTestDatabase);
+
+  it("refuses an agent delete and journals it; the owner's UI still deletes (AC-007)", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Owner task");
+
+    const denied = await forest.agentApi("DELETE", `/task/${task.id}`);
+    expect(denied.status).toBe(403);
+    expect(denied.body.message).toContain("agent_forbidden");
+    expect(await taskRow(task.id)).toBeDefined();
+    const [entry] = await journal("task.delete", task.id);
+    expect(entry).toMatchObject({
+      outcome: "denied",
+      actorKind: "agent",
+      workspaceId: forest.workspace.id,
+    });
+
+    const owner = await forest.ownerApi("DELETE", `/task/${task.id}`);
+    expect(owner.status).toBe(200);
+  });
+
+  it("refuses deleting a project or the workspace with an agent key", async () => {
+    const forest = await createForest();
+
+    const project = await forest.agentApi(
+      "DELETE",
+      `/project/${forest.project.id}`,
+    );
+    expect(project.status).toBe(403);
+    expect(await journal("project.delete", forest.project.id)).toHaveLength(1);
+
+    const workspace = await forest.agentApi(
+      "POST",
+      "/auth/organization/delete",
+      { organizationId: forest.workspace.id },
+    );
+    expect(workspace.status).toBe(403);
+    expect(workspace.body.message).toContain("agent_forbidden");
+  });
+
+  it("keeps the owner's text and lets the agent edit its own card (AC-007)", async () => {
+    const forest = await createForest();
+    const ownerTask = await addTask(forest.project.id, "Owner task");
+    const token = await lease(forest, ownerTask.id);
+
+    const title = await forest.agentApi(
+      "PUT",
+      `/task/title/${ownerTask.id}`,
+      { title: "Agent rewrote it" },
+      { "x-t-boards-fence": token },
+      "dev-1",
+    );
+    expect(title.status).toBe(403);
+    expect((await taskRow(ownerTask.id))?.title).toBe("Owner task");
+    expect(await journal("task.title", ownerTask.id)).toHaveLength(1);
+
+    const created = await forest.agentApi(
+      "POST",
+      `/task/${forest.project.id}`,
+      {
+        title: "Finding",
+        description: "",
+        priority: "low",
+        status: "to-do",
+      },
+    );
+    expect(created.status).toBe(200);
+    const own = String(created.body.id);
+    const ownToken = await lease(forest, own);
+    const renamed = await forest.agentApi(
+      "PUT",
+      `/task/title/${own}`,
+      { title: "Finding, clearer" },
+      { "x-t-boards-fence": ownToken },
+      "dev-1",
+    );
+    expect(renamed.status).toBe(200);
+    expect((await taskRow(own))?.title).toBe("Finding, clearer");
+  });
+
+  it("writes only under the session's live lease and token (AC-010)", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const status = (headers: Record<string, string>, session?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status: "in-progress" },
+        headers,
+        session,
+      );
+
+    const noLease = await status({}, "dev-1");
+    expect(noLease.status).toBe(409);
+    expect(noLease.body.message).toContain("lease_missing");
+
+    const token = await lease(forest, task.id, "dev-1");
+    const other = await status({ "x-t-boards-fence": token }, "dev-2");
+    expect(other.status).toBe(409);
+    expect(other.body.message).toContain("lease_conflict");
+
+    const ok = await status({ "x-t-boards-fence": token }, "dev-1");
+    expect(ok.status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("in-progress");
+
+    await forest.agent(
+      "/leases/release",
+      { taskId: task.id, fencingToken: Number(token) },
+      "dev-1",
+    );
+    const stale = await status({ "x-t-boards-fence": token }, "dev-1");
+    expect(stale.status).toBe(409);
+    expect(stale.body.message).toContain("lease_stale");
+    expect(
+      (await journal("task.status", task.id)).map((row) => row.outcome),
+    ).toEqual(["denied", "denied", "denied"]);
+  });
+
+  it("closes a card only with the owner's «да» for that status, once (AC-008)", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const token = await lease(forest, task.id);
+    const close = (status: string, approvalId?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status },
+        {
+          "x-t-boards-fence": token,
+          // A card goes to review with what to review (card fill, 30.10).
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
+          ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
+        },
+        "dev-1",
+      );
+
+    const unapproved = await close("done");
+    expect(unapproved.status).toBe(403);
+    expect(unapproved.body.message).toContain("approval_required");
+    expect(unapproved.body.message).toContain("close_task");
+
+    const approvalId = await approve(forest, "close_task", task.id, "done");
+    const otherStatus = await close("archived", approvalId);
+    expect(otherStatus.status).toBe(403);
+
+    const closed = await close("done", approvalId);
+    expect(closed.status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("done");
+    const [spent] = await db
+      .select()
+      .from(ownerApprovalTable)
+      .where(eq(ownerApprovalTable.id, approvalId));
+    expect(spent?.status).toBe("consumed");
+    expect(await journal("task.status:close_task", task.id)).toHaveLength(1);
+  });
+
+  // d-tb-reopen, owner 28.10: reopening is approved like closing.
+  it("reopens a closed card only with the owner's «да» for that status", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    await db
+      .update(schema.taskTable)
+      .set({ status: "done" })
+      .where(eq(schema.taskTable.id, task.id));
+    const token = await lease(forest, task.id);
+    const move = (status: string, approvalId?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status },
+        {
+          "x-t-boards-fence": token,
+          ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
+        },
+        "dev-1",
+      );
+
+    const unapproved = await move("to-do");
+    expect(unapproved.status).toBe(403);
+    expect(unapproved.body.message).toContain("reopen_task");
+
+    const stillClosed = await forest.agent("/approvals", {
+      action: "reopen_task",
+      targetId: task.id,
+      value: "archived",
+      reason: "agent asks",
+    });
+    expect(stillClosed.status).toBe(400);
+
+    const approvalId = await approve(forest, "reopen_task", task.id, "to-do");
+    const reopened = await move("to-do", approvalId);
+    expect(reopened.status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("to-do");
+    expect(await journal("task.status:reopen_task", task.id)).toHaveLength(1);
+
+    const openAlready = await forest.agent("/approvals", {
+      action: "reopen_task",
+      targetId: task.id,
+      value: "in-progress",
+      reason: "agent asks",
+    });
+    expect(openAlready.status).toBe(400);
+  });
+
+  // Owner, 29.10: an agent stops at «На ревью»; the owner's stages past it are
+  // approved like a close, and so is taking a card back out of them.
+  it("moves a card to review freely but into the owner's confirmation only with a «да»", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const token = await lease(forest, task.id);
+    const move = (status: string, approvalId?: string) =>
+      forest.agentApi(
+        "PUT",
+        `/task/status/${task.id}`,
+        { status },
+        {
+          "x-t-boards-fence": token,
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
+          ...(approvalId ? { "x-t-boards-approval": approvalId } : {}),
+        },
+        "dev-1",
+      );
+
+    expect((await move("in-review")).status).toBe(200);
+    const unapproved = await move("confirmation");
+    expect(unapproved.status).toBe(403);
+    expect(unapproved.body.message).toContain("close_task");
+
+    const approvalId = await approve(
+      forest,
+      "close_task",
+      task.id,
+      "confirmation",
+    );
+    expect((await move("confirmation", approvalId)).status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("confirmation");
+
+    const back = await move("in-progress");
+    expect(back.status).toBe(403);
+    expect(back.body.message).toContain("reopen_task");
+  });
+
+  it("changes priority only with a «да» and hands it back if the write fails", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const token = await lease(forest, task.id);
+    const fence = { "x-t-boards-fence": token };
+
+    const unapproved = await forest.agentApi(
+      "PUT",
+      `/task/priority/${task.id}`,
+      { priority: "urgent" },
+      fence,
+      "dev-1",
+    );
+    expect(unapproved.status).toBe(403);
+
+    const approvalId = await approve(forest, "set_priority", task.id, "urgent");
+    const broken = await forest.agentApi(
+      "PUT",
+      `/task/${task.id}`,
+      { priority: "urgent" },
+      { ...fence, "x-t-boards-approval": approvalId },
+      "dev-1",
+    );
+    expect(broken.status).toBe(400);
+    const [kept] = await db
+      .select()
+      .from(ownerApprovalTable)
+      .where(eq(ownerApprovalTable.id, approvalId));
+    expect(kept?.status).toBe("approved");
+
+    const done = await forest.agentApi(
+      "PUT",
+      `/task/priority/${task.id}`,
+      { priority: "urgent" },
+      { ...fence, "x-t-boards-approval": approvalId },
+      "dev-1",
+    );
+    expect(done.status).toBe(200);
+    expect((await taskRow(task.id))?.priority).toBe("urgent");
+  });
+
+  it("refuses the agent's own «да» on a close (AC-027) and closed creates", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+    const requested = await forest.agent("/approvals", {
+      action: "close_task",
+      targetId: task.id,
+      value: "done",
+      reason: "agent asks",
+    });
+    const self = await forest.agent(`/approvals/${requested.body.id}/decide`, {
+      decision: "approved",
+    });
+    expect(self.status).toBe(403);
+    expect(self.body.message).toContain("owner_session_required");
+
+    const openOnly = await forest.agent("/approvals", {
+      action: "close_task",
+      targetId: task.id,
+      value: "in-review",
+      reason: "not a closing status",
+    });
+    expect(openOnly.status).toBe(400);
+
+    const closedCreate = await forest.agentApi(
+      "POST",
+      `/task/${forest.project.id}`,
+      {
+        title: "Done already",
+        description: "",
+        priority: "low",
+        status: "done",
+      },
+    );
+    expect(closedCreate.status).toBe(403);
+  });
+
+  it("refuses agent bulk and reorder writes, and leaves the owner's UI alone", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Task");
+
+    const bulk = await forest.agentApi("PATCH", "/task/bulk", {
+      taskIds: [task.id],
+      operation: "delete",
+    });
+    expect(bulk.status).toBe(403);
+    const reorder = await forest.agentApi("POST", "/task/reorder", {
+      projectId: forest.project.id,
+      tasks: [],
+    });
+    expect(reorder.status).toBe(403);
+
+    const owner = await forest.ownerApi("PUT", `/task/status/${task.id}`, {
+      status: "done",
+    });
+    expect(owner.status).toBe(200);
+  });
+
+  it("refuses an agent write whose body the guard cannot read as plain JSON", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Owner task");
+    const token = await lease(forest, task.id);
+
+    const sneaky = await forest.agentApi(
+      "PUT",
+      `/task/title/${task.id}`,
+      { title: "Agent rewrote it" },
+      {
+        "content-type": "application/merge-patch+json",
+        "x-t-boards-fence": token,
+      },
+      "dev-1",
+    );
+    expect(sneaky.status).toBe(403);
+    expect(sneaky.body.message).toContain("agent_forbidden");
+    expect((await taskRow(task.id))?.title).toBe("Owner task");
+    const [entry] = await journal("task.title", task.id);
+    expect(entry?.outcome).toBe("denied");
+  });
+
+  it("lets a full update through when only the status changes, as MCP update_task sends it", async () => {
+    const forest = await createForest();
+    const task = await addTask(forest.project.id, "Owner task");
+    const token = await lease(forest, task.id);
+    const current = await forest.agentApi("GET", `/task/${task.id}`);
+    const full = (patch: Record<string, unknown>) =>
+      forest.agentApi(
+        "PUT",
+        `/task/${task.id}`,
+        {
+          title: current.body.title,
+          description: current.body.description ?? "",
+          status: current.body.status,
+          priority: current.body.priority,
+          projectId: current.body.projectId,
+          position: current.body.position ?? 0,
+          ...patch,
+        },
+        {
+          "x-t-boards-fence": token,
+          "x-t-boards-link": "https://github.com/agolubenk/t-boards/pull/1",
+        },
+        "dev-1",
+      );
+
+    const moved = await full({ status: "in-review" });
+    expect(moved.status).toBe(200);
+    expect((await taskRow(task.id))?.status).toBe("in-review");
+
+    const rewritten = await full({ description: "Agent's version" });
+    expect(rewritten.status).toBe(403);
+    expect((await taskRow(task.id))?.description ?? "").toBe(
+      current.body.description ?? "",
+    );
+  });
+});

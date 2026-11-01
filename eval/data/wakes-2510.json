@@ -1,0 +1,314 @@
+[
+{
+"role": "Т2:qa",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "f0c67efe-138c-4d55-83c3-bc683aac8ac7",
+"ts": "2026-10-25T06:40:02.150Z",
+"calls": 2,
+"cost": 4.7584184,
+"write_cost": 4.733368,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:devops",
+"kind": "сообщение",
+"at": "25.10 09:36",
+"sid": "2a1e6b55-daac-4039-819d-474d9d03366d",
+"ts": "2026-10-25T06:36:02.074Z",
+"calls": 16,
+"cost": 4.3781083999999995,
+"write_cost": 2.89764,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 14,
+"SendMessage": 1,
+"Read": 1
+}
+},
+{
+"role": "Т2:security",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "91e824e3-1e79-4ada-9c70-ca5d6386e6c8",
+"ts": "2026-10-25T06:40:03.686Z",
+"calls": 2,
+"cost": 3.490384,
+"write_cost": 3.420136,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:frontend",
+"kind": "сжатие",
+"at": "25.10 09:44",
+"sid": "ba06d6ac-a014-4715-b8c0-0961351f6a18",
+"ts": "2026-10-25T06:44:03.999Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:backend",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "e44f749a-b384-43a3-8bbc-1b12645ecb67",
+"ts": "2026-10-25T06:40:02.488Z",
+"calls": 2,
+"cost": 2.5179304,
+"write_cost": 2.49304,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:designer",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "a1c10896-c02e-4902-8034-a0f209ebdff8",
+"ts": "2026-10-25T06:40:02.825Z",
+"calls": 2,
+"cost": 4.9084544,
+"write_cost": 4.813184,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:manager",
+"kind": "крон",
+"at": "25.10 09:17",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-25T06:17:03.275Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:manager",
+"kind": "сообщение",
+"at": "25.10 09:36",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-25T06:36:01.483Z",
+"calls": 8,
+"cost": 5.738905600000001,
+"write_cost": 4.692831999999999,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 5,
+"SendMessage": 9
+}
+},
+{
+"role": "Т2:manager",
+"kind": "крон",
+"at": "25.10 20:13",
+"sid": "452aa1e1-5bea-445f-b91d-8a5160b86216",
+"ts": "2026-10-25T17:13:00.090Z",
+"calls": 10,
+"cost": 6.423464200000001,
+"write_cost": 5.146576,
+"action": false,
+"sent": true,
+"tools": {
+"Bash": 4,
+"ListAgents": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "25.10 09:36",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-25T06:36:01.727Z",
+"calls": 6,
+"cost": 7.6925962,
+"write_cost": 6.763895999999999,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"Read": 2,
+"Edit": 2,
+"SendMessage": 2,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:architect",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "6ad4622f-9b68-4577-9db2-2aaa0e247cd3",
+"ts": "2026-10-25T06:40:03.319Z",
+"calls": 2,
+"cost": 0.18391340000000003,
+"write_cost": 0.009248,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "крон",
+"at": "25.10 09:31",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-25T06:31:00.525Z",
+"calls": 19,
+"cost": 8.7183906,
+"write_cost": 5.637088,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 13,
+"Monitor": 2,
+"ListAgents": 1,
+"mcp__owner-queue__oq_get": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_read": 2,
+"SendMessage": 4,
+"mcp__owner-queue__oq_agent_status": 7,
+"Write": 5,
+"Edit": 1,
+"ToolSearch": 1,
+"TaskStop": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "монитор/фон",
+"at": "25.10 10:09",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-25T07:09:13.559Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:owner",
+"kind": "сообщение",
+"at": "25.10 20:15",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-25T17:15:58.963Z",
+"calls": 2,
+"cost": 5.4869184,
+"write_cost": 5.404328,
+"action": false,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+},
+{
+"role": "Т2:owner",
+"kind": "крон",
+"at": "25.10 20:53",
+"sid": "3fcde178-a443-4e76-b582-2f916bafaffe",
+"ts": "2026-10-25T17:53:00.507Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "25.10 09:36",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-25T06:36:01.925Z",
+"calls": 6,
+"cost": 9.003834800000002,
+"write_cost": 7.336992,
+"action": true,
+"sent": true,
+"tools": {
+"Bash": 3,
+"mcp__plugin_context-mode_context-mode__ctx_execute": 1,
+"mcp__plugin_claude-mem_mcp-search__work_state_write": 1,
+"CronCreate": 1,
+"SendMessage": 3
+}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "25.10 09:40",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-25T06:40:01.870Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "монитор/фон",
+"at": "25.10 09:40",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-25T06:40:38.676Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "крон",
+"at": "25.10 09:58",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-25T06:58:00.232Z",
+"calls": 1,
+"cost": 0.0,
+"write_cost": 0.0,
+"action": false,
+"sent": false,
+"tools": {}
+},
+{
+"role": "Т2:control",
+"kind": "сообщение",
+"at": "25.10 20:15",
+"sid": "7418f1b1-a11d-4376-8348-b9aaf092cdbc",
+"ts": "2026-10-25T17:15:58.837Z",
+"calls": 2,
+"cost": 7.4192144,
+"write_cost": 7.35312,
+"action": true,
+"sent": false,
+"tools": {
+"Bash": 1
+}
+}
+]
