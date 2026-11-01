@@ -28,7 +28,26 @@ def main_checkout():
         return os.path.normpath(os.path.join(HERE, '..', '..', '..'))
 
 
-REFLEX = os.path.join(main_checkout(), 'supertick-eval', 'pipeline', 'reflex')
+def instance():
+    """Instance paths come from eval/nerve/config.json (the one home of instance paths, with .claude/rules):
+    repo_root — the host checkout the team runs in, product_tree — where this tree sits in it (`supertick-eval`
+    in the incubator instance, `eval` in the product home). Env GENOME_ROOT / GENOME_TREE override both; without
+    config the genome is built for the checkout it lives in."""
+    cfg = {}
+    try:
+        with open(os.path.join(HERE, '..', '..', 'nerve', 'config.json'), encoding='utf-8') as f:
+            cfg = json.load(f)
+    except (OSError, ValueError):
+        pass
+    root = os.environ.get('GENOME_ROOT') or cfg.get('repo_root') or main_checkout()
+    tree = os.environ.get('GENOME_TREE') or cfg.get('product_tree') or os.path.basename(
+        os.path.normpath(os.path.join(HERE, '..', '..')))
+    return root, tree
+
+
+ROOT, TREE = instance()
+REFLEX = os.path.join(ROOT, TREE, 'pipeline', 'reflex')
+LOCAL_REFLEX = os.path.normpath(os.path.join(HERE, '..', 'reflex'))
 
 
 def hooks(python):
@@ -54,7 +73,7 @@ def genome(base, role):
         'disableBundledSkills': True,
         'permissions': {'deny': base['deny'] + [d for d in role.get('deny', []) if d not in base['deny']]},
         'env': {**base['env'], **role.get('env', {})},
-        'claudeMdExcludes': list(base['claudeMdExcludes']),
+        'claudeMdExcludes': [x.replace('{root}', ROOT) for x in base['claudeMdExcludes']],
         'hooks': hooks(base['python']),
         'syncClaudeAiSkills': False,
         'skillListingMaxDescChars': 100,

@@ -1,0 +1,118 @@
+# shellcheck shell=bash
+# MCP-хаб: команды только на чтение — status, check, logs. Ничего не запускают, не останавливают и
+# не берут под управление. Подключается через source из infra/scripts/dev-ai/mcp-hub.sh и пользуется
+# его переменными (ROOT, SERVE_ROOT, CONFIG_DIR, SERENA_PORT, HUB_PORT, SERENA_LOG, HUB_LOG) и
+# функциями (pidfile_pid, our_roots, is_ours, project_problem, render_config, port_of).
+
+# Отвечают ли serena (initialize по MCP) и хаб (/health/mcp). Код 1 — если хоть один не ответил.
+probe_http() {
+  python3 - "$SERENA_PORT" "$HUB_PORT" <<'PY'
+import json, sys, urllib.request
+serena_port, hub_port = sys.argv[1], sys.argv[2]
+ok = True
+try:
+    req = urllib.request.Request(
+        f"http://127.0.0.1:{serena_port}/mcp", method="POST",
+        data=json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+            "protocolVersion": "2025-06-18", "capabilities": {},
+            "clientInfo": {"name": "mcp-hub-status", "version": "1"}}}).encode(),
+        headers={"Content-Type": "application/json", "Accept": "application/json, text/event-stream"})
+    with urllib.request.urlopen(req, timeout=10) as r:
+        print(f"  ✓ serena отвечает: http://127.0.0.1:{serena_port}/mcp")
+except Exception as e:
+    ok = False
+    print(f"  ✗ serena :{serena_port}: {e}")
+try:
+    with urllib.request.urlopen(f"http://127.0.0.1:{hub_port}/health/mcp", timeout=10) as r:
+        by_state = json.load(r)["servers"]["byState"]
+    print(f"  ✓ хаб отвечает: http://127.0.0.1:{hub_port}/mcp")
+    labels = {"ready": "готовы", "awaitingOAuth": "ждут OAuth", "failed": "упали",
+              "loading": "загружаются", "pending": "в очереди"}
+    for state, label in labels.items():
+        if by_state.get(state):
+            print(f"      {label}: {', '.join(sorted(by_state[state]))}")
+    if by_state.get("awaitingOAuth"):
+        print("      → авторизовать: npm run mcp-hub:auth")
+except Exception as e:
+    ok = False
+    print(f"  ✗ хаб :{hub_port}: {e}")
+sys.exit(0 if ok else 1)
+PY
+}
+
+cmd_status() {
+  local kind pid port tty root listener problem
+  if [ "$ROOT" != "$SERVE_ROOT" ]; then echo "  (общие хаб и serena обслуживают основную папку $SERVE_ROOT)"; fi
+  for kind in serena hub; do
+    port="$(port_of "$kind")"
+    listener="$(port_listener "$port")"
+    if pid="$(pidfile_pid "$kind")"; then
+      echo "  ✓ $kind: pid $pid"
+      tty="$(proc_field "$pid" tty)"
+      if [ -n "$tty" ] && [ "$tty" != "??" ]; then
+        echo "    ⚠ привязан к терминалу $tty и закроется вместе с ним — npm run mcp-hub:restart"
+      fi
+      problem="$(project_problem "$kind" "$pid")"
+      if [ -n "$problem" ]; then echo "    ⚠ $problem — перезапуск из основной папки: npm run mcp-hub:restart"; fi
+    else
+      pid=""
+      echo "  ✗ $kind: не запущен (npm run mcp-hub:start)"
+      if [ -n "$listener" ] && ! is_ours "$kind" strict "$listener"; then
+        echo "    ⚠ :$port занят чужим процессом (pid $listener) — $kind на нём не стартует"
+      fi
+    fi
+    for root in $(our_roots "$kind"); do
+      if [ -n "$pid" ] && in_tree "$pid" "$root"; then continue; fi
+      if [ -n "$listener" ] && in_tree "$root" "$listener"; then
+        echo "    ⚠ :$port держит копия без pid-файла (pid $root) — npm run mcp-hub:start возьмёт её под управление"
+      else
+        echo "    ⚠ лишняя копия $kind без pid-файла (pid $root, порт не держит) — уберёт npm run mcp-hub:start"
+      fi
+    done
+  done
+  probe_http || true
+  if [ -f "$CONFIG_DIR/mcp.json" ] && [ "$(render_config 2>/dev/null)" != "$(cat "$CONFIG_DIR/mcp.json")" ]; then
+    echo "  ⚠ $CONFIG_DIR/mcp.json отличается от infra/mcp-hub/mcp.json — npm run mcp-hub:sync"
+  fi
+}
+
+# Для ai-restart-all.sh и людей: код 0, только если оба сервиса живы, держат порты, обслуживают
+# основную папку репо (serena — `--project`, хаб — рабочий каталог) и отвечают.
+cmd_check() {
+  local kind pid port listener problem rc=0
+  for kind in serena hub; do
+    port="$(port_of "$kind")"
+    if ! pid="$(pidfile_pid "$kind")"; then
+      echo "  ✗ $kind: не запущен"
+      rc=1
+      continue
+    fi
+    listener="$(port_listener "$port")"
+    if [ -z "$listener" ] || ! in_tree "$pid" "$listener"; then
+      echo "  ✗ $kind: pid $pid жив, но :$port не слушает"
+      rc=1
+      continue
+    fi
+    problem="$(project_problem "$kind" "$pid")"
+    if [ -n "$problem" ]; then
+      echo "  ✗ $kind: pid $pid $problem — перезапуск из основной папки: npm run mcp-hub:restart"
+      rc=1
+      continue
+    fi
+    echo "  ✓ $kind: pid $pid держит :$port"
+  done
+  probe_http || rc=1
+  return "$rc"
+}
+
+cmd_logs() {
+  local f files=""
+  for f in "$SERENA_LOG" "$HUB_LOG"; do
+    if [ -f "$f" ]; then files="$files $f"; else echo "(нет $f — ещё не запускался)"; fi
+  done
+  # shellcheck disable=SC2086 # пути без пробелов: ~/Library/Logs/…
+  [ -z "$files" ] || tail -n "${1:-40}" $files
+  for f in "$SERENA_LOG.prev" "$HUB_LOG.prev"; do
+    if [ -f "$f" ]; then echo "(прошлый запуск — $f)"; fi
+  done
+}

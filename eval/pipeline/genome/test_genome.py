@@ -53,20 +53,32 @@ class GenomeTest(unittest.TestCase):
                 self.assertEqual(denied(g, 'mcp__notion__notion-fetch'), 'mcp__notion')
 
     def test_team_law_loads(self):
-        main_rule = '/Users/agolubenko/Desktop/Development/HR_Helper-v2/.claude/rules/90-team-t3.md'
+        main_rule = os.path.join(build.ROOT, '.claude/rules/90-team-t3.md')
         for role, g in GENOMES.items():
             with self.subTest(role=role):
-                self.assertFalse(any(x == main_rule or x.startswith('/Users/agolubenko/Desktop/Development/HR_Helper-v2/**')
+                self.assertFalse(any(x == main_rule or x.startswith(build.ROOT + '/**')
                                      for x in g['claudeMdExcludes']))
 
+    def test_instance_paths_from_config(self):
+        """roles.json carries no instance path: excludes are rendered from repo_root of eval/nerve/config.json."""
+        with open(build.TABLE, encoding='utf-8') as f:
+            self.assertNotIn('/Users/', f.read())
+        for g in GENOMES.values():
+            self.assertFalse(any('{root}' in x for x in g['claudeMdExcludes']))
+            self.assertTrue(any(x.startswith(build.ROOT + '/worktrees/') for x in g['claudeMdExcludes']))
+
     def test_hook_commands_exist(self):
+        """Reflex scripts exist in this tree (the instance path maps onto it); the interpreter is the instance's own."""
         for g in GENOMES.values():
             for group in g['hooks'].values():
                 for entry in group:
                     for hook in entry['hooks']:
-                        for part in shlex.split(hook['command']):
-                            if part.startswith('/'):
-                                self.assertTrue(os.path.exists(part), part)
+                        scripts = [p for p in shlex.split(hook['command']) if p.endswith(('.sh', '.py'))]
+                        self.assertTrue(scripts, hook['command'])
+                        for part in scripts:
+                            self.assertTrue(part.startswith(build.REFLEX + os.sep), part)
+                            local = os.path.join(build.LOCAL_REFLEX, os.path.relpath(part, build.REFLEX))
+                            self.assertTrue(os.path.exists(local), local)
 
     def test_hooks_point_to_main_checkout(self):
         for role, g in GENOMES.items():

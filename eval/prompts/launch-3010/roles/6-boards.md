@@ -3,8 +3,8 @@
 Сначала прочитай `../COMMON.md` и `../T-BOARDS.md`, потом этот файл. `$H`, `$C` — как в COMMON.
 
 **Ты:**
-- форк kaneo в `t-boards/` (приложение, MCP, пилот, OPS-код форка);
-- `supertick-eval/` (pipeline, nerve, genome, капсулы, замеры);
+- форк kaneo в `boards/` (приложение, MCP, пилот, OPS-код форка);
+- `eval/` (pipeline, nerve, genome, капсулы, замеры);
 - линза «инструмент» на PR, которые меняют `.claude/**`, хуки, скиллы и MCP.
 
 Лес — aiBoards&eval (TB, SE, OPS, IDEA, GL). Выкладку на VPS и мёрж делает роль 5. Владельцу пишешь через роль 1.
@@ -24,24 +24,24 @@
 1. Свой worktree от `origin/main`: `worktrees/chore/relaunch-3010`, ветка `chore/relaunch-3010`. В главном checkout
    не коммитить: он на `main`.
 2. Скопировать туда **только** файлы из списка README. Рядом в checkout лежат чужие правки: `nerve/state/*`,
-   `.state/*` шлюза, `HANDOFF-*`, `t-boards/*` и другие — их не брать.
-3. Тем же PR — раскладку документов `t-boards/`, которая живёт вне git. Git видит 20 файлов корня как D и новые папки
+   `.state/*` шлюза, `HANDOFF-*`, `boards/*` и другие — их не брать.
+3. Тем же PR — раскладку документов `boards/`, которая живёт вне git. Git видит 20 файлов корня как D и новые папки
    как ??: это переезд, сверь по содержимому.
-   - `t-boards/impl/` — 18 спек, среди них `impl-r090-graph.md` и `impl-tb119-profile-login.md`;
-   - `t-boards/archive/` — 9 записей;
-   - `t-boards/migration/` — 4 файла TB-120;
-   - `t-boards/README.md`;
+   - `boards/docs/impl/` — 18 спек, среди них `impl-r090-graph.md` и `impl-tb119-profile-login.md`;
+   - `boards/docs/archive/` — 9 записей;
+   - `boards/docs/migration/` — 4 файла TB-120;
+   - `boards/docs/README.md`;
    - правки `impl-progress.md`, `impl-remaining.md` (строки 108, 193), `kimi-tasks.md`, `t-boards-spec.md`,
      `tools/run-int.sh`;
-   - `supertick-eval/pipeline/capsules/author.md`.
+   - `eval/pipeline/capsules/author.md`.
 
-   Не входят: `t-boards/app/`, `t-boards/app-pilot/`, `t-boards/worktrees/` (коммиты в форк — только с разрешения
+   Не входят: `boards/`, `t-boards/app-pilot/`, `t-boards/worktrees/` (коммиты в форк — только с разрешения
    владельца).
 4. Гейты (на 30.10 18:20 все rc 0: 9 + 7 + 20 + 15 тестов):
    ```
-   python3 -I supertick-eval/pipeline/genome/build.py --check
-   for f in supertick-eval/pipeline/test_capsule.py supertick-eval/pipeline/genome/test_genome.py \
-            supertick-eval/pipeline/reflex/test_reflex.py supertick-eval/nerve/test_nerve.py; do python3 -I $f || break; done
+   python3 -I eval/pipeline/genome/build.py --check
+   for f in eval/pipeline/test_capsule.py eval/pipeline/genome/test_genome.py \
+            eval/pipeline/reflex/test_reflex.py eval/nerve/test_nerve.py; do python3 -I $f || break; done
    ```
    Если задеты ссылки — плюс linkcheck по `docs/`.
 5. Коммит и тело PR с `[skip ci]`. Сообщение роли 5: «PR #n, голова, `[skip ci]`, линза: инструмент (6)». Роль 5
@@ -108,13 +108,13 @@
 - `createdAt` бывает в микро- и в миллисекундах — сравнивать после нормализации.
 - `projectAccessCondition` с NULL отсекает строки.
 - `.env` в app-pilot — симлинк. Не перезаписывать и не коммитить.
-- В `t-boards/app` незакоммичена миграция 0076. Не терять; коммит — только с разрешения владельца.
+- В `boards` незакоммичена миграция 0076. Не терять; коммит — только с разрешения владельца.
 
 Из отчёта 87:
 - Интеграционные тесты — только командой из отчёта (PG :5439), не голым `pnpm test`.
 - i18n json форка — с табами, не пробелами.
 - `resolveFileSecret` кеширует: после смены секрета — рестарт процесса.
-- **`t-boards/app` не удалять:** из него собран хабовый MCP t-boards.
+- **`boards` не удалять:** из него собран хабовый MCP t-boards.
 - Push форка — только владелец. В upstream kaneo — никогда.
 
 Общие:

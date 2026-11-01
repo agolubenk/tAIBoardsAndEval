@@ -12,7 +12,7 @@
 - m-442 planned: свой деплой, откат ref baa79a3b1, голова 6739c74de, слияние с baa79a3b1 чистое; ci-* build красны и на main (oq m-442)
 - #433 changes на 5176136e3: скобки у git/gh не раскрываются — gh pr {merge,} 1 и git push origin HEAD:{main,x} проходят (PR #433 issuecomment-6531944616)
 - d-rbac-lost-roles-3010: s-пункт ставит db (роль 1) по «Найти»; черновик отдан (handoff/2026-10-30/release/s-rbac-lost-roles-3010.draft.md)
-- Тревога «НЕРВ МОЛЧИТ» трижды ложная: pid 43499 жив, пульс свежий — kickstart не делать, сверять heartbeat (supertick-eval/nerve/state/heartbeat)
+- Тревога «НЕРВ МОЛЧИТ» трижды ложная: pid 43499 жив, пульс свежий — kickstart не делать, сверять heartbeat (eval/nerve/state/heartbeat)
 
 **Механика.**
 - /Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/review/pr433 [detached] 5176136e3, грязных 0
@@ -27,6 +27,6 @@
 - не печатать токены; PSK OPS-14 и wg-*.sh не трогать; --hard в checkout владельца нельзя
 
 **Оригиналы.**
-- supertick-eval/prompts/launch-3010/roles/5-release.md
+- eval/prompts/launch-3010/roles/5-release.md
 - work_state release-t3
 - handoff/2026-10-30/release/

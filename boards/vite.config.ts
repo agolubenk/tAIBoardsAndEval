@@ -19,6 +19,9 @@ const ignorePatterns = [
   "**/routeTree.gen.ts",
   "**/openapi.json",
   "**/drizzle/meta/**",
+  // Archived drafts and stand probes live outside the pnpm workspace.
+  "docs/archive/**",
+  "tools/**",
 ];
 
 export default defineConfig({

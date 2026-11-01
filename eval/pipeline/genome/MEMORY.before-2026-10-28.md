@@ -88,5 +88,5 @@
 - [Weekly limit stalled the team](project_mac_sleep_stalls_team.md) — 24.10 09:16 all 14 sessions hit the Claude weekly limit (resets 29.10 19:00 Minsk) after ~42 h; weekend lost; not Mac sleep
 - [Team Т3 plan + day 1](project_team_t3_plan.md) — Т2 baseline $68/PR, 515K ctx; Т3 26.10: $40/5 h, 141K ctx, 2 account-limit waves, all closed 15:00; supertick: don't adopt; #402 hub claude-mem
 - [Weekly limit vs team size](feedback_weekly_limit_team_size.md) — 23–24.10: 14 sessions burned the weekly Claude limit in ~42 h, team stood until 29.10 19:00; grep transcripts for «hit your weekly limit» before blaming sleep; core of ~5 sessions
-- [t-boards](project_t_boards.md) — 28.10: commits 63bc00d+3eacffa local (never push); K-4/K-5 done by Claude, K-6/K-7 Kimi via owner; plan impl-remaining.md, handoff supertick-eval/HANDOFF-2026-10-28.md track B
+- [t-boards](project_t_boards.md) — 28.10: commits 63bc00d+3eacffa local (never push); K-4/K-5 done by Claude, K-6/K-7 Kimi via owner; plan impl-remaining.md, handoff eval/HANDOFF-2026-10-28.md track B
 - [Nerve + swarm 28.10](project_supertick_nerve_swarm.md) — LaunchAgent space.hrhelper.nerve wakes roles via `nerve.py tap`; swarm keys:0 → Haiku; d1–d3 pilot = handoff track A

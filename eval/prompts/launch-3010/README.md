@@ -10,13 +10,13 @@
 - Файлы из scratchpad старых сессий, на которые ссылаются отчёты, скопированы в `$H/2026-10-30/collect/files/`. Без
   копии они пропали бы вместе с сессией.
 - Инструменты обновлены:
-  - геном — по одному на каждую из 6 ролей: `supertick-eval/pipeline/genome/<ключ>.json`, все собраны из `roles.json`
+  - геном — по одному на каждую из 6 ролей: `eval/pipeline/genome/<ключ>.json`, все собраны из `roles.json`
     скриптом `build.py`. Исправлено: прежние геномы выключали правило 90 у самой команды Т3;
   - Нерв знает новые роли (`boards` вместо `review`), маршруты QA → `coord`, безопасность → `release`,
     t-boards и supertick-eval → `boards`;
   - капсула пишет ещё и `contextPack` для карточки t-boards (≤ 2000 символов);
   - два новых антигена: устаревший путь к бинарю `claude` и `gh pr merge` без правил мёржа;
-  - `supertick-eval/context/our-team.md` переписан на 30.10.
+  - `eval/context/our-team.md` переписан на 30.10.
 
   Тесты: pipeline 36/36, Нерв 15/15, `build.py --check` чисто.
 
@@ -90,7 +90,7 @@ cd ~/Desktop/Development/HR_Helper-v2 && claude --settings supertick-eval/pipeli
 
 > передано: роль `<N>` (`<ключ>`) запущена и приняла твой отчёт `collect/hr-helper-v2-<id>.md` — видно в лесе
 > t-boards, session `t3-<ключ>`. Проверь за 5 минут, есть ли всё из разделов B и C твоего отчёта в
-> `supertick-eval/prompts/launch-3010/roles/<N>-<ключ>.md`. Захваты в очереди на твоё имя не снимай: новая роль
+> `eval/prompts/launch-3010/roles/<N>-<ключ>.md`. Захваты в очереди на твоё имя не снимай: новая роль
 > перехватит их со своим `session`. Ответь одной строкой: «сдано: ок» или «сдано: не хватает — <что>, <где>». После
 > ответа ничего не запускай.
 
@@ -112,17 +112,17 @@ cd ~/Desktop/Development/HR_Helper-v2 && claude --settings supertick-eval/pipeli
 `[skip ci]`. До тех пор пункт «главный checkout» (`reset --keep` после #445) должен их сохранить. Роль 5 включает
 их в проверку коллизий:
 
-- `supertick-eval/pipeline/genome/{roles.json,build.py,test_genome.py,coord.json,plan.json,frontend.json,backend.json,release.json,boards.json,antigens.json}`;
-- `supertick-eval/pipeline/{capsule.py,test_capsule.py,reflex/test_reflex.py}`;
-- `supertick-eval/nerve/{config.json,test_nerve.py}`;
-- `supertick-eval/context/our-team.md`;
-- `supertick-eval/prompts/launch-3010/**`;
-- раскладка документов `t-boards/`, тоже вне git и тоже в этом PR: `impl/`, `archive/`, `migration/`, `README.md`,
-  правки и удаления в корне `t-boards/`, а ещё `supertick-eval/pipeline/capsules/author.md`.
+- `eval/pipeline/genome/{roles.json,build.py,test_genome.py,coord.json,plan.json,frontend.json,backend.json,release.json,boards.json,antigens.json}`;
+- `eval/pipeline/{capsule.py,test_capsule.py,reflex/test_reflex.py}`;
+- `eval/nerve/{config.json,test_nerve.py}`;
+- `eval/context/our-team.md`;
+- `eval/prompts/launch-3010/**`;
+- раскладка документов `boards/`, тоже вне git и тоже в этом PR: `impl/`, `archive/`, `migration/`, `README.md`,
+  правки и удаления в корне `boards/`, а ещё `eval/pipeline/capsules/author.md`.
 
 ## Если что-то пошло не так
 
 - Новая сессия упала на старте, например из-за ошибки в геноме: запустите ту же команду без
-  `--settings supertick-eval/pipeline/genome/<ключ>.json`. Старый геном координатора лежит в
+  `--settings eval/pipeline/genome/<ключ>.json`. Старый геном координатора лежит в
   `/private/tmp/claude-501/-Users-agolubenko-Desktop-Development-HR-Helper-v2/a2130889-8d90-4e03-b87c-d3682093c5e8/scratchpad/coord.before.json`.
 - Старые сессии не закрывайте до «сдано: ок»: пока они живы, к ним можно вернуться.

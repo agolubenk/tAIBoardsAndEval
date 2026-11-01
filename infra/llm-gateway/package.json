@@ -1,0 +1,14 @@
+{
+  "name": "@hr-helper/llm-gateway",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Локальный OpenAI-совместимый шлюз: ротация ключей и моделей OpenRouter, паузы, фолбэк на Ollama",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

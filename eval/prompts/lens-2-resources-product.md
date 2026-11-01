@@ -11,8 +11,8 @@
 
 Опорные материалы (читать долями):
 
-- `supertick-eval/context/our-team.md`, `supertick-eval/context/supertick.md`;
-- `supertick-eval/data/*.txt`;
+- `eval/context/our-team.md`, `eval/context/supertick.md`;
+- `eval/data/*.txt`;
 - пакет команды Т3: `~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-25/team/`
   — `TEAM-0-SIX.md`, `PROPOSALS.md`, `OWNER-GUIDE.md`. Папку `inherit/QUEUE.md` не открывай, там PII.
 

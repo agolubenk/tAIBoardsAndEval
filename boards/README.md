@@ -11,7 +11,7 @@ On top of upstream it adds:
 - **Workspace-scoped API keys** — one key is limited to one workspace; workspaces are presented as «Продукты» in RU.
 - RU as a first-class product language.
 
-Product docs: [docs/t-boards-spec.md](docs/t-boards-spec.md) (spec, RU) · [docs/architecture-overview.md](docs/architecture-overview.md) (ContextFlow architecture).
+Product docs: [docs/t-boards-spec.md](docs/t-boards-spec.md) (spec, RU) · [docs/architecture-overview2.0.md](docs/architecture-overview2.0.md) (ContextFlow architecture).
 
 ## Run
 

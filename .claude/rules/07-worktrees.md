@@ -18,16 +18,11 @@ worktrees/<track>/<topic>/
 
 **Ветка** = `<track>/<topic>` (например `refactor/vacancy-save-split`)
 
-**База по умолчанию:** `main`
+**База по умолчанию:** ветка по умолчанию репозитория (`WT_BASE` в `Makefile`: `board-agents` в доме слоя, `main` у host-проекта)
 
-## Рекомендуемые дорожки для HR Helper v2
+## Рекомендуемые дорожки
 
-| Worktree | Назначение |
-|----------|------------|
-| `refactor/vacancy-save-split` | Декомпозиция `putVacancyFull` |
-| `fix/candidate-merge-n-plus-one` | Batch в `CandidateMergeService` |
-| `spike/ai-module-consolidation` | Исследование единого `AiModule` |
-
+Дорожки по умолчанию для текущего репозитория — в `worktrees/README.md` (у инстанса над host-проектом — свои).
 Не смешивать тяжёлый refactor, багфиксы и spike в одном checkout.
 
 ## Команды
@@ -51,7 +46,8 @@ make wt-rm TRACK=fix NAME=candidate-merge-n-plus-one
 
 1. `cd worktrees/<track>/<topic>`
 2. Зависимости — свои. `make wt-add` ставит их сам; worktree, созданный иначе (`git worktree add`, `/init-worktree`,
-   Claude Code): `infra/scripts/dev/wt-deps.sh install <путь>`. Скрипт делает `npm ci` с заглушкой `DATABASE_URL`:
+   Claude Code): `infra/scripts/dev/wt-deps.sh install <путь>`. В доме слоя (pnpm-workspace `boards/`) скрипт
+   делает `pnpm install --frozen-lockfile` в `boards/`; в npm-монорепо хоста — `npm ci` с заглушкой `DATABASE_URL`:
    postinstall бэкенда (`prisma generate`) без неё падает, и `npm ci` откатывает **весь** `node_modules`. Код возврата
    берётся у самого `npm ci`. Потом `build:packages` и `check`: свой `node_modules`, установка не старее
    `package-lock.json`, `@hr-helper/*` ведут внутрь worktree.
@@ -61,7 +57,7 @@ make wt-rm TRACK=fix NAME=candidate-merge-n-plus-one
    worktree без своих зависимостей останавливает хук `.claude/hooks/pre-tool-use-wt-deps.sh` с командой починки.
    Обход для команды, которой зависимости не нужны, — `WT_DEPS_CHECK=0` в её начале; для всей сессии —
    `WT_DEPS_CHECK=0` в окружении, с которым запущен `claude` (хук и проверка Stop-typecheck молчат).
-3. Проверить `apps/backend/.env`
+3. Проверить локальные `.env` из `.worktreeinclude` (у досок — `boards/.env`)
 4. Одна задача на worktree — один PR
 
 ## Чужой незакоммиченный WIP

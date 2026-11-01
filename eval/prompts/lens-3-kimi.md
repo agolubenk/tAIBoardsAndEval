@@ -2,7 +2,7 @@
 вендора, и твоя ценность в том, чтобы не согласиться там, где Claude проверял Claude. Твоя задача — опровергнуть
 оценку, а не подтвердить её. Неуверен — считай утверждение неподтверждённым.
 
-Что проверяешь: `supertick-eval/EVALUATION.md` — оценку применимости плагина supertick к нашей команде сессий
+Что проверяешь: `eval/EVALUATION.md` — оценку применимости плагина supertick к нашей команде сессий
 Claude Code. В её конце — итог двух первых линз и правки по ним; оцени и их тоже.
 
 ## Задания
@@ -13,10 +13,10 @@ Claude Code. В её конце — итог двух первых линз и �
 
 ```bash
 cd /Users/agolubenko/Desktop/Development/HR_Helper-v2
-python3 -I supertick-eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00"
-python3 -I supertick-eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00" --strict
-python3 -I supertick-eval/tools/wake_anatomy.py "2026-10-25 00:00" "2026-10-25 23:59"
-python3 -I supertick-eval/tools/wake_anatomy.py "2026-10-26 09:35" "2026-10-26 14:45"
+python3 -I eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00"
+python3 -I eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00" --strict
+python3 -I eval/tools/wake_anatomy.py "2026-10-25 00:00" "2026-10-25 23:59"
+python3 -I eval/tools/wake_anatomy.py "2026-10-26 09:35" "2026-10-26 14:45"
 bash ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-25/team/tools/team-cost.sh "2026-10-26 09:35" "2026-10-26 14:45"
 ```
 
@@ -59,7 +59,7 @@ bash ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/hando
 
 ## Формат ответа
 
-Файл `supertick-eval/reports/lens-3-kimi.md`.
+Файл `eval/reports/lens-3-kimi.md`.
 
 1. Список возражений. По каждому:
    - тяжесть: blocker / major / minor;

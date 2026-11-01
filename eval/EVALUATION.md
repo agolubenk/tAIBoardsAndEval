@@ -77,7 +77,7 @@ Kimi, другой вендор — ещё не отработала, её за�
 # расход команды (существующий инструмент пакета Т3)
 bash ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-25/team/tools/team-cost.sh "2026-10-23 14:50" "2026-10-24 10:00"
 # анатомия пробуждений (новый, только чтение); --strict — запись файла из Bash тоже действие
-python3 -I supertick-eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00" [--strict]
+python3 -I eval/tools/wake_anatomy.py "2026-10-23 14:50" "2026-10-24 10:00" [--strict]
 ```
 
 | | Т2, 19 ч | Т2 строго | 25.10 (день без задач) | Т3, первые 5 ч |

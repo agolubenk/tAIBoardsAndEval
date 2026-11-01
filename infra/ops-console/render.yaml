@@ -1,0 +1,32 @@
+# Render Blueprint для HR Helper Ops (бесплатный тариф): «New → Blueprint» в Render,
+# корень репозитория, путь к этому файлу — infra/ops-console/render.yaml.
+# База — Turso (free): диск Render Free стирается при каждом деплое и рестарте.
+services:
+  - type: web
+    name: hrh-ops-console
+    runtime: node
+    plan: free
+    rootDir: infra/ops-console
+    # tsx и vite — devDependencies: ставим их явно, иначе при NODE_ENV=production npm их пропустит.
+    buildCommand: npm ci --include=dev && npm run build
+    # Миграции, встроенные правила и первый владелец — при старте (server/local.ts).
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: '22'
+      - key: OPS_DATABASE_URL
+        sync: false
+      - key: OPS_DATABASE_AUTH_TOKEN
+        sync: false
+      - key: OPS_ENCRYPTION_KEY
+        generateValue: true
+      - key: OPS_ADMIN_EMAIL
+        sync: false
+      - key: OPS_ADMIN_PASSWORD
+        sync: false
+      - key: OPS_CRON_SECRET
+        generateValue: true

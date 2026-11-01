@@ -65,8 +65,8 @@ Handoff — снимок, а не состояние: пока преемник 
 - Хук `.claude/hooks/context-threshold.py` (PostToolUse) один раз вставляет `<successor-threshold>` на 80% окна
   `autoCompactWindow` и напоминает на 84% (сжатие приходит на 213–221K). После сжатия порог взводится заново. Выключить: `SUCCESSOR_AUTO=off`.
 - По сигналу: точка сохранения (WIP коммитом в свою ветку) → `work_state` (+ лес у роли Т3) → handoff в постоянный файл
-  → `bash supertick-eval/tools/spawn_session.sh --handoff <файл> [--role <ключ>]` из своей рабочей папки. Скрипт откроет новое окно Terminal
+  → `bash eval/tools/spawn_session.sh --handoff <файл> [--role <ключ>]` из своей рабочей папки (в инстансе над host-проектом дерево — `supertick-eval/`). Скрипт откроет новое окно Terminal
   с `claude`: у роли — её геном и первая фраза «Сборка Т3, ключ реестра …», чтобы включилось правило 90. Без окна
   (вкладка VS Code) — `--terminal print`. Дальше дождись подтверждения приёма от наследника и остановись.
-- Запуск команды из терминала: `bash supertick-eval/tools/spawn_session.sh --launch --roles all` (порядок 1→5→4→3→2→6)
+- Запуск команды из терминала: `bash eval/tools/spawn_session.sh --launch --roles all` (порядок 1→5→4→3→2→6)
   или `--launch --role <ключ>`.

@@ -2,7 +2,7 @@
 
 статус: готово · автор: Kimi (kimi-hr-helper-v2) · 26.10.2026
 
-Код: `supertick-eval/shadow/watchdog.py` (stdlib, `python3 -I`, ~150 строк). Только читает хвосты
+Код: `eval/shadow/watchdog.py` (stdlib, `python3 -I`, ~150 строк). Только читает хвосты
 журналов (живой режим — 256 КБ), печатает сигналы строками, состояние в `shadow/state/`, сети нет.
 Повтор одного сигнала — не чаще `--repeat-after` (по умолчанию час).
 

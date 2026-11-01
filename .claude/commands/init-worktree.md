@@ -3,14 +3,14 @@ description: Создать git worktree для изолированной Claud
 argument-hint: [track] [topic] — например refactor vacancy-save-split
 ---
 
-Создай изолированное git worktree по схеме репозитория HR Helper v2.
+Создай изолированное git worktree по схеме репозитория (`worktrees/<track>/<topic>`).
 
 ## Вход
 
 1. Если аргументы не переданы — спроси:
    - **track**: `feature` | `fix` | `refactor` | `spike` | `review`
    - **topic**: kebab-case, например `vacancy-save-split`
-2. **base branch** по умолчанию: `main` (если нет — уточни у пользователя)
+2. **base branch** по умолчанию: `WT_BASE` из `Makefile` (дом слоя — `board-agents`, host-проект — `main`); нет — уточни у пользователя
 
 ## Выполнить
 
@@ -22,9 +22,10 @@ TRACK="<track>"
 TOPIC="<topic>"
 BRANCH="${TRACK}/${TOPIC}"
 WT_PATH="worktrees/${TRACK}/${TOPIC}"
+BASE="$(sed -n 's/^WT_BASE ?= //p' Makefile 2>/dev/null)"; BASE="${BASE:-main}"
 
 mkdir -p "worktrees/${TRACK}"
-git worktree add "${WT_PATH}" -b "${BRANCH}" main
+git worktree add "${WT_PATH}" -b "${BRANCH}" "${BASE}"
 git worktree list
 ```
 
@@ -37,7 +38,7 @@ git worktree add "${WT_PATH}" "${BRANCH}"
 ## После создания
 
 1. Напомни: Claude Code скопирует файлы из `.worktreeinclude` (локальные `.env`).
-2. Зависимости — свои: `infra/scripts/dev/wt-deps.sh install "${WT_PATH}"`. Скрипт делает `npm ci` с заглушкой
+2. Зависимости — свои: `infra/scripts/dev/wt-deps.sh install "${WT_PATH}"`. В доме слоя — `pnpm install --frozen-lockfile` в `boards/`; в npm-монорепо хоста скрипт делает `npm ci` с заглушкой
    `DATABASE_URL` для postinstall бэкенда, смотрит код возврата самого `npm ci`, собирает `packages/*` и проверяет,
    что `@hr-helper/*` ведут внутрь worktree. `make wt-add` зовёт его сам. Пропустить можно только без гейтов (документы,
    чтение): первый гейт без установки остановит хук `pre-tool-use-wt-deps.sh` с командой починки. Ссылка

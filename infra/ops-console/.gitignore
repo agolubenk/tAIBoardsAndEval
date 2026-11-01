@@ -1,0 +1,12 @@
+node_modules/
+dist/
+data/
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+.vercel/
+
+# Python-агент: кэш байткода после тестов
+__pycache__/
