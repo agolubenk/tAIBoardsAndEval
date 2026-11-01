@@ -7,6 +7,7 @@ type PreferenceSwitchRowProps = {
   title: ReactNode;
   description?: ReactNode;
   checked: boolean;
+  disabled?: boolean;
   onCheckedChange: (checked: boolean) => void;
 };
 
@@ -14,6 +15,7 @@ export function PreferenceSwitchRow({
   title,
   description,
   checked,
+  disabled,
   onCheckedChange,
 }: PreferenceSwitchRowProps) {
   const id = useId();
@@ -24,7 +26,12 @@ export function PreferenceSwitchRow({
       title={<Label htmlFor={id}>{title}</Label>}
       description={description}
     >
-      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
+      <Switch
+        id={id}
+        checked={checked}
+        disabled={disabled}
+        onCheckedChange={onCheckedChange}
+      />
     </SettingsRow>
   );
 }

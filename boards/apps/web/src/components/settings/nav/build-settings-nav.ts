@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
   Tag,
   User,
+  Workflow,
 } from "lucide-react";
 import projectIcons from "@/constants/project-icons";
 import type {
@@ -132,6 +133,12 @@ export function buildSettingsNav({
           label: t("settings:workspaceLabels.title"),
           to: "/dashboard/settings/workspace/labels",
           icon: Tag,
+        },
+        {
+          id: "workspace-pipeline",
+          label: t("settings:workspacePipeline.title"),
+          to: "/dashboard/settings/workspace/pipeline",
+          icon: Workflow,
         },
         ...(canImport
           ? [

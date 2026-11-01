@@ -16,6 +16,7 @@ import {
   assertAssignableUser,
   getProjectWorkspaceId,
 } from "../../utils/assert-assignable-user";
+import { pipelineEnabled } from "../../pipeline-settings/store";
 import type { ForestActor } from "../actor";
 import { cardStage } from "./card-stage";
 
@@ -120,6 +121,18 @@ async function commentMove(move: CardMove) {
   await createComment(move.taskId, move.actor.userId, lines.join("\n\n"));
 }
 
+// A settings read that fails keeps the default (on): the status change is
+// already saved and must not fail on a lookup.
+async function autofillOn(projectId: string) {
+  try {
+    const workspaceId = await getProjectWorkspaceId(projectId);
+    return await pipelineEnabled(workspaceId, "cardAutofill");
+  } catch (error) {
+    console.error("Card fill (settings) failed:", error);
+    return true;
+  }
+}
+
 function logged(step: string, work: Promise<unknown>) {
   return work.catch((error: unknown) => {
     console.error(`Card fill (${step}) failed:`, error);
@@ -134,7 +147,9 @@ export async function fillCard(move: CardMove) {
   if (move.link) {
     await logged("link", addLink(move.taskId, move.link, move.actor.userId));
   }
-  if (cardStage(move.to)) {
+  // Filling the assignee and start date is automation a product can switch off
+  // (pipeline settings, `cardAutofill`); the move's comment always goes out.
+  if (cardStage(move.to) && (await autofillOn(move.projectId))) {
     await logged("assignee", takeCard(move.taskId, move.actor.userId));
   }
   await logged("comment", commentMove(move));

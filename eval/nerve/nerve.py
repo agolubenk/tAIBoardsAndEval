@@ -30,6 +30,17 @@ from journal import DIGEST, NERVOUS, Journal, addressed, now_iso, read_from  # n
 STATE_DIR = os.environ.get("NERVE_STATE_DIR", os.path.join(HERE, "state"))
 
 
+def wakes_on():
+    """The product's switch `nerveWakes` (tAI-Boards pipeline settings): off — events are still journaled, but
+    nobody is woken. Errors and missing layer → on."""
+    try:
+        sys.path.insert(0, os.path.join(HERE, "..", "..", ".claude", "scripts"))
+        import pipeline_settings
+        return pipeline_settings.enabled("nerveWakes")
+    except Exception:  # noqa: BLE001 — the watchdog never dies on settings
+        return True
+
+
 def load_json(path, default):
     try:
         with open(path, encoding="utf-8") as f:
@@ -121,7 +132,7 @@ def cmd_run(cfg, a):
         return 0
     seed = not os.path.exists(os.path.join(STATE_DIR, "journal.jsonl"))
     while True:
-        ctx = Ctx(cfg, STATE_DIR, deliver=not seed)
+        ctx = Ctx(cfg, STATE_DIR, deliver=not seed and wakes_on())
         one_pass(ctx)
         seed = False
         night = load_json(os.path.join(STATE_DIR, "mode.json"), {}).get("phase") == "night"
@@ -130,7 +141,7 @@ def cmd_run(cfg, a):
 
 def cmd_once(cfg, a):
     os.makedirs(STATE_DIR, exist_ok=True)
-    ctx = Ctx(cfg, STATE_DIR, deliver=not a.seed)
+    ctx = Ctx(cfg, STATE_DIR, deliver=not a.seed and wakes_on())
     one_pass(ctx)
     print(f"проход: событий {ctx.emitted}, ошибки {list(ctx.state.get('errors', {}))}")
     return 0

@@ -121,6 +121,16 @@ def strip_think(text):
     return THINK_RE.sub("", text).strip()
 
 
+def swarm_on():
+    """The product's switch `swarm` (tAI-Boards pipeline settings); errors → on. Dry runs never call a model."""
+    try:
+        sys.path.insert(0, os.path.join(HERE, "..", "..", ".claude", "scripts"))
+        import pipeline_settings
+        return pipeline_settings.enabled("swarm")
+    except Exception:  # noqa: BLE001
+        return True
+
+
 def main():
     p = argparse.ArgumentParser(prog="swarm")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -145,6 +155,10 @@ def main():
         print(msgs[1]["content"])
         print(f"рой: dry-run, {sent} символов, маски {masks or '—'}{', обрезано' if cut else ''}", file=sys.stderr)
         return 0
+    if not swarm_on():
+        print("рой: выключен в настройках продукта (tAI-Boards → «Pipeline & evolution», swarm) — "
+              "задачу делает сама сессия", file=sys.stderr)
+        return 3
     answer, model, sec = call(args.model, msgs, args.timeout)
     total, bad = check_refs(answer, blocks)
     print(answer, flush=True)

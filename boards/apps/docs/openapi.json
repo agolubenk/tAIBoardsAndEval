@@ -8676,6 +8676,126 @@
             "description": "A new model key; null removes the stored one, leaving it out keeps it."
           }
         }
+      },
+      "PipelineSettings": {
+        "type": "object",
+        "properties": {
+          "automation": {
+            "type": "boolean",
+            "description": "Master switch: off stops every automated part below without losing its value."
+          },
+          "toggles": {
+            "type": "object",
+            "properties": {
+              "abJudge": {
+                "type": "boolean"
+              },
+              "askOnce": {
+                "type": "boolean"
+              },
+              "handoffDupes": {
+                "type": "boolean"
+              },
+              "promptBrief": {
+                "type": "boolean"
+              },
+              "successorAuto": {
+                "type": "boolean"
+              },
+              "grillHint": {
+                "type": "boolean"
+              },
+              "nerveWakes": {
+                "type": "boolean"
+              },
+              "swarm": {
+                "type": "boolean"
+              },
+              "councilReview": {
+                "type": "boolean"
+              },
+              "cardAutofill": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "abJudge",
+              "askOnce",
+              "handoffDupes",
+              "promptBrief",
+              "successorAuto",
+              "grillHint",
+              "nerveWakes",
+              "swarm",
+              "councilReview",
+              "cardAutofill"
+            ],
+            "description": "Automated parts of the process, each enforced where it runs (API, the layer's hooks and tools)."
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updatedBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "automation",
+          "toggles",
+          "updatedAt",
+          "updatedBy"
+        ]
+      },
+      "UpdatePipelineSettings": {
+        "type": "object",
+        "properties": {
+          "automation": {
+            "type": "boolean"
+          },
+          "toggles": {
+            "type": "object",
+            "properties": {
+              "abJudge": {
+                "type": "boolean"
+              },
+              "askOnce": {
+                "type": "boolean"
+              },
+              "handoffDupes": {
+                "type": "boolean"
+              },
+              "promptBrief": {
+                "type": "boolean"
+              },
+              "successorAuto": {
+                "type": "boolean"
+              },
+              "grillHint": {
+                "type": "boolean"
+              },
+              "nerveWakes": {
+                "type": "boolean"
+              },
+              "swarm": {
+                "type": "boolean"
+              },
+              "councilReview": {
+                "type": "boolean"
+              },
+              "cardAutofill": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     },
     "parameters": {}
@@ -33229,6 +33349,146 @@
           },
           "409": {
             "description": "The server cannot store a model key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/pipeline-settings/workspace/{workspaceId}": {
+      "get": {
+        "operationId": "getPipelineSettings",
+        "tags": [
+          "Pipeline settings"
+        ],
+        "summary": "Get the workspace's pipeline settings",
+        "description": "Which automated parts of the team process run for this workspace (product). Readable by members and by API keys of the workspace — sessions and tools read it to decide whether to run.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipeline settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineSettings"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "put": {
+        "operationId": "updatePipelineSettings",
+        "tags": [
+          "Pipeline settings"
+        ],
+        "summary": "Update the workspace's pipeline settings",
+        "description": "Turns automated parts of the process on or off. People with the workspace's manage-settings permission only: API keys and agents cannot change what automation may do.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePipelineSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated pipeline settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineSettings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing permission or not a user session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
             "content": {
               "application/json": {
                 "schema": {

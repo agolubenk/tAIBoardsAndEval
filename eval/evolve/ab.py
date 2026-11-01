@@ -45,6 +45,16 @@ ANSWER = re.compile(r'^\W*(X|Y|TIE)\W*$')  # the verdict line holds the verdict 
 VERDICTS = 'verdicts.jsonl'
 
 
+def pipeline_on(name):
+    """The product's switch (`.claude/scripts/pipeline_settings.py`); errors → on."""
+    try:
+        sys.path.insert(0, os.path.join(catalog.ROOT, '.claude', 'scripts'))
+        import pipeline_settings
+        return pipeline_settings.enabled(name)
+    except Exception:  # noqa: BLE001
+        return True
+
+
 def version_text(root, path, rev):
     if rev == 'work':
         with open(os.path.join(root, path), encoding='utf-8') as f:
@@ -193,6 +203,10 @@ def main(argv=None):
     if text_a == text_b:
         print('ab: versions are identical — nothing to compare')
         return 0
+    if args.judge == 'gateway' and not pipeline_on('abJudge'):
+        print('ab: the A/B judge is off in the product settings (tAI-Boards → «Pipeline & evolution», abJudge) — '
+              'no model calls; compare by hand or turn it on', file=sys.stderr)
+        return 3
     call = fake_call if args.judge == 'fake' else gateway_call(args.root, args.model)
     results = run(call, load_cases(args.cases), text_a, text_b, args.mode)
     verdict = select(results, est_tokens(text_a), est_tokens(text_b))

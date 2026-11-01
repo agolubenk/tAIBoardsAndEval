@@ -162,6 +162,17 @@ def _glm_tick(cfg, store: Store, cloud_client, was: bool | None) -> tuple[bool, 
     return requested, on
 
 
+def _pipeline_on(name: str) -> bool:
+    """The product's switch (tAI-Boards → workspace settings → «Pipeline & evolution»): off stops the review of cards
+    on review, on top of the council's own `worker_enabled`. Errors and a host without the layer → on."""
+    try:
+        sys.path.insert(0, str(HERE.parent.parent / ".claude" / "scripts"))
+        import pipeline_settings
+        return pipeline_settings.enabled(name)
+    except Exception:  # noqa: BLE001 — the worker never stops on settings
+        return True
+
+
 def _claim_review(reviewer, worker_id: str, blocks: queue_control.MemoryBlocks, route: str, glm_live: bool):
     """Следующее ревью по маршруту (plan_routes). Профили, ждущие память, пропускаются всегда, когда ревью может
     пойти локально; без блоков — только если оно наверняка в GLM 5.x (маршрут `glm` или `any` при живом режиме:
@@ -609,7 +620,7 @@ def main() -> int:
                 lanes_was = lanes
             routes = plan_routes(glm_on, glm_ok, glm_mode.effective_for_runs(store, cfg), cloud_lane, lanes,
                                  cloud_on=bool(cfg.cloud_enabled()))
-            review_on = settings["worker_enabled"]
+            review_on = settings["worker_enabled"] and _pipeline_on("councilReview")
             if routes.idle:
                 if args.once:
                     break
