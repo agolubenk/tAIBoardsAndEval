@@ -1,0 +1,292 @@
+import { createHash } from "node:crypto";
+import { and, eq, inArray } from "drizzle-orm";
+import db from "../database";
+import {
+  ssrBlobTable,
+  ssrEntityTable,
+  ssrPushStateTable,
+  ssrVersionTable,
+} from "../database/ssr-schema";
+import { entityOfPath, isCorpusPath } from "./corpus";
+import { scanSecrets } from "./secret-scan";
+
+const sha256 = (text: string) =>
+  createHash("sha256").update(text, "utf8").digest("hex");
+
+export type SyncFile = { path: string; sha256: string; content?: string };
+
+export type SyncResult = {
+  commitSha: string;
+  created: Array<{
+    entity: string;
+    kind: string;
+    versionId: string;
+    number: number;
+    status: string;
+  }>;
+  bumped: Array<{
+    entity: string;
+    kind: string;
+    versionId: string;
+    number: number;
+  }>;
+  archived: string[];
+  unchanged: number;
+  secretHits: Array<{ path: string; label: string }>;
+};
+
+// Aggregate hash of a snapshot: the version identity for RU-5 immutability.
+function snapshotSha(files: Array<{ path: string; sha256: string }>): string {
+  const sorted = [...files].sort((a, b) => a.path.localeCompare(b.path));
+  return sha256(sorted.map((file) => `${file.path}:${file.sha256}`).join("\n"));
+}
+
+// One sync round (spec RU-3, RU-7, D-005): the Mac agent sends the corpus
+// manifest at a git commit plus the content of files whose sha the server has
+// not seen. Existing entities auto-bump (Q-014: a merge into main IS the
+// owner's consent); new entities wait as drafts for the owner (Q-015).
+export async function syncCorpus(
+  workspaceId: string,
+  input: { commitSha: string; files: SyncFile[]; deleted?: string[] },
+  actor: string,
+): Promise<SyncResult> {
+  const outside = input.files
+    .concat((input.deleted ?? []).map((path) => ({ path, sha256: "" })))
+    .filter((file) => !isCorpusPath(file.path))
+    .map((file) => file.path);
+  if (outside.length > 0) {
+    throw new SyncError(
+      `Paths outside the SSR corpus: ${outside.slice(0, 5).join(", ")}`,
+      "corpus_allowlist",
+    );
+  }
+
+  const secretHits = scanSecrets(
+    input.files.filter((file) => file.content !== undefined) as Array<{
+      path: string;
+      content: string;
+    }>,
+  );
+  if (secretHits.length > 0) {
+    throw new SyncError(
+      `Secret patterns blocked the sync: ${secretHits.map((hit) => `${hit.path} (${hit.label})`).join(", ")}`,
+      "secret_scan",
+    );
+  }
+
+  const knownBlobs = new Set(
+    (
+      await db
+        .select({ sha256: ssrBlobTable.sha256 })
+        .from(ssrBlobTable)
+        .where(
+          inArray(
+            ssrBlobTable.sha256,
+            input.files.map((file) => file.sha256),
+          ),
+        )
+    ).map((row) => row.sha256),
+  );
+
+  const result: SyncResult = {
+    commitSha: input.commitSha,
+    created: [],
+    bumped: [],
+    archived: [],
+    unchanged: 0,
+    secretHits: [],
+  };
+
+  await db.transaction(async (tx) => {
+    const newBlobs = input.files.filter(
+      (file) => file.content !== undefined && !knownBlobs.has(file.sha256),
+    );
+    if (newBlobs.length > 0) {
+      await tx.insert(ssrBlobTable).values(
+        newBlobs.map((file) => ({
+          sha256: file.sha256,
+          content: file.content as string,
+          bytes: Buffer.byteLength(file.content as string, "utf8"),
+        })),
+      );
+    }
+
+    const blobSizes = new Map(
+      (
+        await db
+          .select({ sha256: ssrBlobTable.sha256, bytes: ssrBlobTable.bytes })
+          .from(ssrBlobTable)
+          .where(
+            inArray(
+              ssrBlobTable.sha256,
+              input.files.map((file) => file.sha256),
+            ),
+          )
+      ).map((row) => [row.sha256, row.bytes]),
+    );
+
+    const manifests = new Map(input.files.map((file) => [file.path, file]));
+    for (const path of input.deleted ?? []) manifests.delete(path);
+
+    // Group files into entities; a skill is its whole folder (D-008).
+    const groups = new Map<
+      string,
+      { kind: string; name: string; files: typeof input.files }
+    >();
+    for (const file of manifests.values()) {
+      const entity = entityOfPath(file.path);
+      if (!entity) continue;
+      const group = groups.get(entity.path) ?? {
+        kind: entity.kind,
+        name: entity.name,
+        files: [] as typeof input.files,
+      };
+      group.files.push(file);
+      groups.set(entity.path, group);
+    }
+
+    const existingEntities = await tx
+      .select()
+      .from(ssrEntityTable)
+      .where(eq(ssrEntityTable.workspaceId, workspaceId));
+    const byPath = new Map(
+      existingEntities.map((entity) => [entity.path, entity]),
+    );
+
+    for (const [path, group] of groups) {
+      const snapshot = group.files
+        .map((file) => ({
+          path: file.path,
+          sha256: file.sha256,
+          bytes:
+            blobSizes.get(file.sha256) ??
+            Buffer.byteLength(file.content ?? "", "utf8"),
+        }))
+        .sort((a, b) => a.path.localeCompare(b.path));
+      const blobSha = snapshotSha(snapshot);
+
+      const existing = byPath.get(path);
+      if (!existing) {
+        const [entity] = await tx
+          .insert(ssrEntityTable)
+          .values({
+            workspaceId,
+            kind: group.kind,
+            name: group.name,
+            path,
+            status: "active",
+          })
+          .returning({ id: ssrEntityTable.id });
+        if (!entity) throw new Error("entity insert returned nothing");
+        const [version] = await tx
+          .insert(ssrVersionTable)
+          .values({
+            entityId: entity.id,
+            number: 1,
+            blobSha,
+            files: snapshot,
+            status: "draft",
+            origin: "sync",
+            commitSha: input.commitSha,
+            createdBy: actor,
+            message: "First draft — waiting for owner approval (Q-015)",
+          })
+          .returning({ id: ssrVersionTable.id });
+        if (!version) throw new Error("version insert returned nothing");
+        result.created.push({
+          entity: group.name,
+          kind: group.kind,
+          versionId: version.id,
+          number: 1,
+          status: "draft",
+        });
+      } else {
+        const [latest] = await tx
+          .select()
+          .from(ssrVersionTable)
+          .where(
+            and(
+              eq(ssrVersionTable.entityId, existing.id),
+              eq(ssrVersionTable.status, "latest"),
+            ),
+          );
+        if (latest && latest.blobSha === blobSha) {
+          result.unchanged += 1;
+        } else {
+          if (latest) {
+            await tx
+              .update(ssrVersionTable)
+              .set({ status: "superseded" })
+              .where(eq(ssrVersionTable.id, latest.id));
+          }
+          const number = (latest?.number ?? 0) + 1;
+          const [version] = await tx
+            .insert(ssrVersionTable)
+            .values({
+              entityId: existing.id,
+              number,
+              blobSha,
+              files: snapshot,
+              status: "latest",
+              origin: "sync",
+              commitSha: input.commitSha,
+              createdBy: actor,
+              message: `Sync ${input.commitSha.slice(0, 10)}`,
+            })
+            .returning({ id: ssrVersionTable.id });
+          if (!version) throw new Error("version insert returned nothing");
+          await tx
+            .update(ssrEntityTable)
+            .set({
+              latestVersionId: version.id,
+              status: "active",
+              updatedAt: new Date(),
+            })
+            .where(eq(ssrEntityTable.id, existing.id));
+          result.bumped.push({
+            entity: existing.name,
+            kind: existing.kind,
+            versionId: version.id,
+            number,
+          });
+        }
+      }
+    }
+
+    // Entities whose files vanished from the manifest are archived (RU-13).
+    for (const entity of existingEntities) {
+      if (!groups.has(entity.path) && entity.status === "active") {
+        await tx
+          .update(ssrEntityTable)
+          .set({ status: "archived", updatedAt: new Date() })
+          .where(eq(ssrEntityTable.id, entity.id));
+        result.archived.push(entity.path);
+      }
+    }
+
+    // Per-file push baseline: what the repo looked like at this sync.
+    for (const file of input.files) {
+      await tx
+        .insert(ssrPushStateTable)
+        .values({
+          workspaceId,
+          path: file.path,
+          lastSyncedSha: file.sha256,
+        })
+        .onConflictDoUpdate({
+          target: [ssrPushStateTable.workspaceId, ssrPushStateTable.path],
+          set: { lastSyncedSha: file.sha256, updatedAt: new Date() },
+        });
+    }
+  });
+
+  return result;
+}
+
+export class SyncError extends Error {
+  code: string;
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}

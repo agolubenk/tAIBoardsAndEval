@@ -84,6 +84,7 @@ import taskRelation from "./task-relation";
 import agentIdentity from "./agent-identity";
 import forest from "./forest";
 import notebook from "./notebook";
+import ssr from "./ssr";
 import {
   agentProjectDeleteGuard,
   agentWorkspaceDeleteGuard,
@@ -108,6 +109,7 @@ import { clientIpMiddleware } from "./utils/client-ip";
 import { migrateApiKeyReferenceId } from "./utils/migrate-apikey-reference-id";
 import { migrateNotificationPreferencesSchema } from "./utils/migrate-notification-preferences-schema";
 import { migrateSessionColumn } from "./utils/migrate-session-column";
+import { migrateBrevnaColumns } from "./utils/migrate-brevna-columns";
 import { migrateWorkspaceUserEmail } from "./utils/migrate-workspace-user-email";
 import { normalizeApiServerUrl } from "./utils/openapi-spec";
 import {
@@ -660,17 +662,16 @@ export function createApp() {
     const document = api.getOpenAPI31Document({
       openapi: "3.1.0",
       info: {
-        title: "Kaneo API",
+        title: "tAI-Boards API",
         version: "1.0.0",
-        description:
-          "Kaneo Project Management API - Manage projects, tasks, labels, and more",
+        description: "tAI-Boards API - projects, tasks, labels, forest and SSR",
       },
       servers: [
         {
           url: normalizeApiServerUrl(
             process.env.KANEO_API_URL || "https://cloud.kaneo.app",
           ),
-          description: "Kaneo API Server",
+          description: "tAI-Boards API Server",
         },
       ],
       security: [{ bearerAuth: [] }],
@@ -911,6 +912,7 @@ export function createApp() {
   const forestApi = api.route("/forest", forest);
   const agentIdentityApi = api.route("/agent-identity", agentIdentity);
   const notebookApi = api.route("/notebook", notebook);
+  const ssrApi = api.route("/ssr", ssr);
   const externalLinkApi = api.route("/external-link", externalLink);
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
   const invitationApi = api.route("/invitation", invitation);
@@ -1044,6 +1046,7 @@ export function createApp() {
     forestApi,
     agentIdentityApi,
     notebookApi,
+    ssrApi,
     telegramIntegrationApi,
     timeEntryApi,
     userApi,
@@ -1070,6 +1073,7 @@ export async function runStartupTasks() {
     runStartupMigrations: async () => {
       await migrateWorkspaceUserEmail();
       await migrateSessionColumn();
+      await migrateBrevnaColumns();
 
       console.log("🔄 Migrating database...");
       await migrate(getDatabase(), {
@@ -1180,6 +1184,7 @@ const {
   forestApi,
   agentIdentityApi,
   notebookApi,
+  ssrApi,
   telegramIntegrationApi,
   timeEntryApi,
   userApi,
@@ -1228,6 +1233,7 @@ export type AppType =
   | typeof forestApi
   | typeof agentIdentityApi
   | typeof notebookApi
+  | typeof ssrApi
   | typeof externalLinkApi
   | typeof workflowRuleApi
   | typeof invitationApi

@@ -8,7 +8,11 @@ import {
   seedTable,
   timberLogTable,
 } from "../../database/forest-schema";
-import { taskRelationTable, taskTable } from "../../database/schema";
+import {
+  columnTable,
+  taskRelationTable,
+  taskTable,
+} from "../../database/schema";
 import { publishEvent } from "../../events";
 import { assertProjectAccess } from "../../project-access/assert-project-access";
 import { queueStorageCleanup } from "../../storage/cleanup-queue";
@@ -106,8 +110,57 @@ async function fellInTx(
     ...new Set(materials.flatMap((m) => m.tasks.map((task) => task.projectId))),
   ]);
 
-  // Every relation of a felled task, read before the cascade removes it,
-  // so open boards drop the links live (same events as delete-task).
+  // Brevna gate (spec R-007, D-011): every card of every tree must sit in a
+  // final column (done or already in the timber yard) at the moment of the
+  // felling. collectTreeMaterial locked the rows FOR UPDATE above, so a card
+  // pulled back to work between check and cut rolls the transaction back.
+  const involvedProjectIds = [
+    ...new Set(materials.flatMap((m) => m.tasks.map((task) => task.projectId))),
+  ];
+  const finalColumns = await tx
+    .select({
+      projectId: columnTable.projectId,
+      slug: columnTable.slug,
+      id: columnTable.id,
+    })
+    .from(columnTable)
+    .where(
+      and(
+        inArray(columnTable.projectId, involvedProjectIds),
+        eq(columnTable.isFinal, true),
+      ),
+    );
+  const closedColumnByProject = new Map(
+    finalColumns
+      .filter((column) => column.slug === "closed")
+      .map((column) => [column.projectId, column]),
+  );
+  const finalSlugsByProject = new Map<string, Set<string>>();
+  for (const column of finalColumns) {
+    const set = finalSlugsByProject.get(column.projectId) ?? new Set<string>();
+    set.add(column.slug);
+    finalSlugsByProject.set(column.projectId, set);
+  }
+  const taskById = new Map(
+    materials.flatMap((material) =>
+      material.tasks.map((task) => [task.id, task]),
+    ),
+  );
+  for (const taskId of taskIds) {
+    const task = taskById.get(taskId);
+    if (!task) continue;
+    const allowed = finalSlugsByProject.get(task.projectId);
+    if (!allowed || !allowed.has(task.status)) {
+      throw new ForestError(
+        "not_ready",
+        `Дерево нельзя срубить: карточка «${task.title}» ещё не в Done/Брёвнах`,
+      );
+    }
+  }
+
+  // Relations of the felled cards, read to publish the same link-drop
+  // events as delete-task; the cards themselves stay (they move to Брёвна
+  // below), so this stays informational for live boards.
   const relations = await tx
     .select({
       sourceTaskId: taskRelationTable.sourceTaskId,
@@ -175,9 +228,20 @@ async function fellInTx(
   }
 
   await queueStorageCleanup(tx, assetObjectKeys);
-  // Leases, labels, activities and relations go with the tasks (cascade);
-  // the old fencing tokens then answer «felled» through the log.
-  await tx.delete(taskTable).where(inArray(taskTable.id, taskIds));
+  // Brevna (spec R-007, D-011): a felled tree stays on its boards — every
+  // card moves to the project's closed column in the same transaction, so
+  // the timber yard shows exactly what was cut. Relations, leases and labels
+  // live on; the logs and seeds keep the compressed copy.
+  for (const projectId of involvedProjectIds) {
+    const closedColumn = closedColumnByProject.get(projectId);
+    if (!closedColumn) continue;
+    await tx
+      .update(taskTable)
+      .set({ status: "closed", columnId: closedColumn.id })
+      .where(
+        and(inArray(taskTable.id, taskIds), eq(taskTable.projectId, projectId)),
+      );
+  }
 
   await writeJournal(
     {

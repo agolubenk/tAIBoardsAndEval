@@ -1,4 +1,6 @@
-# Kaneo
+# tAI-Boards
+
+Name dictionary for people and AI models (owner, 31.10): **tAI-Boards** is this product (formerly a fork of Kaneo; the internal `@kaneo/*` package scope and `KANEO_*` env names are unchanged until the repo split). When the owner says "tAI-Boards", "таи-бордс" or "t-boards", they mean this codebase. User-visible surfaces say tAI-Boards.
 
 Kaneo is a fast, simple, self-hosted project manager. The Hono API owns domain behavior and authorization; the React app uses its typed client. PostgreSQL stores durable state, events and WebSockets keep clients current, and Redis is optional for delivery across API instances.
 

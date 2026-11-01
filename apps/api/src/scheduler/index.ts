@@ -10,6 +10,7 @@ import { syncNotebookCards } from "./notebook-card-sync";
 import { checkProjectWebhookReminders } from "./project-webhook-reminders";
 import { reconcileWorkspaceSeats } from "./seat-reconciliation";
 import { checkTrialReminders } from "./trial-reminders";
+import { runNightlySsrPush } from "./ssr-nightly-push";
 
 const jobs: Cron[] = [];
 
@@ -91,6 +92,9 @@ export function initializeScheduler(): void {
   );
   jobs.push(
     new Cron("23 * * * *", withCheckIn("trial-reminders", checkTrialReminders)),
+  );
+  jobs.push(
+    new Cron("10 3 * * *", withCheckIn("ssr-nightly-push", runNightlySsrPush)),
   );
   jobs.push(
     new Cron(

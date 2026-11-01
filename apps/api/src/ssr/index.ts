@@ -1,0 +1,11 @@
+import { apiRouter, type BaseVariables } from "../openapi";
+import { ssrRoutes } from "./routes";
+
+// tAI-Boards SSR: versioned registry of sessions, skills and rules (spec
+// prototipes/grill/taiboards-ssr/spec.md, approved 31.10).
+const ssr = apiRouter<BaseVariables & { workspaceId: string }>().route(
+  "/",
+  ssrRoutes,
+);
+
+export default ssr;

@@ -15,9 +15,11 @@ export type ForestErrorCode =
   | "half_baked"
   | "mirror_read_only"
   | "history_conflict"
-  | "card_incomplete";
+  | "card_incomplete"
+  | "not_ready";
 
 const STATUS: Record<ForestErrorCode, 400 | 403 | 409 | 410 | 413> = {
+  not_ready: 409,
   lease_conflict: 409,
   lease_stale: 409,
   lease_missing: 409,

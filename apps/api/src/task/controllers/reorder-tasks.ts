@@ -92,6 +92,26 @@ export default async function reorderTasks(
       throw new HTTPException(404, {
         message: "Tasks must belong to the requested project",
       });
+    // Brevna guards (spec R-007, D-011) on drag-and-drop moves: same rules as
+    // the status endpoint — into the timber yard only from done, never out.
+    const priorById = new Map(before.map((task) => [task.id, task]));
+    for (const task of tasks) {
+      if (task.status === undefined) continue;
+      const prior = priorById.get(task.id);
+      if (!prior || prior.status === task.status) continue;
+      if (task.status === "closed" && prior.status !== "closed") {
+        if (prior.status !== "done") {
+          throw new HTTPException(409, {
+            message: "Брёвна принимают только из Done",
+          });
+        }
+      }
+      if (prior.status === "closed" && task.status !== "closed") {
+        throw new HTTPException(409, {
+          message: "Карточка в Брёвнах — терминальный статус",
+        });
+      }
+    }
     const values = tasks.map((task) => ({
       id: task.id,
       position: task.position,

@@ -128,6 +128,25 @@ async function bulkUpdateTasks({
           .orderBy(asc(taskTable.id))
           .for("update");
         const beforeById = new Map(before.map((task) => [task.id, task]));
+        // Brevna guards (spec R-007, D-011): bulk moves obey the same rules —
+        // into closed only from done, and closed cards never move again.
+        if (value === "closed") {
+          const offender = before.find(
+            (task) => task.status !== "done" && task.status !== "closed",
+          );
+          if (offender) {
+            throw new HTTPException(409, {
+              message: "Брёвна принимают только из Done",
+            });
+          }
+        } else {
+          const offender = before.find((task) => task.status === "closed");
+          if (offender) {
+            throw new HTTPException(409, {
+              message: "Карточка в Брёвнах — терминальный статус",
+            });
+          }
+        }
         const result: Array<{
           id: string;
           projectId: string;

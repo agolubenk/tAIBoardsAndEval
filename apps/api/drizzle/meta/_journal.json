@@ -540,6 +540,14 @@
       "when": 1793323028850,
       "tag": "0076_t_boards_agent_identity",
       "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "7",
+      "when": 1793439173457,
+      "tag": "0077_tai_boards_ssr",
+      "breakpoints": true,
+      "record": ""
     }
   ]
 }

@@ -91,7 +91,7 @@ function buildDeliveryContent(notification: {
         title: "New task created",
         body: taskTitle
           ? `A new task was created: ${taskTitle}`
-          : "A new task was created in Kaneo.",
+          : "A new task was created in tAI-Boards.",
       };
     }
     case "workspace_created": {
@@ -103,7 +103,7 @@ function buildDeliveryContent(notification: {
         title: "Workspace created",
         body: workspaceName
           ? `Workspace created: ${workspaceName}`
-          : "A new workspace was created in Kaneo.",
+          : "A new workspace was created in tAI-Boards.",
       };
     }
     case "task_status_changed": {

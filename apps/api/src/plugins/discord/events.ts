@@ -178,7 +178,7 @@ async function sendDiscordMessage(
           footer: {
             text: safeActor
               ? `Triggered by ${safeActor}`
-              : "Triggered by Kaneo",
+              : "Triggered by tAI-Boards",
           },
         },
       ],

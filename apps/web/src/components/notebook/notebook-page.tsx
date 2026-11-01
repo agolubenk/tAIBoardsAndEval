@@ -9,6 +9,8 @@ import {
 } from "./notebook-types";
 import { SearchTab } from "./search-tab";
 import { SourcesTab } from "./sources-tab";
+import { EvolutionTab } from "../ssr/evolution-tab";
+import { RegistryTab } from "../ssr/registry-tab";
 
 type NotebookPageProps = {
   workspaceId: string;
@@ -47,6 +49,12 @@ export function NotebookPage({
           ))}
         </TabsList>
       </div>
+      <TabsPanel value="evolution">
+        <EvolutionTab workspaceId={workspaceId} />
+      </TabsPanel>
+      <TabsPanel value="registry">
+        <RegistryTab workspaceId={workspaceId} />
+      </TabsPanel>
       <TabsPanel value="chat">
         <ChatTab
           workspaceId={workspaceId}

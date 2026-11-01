@@ -5,6 +5,7 @@ import { excerptSearchResults } from "../view/excerpt.js";
 import { registerForestTools } from "./forest/register-forest.js";
 import { getCurrentUser } from "./get-current-user.js";
 import { registerNotebookTools } from "./notebook-tools.js";
+import { registerSsrTools } from "./ssr-tools.js";
 import {
   createRegisterTool,
   type FormatFallback,
@@ -871,4 +872,5 @@ export function registerTools(
 
   registerForestTools(registerTool, client);
   registerNotebookTools(registerTool, client);
+  registerSsrTools(registerTool, client);
 }

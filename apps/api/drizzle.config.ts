@@ -10,6 +10,7 @@ export default defineConfig({
     "./src/database/schema.ts",
     "./src/database/forest-schema.ts",
     "./src/database/notebook-schema.ts",
+    "./src/database/ssr-schema.ts",
   ],
   dialect: "postgresql",
   dbCredentials: {

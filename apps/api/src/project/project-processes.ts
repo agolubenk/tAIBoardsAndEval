@@ -12,7 +12,7 @@ export const DEFAULT_PROJECT_COLUMNS = [
   { name: "In Review", slug: "in-review", position: 4, isFinal: false },
   { name: "Confirmation", slug: "confirmation", position: 5, isFinal: false },
   { name: "Done", slug: "done", position: 6, isFinal: true },
-  { name: "Closed", slug: "closed", position: 7, isFinal: true },
+  { name: "Брёвна", slug: "closed", position: 7, isFinal: true },
 ] as const;
 
 // Past «На ревью» the card is the owner's: an agent moves it into or out of

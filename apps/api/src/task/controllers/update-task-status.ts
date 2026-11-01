@@ -27,6 +27,21 @@ async function updateTaskStatus({
         ),
       });
 
+      // Brevna guards (spec R-007, D-011): the closed column is a timber
+      // yard — a card enters it only from done, and never leaves it.
+      if (status === "closed" && existingTask.status !== "closed") {
+        if (existingTask.status !== "done") {
+          throw new HTTPException(409, {
+            message: "Брёвна принимают только из Done",
+          });
+        }
+      }
+      if (existingTask.status === "closed" && status !== "closed") {
+        throw new HTTPException(409, {
+          message: "Карточка в Брёвнах — терминальный статус",
+        });
+      }
+
       const [updatedTask] = await tx
         .update(taskTable)
         .set({ status, columnId: column?.id ?? null })

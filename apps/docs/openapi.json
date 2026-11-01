@@ -1,14 +1,14 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Kaneo API",
+    "title": "tAI-Boards API",
     "version": "1.0.0",
-    "description": "Kaneo Project Management API - Manage projects, tasks, labels, and more"
+    "description": "tAI-Boards API - projects, tasks, labels, forest and SSR"
   },
   "servers": [
     {
       "url": "https://cloud.kaneo.app/api",
-      "description": "Kaneo API Server"
+      "description": "tAI-Boards API Server"
     }
   ],
   "security": [
@@ -27968,6 +27968,1593 @@
           },
           "404": {
             "description": "Notebook thread not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/known-shas": {
+      "post": {
+        "operationId": "knownSsrShas",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Which blob shas the server already stores",
+        "description": "The Mac sync agent sends candidate shas and uploads content only for the rest.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shas": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "maxItems": 1000
+                  }
+                },
+                "required": [
+                  "shas"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Known shas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "shas": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "shas"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/by-name/{name}/content": {
+      "get": {
+        "operationId": "getSsrContentByName",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Serve a version's files by entity name and kind",
+        "description": "The MCP tools resolve names this way: kind narrows the lookup (skill, rule, agent, genome, prompt, nerve, config, product-prompt).",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "name",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "latest"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "-1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                }
+              ]
+            },
+            "required": false,
+            "name": "version",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "kind",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Served version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "versionId": {
+                      "type": "string"
+                    },
+                    "number": {
+                      "type": "number"
+                    },
+                    "blobSha": {
+                      "type": "string"
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "sha256": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "content",
+                          "sha256"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "versionId",
+                    "number",
+                    "blobSha",
+                    "files"
+                  ]
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified"
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity or version not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/sync": {
+      "post": {
+        "operationId": "syncSsrCorpus",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Sync the SSR corpus from a git commit",
+        "description": "The Mac sync agent sends the corpus manifest at a git commit plus content for files new to the server. Existing entities auto-bump (a merge into main is the owner's consent); new entities wait as drafts; secrets and paths outside the corpus are rejected.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "commitSha": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{6,40}$/i"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 500
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        },
+                        "content": {
+                          "type": "string",
+                          "maxLength": 600000
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "sha256"
+                      ]
+                    },
+                    "maxItems": 400
+                  },
+                  "deleted": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "maxItems": 400
+                  }
+                },
+                "required": [
+                  "commitSha",
+                  "files"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the sync changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "commitSha": {
+                      "type": "string"
+                    },
+                    "created": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "entity": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "versionId": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "entity",
+                          "kind",
+                          "versionId",
+                          "number",
+                          "status"
+                        ]
+                      }
+                    },
+                    "bumped": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "entity": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "versionId": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "entity",
+                          "kind",
+                          "versionId",
+                          "number"
+                        ]
+                      }
+                    },
+                    "archived": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "unchanged": {
+                      "type": "number"
+                    },
+                    "secretHits": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "label"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "commitSha",
+                    "created",
+                    "bumped",
+                    "archived",
+                    "unchanged",
+                    "secretHits"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Corpus allowlist or secret scan rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities": {
+      "get": {
+        "operationId": "listSsrEntities",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "List SSR entities with their versions",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entities": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "latestVersionId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          },
+                          "versions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "number": {
+                                  "type": "number"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "origin": {
+                                  "type": "string"
+                                },
+                                "message": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "commitSha": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "approvedBy": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "approvedAt": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "number",
+                                "status",
+                                "origin",
+                                "message",
+                                "commitSha",
+                                "createdAt",
+                                "approvedBy",
+                                "approvedAt"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "name",
+                          "path",
+                          "status",
+                          "latestVersionId",
+                          "updatedAt",
+                          "versions"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "entities"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/{entityId}/content": {
+      "get": {
+        "operationId": "getSsrContent",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Serve a version's files (latest by default, -1 or N)",
+        "description": "ETag is the version's snapshot sha; the resolved version id rides in every answer so a relative request stays reproducible.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "entityId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "latest"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "-1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                }
+              ]
+            },
+            "required": false,
+            "name": "version",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Served version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "versionId": {
+                      "type": "string"
+                    },
+                    "number": {
+                      "type": "number"
+                    },
+                    "blobSha": {
+                      "type": "string"
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "sha256": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "content",
+                          "sha256"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "versionId",
+                    "number",
+                    "blobSha",
+                    "files"
+                  ]
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified"
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity or version not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/{entityId}/diff": {
+      "get": {
+        "operationId": "getSsrDiff",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Server-side unified diff between two versions",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "entityId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "latest"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "-1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                }
+              ],
+              "default": "latest"
+            },
+            "required": false,
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "latest"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "-1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                }
+              ],
+              "default": "-1"
+            },
+            "required": false,
+            "name": "to",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Diff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "number"
+                    },
+                    "to": {
+                      "type": "number"
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "diff": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "diff"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "from",
+                    "to",
+                    "files"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity or version not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/timeline": {
+      "get": {
+        "operationId": "listSsrTimeline",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "The evolution feed: versions across all entities, newest first",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "required": false,
+            "name": "take",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "default": 0
+            },
+            "required": false,
+            "name": "skip",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Timeline",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "versionId": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "origin": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "commitSha": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "entityId": {
+                            "type": "string"
+                          },
+                          "entityName": {
+                            "type": "string"
+                          },
+                          "entityKind": {
+                            "type": "string"
+                          },
+                          "entityPath": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "versionId",
+                          "number",
+                          "status",
+                          "origin",
+                          "message",
+                          "commitSha",
+                          "createdAt",
+                          "entityId",
+                          "entityName",
+                          "entityKind",
+                          "entityPath"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "events"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/{entityId}/approve": {
+      "post": {
+        "operationId": "approveSsrDraft",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Approve a draft version (owner UI only)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "entityId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "versionId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "versionId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entityId": {
+                      "type": "string"
+                    },
+                    "versionId": {
+                      "type": "string"
+                    },
+                    "number": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "entityId",
+                    "versionId",
+                    "number"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not the owner's browser session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version is not an open draft",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/{entityId}/reject": {
+      "post": {
+        "operationId": "rejectSsrDraft",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Reject a draft version (owner UI only)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "entityId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "versionId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "versionId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entityId": {
+                      "type": "string"
+                    },
+                    "versionId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "entityId",
+                    "versionId"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not the owner's browser session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version is not an open draft",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/entities/{entityId}/rollback": {
+      "post": {
+        "operationId": "rollbackSsrEntity",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Restore an old version and push it to the repo immediately (owner UI only)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "entityId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "toVersion": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  }
+                },
+                "required": [
+                  "toVersion"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rolled back",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entityId": {
+                      "type": "string"
+                    },
+                    "versionId": {
+                      "type": "string"
+                    },
+                    "number": {
+                      "type": "number"
+                    },
+                    "restoredFrom": {
+                      "type": "number"
+                    },
+                    "push": {
+                      "type": "object",
+                      "properties": {
+                        "pushed": {
+                          "type": "boolean"
+                        },
+                        "commitSha": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "conflicts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "baselineSha": {
+                                "type": "string"
+                              },
+                              "repoSha": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "baselineSha",
+                              "repoSha"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "pushed",
+                        "commitSha",
+                        "conflicts"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "entityId",
+                    "versionId",
+                    "number",
+                    "restoredFrom",
+                    "push"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not the owner's browser session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version is already latest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/conflicts": {
+      "get": {
+        "operationId": "listSsrConflicts",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Push-back conflicts, newest first",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conflicts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "conflicts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "baselineSha": {
+                            "type": "string"
+                          },
+                          "repoSha": {
+                            "type": "string"
+                          },
+                          "detectedAt": {
+                            "type": "string"
+                          },
+                          "resolvedAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "path",
+                          "baselineSha",
+                          "repoSha",
+                          "detectedAt",
+                          "resolvedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "conflicts"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/ssr/{workspaceId}/conflicts/{conflictId}/resolve": {
+      "post": {
+        "operationId": "resolveSsrConflict",
+        "tags": [
+          "SSR"
+        ],
+        "summary": "Mark a conflict resolved (owner UI only)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "conflictId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resolved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "resolved": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "resolved"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not the owner's browser session",
             "content": {
               "application/json": {
                 "schema": {

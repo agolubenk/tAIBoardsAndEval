@@ -22,7 +22,7 @@ export function createMcpServer(): McpServer {
   const agentSessions = process.env.KANEO_MCP_AGENT_SESSIONS !== "off";
   const client = new KaneoClient({ baseUrl, auth, agentSessions });
   const server = new McpServer({
-    name: "kaneo-mcp",
+    name: "tai-boards-mcp",
     version: packageVersion,
   });
   const defaultHarness = () =>

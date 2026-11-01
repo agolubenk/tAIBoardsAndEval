@@ -19,7 +19,13 @@ export type NotebookMessage = Awaited<
 export type NotebookCitation = NotebookMessage["citations"][number];
 export type NotebookSourceKind = NotebookSource["kind"];
 
-export const NOTEBOOK_TABS = ["chat", "search", "sources"] as const;
+export const NOTEBOOK_TABS = [
+  "evolution",
+  "registry",
+  "chat",
+  "search",
+  "sources",
+] as const;
 export type NotebookTab = (typeof NOTEBOOK_TABS)[number];
 
 export function isNotebookTab(value: unknown): value is NotebookTab {

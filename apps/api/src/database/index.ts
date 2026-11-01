@@ -35,6 +35,7 @@ import {
   workspaceUserTableRelations,
 } from "./relations";
 import * as forestSchema from "./forest-schema";
+import * as ssrSchema from "./ssr-schema";
 import * as notebookSchema from "./notebook-schema";
 import { resolveDatabaseConnectionString } from "./resolve-database-url";
 import {
@@ -168,6 +169,7 @@ export const schema = {
   customFieldValueTableRelations,
   ...forestSchema,
   ...notebookSchema,
+  ...ssrSchema,
 };
 
 type DatabaseInstance = ReturnType<typeof drizzle<typeof schema>>;
