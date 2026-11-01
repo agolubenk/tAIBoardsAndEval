@@ -1,0 +1,13 @@
+# Allowed findings of infra/checks/run.py: `check  path-glob  [text in the message]`. Each line says why.
+# Add a line only for what cannot be fixed (upstream history, shipped data); a fixable finding is fixed.
+
+# Upstream Kaneo history: these journal entries shipped with out-of-order `when` before the fork; existing
+# databases already passed them, rewriting the journal would re-run or skip migrations on live installs.
+data  boards/apps/api/drizzle/meta/_journal.json  0006_rename_active_workspace_to_organization: when
+data  boards/apps/api/drizzle/meta/_journal.json  0025_early_owl: when
+data  boards/apps/api/drizzle/meta/_journal.json  0026_encrypt_notification_preference_secrets: when
+# Upstream migrations shipped without snapshots (warnings only): drizzle diffs against the previous snapshot.
+data  boards/apps/api/drizzle/meta/_journal.json  no snapshot
+
+# Upstream Kaneo public site: the press kit is a published download, not a build artifact.
+hygiene  boards/apps/site/public/press/kaneo-press-kit.zip

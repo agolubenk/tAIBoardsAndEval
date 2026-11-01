@@ -1,0 +1,71 @@
+name: checks CI
+
+# Deterministic checks of the whole repository — no model, no tokens (infra/checks/README.md).
+on:
+  push:
+    branches: [board-agents, main]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1" # Mondays: new advisories for unchanged dependencies
+  workflow_dispatch:
+
+concurrency:
+  group: checks-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  repo:
+    name: secrets · hygiene · data · syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: checks self-test
+        run: python3 -I infra/checks/test_checks.py
+      - name: repository checks
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+        run: |
+          if [ -n "$BASE" ]; then python3 -I infra/checks/run.py --base "$BASE"; else python3 -I infra/checks/run.py; fi
+
+  scripts:
+    name: shellcheck · actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: shellcheck (errors fail, warnings are listed)
+        run: |
+          git ls-files '*.sh' | grep -v '^claude-plugins-official/' | while read -r f; do
+            head -1 "$f" | grep -q zsh || echo "$f"
+          done > "$RUNNER_TEMP/sh.txt"
+          xargs shellcheck --severity=warning -f gcc < "$RUNNER_TEMP/sh.txt" || true
+          xargs shellcheck --severity=error < "$RUNNER_TEMP/sh.txt"
+      - name: actionlint
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color
+
+  dependencies:
+    name: dependency advisories (ratchet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.19.0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: audit production dependencies against the baseline
+        run: python3 -I infra/checks/audit.py

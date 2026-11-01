@@ -16,6 +16,7 @@ MCP-хаб, шлюз моделей, сжатие контекста, ops-кон
 | `headroom/` | Сжатие контекста на входе/handoff задачи (`headroom_compress`/`headroom_retrieve`), проверка контракта | python · `runtime/contract_check.py` |
 | `scripts/dev-ai/` | Запуск и обслуживание контура: хаб, секреты (`mcp-secret.sh`: env → Keychain), MCP досок (`mcp-t-boards.sh`), Ollama, Open WebUI | bash (macOS — хозяйская машина) |
 | `scripts/dev/wt-deps.sh` | Свои зависимости git worktree (pnpm досок / npm хоста) — для `make wt-*` и хука `PreToolUse` | bash |
+| `checks/` | Детерминированные проверки репозитория без модели: секреты, гигиена, полнота данных (планы, журнал решений, журнал миграций drizzle), синтаксис; аудит зависимостей храповиком. Описание — `checks/README.md` | python stdlib · `make check-repo`, CI `checks-ci.yml` |
 | `scripts/misc/done-index.py` | Таблица модулей `docs/plans/DONE.md` и проверка формата журнала закрытого | python stdlib |
 | `scripts/prod/ops-deploy-event.py` | Событие деплоя → карточка «Деплои» ops-консоли (подпись агента хоста) | python stdlib |
 

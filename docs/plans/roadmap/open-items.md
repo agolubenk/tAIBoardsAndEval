@@ -18,7 +18,8 @@
 | E6 | Связи подзадач: цикл через предка принимался при записи | `task-relation/controllers/create-task-relation.ts` | — | ✅ (рекурсивная проверка + advisory-лок, тест) |
 | E7 | Связи подзадач: второй родитель принимается (дерево читает «старейшего») | там же | В: запрещать ли (импорт Notion может давать двух родителей) | 🔲 |
 | E4 | API не стартовал на чистой базе: `migrateBrevnaColumns` до миграций | `apps/api/src/index.ts` | — | ✅ (перенесён после миграций) |
-| E3 | Интеграционные тесты API не входят в CI — E1 никто не видел | `.github/workflows/boards-ci.yml` | А, после E1 (иначе CI красный на каждом PR) | 🔲 |
+| E3 | Интеграционные тесты API не входят в CI — E1 никто не видел | `.github/workflows/boards-ci.yml` | — | ✅ (job `api-integration` на PostgreSQL 16) |
+| E8 | Уязвимые продовые зависимости досок: 5 critical (в т.ч. `better-auth` — вход под чужим пользователем через OAuth state, `proxy-addr` — подмена IP), 20 high; ops-console — 1 high (`zod`) | `boards/pnpm-lock.yaml`, `infra/ops-console/package-lock.json`; список — `infra/checks/audit-baseline.json` | А: обновление зависимостей отдельным PR с полным гейтом; новые — CI ловит сам | 🔲 |
 
 ## Пайплайн (R4-PLAN)
 
