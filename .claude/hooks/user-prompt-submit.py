@@ -122,12 +122,22 @@ def log_marker_miss(prompt):
         pass
 
 
+def _pipeline_on(name):
+    try:
+        import pipeline_settings  # .claude/scripts is on sys.path (top of this file)
+        return pipeline_settings.enabled(name)
+    except Exception:  # noqa: BLE001 — a hook never fails on settings
+        return True
+
+
 def grill_hint(prompt):
     """Подсказка начать с grill-task, если реплика не явное продолжение (см. docstring модуля)."""
     if os.environ.get("GRILL_AUTO", "").lower() in ("off", "0", "false"):
         return None
     if is_system_message(prompt):
         return None
+    if not _pipeline_on("grillHint"):
+        return None  # the product switched the hint off (tAI-Boards pipeline settings)
     text = prompt.lstrip(GRILL_LEAD_PUNCT)
     low = text.lower()
     if low.startswith("/") and not low.startswith("/grill-task"):
@@ -340,7 +350,7 @@ def dams_parts(dc, prompt, session_id, deadline=None, transcript_path=None):
     # насколько ему следовать (полезно как «конкретизация» задачи, а не источник истины).
     # До L3: его английские термины уточняют поиск; окно кончается раньше дедлайна на FTS-поиск.
     brief = None
-    if want_brief:
+    if want_brief and _pipeline_on("promptBrief"):
         brief = glm_call("structure_task", prompt, deadline - L3_RESERVE_S, BRIEF_TIMEOUT_S, BRIEF_MIN_BUDGET_S)
 
     # --- L3: RAG-указатели (только doc_id/title/path — тела не инжектим)

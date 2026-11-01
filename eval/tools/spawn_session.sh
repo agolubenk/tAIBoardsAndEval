@@ -147,7 +147,10 @@ if [ -n "$HANDOFF" ]; then
   HANDOFF="$(cd "$(dirname "$HANDOFF")" && pwd)/$(basename "$HANDOFF")"
   # Handoff — только дельта: строки, которые наследник и так получит из CLAUDE.md и правил, стоят токенов зря.
   # Предупреждение, не стоп: handoff пишется на исходе контекста, переписывать его некогда.
-  if [ -f "$TOOLS/../evolve/dupes.py" ] && command -v python3 >/dev/null 2>&1; then
+  settings="$(cd "$TOOLS/../.." && pwd)/.claude/scripts/pipeline_settings.py"
+  if [ -f "$settings" ] && ! python3 -I "$settings" enabled handoffDupes; then
+    :  # выключено в настройках продукта (tAI-Boards → «Pipeline & evolution», handoffDupes)
+  elif [ -f "$TOOLS/../evolve/dupes.py" ] && command -v python3 >/dev/null 2>&1; then
     python3 -I "$TOOLS/../evolve/dupes.py" --against-l1 "$HANDOFF" --max-waste "${SPAWN_MAX_WASTE:-300}" --top 5 >&2 \
       || echo "# spawn_session: handoff повторяет постоянный контекст — в следующий раз пиши только дельту" >&2
   fi

@@ -110,3 +110,13 @@ export {
   type WorkspaceCapability,
   workspaceCapabilities,
 } from "./capabilities.js";
+
+export {
+  defaultPipelineSettings,
+  isPipelineEnabled,
+  normalizePipelineSettings,
+  PIPELINE_TOGGLE_NAMES,
+  type PipelineSettings,
+  type PipelineToggle,
+  pipelineToggles,
+} from "./pipeline-toggles.js";

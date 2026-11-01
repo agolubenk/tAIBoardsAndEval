@@ -2492,6 +2492,65 @@
 				"loadError": "Could not load the model status.",
 				"configure": "Configure"
 			}
+		},
+		"workspacePipeline": {
+			"pageTitle": "Pipeline & evolution",
+			"title": "Pipeline & evolution",
+			"subtitle": "Which automated parts of the team process run for this product. Each switch is enforced where the automation runs: in this server, in the layer's hooks and in its tools.",
+			"readOnly": "Only people who manage the workspace settings can change these. Agents and API keys can read them, never change them.",
+			"loadFailed": "The settings could not be loaded. Reload the page to try again.",
+			"saveFailed": "The change was not saved. The switch is back where it was.",
+			"masterTitle": "Automation",
+			"automation": {
+				"title": "Automated process",
+				"description": "Off stops every part below at once and keeps each switch's value for when it is turned back on."
+			},
+			"evolutionTitle": "Evolution of the process",
+			"evolutionSubtitle": "How skills, prompts and handoffs improve without repeating what is already known.",
+			"pipelineTitle": "Automatic parts of the pipeline",
+			"pipelineSubtitle": "What runs without a person starting it.",
+			"toggles": {
+				"abJudge": {
+					"title": "Blind A/B judge for new versions",
+					"description": "A model compares two versions of a skill or prompt before one is chosen. Off: no model calls for comparisons."
+				},
+				"askOnce": {
+					"title": "Look up answers before asking the owner",
+					"description": "Sessions search earlier owner decisions and open questions before asking again."
+				},
+				"handoffDupes": {
+					"title": "Check handoffs for repeated context",
+					"description": "A successor's handoff is checked for lines every session already loads."
+				},
+				"promptBrief": {
+					"title": "Prompt brief by a cheap model",
+					"description": "Long prompts get a short structured brief from GLM before the session reads them. Off: no model call on each prompt."
+				},
+				"successorAuto": {
+					"title": "Successor at 80% of the context window",
+					"description": "A session saves its state and starts its successor by itself when the context is nearly full."
+				},
+				"grillHint": {
+					"title": "Task roast hint",
+					"description": "A reminder tag on each new task to start with the roast for product decisions. Off removes only the hint; the rule to roast large tasks stays."
+				},
+				"nerveWakes": {
+					"title": "Nerve wakes sessions",
+					"description": "The watchdog wakes a session only when it has something to act on."
+				},
+				"swarm": {
+					"title": "Routine on cheap models",
+					"description": "Routine read-only jobs run on low-cost models behind an outbound filter."
+				},
+				"councilReview": {
+					"title": "AI council reviews cards on review",
+					"description": "Model lenses review cards in the review column and leave their findings."
+				},
+				"cardAutofill": {
+					"title": "Fill assignee and start date",
+					"description": "When an agent takes a card, it becomes the assignee and the start date is set. The move's comment is posted either way."
+				}
+			}
 		}
 	},
 	"navigation": {

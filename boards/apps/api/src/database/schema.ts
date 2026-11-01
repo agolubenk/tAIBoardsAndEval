@@ -181,6 +181,26 @@ export const workspaceTable = pgTable("workspace", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull(),
 });
 
+// Which automated parts of the team process run for this workspace (product):
+// one JSON value per workspace, keys from `pipelineToggles` (@kaneo/permissions).
+// No row = every default (all on).
+export const workspacePipelineSettingTable = pgTable(
+  "workspace_pipeline_setting",
+  {
+    workspaceId: text("workspace_id")
+      .primaryKey()
+      .references(() => workspaceTable.id, { onDelete: "cascade" }),
+    value: text("value").notNull(),
+    updatedBy: text("updated_by").references(() => userTable.id, {
+      onDelete: "set null",
+    }),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .default(utcNow)
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+);
+
 export const workspaceUserTable = pgTable(
   "workspace_member",
   {

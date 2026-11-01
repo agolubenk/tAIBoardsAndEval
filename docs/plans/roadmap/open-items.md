@@ -51,6 +51,7 @@
 | V4 | Не спрашивать владельца повторно | — | ✅ (`eval/tools/ask_once.py` в `grill-task`, `successor-handoff`); дальше — запись ответов из `oq_list` автоматически |
 | V5 | Фокус большой очереди, WIP-лимит | — | ✅ (`eval/tools/queue_focus.py`); дальше — чтение живой доски (Р: MCP досок) |
 | V6 | Линия потомков: свой id у каждой сессии | — | ✅ (`TAIBE_LINEAGE`, `spawn_session.sh`) |
+| V7 | Настройки продукта «Пайплайн и эволюция»: главный выключатель и 10 переключателей автоматики, каждый соблюдается в коде (R-110) | — | ✅ (`boards/docs/pipeline-settings.md`); на стенде — миграция 0080 при деплое и `boards.workspace` в `eval/nerve/config.json` (id продукта, Р) |
 
 ## Доски (этап 1, `impl-remaining.md`)
 

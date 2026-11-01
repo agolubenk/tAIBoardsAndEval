@@ -2586,6 +2586,65 @@
 				"baseUrl": "Enter a full https address, for example https://openrouter.ai/api/v1.",
 				"dailyMax": "Enter a whole number from 0 to {{max}}."
 			}
+		},
+		"workspacePipeline": {
+			"automation": {
+				"description": "Off stops every part below at once and keeps each switch's value for when it is turned back on.",
+				"title": "Automated process"
+			},
+			"evolutionSubtitle": "How skills, prompts and handoffs improve without repeating what is already known.",
+			"evolutionTitle": "Evolution of the process",
+			"loadFailed": "The settings could not be loaded. Reload the page to try again.",
+			"masterTitle": "Automation",
+			"pageTitle": "Pipeline & evolution",
+			"pipelineSubtitle": "What runs without a person starting it.",
+			"pipelineTitle": "Automatic parts of the pipeline",
+			"readOnly": "Only people who manage the workspace settings can change these. Agents and API keys can read them, never change them.",
+			"saveFailed": "The change was not saved. The switch is back where it was.",
+			"subtitle": "Which automated parts of the team process run for this product. Each switch is enforced where the automation runs: in this server, in the layer's hooks and in its tools.",
+			"title": "Pipeline & evolution",
+			"toggles": {
+				"abJudge": {
+					"description": "A model compares two versions of a skill or prompt before one is chosen. Off: no model calls for comparisons.",
+					"title": "Blind A/B judge for new versions"
+				},
+				"askOnce": {
+					"description": "Sessions search earlier owner decisions and open questions before asking again.",
+					"title": "Look up answers before asking the owner"
+				},
+				"cardAutofill": {
+					"description": "When an agent takes a card, it becomes the assignee and the start date is set. The move's comment is posted either way.",
+					"title": "Fill assignee and start date"
+				},
+				"councilReview": {
+					"description": "Model lenses review cards in the review column and leave their findings.",
+					"title": "AI council reviews cards on review"
+				},
+				"grillHint": {
+					"description": "Each new task starts with a short check for product decisions before any edits.",
+					"title": "Task roast hint"
+				},
+				"handoffDupes": {
+					"description": "A successor's handoff is checked for lines every session already loads.",
+					"title": "Check handoffs for repeated context"
+				},
+				"nerveWakes": {
+					"description": "The watchdog wakes a session only when it has something to act on.",
+					"title": "Nerve wakes sessions"
+				},
+				"successorAuto": {
+					"description": "A session saves its state and starts its successor by itself when the context is nearly full.",
+					"title": "Successor at 80% of the context window"
+				},
+				"swarm": {
+					"description": "Routine read-only jobs run on low-cost models behind an outbound filter.",
+					"title": "Routine on cheap models"
+				},
+				"promptBrief": {
+					"description": "Long prompts get a short structured brief from GLM before the session reads them. Off: no model call on each prompt.",
+					"title": "Prompt brief by a cheap model"
+				}
+			}
 		}
 	},
 	"navigation": {

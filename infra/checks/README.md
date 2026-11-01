@@ -44,5 +44,5 @@ make check-repo
 ## Product toggles
 
 Automation that tAI-Boards product settings can switch off — the evolution process, the pipeline's automatic
-parts — is listed in `boards/docs/` (pipeline settings). These repository gates are not among the toggles: a
+parts — is listed in [`boards/docs/pipeline-settings.md`](../../boards/docs/pipeline-settings.md). These repository gates are not among the toggles: a
 red check means a defect, not a preference.

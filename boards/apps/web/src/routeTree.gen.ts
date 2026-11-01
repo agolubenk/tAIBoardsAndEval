@@ -54,6 +54,7 @@ import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceBillingRouteImpor
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/general'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceImportRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/import'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/labels'
+import { Route as LayoutAuthenticatedDashboardSettingsWorkspacePipelineRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/pipeline'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceRolesRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/roles'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/index'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdForestRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/forest'
@@ -329,6 +330,12 @@ const LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute =
     path: '/labels',
     getParentRoute: () => LayoutAuthenticatedDashboardSettingsWorkspaceRoute,
   } as any)
+const LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute =
+  LayoutAuthenticatedDashboardSettingsWorkspacePipelineRouteImport.update({
+    id: '/pipeline',
+    path: '/pipeline',
+    getParentRoute: () => LayoutAuthenticatedDashboardSettingsWorkspaceRoute,
+  } as any)
 const LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute =
   LayoutAuthenticatedDashboardSettingsWorkspaceRolesRouteImport.update({
     id: '/roles',
@@ -530,6 +537,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings/workspace/general': typeof LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRoute
   '/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
+  '/dashboard/settings/workspace/pipeline': typeof LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/dashboard/workspace/$workspaceId/forest': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdForestRoute
   '/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
@@ -593,6 +601,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings/workspace/general': typeof LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRoute
   '/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
+  '/dashboard/settings/workspace/pipeline': typeof LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/dashboard/workspace/$workspaceId/forest': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdForestRoute
   '/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
@@ -662,6 +671,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated/dashboard/settings/workspace/general': typeof LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRoute
   '/_layout/_authenticated/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/_layout/_authenticated/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
+  '/_layout/_authenticated/dashboard/settings/workspace/pipeline': typeof LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute
   '/_layout/_authenticated/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/forest': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdForestRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
@@ -730,6 +740,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/general'
     | '/dashboard/settings/workspace/import'
     | '/dashboard/settings/workspace/labels'
+    | '/dashboard/settings/workspace/pipeline'
     | '/dashboard/settings/workspace/roles'
     | '/dashboard/workspace/$workspaceId/forest'
     | '/dashboard/workspace/$workspaceId/inbox'
@@ -793,6 +804,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/general'
     | '/dashboard/settings/workspace/import'
     | '/dashboard/settings/workspace/labels'
+    | '/dashboard/settings/workspace/pipeline'
     | '/dashboard/settings/workspace/roles'
     | '/dashboard/workspace/$workspaceId/forest'
     | '/dashboard/workspace/$workspaceId/inbox'
@@ -861,6 +873,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/dashboard/settings/workspace/general'
     | '/_layout/_authenticated/dashboard/settings/workspace/import'
     | '/_layout/_authenticated/dashboard/settings/workspace/labels'
+    | '/_layout/_authenticated/dashboard/settings/workspace/pipeline'
     | '/_layout/_authenticated/dashboard/settings/workspace/roles'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/forest'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox'
@@ -1213,6 +1226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceRoute
     }
+    '/_layout/_authenticated/dashboard/settings/workspace/pipeline': {
+      id: '/_layout/_authenticated/dashboard/settings/workspace/pipeline'
+      path: '/pipeline'
+      fullPath: '/dashboard/settings/workspace/pipeline'
+      preLoaderRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspacePipelineRouteImport
+      parentRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceRoute
+    }
     '/_layout/_authenticated/dashboard/settings/workspace/roles': {
       id: '/_layout/_authenticated/dashboard/settings/workspace/roles'
       path: '/roles'
@@ -1449,6 +1469,7 @@ interface LayoutAuthenticatedDashboardSettingsWorkspaceRouteChildren {
   LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRoute
   LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
+  LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute
   LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
 }
 
@@ -1462,6 +1483,8 @@ const LayoutAuthenticatedDashboardSettingsWorkspaceRouteChildren: LayoutAuthenti
       LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute,
     LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute:
       LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute,
+    LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute:
+      LayoutAuthenticatedDashboardSettingsWorkspacePipelineRoute,
     LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute:
       LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute,
   }

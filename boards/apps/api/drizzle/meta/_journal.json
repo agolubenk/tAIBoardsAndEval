@@ -562,6 +562,13 @@
       "when": 1793439175457,
       "tag": "0079_t_boards_instance_setting",
       "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "7",
+      "when": 1793546350224,
+      "tag": "0080_t_boards_pipeline_setting",
+      "breakpoints": true
     }
   ]
 }

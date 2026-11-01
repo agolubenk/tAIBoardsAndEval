@@ -32,6 +32,14 @@ every day. This folder keeps three promises:
 | Sessions that look alike but must not be confused | `spawn_session.sh` gives every descendant a lineage id under its parent's (`TAIBE_LINEAGE`, e.g. `r.x1y2.k3z4`, generation = dots). The first message names it, and the session uses it as its `session` label on cards and in the queue. Launch template, genome and handoff structure stay the same for all. |
 | Handoff ids lost between generations | `eval/tools/handoff_ids.py collect/diff` (existing). |
 
+## Switches per product
+
+A product's settings in tAI-Boards (**Pipeline & evolution**) can switch off the parts here that spend model calls
+or run without a person: the A/B judge (`abJudge`), the ask-once lookup (`askOnce`) and the handoff duplicate
+check (`handoffDupes`). The same page covers the pipeline's automation: prompt brief, successor, grill hint, Nerve,
+swarm, council review, card auto-fill. Tools read the switches through `.claude/scripts/pipeline_settings.py`. The list
+and where each switch is enforced: [`boards/docs/pipeline-settings.md`](../../boards/docs/pipeline-settings.md).
+
 ## Commands
 
 ```bash

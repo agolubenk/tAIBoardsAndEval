@@ -86,6 +86,7 @@ import forest from "./forest";
 import notebook from "./notebook";
 import ssr from "./ssr";
 import notebookModel from "./notebook-model/routes";
+import pipelineSettings from "./pipeline-settings/routes";
 import {
   agentProjectDeleteGuard,
   agentWorkspaceDeleteGuard,
@@ -924,6 +925,7 @@ export function createApp() {
   const userApi = api.route("/user", user);
   const adminApi = api.route("/admin", admin);
   const notebookModelApi = api.route("/admin/notebook-model", notebookModel);
+  const pipelineSettingsApi = api.route("/pipeline-settings", pipelineSettings);
 
   app.route(
     "/",
@@ -1055,6 +1057,7 @@ export function createApp() {
     userApi,
     adminApi,
     notebookModelApi,
+    pipelineSettingsApi,
     workflowRuleApi,
     workspaceApi,
     customFieldApi,
@@ -1197,6 +1200,7 @@ const {
   userApi,
   adminApi,
   notebookModelApi,
+  pipelineSettingsApi,
   workflowRuleApi,
   workspaceApi,
   customFieldApi,
@@ -1251,6 +1255,7 @@ export type AppType =
   | typeof userApi
   | typeof adminApi
   | typeof notebookModelApi
+  | typeof pipelineSettingsApi
   | typeof publicProjectApi
   | typeof invitationPublicApi
   | typeof oauthApi;

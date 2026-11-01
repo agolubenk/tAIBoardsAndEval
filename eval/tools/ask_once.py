@@ -166,6 +166,16 @@ def verdict(hits, threshold, min_shared=1):
     return 4 if strong[0][1] == 'open' else 3 if strong[0][1] in DECIDES else 0
 
 
+def pipeline_on(name):
+    """The product's switch (`.claude/scripts/pipeline_settings.py`); errors → on."""
+    try:
+        sys.path.insert(0, os.path.join(ROOT, '.claude', 'scripts'))
+        import pipeline_settings
+        return pipeline_settings.enabled(name)
+    except Exception:  # noqa: BLE001
+        return True
+
+
 def record(root, q, a, source, ident, date):
     if not q.strip() or not source.strip() or not (a or '').strip():
         raise SystemExit('ask_once: --q, --a and --source are required (open questions go to the owner queue)')
@@ -198,6 +208,9 @@ def main(argv=None):
 
     if args.cmd == 'record':
         print(json.dumps(record(args.root, args.q, args.a, args.source, args.id, args.date), ensure_ascii=False))
+        return 0
+    if not pipeline_on('askOnce'):
+        print('ask_once: off in the product settings (tAI-Boards → «Pipeline & evolution», askOnce) — ask as usual')
         return 0
     hits = rank(args.question, documents(args.root, args.oq), args.top)
     code = verdict(hits, args.threshold)

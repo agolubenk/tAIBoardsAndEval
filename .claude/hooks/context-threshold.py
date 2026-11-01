@@ -191,6 +191,16 @@ def render(template, used, window, thr):
                            role_arg=(" --role " + role) if role else " [--role <ключ реестра> — роль Т3]")
 
 
+def pipeline_on(name):
+    """The product's switch (tAI-Boards → workspace settings → «Pipeline & evolution»); errors → on."""
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+        import pipeline_settings
+        return pipeline_settings.enabled(name, refresh=False)
+    except Exception:  # noqa: BLE001 — a hook never fails on settings
+        return True
+
+
 def main():
     if os.environ.get("SUCCESSOR_AUTO", "").lower() in ("off", "0", "false"):
         return
@@ -206,6 +216,9 @@ def main():
     save_size(sid, size)
     if first_seen:
         prune(time.time())
+    # After the cheap exits, and from the cache only: this hook runs on every tool call; the prompt hook refreshes.
+    if not pipeline_on("successorAuto"):
+        return
     used = last_context_tokens(transcript)
     if used is None:
         return

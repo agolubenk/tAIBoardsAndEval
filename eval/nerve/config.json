@@ -251,5 +251,10 @@
       "release"
     ],
     "heartbeat_stale_min": 5
+  },
+  "boards": {
+    "url": "https://d4dev.admin.hrhelper.space",
+    "workspace": null,
+    "note": "tAI-Boards of this instance: pipeline settings («Pipeline & evolution») are read from here; workspace = the product's id"
   }
 }
