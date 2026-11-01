@@ -254,7 +254,8 @@
   },
   "boards": {
     "url": "https://d4dev.admin.hrhelper.space",
+    "product": null,
     "workspace": null,
-    "note": "tAI-Boards of this instance: pipeline settings («Pipeline & evolution») are read from here; workspace = the product's id"
+    "note": "tAI-Boards of this instance: pipeline settings are read from here. The product is found by itself — the one product the key reaches; with several, set product to its name or slug as people see it; workspace (an id) only to pin it"
   }
 }

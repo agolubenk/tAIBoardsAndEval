@@ -27,6 +27,7 @@ class Board(http.server.BaseHTTPRequestHandler):
     body = {}
     seen = []
     redirect = None
+    workspaces = [{'id': 'ws 1', 'name': 'tAIBE', 'slug': 'taibe'}]
 
     def do_GET(self):  # noqa: N802
         Board.seen.append((self.path, self.headers.get('x-api-key')))
@@ -35,7 +36,7 @@ class Board(http.server.BaseHTTPRequestHandler):
             self.send_header('location', Board.redirect)
             self.end_headers()
             return
-        data = json.dumps(Board.body).encode()
+        data = json.dumps(Board.workspaces if self.path == '/api/workspace' else Board.body).encode()
         self.send_response(200)
         self.send_header('content-type', 'application/json')
         self.end_headers()
@@ -51,9 +52,11 @@ class PipelineSettingsTest(unittest.TestCase):
         os.makedirs(os.path.join(self.root, '.claude'))
         self.env = mock.patch.dict(os.environ, {}, clear=False)
         self.env.start()
-        for k in ('TAIBE_PIPELINE', 'T_BOARDS_URL', 'T_BOARDS_API_KEY', 'T_BOARDS_WORKSPACE'):
+        for k in ('TAIBE_PIPELINE', 'T_BOARDS_URL', 'T_BOARDS_API_KEY', 'T_BOARDS_WORKSPACE', 'T_BOARDS_PRODUCT',
+                  'T_BOARDS_ALLOWED_HOSTS'):
             os.environ.pop(k, None)
         Board.redirect, Board.seen = None, []
+        Board.workspaces = [{'id': 'ws 1', 'name': 'tAIBE', 'slug': 'taibe'}]
         self.server = http.server.HTTPServer(('127.0.0.1', 0), Board)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.url = 'http://127.0.0.1:%d' % self.server.server_port
@@ -147,6 +150,28 @@ class PipelineSettingsTest(unittest.TestCase):
         self.assertIn('not trusted', error)
         os.environ['T_BOARDS_ALLOWED_HOSTS'] = 'evil.example.org'  # only the person's own environment widens it
         self.assertNotIn('not trusted', ps.fetch(self.root, timeout=0.2)[1] or '')
+
+    def test_product_is_found_without_an_id(self):
+        self.connect()
+        del os.environ['T_BOARDS_WORKSPACE']
+        Board.workspaces = [{'id': 'ws-a', 'name': 'HR Helper', 'slug': 'hr'}]
+        self.assertFalse(ps.enabled('councilReview', self.root))  # the one product the key reaches
+        self.assertIn(('/api/pipeline-settings/workspace/ws-a', 'k-1'), Board.seen)
+
+    def test_several_products_need_a_name(self):
+        self.connect()
+        del os.environ['T_BOARDS_WORKSPACE']
+        Board.workspaces = [{'id': 'ws-a', 'name': 'HR Helper', 'slug': 'hr'},
+                            {'id': 'ws-b', 'name': 'tAIBE', 'slug': 'taibe'}]
+        settings, error = ps.fetch(self.root)
+        self.assertIsNone(settings)
+        self.assertIn('several products (HR Helper, tAIBE)', error)
+        os.environ['T_BOARDS_PRODUCT'] = 'TAIBE'  # by name or slug, case does not matter
+        settings, error = ps.fetch(self.root)
+        self.assertIsNotNone(settings, error)
+        self.assertIn(('/api/pipeline-settings/workspace/ws-b', 'k-1'), Board.seen)
+        os.environ['T_BOARDS_PRODUCT'] = 'nope'
+        self.assertIn("no single product named 'nope'", ps.fetch(self.root)[1])
 
     def test_cache_of_another_workspace_is_ignored(self):
         self.connect()

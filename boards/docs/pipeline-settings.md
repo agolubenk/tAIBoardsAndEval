@@ -51,7 +51,9 @@ Hooks and tools call `.claude/scripts/pipeline_settings.py` (stdlib).
     with plain http only to localhost. An address from the repository is used only for a trusted host: the known
     board host, localhost, or `T_BOARDS_ALLOWED_HOSTS` from your own environment. A pull request that changes the
     address cannot redirect the key;
-  - the product: `boards.workspace`, or `T_BOARDS_WORKSPACE`;
+  - the product: found by itself. It is the one product the key reaches; with several, the one named in
+    `boards.product` / `T_BOARDS_PRODUCT` (the name or slug people see). An id in `boards.workspace` /
+    `T_BOARDS_WORKSPACE` pins it;
   - the key: `T_BOARDS_API_KEY`, else Keychain through `infra/scripts/dev-ai/mcp-secret.sh`, which is the key the
     boards MCP already uses.
 - **Cache.** The answer is kept in `.claude/pipeline-settings.json` (gitignored, mode 600). A cache from another
