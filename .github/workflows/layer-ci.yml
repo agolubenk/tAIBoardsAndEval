@@ -27,7 +27,7 @@ jobs:
       - name: Hook and script tests
         run: |
           set -e
-          for t in .claude/hooks/test_*.py .claude/scripts/test_*.py; do
+          for t in .claude/hooks/test_*.py .claude/scripts/test_*.py eval/tools/test_*.py; do
             echo "== $t"
             python3 "$t"
           done

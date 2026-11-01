@@ -80,7 +80,7 @@ check-eval:
 	python3 -I -m unittest discover -s eval/swarm -p 'test_*.py'
 
 check-layer:
-	@for t in .claude/hooks/test_*.py .claude/scripts/test_*.py; do python3 "$$t" || exit 1; done
+	@for t in .claude/hooks/test_*.py .claude/scripts/test_*.py eval/tools/test_*.py; do python3 "$$t" || exit 1; done
 	bash .claude/scripts/sync-agent-skills.sh --check
 
 check-infra:

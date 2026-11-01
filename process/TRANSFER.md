@@ -70,6 +70,56 @@ supertick-eval/…`), строки про инстанс, измерения в 
   `boards/deploy/vps/seed/`, тесты ops-консоли) — так было и до переноса; если репозиторий публичный, вынести их в
   конфиг — решение владельца.
 
+## Ветки до реструктуризации (сведены 2026-11-01)
+
+Ветки, ответвлённые до раскладки `boards/` + `eval/` (код досок тогда лежал в корне), перенесены в `board-agents`
+коммит в коммит (`git am --directory=boards`, авторство и сообщения сохранены):
+
+- `b12` — включает `b10`, `t-boards`, `t-boards-pilot`, `tb-wg-replies`, `completed-at`, `tb-27`: даты завершения
+  карточек, роль «ИИ-агент» (TB-26), модель блокнота на инстанс (TB-67), граф связей леса и ⌘K (R-090),
+  переключатель размышлений GLM, индекс `.claude/skills` в блокноте;
+- `ops-15-wg-psk` — PresharedKey и MTU 1380 для новых устройств WireGuard (OPS-15).
+
+Конфликты: импорт SSR и модели блокнота в `apps/api/src/index.ts` (оставлены оба), `openapi.json` (перегенерирован).
+Миграции перенумерованы — `0077` занят `0077_tai_boards_ssr`: `0077_t_boards_completed_at` → `0078`,
+`0078_t_boards_instance_setting` → `0079`; метки `when` — после SSR (иначе drizzle молча пропустил бы их на базе с
+SSR), SQL сделан повторяемым (`IF NOT EXISTS`, `DROP TRIGGER IF EXISTS`, ограничение — через `pg_constraint`), так
+что база стенда, уже прогнавшая старые номера из `b12`, принимает новый набор без ошибок. Проверено на Postgres 16:
+чистая база (80 миграций) и база со старым набором `b12` (79 → 82, данные и триггеры целы).
+
+Старые вершины веток сохранены тегами `archive/<ветка>`, поэтому SHA в документах (`impl-*`, капсулы, handoff)
+остаются достижимыми. Соответствие коммитов:
+
+| Было | Стало | Коммит |
+|---|---|---|
+| `7d09764` | `8a30ffa` | feat(cards): a card keeps its end date while it sits in a final column (draft, owner review) |
+| `a88f5ce` | `c671848` | fix(cards): the end-date backfill trusts only the server's status entries |
+| `bbc1635` | `5314b26` | fix(cards): a column turned final again gives its cards their real end dates |
+| `02b81fa` | `eba76d1` | docs(cards): say plainly which journal entries date a done card |
+| `a7679fa` | `f982af3` | test(cards): wait for the journal entry before dating it |
+| `304e8b4` | `f0906ed` | fix(deploy): the app hears the Mac's claude-mem proxy through the tunnel |
+| `1df8edb` | `82cf88b` | fix(i18n): the RU end-date field reads «Окончание», not «Завершена» |
+| `f9275c5` | `f198f68` | docs(vps): the connect form names the database the integration cannot see |
+| `1dd7003` | `f2c496e` | feat(agents): a strict «AI agent» role, assigned to every session's agent (TB-26) |
+| `0b275aa` | `87ca732` | feat(notebook): one model, key and daily limit per server, set by the instance admin (TB-67) |
+| `3b4f038` | `0df2d48` | fix(agents): reserved agent role keeps fixed rights; agents retry following their owner (TB-26) |
+| `cb3ea91` | `a5e8bca` | fix(agents): cap an agent at the agent role when rights are checked (TB-26 review) |
+| `aacd324` | `4c3d945` | fix(notebook): bind the model key to its API address; read env values one by one (TB-67 review) |
+| `1a7a41e` | `9634883` | fix(web): task-row tests mock the board's forest reads (TB-70) |
+| `438ac7c` | `cb63574` | feat(forest): the links graph — cards, files and decisions, grouped by sector |
+| `e969ffc` | `cf977b9` | chore(openapi): regenerate the spec after the links graph merge (R-090) |
+| `bf7e9dd` | `86e1642` | feat(web): ⌘K reaches cards, sectors and forest tabs from the keyboard (R-090) |
+| `42094e5` | `f6c90eb` | feat(notebook): a thinking switch turns off GLM reasoning in the chat |
+| `5896760` | `ac28b41` | feat(notebook): the Mac sync also indexes .claude/skills |
+| `26f97e4` | `005d32a` | fix(notebook): the thinking switch reaches the chat through the admin's model settings (b12) |
+| `f4d5624` | `d9f1063` | fix(vps): new WireGuard peers get a preshared key and MTU 1380 (OPS-15) |
+| `c89e323` | `82f5683` | fix(vps): the existing-peer hint gives the full wg-psk.sh form (OPS-15, e1) |
+| `a5e3812` | `ea70718` | fix(vps): install.sh ships wg-issue.sh and wg-psk.sh; wg-psk.sh not through a pipe (OPS-15, d9) |
+| `b943e45` | `f2b86c5` | fix(vps): WireGuard backups keep the newest edits; wg-psk input and selftest per QA review |
+
+`tb-27`, `s6-notion-full` уже входили в `board-agents`; ветка dependabot обновляла `agentscan.yml`, который удалён при
+реструктуризации, — закрыта без переноса.
+
 ## История git
 
 Первый перенос закоммитил живые папки дел `.ai/task/` (выгрузки Notion `ai-council-backlog/raw.json`, `cards.json`,
