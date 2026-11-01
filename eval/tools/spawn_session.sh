@@ -56,29 +56,42 @@ role_num() {
   esac
 }
 
-# Первое сообщение новой сессии → stdout.
+# Линия потомков: у каждой новой сессии свой id — id родителя (TAIBE_LINEAGE, корень «r») + 4 случайных символа;
+# поколение — число точек. Один шаблон запуска делает сессии единообразными, id — различимыми в журналах, на
+# карточках (метка session) и в handoff: наследник не путает свою работу с работой предка или сиблинга.
+child_lineage() {
+  local tail
+  tail="$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom 2>/dev/null | head -c 4)" || true
+  [ -n "$tail" ] || tail="$$"
+  printf '%s.%s' "${TAIBE_LINEAGE:-r}" "$tail"
+}
+generation() { printf '%s' "$1" | tr -cd '.' | wc -c | tr -d ' '; }
+
+# Первое сообщение новой сессии → stdout. $2 — id линии новой сессии.
 first_message() {
-  local role="$1" num file
+  local role="$1" lineage="$2" num file tag
+  tag=" Линия: $lineage (поколение $(generation "$lineage")) — метка session на карточках и в очереди."
   if [ -n "$HANDOFF" ]; then
     if [ -n "$role" ]; then
       num="$(role_num "$role")" || die "неизвестная роль: $role (coord plan frontend backend release boards)"
-      printf 'Сборка Т3, ключ реестра %s, роль %s, наследник. Handoff: %s — прочитай его первым, сверь факты с живыми источниками (скилл successor-handoff) и действуй по нему. Предшественнику подтверди приём через SendMessage.' "$role" "$num" "$HANDOFF"
+      printf 'Сборка Т3, ключ реестра %s, роль %s, наследник. Handoff: %s — прочитай его первым, сверь факты с живыми источниками (скилл successor-handoff) и действуй по нему. Предшественнику подтверди приём через SendMessage.%s' "$role" "$num" "$HANDOFF" "$tag"
     else
-      printf 'Наследник сессии. Handoff: %s — прочитай его первым, сверь факты с живыми источниками (скилл successor-handoff) и действуй по нему. Предшественнику подтверди приём через SendMessage.' "$HANDOFF"
+      printf 'Наследник сессии. Handoff: %s — прочитай его первым, сверь факты с живыми источниками (скилл successor-handoff) и действуй по нему. Предшественнику подтверди приём через SendMessage.%s' "$HANDOFF" "$tag"
     fi
     return
   fi
   num="$(role_num "$role")" || die "неизвестная роль: $role (coord plan frontend backend release boards)"
   file="$PROMPT_DIR/$num-$role.md"
   [ -f "$file" ] || die "нет пускового файла $file"
-  printf 'Сборка Т3, ключ реестра %s, роль %s. Пусковой файл: %s — прочитай его первым и действуй по нему.' \
-    "$role" "$num" "$file"
+  printf 'Сборка Т3, ключ реестра %s, роль %s. Пусковой файл: %s — прочитай его первым и действуй по нему.%s' \
+    "$role" "$num" "$file" "$tag"
 }
 
 # Одна сессия: пусковой скрипт в $TMPDIR, затем окно терминала (или печать команды).
 spawn_one() {
-  local role="$1" msg genome="" dir launcher cmd stamp
-  msg="$(first_message "$role")"
+  local role="$1" msg genome="" dir launcher cmd stamp lineage
+  lineage="$(child_lineage)"
+  msg="$(first_message "$role" "$lineage")"
   if [ -n "$role" ]; then
     genome="$(in_tree_product "pipeline/genome/$role.json")"
     [ -f "$genome" ] || die "нет генома $genome (build.py собирает его из roles.json)"
@@ -95,6 +108,7 @@ spawn_one() {
     # транскрипта («Transcript saving is off — inherited CLAUDE_CODE_CHILD_SESSION marker»). Без транскрипта
     # не работают хук context-threshold, Stop-typecheck, замеры eval (wake_anatomy, context_audit) и claude-mem.
     echo "unset CLAUDE_CODE_CHILD_SESSION CLAUDECODE"
+    echo "export TAIBE_LINEAGE=$(sq "$lineage")"
     echo "cd $(sq "$CWD") || exit 1"
     # текст прочитан — папка больше не нужна: временные пусковые файлы не копятся
     echo "m=\"\$(cat $(sq "$launcher.msg"))\"; rm -rf $(sq "$dir")"
@@ -131,6 +145,12 @@ if [ -n "$HANDOFF" ]; then
   [ "$LAUNCH" = 0 ] && [ -z "$ROLES" ] || die "--handoff не сочетается с --launch/--roles"
   [ -f "$HANDOFF" ] || die "нет файла handoff: $HANDOFF"
   HANDOFF="$(cd "$(dirname "$HANDOFF")" && pwd)/$(basename "$HANDOFF")"
+  # Handoff — только дельта: строки, которые наследник и так получит из CLAUDE.md и правил, стоят токенов зря.
+  # Предупреждение, не стоп: handoff пишется на исходе контекста, переписывать его некогда.
+  if [ -f "$TOOLS/../evolve/dupes.py" ] && command -v python3 >/dev/null 2>&1; then
+    python3 -I "$TOOLS/../evolve/dupes.py" --against-l1 "$HANDOFF" --max-waste "${SPAWN_MAX_WASTE:-300}" --top 5 >&2 \
+      || echo "# spawn_session: handoff повторяет постоянный контекст — в следующий раз пиши только дельту" >&2
+  fi
   spawn_one "$ROLE"
 elif [ "$LAUNCH" = 1 ]; then
   if [ -n "$ROLES" ]; then

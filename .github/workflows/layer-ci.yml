@@ -3,9 +3,9 @@ name: layer CI
 on:
   push:
     branches: [board-agents, main]
-    paths: [".claude/**", "eval/tools/**", ".github/workflows/layer-ci.yml"]
+    paths: [".claude/**", "eval/tools/**", "eval/evolve/**", "eval/prompts/**", "eval/pipeline/genome/roles.json", "process/prompts/**", "**/CLAUDE.md", ".github/workflows/layer-ci.yml"]
   pull_request:
-    paths: [".claude/**", "eval/tools/**", ".github/workflows/layer-ci.yml"]
+    paths: [".claude/**", "eval/tools/**", "eval/evolve/**", "eval/prompts/**", "eval/pipeline/genome/roles.json", "process/prompts/**", "**/CLAUDE.md", ".github/workflows/layer-ci.yml"]
   workflow_dispatch:
 
 concurrency:
@@ -31,3 +31,5 @@ jobs:
             echo "== $t"
             python3 "$t"
           done
+      - name: Always-loaded context (L1) of every role within budget (eval/evolve/catalog.py)
+        run: python3 -I eval/evolve/catalog.py --check

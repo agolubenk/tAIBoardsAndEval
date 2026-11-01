@@ -2,3 +2,7 @@
 # trailing carriage return to commitlint and every commit fails on Unix.
 .husky/* text eol=lf
 apps/docs/openapi.json text eol=lf
+# append-only journals: concurrent branches add lines at the end — keep both sides on local merges and rebases
+# (GitHub's own merge button ignores merge drivers; a conflict there is resolved by keeping both lines)
+eval/evolve/verdicts.jsonl merge=union
+eval/data/decisions.jsonl merge=union

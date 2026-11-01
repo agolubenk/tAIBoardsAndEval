@@ -8,12 +8,13 @@ TRACK ?=
 NAME ?=
 
 .PHONY: help wt-help wt-list wt-add wt-deps wt-check wt-rm wt-feature wt-fix wt-refactor wt-spike wt-review \
-	check check-eval check-layer check-boards check-infra genome-check done-index
+	check check-eval check-layer check-boards check-infra genome-check done-index evolve focus
 
 help: wt-help
 	@echo ""
 	@echo "Проверки: make check (eval + слой + infra) · make check-boards (pnpm-гейты досок)"
 	@echo "Геномы:   make genome-check · закрытое: make done-index"
+	@echo "Эволюция: make evolve (версии слоя, L1 по ролям, дубли) · make focus PLAN='eval/board/plan-*.json'"
 	@echo "ИИ-контур: npm run mcp-hub:status | llm-gateway:status | ai-council:status (корневой package.json)"
 
 wt-help:
@@ -78,10 +79,12 @@ check-eval:
 	python3 -I -m unittest discover -s eval/pipeline/reflex -p 'test_*.py'
 	python3 -I -m unittest discover -s eval/pipeline/genome -p 'test_*.py'
 	python3 -I -m unittest discover -s eval/swarm -p 'test_*.py'
+	python3 -I -m unittest discover -s eval/evolve -p 'test_*.py'
 
 check-layer:
 	@for t in .claude/hooks/test_*.py .claude/scripts/test_*.py eval/tools/test_*.py; do python3 "$$t" || exit 1; done
 	bash .claude/scripts/sync-agent-skills.sh --check
+	python3 -I eval/evolve/catalog.py --check
 
 check-infra:
 	node --test infra/llm-gateway/test/*.test.mjs
@@ -100,3 +103,12 @@ genome-check:
 
 done-index:
 	python3 infra/scripts/misc/done-index.py
+
+# Версии слоя — из git (catalog.py); здесь — отчёт: версии, L1 по ролям против бюджета, дубли.
+evolve:
+	python3 -I eval/evolve/catalog.py
+	python3 -I eval/evolve/dupes.py --top 10
+
+PLAN ?= eval/board/plan-*.json
+focus:
+	python3 -I eval/tools/queue_focus.py $(PLAN)

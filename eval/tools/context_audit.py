@@ -48,11 +48,9 @@ def price(model):
     return PRICES['opus-5-5']
 
 
-def est_tokens(text):
-    if not text:
-        return 0
-    extra = len(text.encode('utf-8', 'ignore')) - len(text)
-    return int((len(text) - extra) / 3.5 + extra / 2.2)
+# one estimate for the whole eval: the evolution toolkit prices artifacts with the same function
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'evolve'))
+from tokens import est_tokens  # noqa: E402,F401
 
 
 def text_of(content):
