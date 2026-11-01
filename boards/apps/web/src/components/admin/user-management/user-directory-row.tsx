@@ -13,7 +13,7 @@ import {
 import type { AdminUser } from "@/hooks/queries/admin/use-admin-users";
 import { cn } from "@/lib/cn";
 import { formatDateMedium } from "@/lib/format";
-import { hasInstanceAdminRole } from "@/lib/instance-admin";
+import { hasAgentRole, hasInstanceAdminRole } from "@/lib/instance-admin";
 import type { PendingUserAction } from "./pending-user-action";
 import { USER_DIRECTORY_COLUMNS } from "./user-directory-columns";
 import { UserRoleBadge } from "./user-role-badge";
@@ -35,7 +35,11 @@ export function UserDirectoryRow({
   onAction,
 }: UserDirectoryRowProps) {
   const { t } = useTranslation();
-  const isAdmin = hasInstanceAdminRole(user.role);
+  const roleKind = hasAgentRole(user.role)
+    ? "agent"
+    : hasInstanceAdminRole(user.role)
+      ? "admin"
+      : "user";
   const isDeactivated = user.banned === true;
 
   const actions: RowAction[] = [
@@ -88,13 +92,13 @@ export function UserDirectoryRow({
             {user.email}
           </span>
           <div className="mt-1.5 flex items-center gap-2 sm:hidden">
-            <UserRoleBadge isAdmin={isAdmin} />
+            <UserRoleBadge kind={roleKind} />
             <UserStatus isDeactivated={isDeactivated} />
           </div>
         </div>
       </div>
       <div role="cell" className={cn(CELL_CLASS, USER_DIRECTORY_COLUMNS.role)}>
-        <UserRoleBadge isAdmin={isAdmin} />
+        <UserRoleBadge kind={roleKind} />
       </div>
       <div
         role="cell"

@@ -90,6 +90,11 @@ spawn_one() {
   printf '%s' "$msg" > "$launcher.msg"
   {
     echo '#!/bin/bash'
+    # Наследник — новая сессия верхнего уровня, а не дочерняя: маркеры родителя, унаследованные через окружение
+    # (запуск из вкладки, открытой самой сессией, или --terminal print в её Bash), выключают у новой сессии запись
+    # транскрипта («Transcript saving is off — inherited CLAUDE_CODE_CHILD_SESSION marker»). Без транскрипта
+    # не работают хук context-threshold, Stop-typecheck, замеры eval (wake_anatomy, context_audit) и claude-mem.
+    echo "unset CLAUDE_CODE_CHILD_SESSION CLAUDECODE"
     echo "cd $(sq "$CWD") || exit 1"
     # текст прочитан — папка больше не нужна: временные пусковые файлы не копятся
     echo "m=\"\$(cat $(sq "$launcher.msg"))\"; rm -rf $(sq "$dir")"

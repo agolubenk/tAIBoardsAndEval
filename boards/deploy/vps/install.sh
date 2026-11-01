@@ -75,7 +75,9 @@ random_hex() { od -An -N32 -tx1 /dev/urandom | tr -d ' \n'; }
 ensure_secrets() {
   install -d -m 0711 "$ROOT/secrets"
   local name file
-  for name in postgres_password auth_secret; do
+  # settings_key seals the model key an admin saves (TB-67); replacing it
+  # later makes that key unreadable until it is entered again.
+  for name in postgres_password auth_secret settings_key; do
     file="$ROOT/secrets/$name"
     if [ ! -s "$file" ]; then
       (
@@ -88,8 +90,10 @@ ensure_secrets() {
   # Postgres (uid 70) and the app (uid 1001) both read the database password.
   chown 70:1001 "$ROOT/secrets/postgres_password"
   chmod 0440 "$ROOT/secrets/postgres_password"
-  chown 1001:1001 "$ROOT/secrets/auth_secret"
-  chmod 0400 "$ROOT/secrets/auth_secret"
+  for name in auth_secret settings_key; do
+    chown 1001:1001 "$ROOT/secrets/$name"
+    chmod 0400 "$ROOT/secrets/$name"
+  done
   for optional in notion_token notebook_llm_key; do
     if [ -f "$ROOT/secrets/$optional" ]; then
       chown 1001:1001 "$ROOT/secrets/$optional"
@@ -105,6 +109,8 @@ write_files() {
   install -m 0644 "$here/backup.sh" "$ROOT/backup.sh"
   install -m 0700 "$here/backup-key.sh" "$ROOT/backup-key.sh"
   install -m 0700 "$here/wg-setup.sh" "$ROOT/wg-setup.sh"
+  install -m 0700 "$here/wg-issue.sh" "$ROOT/wg-issue.sh"
+  install -m 0700 "$here/wg-psk.sh" "$ROOT/wg-psk.sh"
   install -m 0700 "$here/mirror-setup.sh" "$ROOT/mirror-setup.sh"
   bash "$here/render-tls.sh" "$here/tls.conf.template" "$ROOT/tls.conf" \
     "$WG_ADDR:$TLS_PORT" "$DOMAIN" 127.0.0.1:5180 || die "tls.conf не отрендерился"
@@ -128,6 +134,16 @@ write_files() {
     grep -q "^CLAUDE_MEM_WORKER_PORT=" <<<"$kept" || echo "CLAUDE_MEM_WORKER_PORT=37702"
   } >"$ROOT/.env"
   chmod 0600 "$ROOT/.env"
+}
+
+# wg-setup.sh lets the claude-mem proxy's replies through the tunnel firewall
+# for the address in .env; this script does not re-run it.
+check_tunnel_rules() {
+  local host port
+  host="$(sed -n 's/^CLAUDE_MEM_WORKER_HOST=//p' "$ROOT/.env" | tail -1)"
+  port="$(sed -n 's/^CLAUDE_MEM_WORKER_PORT=//p' "$ROOT/.env" | tail -1)"
+  grep -qF -e "-s $host -p tcp --sport $port " /etc/wireguard/t-boards-rules.sh 2>/dev/null ||
+    log "ВНИМАНИЕ: туннель не пропускает ответы памяти $host:$port — перезапустите $ROOT/wg-setup.sh с ключом Mac"
 }
 
 load_image() {
@@ -206,6 +222,7 @@ main() {
   load_image
   backup_before_update
   write_files
+  check_tunnel_rules
   start_and_wait
   check_migrations
   seed_admin

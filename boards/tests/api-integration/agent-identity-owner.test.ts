@@ -124,7 +124,7 @@ describe("API integration: an agent follows its owner (R-010)", () => {
     });
     const member = await addMember(workspace.id, "member");
     const issued = (await issue(await ownerKey(member))).body;
-    expect(await role(workspace.id, issued.agent.id)).toBe("member");
+    expect(await role(workspace.id, issued.agent.id)).toBe("agent");
 
     const token = `leave-${randomUUID()}`;
     await db.insert(schema.sessionTable).values({
@@ -192,7 +192,7 @@ describe("API integration: an agent follows its owner (R-010)", () => {
       }),
     );
     expect(response.status).toBe(400);
-    expect(await role(workspace.id, issued.agent.id)).toBe("member");
+    expect(await role(workspace.id, issued.agent.id)).toBe("agent");
 
     await removeWorkspaceMember({ workspaceId: workspace.id, userId: member });
     expect(await role(workspace.id, issued.agent.id)).toBeNull();
@@ -222,7 +222,7 @@ describe("API integration: an agent follows its owner (R-010)", () => {
     });
     const member = await addMember(workspace.id, "admin");
     const issued = (await issue(await ownerKey(member))).body;
-    expect(await role(workspace.id, issued.agent.id)).toBe("admin");
+    expect(await role(workspace.id, issued.agent.id)).toBe("agent");
 
     await expect(
       transferWorkspaceOwnership({
@@ -247,12 +247,13 @@ describe("API integration: an agent follows its owner (R-010)", () => {
       }),
     ).rejects.toThrow("follow its owner");
 
+    // An owner narrowed below the agent role takes the agent down with them.
     await updateWorkspaceMemberRole({
       workspaceId: workspace.id,
       userId: member,
-      role: "member",
+      role: "viewer",
     });
-    expect(await role(workspace.id, issued.agent.id)).toBe("member");
+    expect(await role(workspace.id, issued.agent.id)).toBe("viewer");
   });
 
   it("reserves the agents' addresses and never opens a session for an agent", async () => {

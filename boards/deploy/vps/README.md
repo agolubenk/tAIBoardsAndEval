@@ -35,7 +35,10 @@ the tunnel:
 - nothing from outside may address `10.77.0.0/24`;
 - the `TB-WG` chain is hooked into `FORWARD` and Docker's `DOCKER-USER` and rebuilt in order on every start. It lets
   the tunnel reach the internet and the product's published ports, the same reach the internet has, and drops the
-  rest, so the VPS's internal Docker networks stay out of reach.
+  rest, so the VPS's internal Docker networks stay out of reach. The one exception is the Mac's claude-mem proxy
+  (`CLAUDE_MEM_WORKER_HOST:PORT` from `/opt/t-boards/.env`): its replies reach the app container. Any VPS container
+  can read that proxy (all leave the tunnel as 10.77.0.1), none can reach the Mac's other ports. After changing that
+  address in `.env`, re-run `wg-setup.sh` with the Mac's key; `install.sh` warns while the rules disagree.
 
 `ip_forward` stays on through `/etc/sysctl.d/99-t-boards-wg.conf`.
 
@@ -43,8 +46,10 @@ the tunnel:
 
 | File | Where it runs | What it does |
 |---|---|---|
-| `wg-setup.sh` | VPS | `wg-setup.sh <public key> <device> split\|full`. The first run creates wg0 (10.77.0.0/24, UDP 51820) and the rules script. Later runs add a peer and upgrade a wg0 from the first kit. Prints the config block for the device |
-| `wg-selftest.sh` | Mac | Runs `wg-setup.sh` in a privileged container with real iptables. Covers split, full, a re-run, the first-kit upgrade and stop |
+| `wg-setup.sh` | VPS | `wg-setup.sh <public key> <device> split\|full`. The first run creates wg0 (10.77.0.0/24, UDP 51820) and the rules script. Later runs add a peer and upgrade a wg0 from the first kit. Prints the config block for the device with `MTU = 1380`. A new peer gets a PresharedKey, printed once in that block; a peer that is already there is never given one, since that would cut off the device |
+| `wg-issue.sh` | VPS | `wg-issue.sh <device> split\|full` makes the keypair and the PresharedKey on the VPS and prints a ready profile (stdout) and a QR (stderr). Both carry the device's private key and PresharedKey: save the profile as `(umask 077; ssh root@VPS 'bash /opt/t-boards/wg-issue.sh phone split' > phone.conf)` and delete it after the import, never redirect stderr to a file or a log, and do not run it through an agent, whose transcript would keep the keys. `--revoke <device>` removes the peer |
+| `wg-psk.sh` | VPS | Sets or removes the PresharedKey of one peer by its tunnel address. The address is required. The key never goes into argv or shell history: `ssh -t root@VPS 'bash /opt/t-boards/wg-psk.sh 10.77.0.2'` asks for it with hidden input, or `wg genpsk \| tee >(pbcopy) \| ssh root@VPS 'bash /opt/t-boards/wg-psk.sh 10.77.0.2'`; clear the clipboard after pasting it on the device. Rollback `bash wg-psk.sh --remove 10.77.0.2`. Not through `base64 -d \| bash`: there stdin is the script itself, and wg-psk.sh would read its tail as the key. A failed run leaves `wg0.conf.bak-psk` and prints the rollback; the next run stops until it is used or removed |
+| `wg-selftest.sh` | Mac | Runs the three scripts above in a privileged container with real iptables. Covers split, full, a re-run, PresharedKey and MTU, the shared lock in all three, wg-psk.sh on the live interface and its refusals, backup retention (idle re-runs, several edits in one second, a clock set back) and file modes, the first-kit upgrade and stop |
 | `bundle.sh` | Mac | Packs the amd64 image and these files into `t-boards-<tag>.tar` and writes its sha256 |
 | `install.sh` | VPS | Preflight, certificate, secrets, `docker load`, a dump before the update, `up`, health, migrations = journal, admin seed, products seed, a smoke check through TLS |
 | `seed/products.json` | VPS, app container | The products (workspaces), their projects and the starting cards. Re-running adds only what is missing and never changes an existing card |
@@ -67,10 +72,14 @@ environment variables (N-007).
 |---|---|
 | `postgres_password` | 0440, owner 70:1001. Postgres reads it as uid 70, the app as gid 1001 |
 | `auth_secret` | 0400, owner 1001 |
+| `settings_key` | 0400, owner 1001. Seals the notebook model key an instance admin saves in the settings |
 | `notion_token` | 0400, owner 1001. Optional: the owner puts it there |
+| `notebook_llm_key` | 0400, owner 1001. Optional: the model key for the server's own API address |
 
-`install.sh` generates the first two once and never overwrites them. The database password only takes effect when the
-volume is first initialised.
+`install.sh` generates the first three once and never overwrites them. The database password only takes effect when the
+volume is first initialised. A replaced `settings_key` leaves the saved model key unreadable: the admin enters it again.
+The app reads `settings_key` once at start, so a new one needs `docker compose -p t-boards up -d app`; anything shorter
+than 32 characters counts as no key.
 
 ## Notion mirror
 
@@ -78,6 +87,8 @@ The mirror is off until `NOTION_MIRROR_WORKSPACE_ID` and `NOTION_MIRROR_DATABASE
 `/opt/t-boards/.env` and the token file exists. `bash /opt/t-boards/mirror-setup.sh` does all three. It mirrors into
 the HR Helper / Lavaeon product, which `install.sh` creates. By default it lists «Задачи» and «Ошибки» plus `all`: every other
 database shared with the integration (… → Connections in Notion) is looked up on each run and mirrored after them.
+If the connect form refuses a database, it now names it: open that database in Notion → ⋯ → Connections and add the
+integration. A wrong token gets its own message.
 
 ## Products
 
@@ -93,7 +104,9 @@ edited to the plan (journaled under `seed:products`, undone from the card's hist
   update lies in `backups/pre-<tag>-*.dump`.
 - **Stop everything:** `docker compose -p t-boards down`. Never add `-v`: the database volume is the only live copy.
 - **WireGuard:** `systemctl disable --now wg-quick@wg0 && mv /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.off && rm -f /etc/sysctl.d/99-t-boards-wg.conf`.
-  Stopping wg0 removes every rule. Each run of `wg-setup.sh` keeps the previous config as `wg0.conf.bak-<time>`.
+  Stopping wg0 removes every rule. Each change by `wg-setup.sh` or `wg-issue.sh` keeps the previous config as
+  `wg0.conf.bak-<time>`; only the newest three stay, since they hold the server PrivateKey. A re-run that changes nothing makes no copy. The three scripts take one
+  lock, `wg0.conf.lock`, so they never rewrite the file over each other.
 - **Backup key:** `sed -i '/t-boards-backup$/d' /root/.ssh/authorized_keys`.
 
 ## Known limits

@@ -7,7 +7,7 @@ import {
 } from "../../database/notebook-schema";
 import { isWorkerOnline, requestQueryEmbedding } from "../embed/embed-queue";
 import { decodeEmbedding } from "../embed/embedding-codec";
-import { notebookEmbedModel } from "../notebook-config";
+import { notebookEmbedModel } from "../../notebook-model/effective-notebook-model";
 import { fuseRanks, type RankedList } from "./fuse-ranks";
 import { loadVectorIndex, nearestChunks } from "./vector-index";
 
@@ -33,13 +33,15 @@ export async function searchNotebook(input: {
   query: string;
   limit: number;
   mode: SearchMode;
+  // A caller that already read the settings passes the model along.
+  embedModel?: string;
 }): Promise<{ mode: SearchMode; results: NotebookHit[] }> {
   const wantVectors =
     input.mode === "hybrid" && isWorkerOnline(input.workspaceId);
   const [keywordIds, vectorIds] = await Promise.all([
     keywordCandidates(input.workspaceId, input.query),
     wantVectors
-      ? vectorCandidates(input.workspaceId, input.query)
+      ? vectorCandidates(input.workspaceId, input.query, input.embedModel)
       : Promise.resolve(null),
   ]);
   const lists: RankedList<MatchedBy>[] = [{ by: "keyword", ids: keywordIds }];
@@ -74,14 +76,21 @@ async function keywordCandidates(workspaceId: string, query: string) {
 }
 
 // Null means no vector ranking this time; the caller says so in `mode`.
-async function vectorCandidates(workspaceId: string, query: string) {
+async function vectorCandidates(
+  workspaceId: string,
+  query: string,
+  embedModel?: string,
+) {
   const vector = await requestQueryEmbedding(
     workspaceId,
     query,
     QUERY_EMBED_WAIT_MS,
   );
   if (!vector) return null;
-  const index = await loadVectorIndex(workspaceId, notebookEmbedModel());
+  const index = await loadVectorIndex(
+    workspaceId,
+    embedModel ?? (await notebookEmbedModel()),
+  );
   if (!index) return null;
   return nearestChunks(index, decodeEmbedding(vector), CANDIDATES).map(
     ({ id }) => id,

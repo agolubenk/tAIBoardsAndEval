@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vite-plus/test";
 import {
+  AGENT_ROLE_NAME,
   ac,
   admin,
+  agent,
   builtInRoles,
   DEFAULT_ROLE_NAMES,
   defaultRolePayloads,
   member,
   owner,
+  SEEDED_ROLE_NAMES,
   statement,
   viewer,
 } from "./index";
@@ -64,6 +67,29 @@ describe("built-in role privileges", () => {
     expect(member.statements.workspace).toEqual(["read"]);
   });
 
+  it("agent works cards but never outranks a member", () => {
+    expect(agent.statements.task).toEqual(["create", "read", "update"]);
+    expect(agent.statements.project).toEqual(["read"]);
+    expect(agent.statements.label).toEqual(["read"]);
+    expect(agent.statements.workspace).toEqual(["read"]);
+    for (const [resource, actions] of Object.entries(agent.statements)) {
+      const allowed = (member.statements as Record<string, readonly string[]>)[
+        resource
+      ];
+      for (const action of actions) expect(allowed).toContain(action);
+    }
+  });
+
+  it("seeds the agent role next to the defaults but keeps it off the default list", () => {
+    expect(SEEDED_ROLE_NAMES).toEqual([...DEFAULT_ROLE_NAMES, AGENT_ROLE_NAME]);
+    expect(DEFAULT_ROLE_NAMES).not.toContain(AGENT_ROLE_NAME);
+    expect(defaultRolePayloads.agent.task).toEqual([
+      "create",
+      "read",
+      "update",
+    ]);
+  });
+
   it("admin can delete tasks and manage workspace settings but cannot delete the workspace", () => {
     expect(admin.statements.task).toContain("delete");
     expect(admin.statements.task).toContain("assign");
@@ -85,9 +111,10 @@ describe("built-in role privileges", () => {
     );
   });
 
-  it("groups all four roles under builtInRoles by name", () => {
+  it("groups all five roles under builtInRoles by name", () => {
     expect(Object.keys(builtInRoles).sort()).toEqual([
       "admin",
+      "agent",
       "member",
       "owner",
       "viewer",
@@ -96,6 +123,7 @@ describe("built-in role privileges", () => {
     expect(builtInRoles.member).toBe(member);
     expect(builtInRoles.admin).toBe(admin);
     expect(builtInRoles.owner).toBe(owner);
+    expect(builtInRoles.agent).toBe(agent);
   });
 });
 
@@ -105,13 +133,14 @@ describe("default-role seed payloads", () => {
     expect(DEFAULT_ROLE_NAMES).not.toContain("owner");
     expect(Object.keys(defaultRolePayloads).sort()).toEqual([
       "admin",
+      "agent",
       "member",
       "viewer",
     ]);
   });
 
   it("emits JSON-serializable payloads that mirror each role's compiled statements", () => {
-    for (const name of DEFAULT_ROLE_NAMES) {
+    for (const name of SEEDED_ROLE_NAMES) {
       const role = builtInRoles[name];
       const payload = defaultRolePayloads[name];
 

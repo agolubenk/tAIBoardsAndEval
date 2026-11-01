@@ -75,12 +75,19 @@ describe("API integration: notebook Mac scripts", () => {
     });
     const repo = join(dir, "repo");
     const home = join(dir, "home");
-    for (const sub of ["docs/plans/archive", "docs/private", "home"]) {
+    for (const sub of [
+      "docs/plans/archive",
+      "docs/private",
+      ".claude/skills/review",
+      "home",
+    ]) {
       mkdirSync(join(sub === "home" ? dir : repo, sub), { recursive: true });
     }
     const files: Record<string, string> = {
       "docs/forest.md": "# Лес\n\n## Аренда\n\nАренда истекает через час.",
       "CLAUDE.md": "# Карточка\n\nРоль и гейт.",
+      ".claude/skills/review/SKILL.md": "# Ревью\n\nОдин ревьюер.",
+      ".claude/skills/review/run.sh": "echo not a document\n",
       "docs/plans/BACKLOG.md": "# Снимок\n\nстарое",
       "docs/plans/archive/old.md": "# Архив\n\nстарое",
       "docs/private/notes.md": "# Личное\n\nне выгружать",
@@ -122,20 +129,21 @@ describe("API integration: notebook Mac scripts", () => {
 
     const first = await node("notebook-sync.mjs");
     expect(first.stdout).toContain(
-      "2 files, uploaded 2, unchanged 0, skipped 0, pruned 0",
+      "3 files, uploaded 3, unchanged 0, skipped 0, pruned 0",
     );
-    expect((await sources()).sources.map((s) => s.ref)).toEqual([
+    expect((await sources()).sources.map((s) => s.ref).sort()).toEqual([
+      ".claude/skills/review/SKILL.md",
       "CLAUDE.md",
       "docs/forest.md",
     ]);
 
     const second = await node("notebook-sync.mjs");
-    expect(second.stdout).toContain("uploaded 0, unchanged 2");
+    expect(second.stdout).toContain("uploaded 0, unchanged 3");
 
     unlinkSync(join(repo, "CLAUDE.md"));
     const third = await node("notebook-sync.mjs");
     expect(third.stdout).toContain(
-      "1 files, uploaded 0, unchanged 1, skipped 0, pruned 1",
+      "2 files, uploaded 0, unchanged 2, skipped 0, pruned 1",
     );
   });
 
@@ -145,9 +153,9 @@ describe("API integration: notebook Mac scripts", () => {
 
     const round = await node("notebook-worker.mjs", "--once");
     expect(round.stdout).toContain(
-      "embedded 2 (0 queries), saved 2, rejected 0",
+      "embedded 3 (0 queries), saved 3, rejected 0",
     );
-    expect(embedInputs).toHaveLength(2);
+    expect(embedInputs).toHaveLength(3);
     expect(
       embedInputs.every((text) => text.startsWith("search_document: ")),
     ).toBe(true);
@@ -156,6 +164,7 @@ describe("API integration: notebook Mac scripts", () => {
     );
     const listed = await sources();
     expect(listed.sources.map((s) => [s.chunks, s.embedded])).toEqual([
+      [1, 1],
       [1, 1],
       [1, 1],
     ]);

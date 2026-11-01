@@ -1,8 +1,9 @@
 import { Axe } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
 import { formatDateShort } from "@/lib/format";
 import { FellDialog } from "./fell-dialog";
 import { ForestTaskLink } from "./forest-task-link";
@@ -12,11 +13,26 @@ type SectorRowProps = {
   workspaceId: string;
   sector: ForestSector;
   trees: Map<string, ForestTree>;
+  focused?: boolean;
 };
 
-export function SectorRow({ workspaceId, sector, trees }: SectorRowProps) {
+export function SectorRow({
+  workspaceId,
+  sector,
+  trees,
+  focused = false,
+}: SectorRowProps) {
   const { t } = useTranslation();
   const [felling, setFelling] = useState(false);
+  const rowRef = useRef<HTMLLIElement>(null);
+
+  // A jump from the command palette lands here: bring the sector into view and
+  // move focus to it, so Tab continues from the sector's own controls.
+  useEffect(() => {
+    if (!focused) return;
+    rowRef.current?.scrollIntoView({ block: "center" });
+    rowRef.current?.focus({ preventScroll: true });
+  }, [focused]);
   const visible = sector.treeIds.flatMap((id) => {
     const tree = trees.get(id);
     return tree ? [tree] : [];
@@ -24,7 +40,15 @@ export function SectorRow({ workspaceId, sector, trees }: SectorRowProps) {
   const hidden = sector.treeIds.length - visible.length;
 
   return (
-    <li className="flex flex-col gap-2 rounded-lg border bg-card p-3">
+    <li
+      ref={rowRef}
+      tabIndex={focused ? -1 : undefined}
+      aria-current={focused ? "location" : undefined}
+      className={cn(
+        "flex flex-col gap-2 rounded-lg border bg-card p-3 outline-none",
+        focused && "ring-2 ring-ring",
+      )}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <span className="flex-1 font-medium text-sm">{sector.name}</span>
         <Badge variant="outline">

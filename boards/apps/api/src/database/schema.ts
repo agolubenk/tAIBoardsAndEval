@@ -155,6 +155,20 @@ export const verificationTable = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+// Instance-wide settings an administrator changes at runtime, one JSON value
+// per key. Secrets inside a value are sealed (notebook-model/secret-box.ts).
+export const instanceSettingTable = pgTable("instance_setting", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedBy: text("updated_by").references(() => userTable.id, {
+    onDelete: "set null",
+  }),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .default(utcNow)
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
 export const workspaceTable = pgTable("workspace", {
   id: text("id")
     .$defaultFn(() => createId())
@@ -554,6 +568,9 @@ export const taskTable = pgTable(
     revision: integer("revision").notNull().default(1),
     startDate: timestamp("start_date", { mode: "date" }),
     dueDate: timestamp("due_date", { mode: "date" }),
+    // t-boards (d-tb-card-fill): when the card entered a final column; empty
+    // outside one. The task_completed_at trigger keeps it on every write path.
+    completedAt: timestamp("completed_at", { mode: "date" }),
     createdAt: timestamp("created_at", { mode: "date" })
       .default(utcNow)
       .notNull(),

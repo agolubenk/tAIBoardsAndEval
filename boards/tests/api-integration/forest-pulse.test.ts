@@ -1,51 +1,15 @@
-import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
-import { createApp } from "../../apps/api/src/index";
-import { mockAuthenticatedSession } from "./helpers/auth";
 import { resetTestDatabase } from "./helpers/database";
 import {
   createProjectFixture,
   createWorkspaceMember,
 } from "./helpers/fixtures";
 import { createForest } from "./helpers/forest";
+import { addRestrictedMember, asMember } from "./helpers/forest-members";
 
 // Synthetic cards and journal entries only.
-async function addRestrictedMember(workspaceId: string) {
-  const [user] = await db
-    .insert(schema.userTable)
-    .values({
-      id: `user-${randomUUID()}`,
-      email: `${randomUUID()}@example.com`,
-      emailVerified: true,
-      name: "Restricted",
-    })
-    .returning();
-  if (!user) throw new Error("user not created");
-  await db.insert(schema.workspaceUserTable).values({
-    workspaceId,
-    userId: user.id,
-    role: "member",
-    joinedAt: new Date(),
-  });
-  await db.insert(schema.workspaceMemberAccessTable).values({
-    workspaceId,
-    userId: user.id,
-    projectAccess: "selected",
-  });
-  return user;
-}
-
-function asMember(user: typeof schema.userTable.$inferSelect) {
-  return async (path: string) => {
-    mockAuthenticatedSession(user);
-    const { app } = createApp();
-    const response = await app.request(`/api${path}`);
-    return { status: response.status, body: await response.json() };
-  };
-}
-
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000);
 
 async function card(

@@ -3,6 +3,7 @@ const BUILT_IN_ROLE_LABEL_KEYS = new Map([
   ["admin", "team:roles.admin"],
   ["member", "team:roles.member"],
   ["viewer", "team:roles.viewer"],
+  ["agent", "team:roles.agent"],
 ]);
 
 export function getWorkspaceRoleLabel(

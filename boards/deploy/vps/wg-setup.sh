@@ -7,7 +7,8 @@
 # t-boards is reachable only through the tunnel in both modes; the product's
 # public sites stay as they are and need no VPN.
 # Idempotent: the first run creates wg0, later runs add a peer and upgrade the
-# firewall rules of an older wg0.
+# firewall rules of an older wg0. A new peer gets a preshared key, printed once
+# with its config block; a peer that is already there keeps what it has.
 # Usage: wg-setup.sh [PEER_PUBLIC_KEY [LABEL [split|full]]]   (asks for the key when omitted)
 set -euo pipefail
 
@@ -18,6 +19,7 @@ TLS_PORT=8443
 CONF=/etc/wireguard/$WG_IF.conf
 RULES=/etc/wireguard/t-boards-rules.sh
 SYSCTL=/etc/sysctl.d/99-t-boards-wg.conf
+TB_ENV=/opt/t-boards/.env
 FULL_DNS="1.1.1.1, 9.9.9.9"
 
 log() { printf '[%s] %s\n' "$(date '+%H:%M:%S')" "$*"; }
@@ -52,6 +54,21 @@ ext_if="$(awk '{for (i = 1; i < NF; i++) if ($i == "dev") print $(i + 1)}' <<<"$
 if [ -z "$public_ip" ] || [ -z "$ext_if" ]; then die "не нашёл публичный IP и внешний интерфейс"; fi
 log "внешний интерфейс $ext_if, адрес $public_ip"
 
+# The app reads the Mac's claude-mem proxy through the tunnel; install.sh keeps
+# its address in .env. Only that proxy may answer a container: every container
+# on the VPS leaves the tunnel as 10.77.0.1, so a wider rule would hand all of
+# them the Mac's other services.
+mem_host="" mem_port=""
+if [ -r "$TB_ENV" ]; then
+  mem_host="$(sed -n 's/^CLAUDE_MEM_WORKER_HOST=//p' "$TB_ENV" | tail -1)"
+  mem_port="$(sed -n 's/^CLAUDE_MEM_WORKER_PORT=//p' "$TB_ENV" | tail -1)"
+fi
+: "${mem_host:=$WG_NET.2}" "${mem_port:=37702}"
+if ! [[ "${mem_host#"$WG_NET".}" =~ ^[0-9]{1,3}$ && "$mem_port" =~ ^[0-9]{1,5}$ ]]; then
+  log "память $mem_host:$mem_port — не адрес туннеля, беру $WG_NET.2:37702"
+  mem_host=$WG_NET.2 mem_port=37702
+fi
+
 # Firewall rules live in one script that wg-quick runs on up and down, so an
 # upgrade rewrites them in one place.
 # - 443 to the tunnel address goes to the t-boards TLS terminator. Only that
@@ -60,6 +77,7 @@ log "внешний интерфейс $ext_if, адрес $public_ip"
 # - Full-tunnel devices leave through the external interface (NAT). The tunnel
 #   may forward only there and to the product's published ports (Docker DNAT,
 #   the same reach the internet has): its internal networks stay out of reach.
+#   The one way back in is the claude-mem proxy's replies to a container.
 #   The forwarding rules sit in their own chain, rebuilt in order on every up.
 # - Nothing from outside may address the tunnel network directly.
 write_rules() {
@@ -91,6 +109,7 @@ if [ "\$action" = up ]; then
   iptables -N "\$CHAIN" 2>/dev/null || iptables -F "\$CHAIN"
   iptables -A "\$CHAIN" -i "\$wg_if" -o "\$ext_if" -j ACCEPT
   iptables -A "\$CHAIN" -i "\$ext_if" -o "\$wg_if" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -A "\$CHAIN" -i "\$wg_if" -s $mem_host -p tcp --sport $mem_port -m conntrack --ctstate ESTABLISHED -j RETURN
   iptables -A "\$CHAIN" -i "\$wg_if" -m conntrack --ctstate DNAT -j RETURN
   iptables -A "\$CHAIN" -i "\$wg_if" -j DROP
 fi
@@ -114,6 +133,27 @@ EOF
 
 umask 077
 mkdir -p /etc/wireguard
+# wg-issue.sh and wg-psk.sh take the same lock: one edit of wg0.conf at a time.
+exec 9>"$CONF.lock"
+flock -w 60 9 || die "$CONF занят другим скриптом дольше минуты"
+# Backups hold the server PrivateKey: only the newest three stay.
+backup() {
+  local old=("$CONF".bak-[0-9]*) last dst base n=0
+  last="${old[${#old[@]}-1]}"
+  # A re-run that changes nothing must not push the last real state out.
+  [ -e "$last" ] && cmp -s "$CONF" "$last" && return 0
+  dst="$CONF.bak-$(date +%Y%m%d-%H%M%S)"
+  # The copy has to sort after every kept one, or the pruning below drops it first: an edit
+  # within the same second, or after the clock went back, takes the newest name plus -01, -02.
+  if [ -e "$last" ] && [[ ! "$dst" > "$last" ]]; then
+    base="${last%-[0-9][0-9]}"
+    [ "$base" = "$last" ] || n="${last##*-}"
+    printf -v dst '%s-%02d' "$base" $((10#$n + 1))
+  fi
+  cp -a "$CONF" "$dst"
+  old=("$CONF".bak-[0-9]*)
+  [ "${#old[@]}" -le 3 ] || rm -f -- "${old[@]:0:${#old[@]}-3}"
+}
 write_rules
 printf 'net.ipv4.ip_forward = 1\n' >"$SYSCTL"
 
@@ -133,7 +173,7 @@ PostDown = $RULES down %i
 EOF
   unset private
 else
-  cp -a "$CONF" "$CONF.bak-$(date +%Y%m%d-%H%M%S)"
+  backup
   if ! grep -q "^PostUp = $RULES up %i\$" "$CONF"; then
     # wg0 from the first kit: its 443 redirect matched any destination.
     log "обновляю правила $CONF"
@@ -144,15 +184,25 @@ else
   fi
 fi
 
+psk=""
 if grep -q "^PublicKey = $peer_pub\$" "$CONF"; then
   peer_ip="$(awk -v k="$peer_pub" '$1 == "PublicKey" && $3 == k {found = 1} found && $1 == "AllowedIPs" {split($3, a, "/"); print a[1]; exit}' "$CONF")"
   log "устройство уже есть: $peer_ip"
+  # A key added here would cut off a device that does not have it yet; wg-psk.sh changes it.
+  if awk -v k="$peer_pub" '/^\[/ {found = 0} $1 == "PublicKey" {found = ($3 == k)} found && $1 == "PresharedKey" {exit 1}' "$CONF"; then
+    log "PresharedKey у устройства нет. Добавить: ssh -t root@<VPS> 'bash /opt/t-boards/wg-psk.sh $peer_ip' (ввод ключа скрыт)"
+    log "и та же строка PresharedKey = <ключ> в туннеле на устройстве (README, wg-psk.sh)"
+  else
+    log "PresharedKey у устройства уже есть: строку PresharedKey на устройстве не трогайте"
+  fi
 else
   last="$({ grep -E "^AllowedIPs = $WG_NET\.[0-9]+/32" "$CONF" || true; } | sed -E 's|.*\.([0-9]+)/32|\1|' | sort -n | tail -1)"
   next=$((${last:-1} + 1))
   [ "$next" -le 254 ] || die "в $WG_NET.0/24 кончились адреса"
   peer_ip="$WG_NET.$next"
-  printf '\n[Peer]\n# %s (%s)\nPublicKey = %s\nAllowedIPs = %s/32\n' "$label" "$mode" "$peer_pub" "$peer_ip" >>"$CONF"
+  psk="$(wg genpsk)"
+  printf '\n[Peer]\n# %s (%s)\nPublicKey = %s\nPresharedKey = %s\nAllowedIPs = %s/32\n' \
+    "$label" "$mode" "$peer_pub" "$psk" "$peer_ip" >>"$CONF"
   log "добавлено устройство $label ($mode): $peer_ip"
 fi
 
@@ -177,6 +227,10 @@ iptables -t nat -C PREROUTING -i "$WG_IF" -d "$WG_NET.1" -p tcp --dport 443 -j R
   die "нет правила 443 → $TLS_PORT на $WG_IF"
 iptables -t nat -C POSTROUTING -s "$WG_NET.0/24" -o "$ext_if" -j MASQUERADE || die "нет NAT для туннеля"
 [ "$(sysctl -n net.ipv4.ip_forward)" = 1 ] || die "ip_forward выключен"
+if [ -n "$psk" ]; then
+  wg show "$WG_IF" preshared-keys | awk -v k="$peer_pub" '$1 == k && $2 != "(none)" { found = 1 } END { exit !found }' ||
+    die "у нового пира в $WG_IF нет PresharedKey"
+fi
 
 if [ "$mode" = full ]; then
   allowed="0.0.0.0/0, ::/0"
@@ -186,18 +240,24 @@ else
   dns=""
 fi
 vps_pub="$(wg show "$WG_IF" public-key)"
+psk_line=""
+[ -z "$psk" ] || psk_line="PresharedKey = $psk"$'\n'
 log "wg0 поднят. Вставьте в туннель на устройстве сразу под строкой PrivateKey (её не трогайте):"
+[ -z "$psk" ] || log "В блоке секрет (PresharedKey): только в WireGuard на устройстве, не в очередь, чат и заметки"
+# MTU 1380, as on the Mac since OPS-012: room for paths narrower than 1500.
 cat <<EOF
 
 Address = $peer_ip/32
+MTU = 1380
 $dns
 
 [Peer]
 PublicKey = $vps_pub
-Endpoint = $public_ip:$WG_PORT
+${psk_line}Endpoint = $public_ip:$WG_PORT
 AllowedIPs = $allowed
 PersistentKeepalive = 25
 
 EOF
+unset psk psk_line
 log "Проверка с устройства: ping $WG_NET.1; в режиме full ещё — внешний IP должен стать $public_ip"
 log "Откат: systemctl disable --now wg-quick@$WG_IF && mv $CONF $CONF.off && rm -f $SYSCTL"

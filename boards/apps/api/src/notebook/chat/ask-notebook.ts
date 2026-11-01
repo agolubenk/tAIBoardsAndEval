@@ -9,10 +9,9 @@ import {
 } from "../../database/notebook-schema";
 import { chatCompletion, LlmError } from "../llm/chat-completion";
 import {
-  type LlmConfig,
-  notebookLlmConfig,
-  readLlmKey,
-} from "../llm/llm-config";
+  effectiveNotebookModel,
+  type NotebookModel,
+} from "../../notebook-model/effective-notebook-model";
 import { type NotebookHit, searchNotebook } from "../search/search-notebook";
 import { buildPrompt, HISTORY_MESSAGES } from "./build-prompt";
 import { releaseCall, reserveCall } from "./call-budget";
@@ -66,15 +65,21 @@ type Outcome = {
 };
 
 async function writeAnswer(
-  config: LlmConfig | null,
+  settings: NotebookModel,
   question: string,
   hits: NotebookHit[],
   history: { role: "user" | "assistant"; content: string }[],
 ): Promise<Outcome> {
-  const key = config ? readLlmKey(config) : null;
-  if (!config || !key || !hits.length) {
+  const { key, model } = settings;
+  if (!model || !key || !hits.length) {
     return { status: "retrieval-only", content: "", model: null };
   }
+  const config = {
+    baseUrl: settings.baseUrl,
+    model,
+    dailyMax: settings.dailyMax,
+    ...(settings.thinking ? { thinking: settings.thinking } : {}),
+  };
   const messages = buildPrompt(question, hits, history);
   // Holds a place under the daily cap; askNotebook releases it once the
   // answer is stored. Nothing below throws, so every place is released.
@@ -140,11 +145,13 @@ export async function askNotebook(input: {
     })
     .returning();
 
+  const settings = await effectiveNotebookModel();
   const { results: hits } = await searchNotebook({
     workspaceId: input.workspaceId,
     query: input.question,
     limit: ANSWER_SOURCES,
     mode: "hybrid",
+    embedModel: settings.embedModel,
   });
   const citations: NotebookCitation[] = hits.map((hit, i) => ({
     n: i + 1,
@@ -154,12 +161,7 @@ export async function askNotebook(input: {
     title: hit.source.title,
     heading: hit.heading,
   }));
-  const outcome = await writeAnswer(
-    notebookLlmConfig(),
-    input.question,
-    hits,
-    history,
-  );
+  const outcome = await writeAnswer(settings, input.question, hits, history);
   // Only a model call carries a model, and only a model call holds a place.
   const [answer] = await db
     .insert(notebookMessageTable)

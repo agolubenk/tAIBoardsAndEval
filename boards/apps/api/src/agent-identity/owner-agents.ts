@@ -2,6 +2,7 @@ import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import db, { schema } from "../database";
 import { clearMemberProjectAccess } from "../project-access/clear-member-project-access";
 import { revokeUserConnections, revokeWorkspaceConnections } from "../ws";
+import { retryTransient } from "./retry-transient";
 import { syncAgent } from "./sync-agent";
 
 function ownerAgentIds(ownerId: string, enabledOnly = false) {
@@ -19,10 +20,17 @@ function ownerAgentIds(ownerId: string, enabledOnly = false) {
 
 // The owner's role or project access changed: their agents follow now rather
 // than at their next key. One short transaction per agent, in turn: an owner
-// has few agents and role changes are rare.
+// has few agents and role changes are rare. One agent failing never leaves
+// the others behind.
 export async function refreshOwnerAgents(ownerId: string) {
+  const failures: unknown[] = [];
   for (const agentId of await ownerAgentIds(ownerId, true)) {
-    await syncAgent(ownerId, agentId);
+    await retryTransient(() => syncAgent(ownerId, agentId)).catch((error) =>
+      failures.push(error),
+    );
+  }
+  if (failures.length) {
+    throw new AggregateError(failures, "agents did not follow their owner");
   }
 }
 
@@ -30,7 +38,17 @@ export async function refreshOwnerAgents(ownerId: string) {
 // profile locks, taken in one order, make a mirror running right now either
 // see the owner gone or be undone here.
 export async function removeOwnerAgents(workspaceId: string, ownerId: string) {
-  const removed = await db.transaction(async (tx) => {
+  const removed = await retryTransient(() =>
+    removeFromWorkspace(workspaceId, ownerId),
+  );
+  for (const agentId of removed) {
+    await revokeWorkspaceConnections(agentId, workspaceId, { role: "agent" });
+  }
+  return removed;
+}
+
+function removeFromWorkspace(workspaceId: string, ownerId: string) {
+  return db.transaction(async (tx) => {
     const agents = await tx
       .select({ userId: schema.agentProfileTable.userId })
       .from(schema.agentProfileTable)
@@ -53,10 +71,6 @@ export async function removeOwnerAgents(workspaceId: string, ownerId: string) {
     }
     return rows.map((r) => r.userId);
   });
-  for (const agentId of removed) {
-    await revokeWorkspaceConnections(agentId, workspaceId, { role: "agent" });
-  }
-  return removed;
 }
 
 // The owner's account goes: so do the agents that acted for it. Their

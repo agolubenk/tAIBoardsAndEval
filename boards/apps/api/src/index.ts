@@ -85,6 +85,7 @@ import agentIdentity from "./agent-identity";
 import forest from "./forest";
 import notebook from "./notebook";
 import ssr from "./ssr";
+import notebookModel from "./notebook-model/routes";
 import {
   agentProjectDeleteGuard,
   agentWorkspaceDeleteGuard,
@@ -95,6 +96,7 @@ import timeEntry from "./time-entry";
 import user from "./user";
 import getAvatar from "./user/controllers/get-avatar";
 import { assertAgentAuthRoute } from "./agent-identity/agent-auth-routes";
+import { realignAgentRoles } from "./agent-identity/realign-agent-roles";
 import { assertApiKeyAuthRoute } from "./utils/api-key-auth-routes";
 import { apiKeyRejection } from "./utils/api-key-rejection";
 import type { ApiKeyWorkspaceScope } from "./utils/api-key-workspace-scope";
@@ -921,6 +923,7 @@ export function createApp() {
   const importApi = api.route("/import", importRoutes);
   const userApi = api.route("/user", user);
   const adminApi = api.route("/admin", admin);
+  const notebookModelApi = api.route("/admin/notebook-model", notebookModel);
 
   app.route(
     "/",
@@ -1051,6 +1054,7 @@ export function createApp() {
     timeEntryApi,
     userApi,
     adminApi,
+    notebookModelApi,
     workflowRuleApi,
     workspaceApi,
     customFieldApi,
@@ -1091,6 +1095,7 @@ export async function runStartupTasks() {
   await migrateGitHubIntegration();
   await migrateColumns();
   await seedDefaultWorkspaceRoles();
+  await realignAgentRoles();
 
   initializePlugins();
   initializeScheduler();
@@ -1189,6 +1194,7 @@ const {
   timeEntryApi,
   userApi,
   adminApi,
+  notebookModelApi,
   workflowRuleApi,
   workspaceApi,
   customFieldApi,
@@ -1242,6 +1248,7 @@ export type AppType =
   | typeof importApi
   | typeof userApi
   | typeof adminApi
+  | typeof notebookModelApi
   | typeof publicProjectApi
   | typeof invitationPublicApi
   | typeof oauthApi;

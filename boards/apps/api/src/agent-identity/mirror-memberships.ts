@@ -1,13 +1,7 @@
 import { and, eq, notInArray } from "drizzle-orm";
 import { schema } from "../database";
 import type { DbOrTx } from "../project-access/db-or-tx";
-import { isOwnerRole } from "../project-access/is-owner-role";
-
-// An agent reaches what its owner reaches, never more and never as owner:
-// deleting a workspace or handing it over stays with people (N-004).
-export function agentWorkspaceRole(ownerRole: string) {
-  return isOwnerRole(ownerRole) ? "admin" : ownerRole;
-}
+import { agentWorkspaceRole } from "./agent-workspace-role";
 
 export type MirrorChanges = { joined: string[]; left: string[] };
 

@@ -8,7 +8,13 @@ import useTrees from "@/hooks/queries/forest/use-trees";
 import { ForestListState } from "./forest-list-state";
 import { SectorRow } from "./sector-row";
 
-export function SectorsTab({ workspaceId }: { workspaceId: string }) {
+type SectorsTabProps = {
+  workspaceId: string;
+  // The sector the command palette jumped to (R-090).
+  sectorId?: string;
+};
+
+export function SectorsTab({ workspaceId, sectorId }: SectorsTabProps) {
   const { t } = useTranslation();
   const sectors = useSectors(workspaceId);
   const { data: trees } = useTrees(workspaceId);
@@ -47,6 +53,7 @@ export function SectorsTab({ workspaceId }: { workspaceId: string }) {
               workspaceId={workspaceId}
               sector={sector}
               trees={treesById}
+              focused={sector.id === sectorId}
             />
           ))}
         </ul>

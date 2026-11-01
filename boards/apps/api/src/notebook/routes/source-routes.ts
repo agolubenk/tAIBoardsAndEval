@@ -8,7 +8,7 @@ import {
 import { boundedRequestBody } from "../../utils/bounded-request-body";
 import { requireWorkspacePermission } from "../../utils/require-workspace-permission";
 import { workspaceAccess } from "../../utils/workspace-access-middleware";
-import { notebookEmbedModel } from "../notebook-config";
+import { notebookEmbedModel } from "../../notebook-model/effective-notebook-model";
 import { listSources, pruneSources } from "../sources/list-sources";
 import { syncCardSources } from "../sources/sync-card-sources";
 import { upsertSource } from "../sources/upsert-source";
@@ -118,7 +118,7 @@ const syncCardsRoute = createRoute({
 export const sourceRoutes = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(listSourcesRoute, async (c) => {
     const { workspaceId } = c.req.valid("param");
-    const model = notebookEmbedModel();
+    const model = await notebookEmbedModel();
     return c.json(
       { model, sources: await listSources(workspaceId, model) },
       200,

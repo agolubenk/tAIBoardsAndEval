@@ -19,8 +19,12 @@ export const PATHSPECS = [
   ":(glob)docs/**/*.md",
   ":(glob)**/CLAUDE.md",
   ":(glob).claude/rules/*.md",
+  ":(glob).claude/skills/**/*.md",
   ":(glob)t-boards/*.md",
   ":(glob)supertick-eval/pipeline/*.md",
+  // the same documents in the product home (tAIBE): boards/docs, eval/
+  ":(glob)boards/docs/*.md",
+  ":(glob)eval/pipeline/*.md",
   ":(exclude,glob)docs/plans/archive/**",
   ":(exclude)docs/plans/BACKLOG.md",
 ];

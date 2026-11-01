@@ -1617,7 +1617,8 @@
 				"save": "Save changes",
 				"saving": "Saving…",
 				"selfRoleHint": "You cannot change your own global role.",
-				"title": "Edit user"
+				"title": "Edit user",
+				"agentRoleHint": "An agent's role follows its owner's and cannot be changed here."
 			},
 			"emptyDescription": "Try another name or email address.",
 			"emptyTitle": "No users found",
@@ -1629,7 +1630,8 @@
 			"retry": "Retry",
 			"roles": {
 				"admin": "管理者",
-				"user": "User"
+				"user": "User",
+				"agent": "AI agent"
 			},
 			"searchCount_other": "{{count}} matching users",
 			"searchLabel": "Search users",
@@ -2357,8 +2359,9 @@
 				"keyMissing": "No key",
 				"loadError": "Could not load the model status.",
 				"none": "No model set",
-				"note": "The key is a file on the server and is never typed in here. The model and the daily limit come from the server's settings.",
-				"title": "Model"
+				"note": "One model serves every workspace on this server. An instance admin sets the model, key and daily limit.",
+				"title": "Model",
+				"configure": "Configure"
 			},
 			"pageTitle": "Agents and MCP",
 			"row": {
@@ -2381,6 +2384,66 @@
 				"loadError": "Could not load the tool sets.",
 				"note": "A client names its role in the {{header}} header. A session may add up to {{extra}} more tools nearest to its request. A role trims the list; the server still checks every call.",
 				"title": "MCP tool sets"
+			}
+		},
+		"adminNotebookModel": {
+			"fields": {
+				"baseUrl": {
+					"hint": "An https address of an OpenAI-compatible API, OpenRouter by default. A saved key is tied to its host: a new host needs the key again.",
+					"label": "API address"
+				},
+				"dailyMax": {
+					"hint": "Requests to the model per day across all workspaces. Answers made of sources only do not count.",
+					"label": "Daily limit"
+				},
+				"description": "Leave a field empty to use the server's default.",
+				"embedModel": {
+					"hint": "Changing it re-embeds every notebook in the background on the computer that runs the notebook agent, which needs this model. Until that finishes, search leans on words.",
+					"label": "Embedding model"
+				},
+				"model": {
+					"hint": "For example openai/gpt-4o-mini. Without a model, answers come as sources only.",
+					"label": "Answer model"
+				},
+				"save": "Save",
+				"title": "Model"
+			},
+			"key": {
+				"current": "Current key",
+				"description": "The key is stored encrypted and is never shown again.",
+				"newLabel": "New key",
+				"noEncryptionKey": "The server has no settings encryption key, so a key cannot be saved here. The server's operator creates secrets/settings_key with 32 or more random characters (for example from openssl rand -base64 32) and restarts the app.",
+				"note": "A key saved here takes priority over the server's key file.",
+				"remove": "Remove key",
+				"save": "Save key",
+				"status": {
+					"file": "From the server's file",
+					"missing": "No key",
+					"settings": "Saved here",
+					"unreadable": "Cannot be opened, enter it again"
+				},
+				"title": "Key",
+				"fileWithheld": "The server's key file is meant for the server's own API address and is not sent to the address set above. Save a key for this address here."
+			},
+			"loadError": "Could not load the model settings.",
+			"retry": "Try again",
+			"subtitle": "One model, key and daily limit for every workspace on this instance.",
+			"title": "Notebook model",
+			"toast": {
+				"saved": "Model settings saved",
+				"saveError": "Could not save the model settings",
+				"keyForOldAddress": "The saved key is tied to the previous API address. Remove the key, change the address, then save the key again.",
+				"noEncryptionKey": "The key was not saved: the server has no settings encryption key."
+			},
+			"usage": {
+				"calls_other": "{{count}} requests",
+				"empty": "No requests to the model yet today.",
+				"title": "Today",
+				"total": "{{count}} of {{max}} model requests today"
+			},
+			"validation": {
+				"baseUrl": "Enter a full https address, for example https://openrouter.ai/api/v1.",
+				"dailyMax": "Enter a whole number from 0 to {{max}}."
 			}
 		}
 	},
@@ -2982,7 +3045,8 @@
 			"noDate": "日付なし",
 			"dates": "日付",
 			"project": "プロジェクト",
-			"due": "Due"
+			"due": "Due",
+			"completed": "Completed"
 		},
 		"move": {
 			"title": "タスクを移動",
@@ -3621,7 +3685,8 @@
 				"logs": "Felled trees become logs; each log keeps seeds — the short essence of the work. Pick seeds from any logs to grow a new forest.",
 				"sectors": "A sector groups trees that are linked to each other. Find sectors after linking tasks, then fell a whole sector at once.",
 				"trees": "A tree is a task with its subtasks (branches); a project is a forest. Open a tree to see its branches, fell it when the work is finished.",
-				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs."
+				"mirror": "The board reads Notion on a schedule and compares the two. A clean run means every page has its card in the same status; the move off Notion waits for an unbroken streak of clean runs.",
+				"graph": "Cards, the files they touched and the decisions they cite (D-records, ADRs), joined by their links; sectors are shaded rings."
 			},
 			"pulse": {
 				"fires": "What is on fire",
@@ -3695,7 +3760,8 @@
 				"logs": "Logs and seeds",
 				"sectors": "Sectors",
 				"trees": "Trees",
-				"mirror": "Notion mirror"
+				"mirror": "Notion mirror",
+				"graph": "Graph"
 			},
 			"trees": {
 				"allProjects": "All projects",
@@ -3754,6 +3820,36 @@
 				"trigger": {
 					"manual": "Manual",
 					"schedule": "Scheduled"
+				}
+			},
+			"graph": {
+				"canvasLabel": "Links graph",
+				"clustered": "Over {{max}} nodes, so groups are collapsed: select a group to open it.",
+				"collapseAll": "Collapse groups",
+				"counts": "Cards: {{cards}} · files: {{files}} · decisions: {{decisions}}",
+				"decisions": "Decisions",
+				"empty": "Nothing to draw yet: there are no cards you can open.",
+				"expand": "Open group ({{size}})",
+				"files": "Files",
+				"hint": "Select a node to see what it links to.",
+				"loadMore": "Load more",
+				"node": {
+					"card": "Card {{label}}",
+					"cluster": "Group {{label}}: {{size}} nodes",
+					"decision": "Decision {{label}}",
+					"file": "File {{label}}"
+				},
+				"noLinks": "No links.",
+				"relation": {
+					"blockedBy": "Blocked by",
+					"blocks": "Blocks",
+					"card": "Card",
+					"cluster": "Group",
+					"decision": "Decision",
+					"file": "File",
+					"parent": "Parent",
+					"related": "Related",
+					"subtask": "Subtask"
 				}
 			}
 		},
@@ -3844,7 +3940,8 @@
 			"owner": "オーナー",
 			"admin": "管理者",
 			"member": "メンバー",
-			"viewer": "閲覧者"
+			"viewer": "閲覧者",
+			"agent": "AI agent"
 		},
 		"members": {
 			"pageTitle": "メンバー",

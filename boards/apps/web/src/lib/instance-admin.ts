@@ -9,6 +9,11 @@ function roleTokens(role: unknown) {
   return tokens.length > 0 ? tokens : [DEFAULT_ROLE];
 }
 
+// R-010: a session's agent carries this instance role for its whole life.
+export function hasAgentRole(role: unknown) {
+  return typeof role === "string" && role.split(",").includes("agent");
+}
+
 export function hasInstanceAdminRole(role: unknown) {
   return (
     typeof role === "string" && role.split(",").includes(INSTANCE_ADMIN_ROLE)

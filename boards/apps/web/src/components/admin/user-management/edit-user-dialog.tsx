@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import useUpdateAdminUser from "@/hooks/mutations/admin/use-update-admin-user";
 import type { AdminUser } from "@/hooks/queries/admin/use-admin-users";
+import { hasAgentRole } from "@/lib/instance-admin";
 import {
   buildUserUpdate,
   EMPTY_EDIT_USER_VALUES,
@@ -56,10 +57,14 @@ export function EditUserDialog({
   }
 
   const isSelf = editedUser !== null && editedUser.id === currentUserId;
+  // R-010: an agent's role follows its owner; the server refuses to change it.
+  const isAgent = editedUser !== null && hasAgentRole(editedUser.role);
   const roleLabel = t(
-    values.role === "admin"
-      ? "settings:adminUsers.roles.admin"
-      : "settings:adminUsers.roles.user",
+    isAgent
+      ? "settings:adminUsers.roles.agent"
+      : values.role === "admin"
+        ? "settings:adminUsers.roles.admin"
+        : "settings:adminUsers.roles.user",
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -140,7 +145,7 @@ export function EditUserDialog({
                     admin: t("settings:adminUsers.roles.admin"),
                   }}
                   value={values.role}
-                  disabled={isSelf}
+                  disabled={isSelf || isAgent}
                   onValueChange={(value) => {
                     if (value === "admin" || value === "user") {
                       setValues((current) => ({ ...current, role: value }));
@@ -162,6 +167,10 @@ export function EditUserDialog({
                 {isSelf ? (
                   <p className="text-xs text-muted-foreground">
                     {t("settings:adminUsers.edit.selfRoleHint")}
+                  </p>
+                ) : isAgent ? (
+                  <p className="text-xs text-muted-foreground">
+                    {t("settings:adminUsers.edit.agentRoleHint")}
                   </p>
                 ) : null}
               </Field>

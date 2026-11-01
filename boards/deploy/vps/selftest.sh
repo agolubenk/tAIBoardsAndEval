@@ -39,7 +39,7 @@ log "bash -n: ok"
 mkdir -p "$root/secrets" "$root/backups"
 chmod 777 "$root/backups"
 cp "$vps/compose.yml" "$vps/backup.sh" "$root/"
-for name in postgres_password auth_secret; do
+for name in postgres_password auth_secret settings_key; do
   od -An -N32 -tx1 /dev/urandom | tr -d ' \n' >"$root/secrets/$name"
 done
 printf 'TB_IMAGE=t-boards:%s\nTB_DOMAIN=%s\nTB_LE_VOLUME=%s\nNOTION_MIRROR_WORKSPACE_ID=\nNOTION_MIRROR_DATABASES=\n' \

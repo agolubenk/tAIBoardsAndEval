@@ -17,6 +17,10 @@ const PATHSPECS = [
   ":(glob)supertick-eval/pipeline/genome/**",
   ":(glob)supertick-eval/prompts/**",
   ":(glob)supertick-eval/nerve/**",
+  // the product home (tAIBE) keeps the eval tree at eval/ (apps/api/src/ssr/corpus.ts reads both)
+  ":(glob)eval/pipeline/genome/**",
+  ":(glob)eval/prompts/**",
+  ":(glob)eval/nerve/**",
   ":(glob)infra/ai-council/config.toml",
   ":(glob)apps/backend/src/modules/ai/prompts/**",
   ":(glob)apps/backend/src/modules/ai/prompt-templates/**",

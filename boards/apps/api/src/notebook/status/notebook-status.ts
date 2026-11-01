@@ -6,11 +6,14 @@ import {
 } from "../../database/notebook-schema";
 import { isWorkerOnline, workerLastSeen } from "../embed/embed-queue";
 import { cloudCallsToday } from "../chat/call-budget";
-import { notebookLlmConfig, readLlmKey } from "../llm/llm-config";
-import { notebookEmbedModel } from "../notebook-config";
+import { effectiveNotebookModel } from "../../notebook-model/effective-notebook-model";
 
 export async function notebookStatus(workspaceId: string) {
-  const model = notebookEmbedModel();
+  const [settings, callsToday] = await Promise.all([
+    effectiveNotebookModel(),
+    cloudCallsToday(),
+  ]);
+  const model = settings.embedModel;
   const [[sources], [chunks]] = await Promise.all([
     db
       .select({ count: sql<number>`count(*)::int` })
@@ -25,7 +28,6 @@ export async function notebookStatus(workspaceId: string) {
       .where(eq(notebookChunkTable.workspaceId, workspaceId)),
   ]);
   const seen = workerLastSeen(workspaceId);
-  const llm = notebookLlmConfig();
   return {
     model,
     workerOnline: isWorkerOnline(workspaceId),
@@ -34,10 +36,10 @@ export async function notebookStatus(workspaceId: string) {
     chunks: chunks?.count ?? 0,
     embedded: chunks?.embedded ?? 0,
     llm: {
-      configured: llm !== null && readLlmKey(llm) !== null,
-      model: llm?.model ?? null,
-      callsToday: await cloudCallsToday(),
-      dailyMax: llm?.dailyMax ?? null,
+      configured: settings.model !== null && settings.key !== null,
+      model: settings.model,
+      callsToday,
+      dailyMax: settings.model ? settings.dailyMax : null,
     },
   };
 }
