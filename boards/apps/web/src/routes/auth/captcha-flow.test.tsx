@@ -128,7 +128,9 @@ describe.each([
         headers: { "x-turnstile-token": "fresh-token" },
       });
       if (label === "auth:providers.sso") {
-        expect(m.social.mock.calls[0]?.[0]).toMatchObject({ provider: "custom" });
+        expect(m.social.mock.calls[0]?.[0]).toMatchObject({
+          provider: "custom",
+        });
       }
       await waitFor(() => expect(button).toBeDisabled());
       expect(
