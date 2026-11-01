@@ -90,8 +90,9 @@ Third-party foundations:
   into the product, it is named here («what was taken → where»), in the docs of the part it went into and in its
   review under [`docs/integrations/`](docs/integrations/README.md). A solution is taken only if it strengthens and
   complements tAIBE — measured before and after — never to replace a part or leave it at the same level. Under
-  review now: oh-my-openagent, cognee, agno, warp, ai-memory, i-have-adhd, codebase-memory-mcp, openproject
-  (nothing taken yet).
+  review: oh-my-openagent, cognee, agno, warp, ai-memory, i-have-adhd, codebase-memory-mcp, openproject. Taken so far:
+  **[OpenProject](https://github.com/opf/openproject)** (GPLv3) — the idea of validating the relation graph on write
+  (no subtask cycles) → `boards/apps/api/src/task-relation/` (idea only, no code).
 - The MCP hub runs [1mcp](https://github.com/1mcp-app/agent); the AI council and the gateway use local
   [Ollama](https://ollama.com) models and hosted providers (GLM Z.AI, OpenRouter) through their public APIs.
 
