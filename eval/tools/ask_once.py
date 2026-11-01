@@ -7,7 +7,8 @@
 Exit code of `check`:
 - 0 — nothing close: ask the owner (in the owner queue), and `record` the answer when it comes;
 - 3 — a candidate answer: READ the hit; if it really answers your question, cite it and do not ask, otherwise ask;
-- 4 — the same question is already open (owner queue, spec `Q-1xx`, roadmap «В:»): do not ask again, wait.
+- 4 — the same question is already open (owner queue, spec `Q-1xx`, roadmap «В:»): do not ask again, wait;
+- 5 — no source could be read at all (wrong root, files missing): that is not «nobody decided», fix and retry.
 
 A hit counts only when its score passes the threshold (0.3) AND it shares a distinctive word with the question
 (one that occurs in ≤ 3 % of documents). On 8 answered and 8 unanswered questions (01.11) that finds 7 of 8 answers
@@ -212,7 +213,13 @@ def main(argv=None):
     if not pipeline_on('askOnce'):
         print('ask_once: off in the product settings (tAI-Boards → «Pipeline & evolution», askOnce) — ask as usual')
         return 0
-    hits = rank(args.question, documents(args.root, args.oq), args.top)
+    docs = documents(args.root, args.oq)
+    if not docs:
+        # E9: no source could be read — that is not «nobody decided this», so the owner is not asked again blindly.
+        print('ask_once: ни один источник не прочитан (%s, %s, %s, %s) — это не «ответа нет»; проверь корень '
+              '(--root) и файлы, потом повтори' % (LEDGER, DONE_DIR, SPEC, ROADMAP))
+        return 5
+    hits = rank(args.question, docs, args.top)
     code = verdict(hits, args.threshold)
     if args.json:
         print(json.dumps({'verdict': {0: 'ask', 3: 'candidate', 4: 'open'}[code],

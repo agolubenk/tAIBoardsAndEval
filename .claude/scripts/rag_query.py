@@ -14,6 +14,7 @@ Usage:
 (или --rewrite). --no-log — не писать запрос в rag_query_log (проверки «только на чтение»).
 """
 import argparse
+import sys
 
 from dams_common import (extract_search_terms, freshness_hint, log_query, open_db,
                          rebuild_hint, search, stale_counts)
@@ -72,6 +73,10 @@ def main():
         if warning:
             print("⚠ %s\n" % warning)
 
+    if getattr(rows, "failed", False):
+        print("⚠ Индекс не ответил: %s — это не «ничего не найдено»; ищи `git grep` или пересобери индекс "
+              "(`python3 .claude/scripts/index_rebuild.py`)" % rows.error)
+        sys.exit(2)
     if not rows:
         print("Ничего не найдено (термины: %s)" % ", ".join(terms))
         return

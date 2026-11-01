@@ -21,7 +21,7 @@
 | E4 | API не стартовал на чистой базе: `migrateBrevnaColumns` до миграций | `apps/api/src/index.ts` | — | ✅ (перенесён после миграций) |
 | E3 | Интеграционные тесты API не входят в CI — E1 никто не видел | `.github/workflows/boards-ci.yml` | — | ✅ (job `api-integration` на PostgreSQL 16) |
 | E8 | Уязвимые продовые зависимости досок: 5 critical (в т.ч. `better-auth` — вход под чужим пользователем через OAuth state, `proxy-addr` — подмена IP), 20 high; ops-console — 1 high (`zod`) | `boards/pnpm-lock.yaml`, `infra/ops-console/package-lock.json`; список — `infra/checks/audit-baseline.json` | А — решение 01.11: сейчас, PR в worktree, сначала critical | 🔧 |
-| E9 | Поиск DAMS выдаёт ошибку SQLite за «ничего не найдено»: `search()` на `sqlite3.Error` возвращает `[]`, и `ask_once`/подсказки сессий не отличают сломанный индекс от отсутствия ответа — владельца переспрашивают | `.claude/scripts/dams_common.py:search` | А — решение 01.11: чинить сразу в worktree | 🔧 |
+| E9 | Поиск DAMS выдаёт ошибку SQLite за «ничего не найдено»: `search()` на `sqlite3.Error` возвращает `[]`, и `ask_once`/подсказки сессий не отличают сломанный индекс от отсутствия ответа — владельца переспрашивают | `.claude/scripts/dams_common.py:search` | А — решение 01.11: чинить сразу в worktree | ✅ (`SearchResult.status`, `test_dams_search.py`) |
 
 ## Пайплайн (R4-PLAN)
 
