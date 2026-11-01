@@ -17,6 +17,8 @@ type Matcher = {
   name: (path: string) => string;
 };
 
+// The eval tree sits at `supertick-eval/` in the incubator host and at `eval/` in
+// the product home; the registry reads whichever checkout the Mac sync points at.
 const CORPUS: Matcher[] = [
   {
     kind: "skill",
@@ -35,18 +37,19 @@ const CORPUS: Matcher[] = [
   },
   {
     kind: "genome",
-    pattern: /^supertick-eval\/pipeline\/genome\/.+/,
-    name: (path) => path.replace("supertick-eval/pipeline/genome/", ""),
+    pattern: /^(?:supertick-eval|eval)\/pipeline\/genome\/.+/,
+    name: (path) =>
+      path.replace(/^(?:supertick-eval|eval)\/pipeline\/genome\//, ""),
   },
   {
     kind: "prompt",
-    pattern: /^supertick-eval\/prompts\/.+/,
-    name: (path) => path.replace("supertick-eval/prompts/", ""),
+    pattern: /^(?:supertick-eval|eval)\/prompts\/.+/,
+    name: (path) => path.replace(/^(?:supertick-eval|eval)\/prompts\//, ""),
   },
   {
     kind: "nerve",
-    pattern: /^supertick-eval\/nerve\/.+/,
-    name: (path) => path.replace("supertick-eval/nerve/", ""),
+    pattern: /^(?:supertick-eval|eval)\/nerve\/.+/,
+    name: (path) => path.replace(/^(?:supertick-eval|eval)\/nerve\//, ""),
   },
   {
     kind: "config",
