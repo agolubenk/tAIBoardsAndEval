@@ -1,0 +1,193 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-30",
+  "comment": "DAMS chunk heads. load_condition: 'always' | 'task_contains:kw1|!kw2' по lowercased промпту: латинский ключ — с начала слова, русский — подстрокой (основа). Чанку нужно min_score (по умолчанию 2) разных ключей или один сильный (!kw). session-latest — только своей сессии. Хук: .claude/hooks/user-prompt-submit.py. token_estimate — грубая оценка (~3 символа/токен), используется бюджетом инжекции.",
+  "token_budget": {
+    "l2_per_prompt_max": 4000,
+    "l2_chunks_per_prompt_max": 3,
+    "l3_rag_hits_max": 5
+  },
+  "chunks": [
+    {
+      "id": "session-latest",
+      "title": "Latest session memory",
+      "path": ".claude/memory/session/latest.md",
+      "tags": ["session", "context", "recent"],
+      "status": "active",
+      "version": 0,
+      "token_estimate": 300,
+      "load_condition": "always",
+      "last_updated": "auto",
+      "provenance": "post-session.py (Stop hook)"
+    },
+    {
+      "id": "arch-connect-rpc",
+      "title": "Connect RPC architecture & migration pattern",
+      "path": ".claude/memory/chunks/arch/arch-connect-rpc.md",
+      "tags": ["connect", "rpc", "grpc", "transport", "proto"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 600,
+      "load_condition": "task_contains:connect|rpc|proto|!grpc|transport|endpoint|транспорт|эндпоинт",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#транспортный-слой (до 2026-07-12)"
+    },
+    {
+      "id": "arch-agents",
+      "title": "Agent system: architecture, registration, MCP, HITL",
+      "path": ".claude/memory/chunks/arch/arch-agents.md",
+      "tags": ["agents", "bullmq", "mcp", "hitl", "automation"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 550,
+      "load_condition": "task_contains:agent|mcp|!hitl|!bullmq|automation|trigger|агент|автоматизац|триггер",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#агенты-и-mcp + .claude/rules/13-agents-mcp.md"
+    },
+    {
+      "id": "arch-security",
+      "title": "Security: JWT, SSE tickets, webhooks HMAC, MCP keys",
+      "path": ".claude/memory/chunks/arch/arch-security.md",
+      "tags": ["security", "jwt", "sse", "webhook", "auth", "hmac"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 700,
+      "load_condition": "task_contains:auth|!jwt|sse|token|!webhook|!hmac|secret|security|!oauth|cookie|безопасн|токен|!аутентиф|авториз|!вебхук|секрет|!уязвим",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#безопасность + .claude/rules/05-security.md"
+    },
+    {
+      "id": "arch-db",
+      "title": "DB: Prisma read/write split, cache, queues, topology",
+      "path": ".claude/memory/chunks/arch/arch-db.md",
+      "tags": ["database", "prisma", "postgres", "redis", "bullmq", "clickhouse"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 800,
+      "load_condition": "task_contains:!prisma|database|migration|schema|!findmany|transaction|redis|cache|queue|!clickhouse|!pgbouncer|!призм|баз данных|миграц|схем|транзакц|кэш|кеш|очеред|индекс|реплик",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#база-данных + rules 08/09/10"
+    },
+    {
+      "id": "arch-realtime",
+      "title": "Realtime: Socket.io redis-adapter, SSE tickets, outbox",
+      "path": ".claude/memory/chunks/arch/arch-realtime.md",
+      "tags": ["realtime", "socketio", "sse", "outbox", "websocket"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 350,
+      "load_condition": "task_contains:sse|socket|!websocket|!realtime|stream|!outbox|heartbeat|стрим|сокет|!реалтайм",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#реальное-время + .claude/rules/14-realtime.md"
+    },
+    {
+      "id": "arch-ops-ci",
+      "title": "CI/CD: vite OOM, docker versions, infra, Excel I/O",
+      "path": ".claude/memory/chunks/arch/arch-ops-ci.md",
+      "tags": ["ci", "docker", "build", "infra", "excel"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 550,
+      "load_condition": "task_contains:!docker|deploy|build|compose|!nginx|heap|!oom|!dockerfile|excel|!xlsx|билд|деплой|сборк|!докер|инфраструктур",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#ci-cd + #инфраструктура"
+    },
+    {
+      "id": "domain-telegram",
+      "title": "Telegram MTProto: SM ownership, parse_mode, peers",
+      "path": ".claude/memory/chunks/domain/domain-telegram.md",
+      "tags": ["telegram", "mtproto", "session-manager", "gramjs", "parse_mode"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 800,
+      "load_condition": "task_contains:!telegram|!mtproto|!gramjs|!parse_mode|!auth_key|!телеграм|!тг-|!тг |!пир не найден",
+      "last_updated": "2026-07-12",
+      "provenance": "CLAUDE.md#telegram + .claude/rules/16-telegram.md"
+    },
+    {
+      "id": "domain-mobile",
+      "title": "Mobile: KMP + Compose, tokens, OAuth handoff",
+      "path": ".claude/memory/chunks/domain/domain-mobile.md",
+      "tags": ["mobile", "android", "kmp", "compose", "kotlin"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 600,
+      "load_condition": "task_contains:mobile|!android|!kotlin|!kmp|compose|!gradle|ios|!swiftui|!xcode|!liquid glass|!keychain|!мобильн|!андроид",
+      "last_updated": "2026-09-30",
+      "provenance": "CLAUDE.md#мобильная-разработка + .claude/rules/15-mobile.md"
+    },
+    {
+      "id": "domain-recruiting",
+      "title": "Recruiting: candidates, vacancies, ATS integrations map",
+      "path": ".claude/memory/chunks/domain/domain-recruiting.md",
+      "tags": ["recruiting", "candidates", "vacancies", "pipeline", "ats"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 650,
+      "load_condition": "task_contains:!candidate|!vacanc|!recruit|pipeline|ats|hiring|resume|!кандидат|!ваканси|!рекрут|найм|воронк|подбор|резюме",
+      "last_updated": "2026-07-12",
+      "provenance": "docs/architecture/reference/ + docs/specs/"
+    },
+    {
+      "id": "integrations-huntflow",
+      "title": "Huntflow integration rules",
+      "path": ".claude/rules/11-integrations-huntflow.md",
+      "tags": ["huntflow", "integration", "external-api"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 450,
+      "load_condition": "task_contains:!huntflow|!хантфлоу",
+      "last_updated": "2026-07-12",
+      "provenance": ".claude/rules/11-integrations-huntflow.md (без дублирования — path указывает на rule)"
+    },
+    {
+      "id": "integrations-hh",
+      "title": "hh.ru / rabota.by integration rules",
+      "path": ".claude/rules/12-integrations-hh.md",
+      "tags": ["hh", "headhunter", "rabota.by", "integration"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 400,
+      "load_condition": "task_contains:!hh.ru|!headhunter|!rabota.by|!хедхантер|! hh |!hh-sync",
+      "last_updated": "2026-07-12",
+      "provenance": ".claude/rules/12-integrations-hh.md (без дублирования)"
+    },
+    {
+      "id": "ops-worktrees",
+      "title": "Git worktrees for parallel AI sessions",
+      "path": ".claude/rules/07-worktrees.md",
+      "tags": ["worktree", "git", "parallel"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 600,
+      "load_condition": "task_contains:!worktree|!ворктри|параллельн",
+      "last_updated": "2026-07-12",
+      "provenance": ".claude/rules/07-worktrees.md (без дублирования)"
+    },
+    {
+      "id": "notion-board",
+      "title": "Task board: t-boards canon, half-baked hard-stop, status order, dual closure; Notion read-only archive",
+      "path": ".claude/rules/17-notion-board.md",
+      "tags": ["t-boards", "notion", "kanban", "board", "backlog", "half-baked-idea"],
+      "status": "active",
+      "version": 2,
+      "token_estimate": 2300,
+      "load_condition": "task_contains:!t-boards|!тиборд|!notion|!ноушен|канбан|kanban|борд задач|!half-baked|!halfbaked|!полусыр",
+      "last_updated": "2026-10-30",
+      "provenance": ".claude/rules/17-notion-board.md (без дублирования)"
+    },
+    {
+      "id": "process-adversarial-review",
+      "title": "Адверсариальная проверка решений: ≥3 участника, линзы, Африка-тест",
+      "path": ".claude/memory/chunks/process/adversarial-review.md",
+      "tags": ["process", "review", "adversarial", "resources"],
+      "status": "active",
+      "version": 1,
+      "token_estimate": 1150,
+      "load_condition": "task_contains:!адверсар|!adversar|альтернатив|!сравни вариант|!сравнить вариант|!сравнение вариант",
+      "last_updated": "2026-10-08",
+      "provenance": "канон процесса; корневой CLAUDE.md §Адверсариальная проверка + линзы в карточках ролей",
+      "relevance_boost": -0.5
+    }
+  ]
+}

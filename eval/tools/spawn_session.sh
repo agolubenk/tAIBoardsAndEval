@@ -1,10 +1,11 @@
 #!/bin/bash
 # Открыть новую сессию Claude Code в отдельном окне терминала: наследник по handoff или запуск роли Т3.
 #
-#   bash supertick-eval/tools/spawn_session.sh --handoff FILE [--role KEY]     наследник (порог 80%, хук context-threshold)
-#   bash supertick-eval/tools/spawn_session.sh --launch --role KEY             запуск роли по её пусковому файлу
-#   bash supertick-eval/tools/spawn_session.sh --launch --roles all|coord,release,…   несколько ролей, по порядку 1→5→4→3→2→6
+#   bash eval/tools/spawn_session.sh --handoff FILE [--role KEY]     наследник (порог 80%, хук context-threshold)
+#   bash eval/tools/spawn_session.sh --launch --role KEY             запуск роли по её пусковому файлу
+#   bash eval/tools/spawn_session.sh --launch --roles all|coord,release,…   несколько ролей, по порядку 1→5→4→3→2→6
 #
+# (в инстансе HR_Helper-v2 скрипт лежит в supertick-eval/tools/ — работает так же; корень дерева берётся из его места)
 # Опции: --cwd DIR (по умолчанию текущая папка: наследник открывается в том же worktree) · --terminal terminal|iterm|print (print — только напечатать
 # команду для вкладки терминала VS Code) · --prompt-dir DIR (пусковые файлы ролей) · --dry-run (ничего не открывать).
 # Роль Т3 получает свой геном (--settings genome/<ключ>.json) и первое сообщение «Сборка Т3, ключ реестра <ключ>…» —
@@ -42,7 +43,10 @@ CWD="$(cd "$CWD" && pwd)"
 # Геномы и пусковые файлы — из рабочей папки, иначе из основного checkout (в свежем worktree их может не быть).
 MAIN="$(git -C "$CWD" rev-parse --path-format=absolute --git-common-dir 2>/dev/null | sed 's#/\.git$##')" || MAIN=""
 in_tree() { if [ -e "$CWD/$1" ] || [ -z "$MAIN" ]; then echo "$CWD/$1"; else echo "$MAIN/$1"; fi; }
-PROMPT_DIR="${PROMPT_DIR:-$(in_tree supertick-eval/prompts/launch-3010/roles)}"
+# Корень дерева продукта — родитель папки скрипта: supertick-eval/ (инстанс HR) или eval/ (канонический дом).
+TREE_REL="$(basename "$(cd "$TOOLS/.." && pwd)")"
+in_tree_product() { in_tree "$TREE_REL/$1"; }
+PROMPT_DIR="${PROMPT_DIR:-$(in_tree_product prompts/launch-3010/roles)}"
 case "$TERMINAL" in terminal|iterm|print) ;; *) die "--terminal: terminal, iterm или print" ;; esac
 
 role_num() {
@@ -76,7 +80,7 @@ spawn_one() {
   local role="$1" msg genome="" dir launcher cmd stamp
   msg="$(first_message "$role")"
   if [ -n "$role" ]; then
-    genome="$(in_tree "supertick-eval/pipeline/genome/$role.json")"
+    genome="$(in_tree_product "pipeline/genome/$role.json")"
     [ -f "$genome" ] || die "нет генома $genome (build.py собирает его из roles.json)"
   fi
   # Своя папка 700 через mktemp: в общем /tmp предсказуемое имя дало бы чужому процессу подменить скрипт.

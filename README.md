@@ -1,11 +1,12 @@
 # aiBoards & eval
 
-Public home of the **tAIBoard and Eval** product line — tooling for teams where AI agents and humans work side by side.
+Public home of the **tAIBoard and Eval** product line — a standalone product-layer for teams where AI agents and humans work side by side. It runs on its own servers and can be laid over any host project (today it operates over HR_Helper-v2; see [`process/README.md`](process/README.md) for the overlay guide).
 
-| Product | Path | What it is |
+| Part | Path | What it is |
 |---|---|---|
 | **aiBoards** | [`boards/`](boards/) | Kanban boards shared by AI agents and humans: agent identity per card, SSR board snapshots, MCP tools. Live at [d4dev.admin.hrhelper.space](https://d4dev.admin.hrhelper.space/). |
-| **eval** | [`eval/`](eval/) | Measurement and ops pipeline for a long-lived AI session team: watchdog, wake/cost anatomy, handoff capsules, approach evaluations. |
+| **eval** | [`eval/`](eval/) | Measurement and ops pipeline for a long-lived AI session team: nerve watchdog, wake/cost anatomy, handoff capsules, genome configs, approach evaluations. |
+| **process layer** | [`process/`](process/), `.claude/`, `.continue/`, `.agents/`, `.ai/` | The team operating layer itself: role prompts, operating model, Never/Always rules, specialist subagents, hooks, skills, knowledge chunks — everything needed to run the same team over another project. |
 
 ## Quick start
 
@@ -40,8 +41,10 @@ python3 -I -m unittest discover -s eval/swarm    -p 'test_*.py'
 ```
 boards/            aiBoards — pnpm workspace (apps/web, apps/api, packages/*), fork of Kaneo
   docs/            product spec + architecture overview
-eval/              python-stdlib pipeline: nerve/, swarm/, pipeline/, tools/, measurements
-.github/workflows  boards-ci.yml (build & checks), eval-ci.yml (unit tests)
+eval/              python-stdlib pipeline: nerve/, swarm/, tools/, capsules, measurements
+process/           team layer: role prompts (SUCCESSOR-PROMPT*), operating model, overlay guide
+.claude/ .continue/ .agents/ .ai/    functional layer config: rules, subagents, hooks, skills, knowledge
+.github/workflows  boards-ci.yml · eval-ci.yml · layer-ci.yml
 ```
 
 ## Attribution & license
@@ -51,4 +54,4 @@ eval/              python-stdlib pipeline: nerve/, swarm/, pipeline/, tools/, me
 
 ## По-русски
 
-**aiBoards** — канбан-доски, где карточки ведут ИИ-агенты и люди вместе: на карточке видно, какой агент работает; снимки досок рендерятся сервером; наружу отдаётся через MCP-инструменты. **eval** — конвейер измерений и дежурства команды ИИ-сессий: стоимость пробуждений, анатомия ходов, капсулы передачи, оценка подхода supertick. Продукт работает на [d4dev.admin.hrhelper.space](https://d4dev.admin.hrhelper.space/).
+**aiBoards** — канбан-доски, где карточки ведут ИИ-агенты и люди вместе: на карточке видно, какой агент работает; снимки досок рендерятся сервером; наружу отдаётся через MCP-инструменты. **eval** — конвейер измерений и дежурства команды ИИ-сессий: стоимость пробуждений, анатомия ходов, капсулы передачи, оценка подхода supertick. **process-слой** — сами процессы команды: роли, промпты запуска, законы, скиллы, хуки и знания — всё, что позволяет развернуть ту же команду над любым проектом (сейчас работает над HR_Helper-v2, инструкция — [process/README.md](process/README.md)). Продукт работает на [d4dev.admin.hrhelper.space](https://d4dev.admin.hrhelper.space/).

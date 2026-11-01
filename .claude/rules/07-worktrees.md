@@ -1,0 +1,79 @@
+---
+paths:
+  - worktrees/**
+  - Makefile
+---
+
+# Git worktrees + Claude Code
+
+> **Sync:** `Makefile`, `worktrees/README.md`
+
+## Схема путей
+
+```
+worktrees/<track>/<topic>/
+```
+
+**Треки:** `feature` · `fix` · `refactor` · `spike` · `review`
+
+**Ветка** = `<track>/<topic>` (например `refactor/vacancy-save-split`)
+
+**База по умолчанию:** `main`
+
+## Рекомендуемые дорожки для HR Helper v2
+
+| Worktree | Назначение |
+|----------|------------|
+| `refactor/vacancy-save-split` | Декомпозиция `putVacancyFull` |
+| `fix/candidate-merge-n-plus-one` | Batch в `CandidateMergeService` |
+| `spike/ai-module-consolidation` | Исследование единого `AiModule` |
+
+Не смешивать тяжёлый refactor, багфиксы и spike в одном checkout.
+
+## Команды
+
+```bash
+make wt-refactor NAME=vacancy-save-split            # создаёт worktree и ставит свои зависимости
+make wt-fix NAME=candidate-merge-n-plus-one WT_DEPS=0   # без зависимостей: документы, чтение
+make wt-deps TRACK=fix NAME=candidate-merge-n-plus-one  # поставить позже
+make wt-check TRACK=fix NAME=candidate-merge-n-plus-one # свои и свежие?
+make wt-list
+make wt-rm TRACK=fix NAME=candidate-merge-n-plus-one
+```
+
+Или slash-команды Claude: `/init-worktree`, `/init-parallel-worktrees`
+
+## .worktreeinclude
+
+При создании worktree Claude Code копирует локальные файлы из списка (`.env` и т.д.) — не коммитятся, но нужны для dev.
+
+## После создания worktree
+
+1. `cd worktrees/<track>/<topic>`
+2. Зависимости — свои. `make wt-add` ставит их сам; worktree, созданный иначе (`git worktree add`, `/init-worktree`,
+   Claude Code): `infra/scripts/dev/wt-deps.sh install <путь>`. Скрипт делает `npm ci` с заглушкой `DATABASE_URL`:
+   postinstall бэкенда (`prisma generate`) без неё падает, и `npm ci` откатывает **весь** `node_modules`. Код возврата
+   берётся у самого `npm ci`. Потом `build:packages` и `check`: свой `node_modules`, установка не старее
+   `package-lock.json`, `@hr-helper/*` ведут внутрь worktree.
+   Зачем: worktree лежит внутри основного checkout, и без своего `node_modules` Node молча поднимается к
+   `node_modules` основного checkout. Там чужой WIP пакетов и другая версия TypeScript, отсюда ложные ошибки
+   typecheck и сборки (2026-10-08; 30.10 — «EXTENSION_AUTH_CODES is not iterable»). Гейт (`npm run …`, `npx …`) в
+   worktree без своих зависимостей останавливает хук `.claude/hooks/pre-tool-use-wt-deps.sh` с командой починки.
+   Обход для команды, которой зависимости не нужны, — `WT_DEPS_CHECK=0` в её начале; для всей сессии —
+   `WT_DEPS_CHECK=0` в окружении, с которым запущен `claude` (хук и проверка Stop-typecheck молчат).
+3. Проверить `apps/backend/.env`
+4. Одна задача на worktree — один PR
+
+## Чужой незакоммиченный WIP
+
+Принимая WIP закончившейся сессии: сохрани его патчем; заново сформулируй баг от видимого пользователю симптома;
+перечисли все пути кода, которые к нему ведут (включая resize и переходы, а не только загрузку); найди дубли
+затронутой логики (ключи хранилища, константы) и вынеси общее в один протестированный модуль, а не латай каждую
+копию. В PR — что принято и что изменено против унаследованного.
+
+## Удаление
+
+```bash
+git worktree remove worktrees/<track>/<topic>
+git branch -d <track>/<topic>   # после merge
+```
