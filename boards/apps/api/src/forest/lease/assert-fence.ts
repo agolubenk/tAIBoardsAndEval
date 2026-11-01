@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { Tx } from "../tx";
 import { taskLeaseTable } from "../../database/forest-schema";
 import { taskTable } from "../../database/schema";
-import { findFelledLog } from "../find-felled-log";
+import { FELLED_MESSAGE, findFelledLog } from "../find-felled-log";
 import { ForestError } from "../forest-error";
 
 export type Fence = {
@@ -22,9 +22,12 @@ export async function assertFence(tx: Tx, fence: Fence) {
     .for("update");
   if (!task) {
     if (await findFelledLog(fence.taskId, tx)) {
-      throw new ForestError("felled", "the tree was felled; logs do not grow");
+      throw new ForestError("felled", FELLED_MESSAGE);
     }
     throw new ForestError("lease_missing", "task not found");
+  }
+  if (await findFelledLog(fence.taskId, tx)) {
+    throw new ForestError("felled", FELLED_MESSAGE);
   }
 
   const [lease] = await tx

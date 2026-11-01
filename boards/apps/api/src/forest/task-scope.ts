@@ -3,7 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import db from "../database";
 import { projectTable, taskTable } from "../database/schema";
 import { assertProjectAccess } from "../project-access/assert-project-access";
-import { findFelledLog } from "./find-felled-log";
+import { FELLED_MESSAGE, findFelledLog } from "./find-felled-log";
 import { ForestError } from "./forest-error";
 
 type Reader = Pick<typeof db, "select">;
@@ -28,7 +28,7 @@ export async function assertTaskInWorkspace(
     .limit(1);
   if (!task) {
     if (await findFelledLog(taskId, reader, workspaceId)) {
-      throw new ForestError("felled", "the tree was felled; logs do not grow");
+      throw new ForestError("felled", FELLED_MESSAGE);
     }
     throw new HTTPException(404, { message: "Task not found" });
   }

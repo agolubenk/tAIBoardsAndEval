@@ -37,9 +37,10 @@ export function resolveLocale(
   return defaultLocale;
 }
 
-export function getBrowserLocale(): string | null {
-  if (typeof navigator === "undefined") return null;
-  return navigator.language || navigator.languages?.[0] || null;
+// The UI language is the user's saved choice or `defaultLocale`; the browser
+// language is deliberately not consulted (owner, 01.11).
+export function initialLocaleFor(userLocale?: string | null): AppLocale {
+  return resolveLocale(userLocale ?? null, null);
 }
 
 // Components subscribe to the default namespace only, so any other namespace
@@ -124,7 +125,7 @@ export function preloadNamespaces(locale: AppLocale): Promise<void> {
   );
 }
 
-const initialLocale = resolveLocale(null, getBrowserLocale());
+const initialLocale = initialLocaleFor(null);
 
 void i18n
   .use(
