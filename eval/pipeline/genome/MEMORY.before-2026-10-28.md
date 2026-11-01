@@ -1,0 +1,92 @@
+# Memory Index
+
+- [Notion raw API bypass for MCP compression](feedback_notion_raw_api_bypass.md) — infra/ai-council/notion.py's NotionClient.page_text()/comments() reads full content when MCP notion-fetch/get-comments return unreadable <<ccr:...>> markers
+- [AI tooling concurrency policy](feedback_ai_tooling_concurrency_policy.md) — council/serena/MCP settings free; local Ollama strictly sequential; one serena only; CLT PATH shadows python3
+- [Four tracks 2026-09-21 next steps](project_four_tracks_2026-09-21_next_steps.md) — REF Phase 2 code-complete; TG-DEL blocked on user approval only; INT-DOC-2 needs explicit go-ahead before schema migration; INTVW-OFFLINE done except deferred P3
+- [Sequential task execution](feedback_sequential_task_execution.md) — one backlog item at a time, don't batch even within an approved multi-item step
+- [Decide, don't ask on phasing](feedback_decide_dont_ask_phasing.md) — once direction is confirmed, pick the best sequencing/engineering plan myself and execute; only ask for genuine open product decisions, not implementation sequencing
+- [B-21 workflow run log](project_b21_workflow_run_log.md) — 2026-08-27: Part 2 (workflowRunId linkage) на ревью; 2 sub-bug follow-ups filed (stale CONCURRENTLY comment, take:100 UX gap)
+- [Telegram/ATS backlog priority](project_telegram_ats_backlog_priority.md) — 2026-08-27 verified snapshot: B-65 critical next, B-62 needs close-decision, B-4/B-7 in progress, B-5/B-13/B-52 half-baked hard-stop; Задачи ~59 rows not 15
+- [AI Council P5 — обучение](project_ai_council_p5_learning.md) — 2026-08-14: все фазы закрыты; почему edit=0.5/0.5, почему автоподбор ролей выключен, откат надёжности вместо приора
+- [AI Council P3 + GLM-профили](project_ai_council_p3_glm.md) — 2026-08-13: UI :8790, профили hybrid/cloud и их цена в вызовах, ловушка env-флага облака мимо демон-воркера, 3 исправления калибровки воздержаний
+
+- [Currency calculator wiring](project_currency_calculator.md) — [CURR] floating widget: rates (base API currency=1), gross/net из вкладки «Налоги», RadixThemePortal против прозрачности
+- [Docs reorg 2026-07-12](project_docs_reorg_2026-07-12.md) — новая структура docs (guides-подпапки, reference/ вместо монолита, CATALOG генерится скриптом, конвенция архива в .gitignore)
+- [Frontend typecheck gate](project_frontend_typecheck_gate.md) — npx tsc --noEmit из apps/frontend = молчаливый no-op; настоящий гейт tsc -b / npm run build
+- [Onboarding workspace + auth root cause](project_onboarding_workspace.md) — /onboarding/* Phase 1 (16 screens); logout root cause closed; Playwright sweeps via SPA navigation, not page.goto
+
+- [F1 track progress](project_f1_track.md) — [F1] полностью закрыт 2026-07-04; ценность файла — уроки: SM proto keepCase, dev-стек канон, CJS require-циклы, DTO @Allow
+- [Workflow settings rework](project_workflow_settings_rework.md) — 01.07: /settings/workflows→flows, appearance page, command hotkeys, AppSelect for AI dropdowns, ollama chainKeepAlive fix
+- [INTAKE track progress](project_intake_track.md) — INTAKE (21 задача) закрыт 2026-07-01, Extended Agents 20/20 закрыты 2026-07-04; гэп — событийные триггеры вне onboarding (AGT-EVT)
+
+- [L&D module status](project_learning_module.md) — which learning pages are real vs. placeholder; skills-matrix completed May 2026
+- [Workflow processes backend](project_workflow_processes.md) — backend implementation; graphJson ↔ nodes/edges mapping pattern; API routes
+- [Frontend docs progress](project_frontend_docs.md) — документация фронтенда по разделам; формат и что уже задокументировано
+- [People Success redesign progress](project_ps_redesign.md) — sprint status, key files, constraints, next steps (branch: feature/people-success-hub)
+- [HR PR module progress](project_hr_pr.md) — AI content generator, gallery, automations wizard; mock frontend done, backend next
+- [Telegram SM B9 migration](project_telegram_sm_b9.md) — completed 2026-06-20; whitelist 31→6; 16 new gRPC RPCs; remaining 6 ops need MinIO in SM
+- [Computation agents + workflow AI](project_computation_agents.md) — 4 агента (salary_range, currency, data_extraction, math); AI generate endpoint; action_agent canvas нода (2026-06-27)
+- [Workflow AI multi-step chain](project_workflow_ai_chain.md) — deepseek→GLM4→mistral→deepseek chain in FlowsAssistantService; env vars OLLAMA_MODEL_REASONING/AGENT; outputPreferences DTO (2026-07-01)
+- [Extended Agent Catalog done](project_extended_agents_done.md) — 20/20 closed 2026-07-04; invoke() is fire-and-forget, no agents wired to real events, notify via NotificationsService directly, _legacy mail dupe trap
+- [Stabilization 2026-07-04](project_stabilization_2026-07-04.md) — crash-loop гварды (стейл dist, npm ci коррупция, native see-saw), heap 6144, CH system-логи off, перф-baseline, трек Platform Hygiene
+- [Backend legacy map](project_backend_legacy_map.md) — что долг/не долг после прохода 2026-07-05: HttpClientService-рецепт, looseBody-рецепт, DLQ API, ложные пункты
+- [DAMS memory system](project_dams.md) — трёхслойная память 2026-07-12: rag_query.py для поиска, index_rebuild после правок схем/прото/контроллеров, чанки+provenance синхронно
+- [Wiki + hh.ru plan 2026-08-09](project_wiki_hhru_2026-08-09.md) — WIKI-8 (docmost-паритет) и INT-JB-1 (статусы/комментарии/шаблоны) scope-решения владельца, оба P1 последовательно
+- [Module CLAUDE.md boilerplate](project_module_claude_md_boilerplate.md) — 2026-09-10: full audit, 17 files rewritten + 6 new (wiki-collab/landings/mobile-android/mobile-ios/icons/icons-animated), now citable as fact
+- [Cloud budget discipline](project_cloud_budget.md) — 2026-08-13: только подписка Coding Lite; 2026-10-14: 5-часовое окно на glm-5 = ~46 вызовов, узкое место консилиума — квота, не параллельность
+- [Notion comments for recommendations](feedback_notion_comments.md) — 2026-08-27: планы/диагностику по карточке дублировать комментарием в Notion, не только в чате; статус смены — тоже с комментарием
+- [VS Code restore + MCP hub 2026-10-01](project_vscode_restore_2026-10-01.md) — RESTORE-TODO in ~/VSCode-Backups/2026-10-01-pre-reinstall/; shared hub :3050 + serena :9121; GLM key rotation pending
+- [1MCP hub for ALL MCP](feedback_notion_fallback_1mcp_hub.md) — hub :3050 is the primary path for every MCP, not a fallback; start from the main checkout if down; payload file + done-ledger
+- [iOS device build](project_ios_device_build.md) — owner's iPhone, Personal Team 8Q5935866Y, profile expires weekly (first 2026-10-08), devicectl commands in README, default server app.hrhelper.space, plan T-305
+- [Admin control center + AI council](project_admin_control_center.md) — #79/#81/#82/#83/#89 in prod since 08.10; phase-3 rest = owner decisions; council review needs SHA in Notion
+- [AI-council review orchestration](project_review_orchestration.md) — «Ревью» tab, MCP council_review_*, memory-guard, queue control, cloud escalation (commits in file)
+- [Ops console](project_ops_console.md) — prod since 08.10; builtin alert rule versions insert once; incidents group by alert.object; OOM via kernel journal (#235)
+- [CI minutes + self-hosted deploy](project_ci_minutes_selfhosted_deploy.md) — no paid GitHub minutes; deploy on the Contabo self-hosted runner; a deploy = ~3 min of 502 (expected)
+- [Legacy hr_hf_helper repo](reference_hr_hf_helper_legacy.md) — old Django product (github.com/agolubenk/hr_hf_helper) whose /workflow chat scenarios (/s /t /in /add) are to be ported into /workflow only; restored 2026-10-08 from migration copy
+- [Merge to main without deploy](project_main_merge_no_deploy.md) — deploy-contabo fires on any main push outside docs/md/.claude/mobile/extension/landings; use [skip ci] in merge commit; GitHub-hosted CI blocked by billing since 2026-10-08
+- [Never raise prototipes/](feedback_prototipes_silence.md) — owner 2026-10-09: gitignored local dump; don't relay security flags/cleanup about it, acknowledge background notices silently
+- [Agent fan-out cost](feedback_agent_fanout_cost.md) — >2 agents or any workflow only after the owner's direct per-launch «да» with a cost; Ultracode, «закончи всё», relayed «да» ≠ approval (incidents in file)
+- [Headroom LOSSLESS trap](project_headroom_lossless_trap.md) — 0.41: HEADROOM_LOSSLESS=1 = silent passthrough for JSON; use smart_crusher + LOSSLESS_ONLY + --no-ccr; OE PR #168; dev proxy still affected (Notion P3)
+- [Scale effort, synthesize variants](feedback_scale_effort_synthesize_variants.md) — owner 2026-10-15: simple tasks simply; bigger ones → variants by complexity, check each, assemble the best parts (not 1 of N), verify nothing breaks
+- [Close-out rule + owner queue](feedback_closeout_owner_checklist.md) — finish only started work; owner actions → ops-console queue via oq_* (artifact retired); answers in /queue or the bot
+- [PR review via council GLM](feedback_pr_review_via_council_glm.md) — owner 2026-10-14: every PR reviewed on GLM before merge; council_review_start is cards-only, for PR diffs call CloudClient with glm budget, ~6000-token cap, verify findings
+- [Council drift 14.10](project_council_drift_2026-10-14.md) — 80% abstentions = mechanisms (gates, clipped statement, slot queue), not prompts; part 1 PR #155, part 2 plan in file
+- [Council memory starvation 16.10](project_council_memory_starvation.md) — «council stopped» = fast lane drained; deep/hybrid need 16.7–20 GB on a 24 GB Mac; check memory_blocked first
+- [No mobile work, no unchecked Dependabot](feedback_no_mobile_work.md) — mobile frozen (no start/merge, incl. gradle bumps); Dependabot only after a real check; re-read main + deploy queue before merges
+- [AI providers: PII is info-only](feedback_ai_providers_pii_info_only.md) — owner 20.10: region note as information, never block or re-ask PII for CN/US/RU providers; finish T-289
+- [Owner-queue Telegram bot](project_owner_queue_bot.md) — done 19.10: ops-console /queue + bot on VPS + MCP oq_*; artifact frozen; memory leak fixed by #225 (fresh tab hourly)
+- [Measure gzip with node](feedback_measure_gzip_with_node.md) — bundle sizes only via node zlib -9 in bytes (check-bundle-budget.mjs); sandbox, GNU gzip and nginx differ
+- [git -C in worktrees](feedback_git_c_in_worktrees.md) — in a worktree run git only as `git -C <abs path>`; a `cd ..` slip pushed another session's branch from the main checkout (20.10, ff, no harm)
+- [git replay moves refs](feedback_git_replay_moves_refs.md) — Git 2.54 `git replay` updates branches itself (moved 2 branches on 20.10, restored); simulate with merge-tree/commit-tree or `--ref-action=print`
+- [Notion → queue plan 20.10](project_notion_queue_plan.md) — cards → «Ход работ» rows w-n-*; verify «done» against main; owner conditions in card body beat code-in-main; traps in file
+- [Mutants only after commit](feedback_mutants_after_commit.md) — 21.10: mutant before commit + `git checkout --` wiped the fix (#276 shipped test only); `git -C ..` from apps/backend missed the root (#250); always commit → mutate → checkout → `git show --stat HEAD`
+- [Owner runs s-commands on the VPS](feedback_owner_server_commands.md) — owner's terminal is already on the server: no Mac paths, no heredoc pastes («EOFcho»); one line, base64 for scripts, cmd2 with ssh
+- [Notion hub: 0 tools since 22.10](project_notion_hub_login_2110.md) — 1mcp drops Notion silently; `check` lies «готов» — verify by a real call; raw API fallback; never a 2nd hub on one OAuth store
+- [Keep main folder ff'd to main](feedback_main_folder_ff.md) — 22.10 main checkout was 105 commits behind → council verifier "lost" #299 spec; `merge --ff-only origin/main` after merges, restart council/MCP if their code changed
+- [Pause needs detached auto-resume](feedback_pause_autoresume_detached.md) — 22.10 council paused 9 h: session cron died with the sleeping session; always pair a pause with a detached `sleep N; queue_control.py resume`
+- [ML PRs need real-data run](feedback_ml_pr_real_data.md) — #294 passed fakes, owner saw 1 speaker on 50 min; require before/after on a real recording under the prod memory limit
+- [Worktree tests: cd into package](feedback_worktree_tests_cwd.md) — vitest via --prefix/--root from main checkout read main's proto (process.cwd) → false 2/420 red on #311; run `(cd <wt>/apps/<pkg> && npx vitest …)`
+- [No false-alarm alerts](feedback_ops_alerts_no_false_alarms.md) — owner 21.10: ops alerts must not page for busy/self-healing states (#241 diarization during re-diarize); tell busy from dead, fix service health + rule
+- [Hub: Notion 0 tools = 1mcp 10k-node limit](project_hub_1mcp_notion_limit.md) — 0.39.3 fixes it but quarantines legacy OAuth → owner re-logins; rollback only from a clientSessions copy
+- [VPS MinIO volume = only copy of files](project_vps_minio_single_copy.md) — no volume prune / compose down -v on the VPS until #343's offsite copy is verified; backup log is /var/log/hrhelper-backup.log
+- [Owner commands: show errors](feedback_owner_cmd_show_errors.md) — 23.10 wrong path + 2>/dev/null became «backup.log пуст» for the owner; 2>&1 on answering lines, grep the setup script for real paths
+- [oq status echoes the owner's note](feedback_oq_status_echoes_note.md) — oq_agent_status/oq_get on checks return pasted owner output (links, PII) into context; use the python client and print only the version
+- [Bot update procedure](project_oqb_update_procedure.md) — deploy doesn't rebuild owner-queue-bot; s-item copies from /opt/hr-helper with backup + run-server.sh; batch bot PRs
+- [Z.AI reset time is UTC+8](feedback_zai_reset_time_utc8.md) — 429 «reset at 05:05» = 00:05 Minsk; read council_state cloud_quota:zai.until; learning budget is shared with PR reviews
+- [Monitor: no grep/awk filters](feedback_monitor_no_pipe_filters.md) — pipe filters held lines → 0 events; give Monitor the producer, filter inside it; test with a 20 s echo Monitor
+- [Absence check: search the bare marker](feedback_absence_check_bare_marker.md) — prove absence by the bare word anywhere, case-insensitive; a regex variant missed 8 hits on prod legal pages
+- [Time labels only from date](feedback_time_labels_from_date.md) — 23.10 c6 labelled 6 Notion comments 15:35–16:40 at real 15:18–15:30 (43 did the same); run `date` in the same call; Notion comments cannot be edited
+- [Notion MCP entitlements](reference_notion_mcp_entitlements.md) — workspace not on Business: notion-update-comment → entitlement_required; fix a wrong comment with a correction comment, never retry
+- [zsh `$R:a` modifier in git show](feedback_zsh_colon_modifier.md) — `"$R:apps/…"` becomes `…/origin/mainpps/…` in zsh; write `"${R}:path"`
+- [Time only from `date`](feedback_time_from_date.md) — 23.10: Ноушен caught «16:40» in findings filed at 16:11; run `date` in the same batch before writing any HH:MM
+- [Agent file writes: temp dirs only](project_agent_file_writes_temp_only.md) — #314 23.10: random `<id>.<ext>` names don't protect auto-loading dirs (.claude/rules|agents, workflows, LaunchAgents); tools saving untrusted files → temp roots allowlist only
+- [Relay watch: Monitor, not bg wait](feedback_relay_watch_monitor_not_bg.md) — run_in_background completions reached idle sessions hours late; keep a Monitor or a one-shot cron backstop
+- [zsh: no word splitting](feedback_zsh_word_splitting.md) — Bash tool is zsh: unquoted $var and $(…) in for-loops don't split, "$ref:path" triggers :a — false 0/«1 of 1» on 23.10; use while-read, ${=var}, "${S}:path", positive controls
+- [javascript: sinks aren't browser-blocked](feedback_js_protocol_sink_not_browser_blocked.md) — location.assign/href/window.open execute javascript: absent CSP/Trusted Types; do not downgrade such a finding as "browser blocks it" (card aa6a, 23.10)
+- [mem-gate: no pipe before &&](feedback_mem_gate_pipe_exit.md) — `mem-gate.sh heavy | tail -1 && …` uses tail's exit 0: a heavy run went ahead on «нельзя» (23.10 #399); run the gate unpiped or check ${pipestatus[1]}
+- [Relay owner answers, not only inbox](feedback_relay_owner_answers.md) — 23.10: 6 d-answers (21:05–21:11) sat ~36 h unrelayed; watch-d8.sh now runs answers-watch.mjs → relay verbatim to draft authors
+- [Weekly limit stalled the team](project_mac_sleep_stalls_team.md) — 24.10 09:16 all 14 sessions hit the Claude weekly limit (resets 29.10 19:00 Minsk) after ~42 h; weekend lost; not Mac sleep
+- [Team Т3 plan + day 1](project_team_t3_plan.md) — Т2 baseline $68/PR, 515K ctx; Т3 26.10: $40/5 h, 141K ctx, 2 account-limit waves, all closed 15:00; supertick: don't adopt; #402 hub claude-mem
+- [Weekly limit vs team size](feedback_weekly_limit_team_size.md) — 23–24.10: 14 sessions burned the weekly Claude limit in ~42 h, team stood until 29.10 19:00; grep transcripts for «hit your weekly limit» before blaming sleep; core of ~5 sessions
+- [t-boards](project_t_boards.md) — 28.10: commits 63bc00d+3eacffa local (never push); K-4/K-5 done by Claude, K-6/K-7 Kimi via owner; plan impl-remaining.md, handoff supertick-eval/HANDOFF-2026-10-28.md track B
+- [Nerve + swarm 28.10](project_supertick_nerve_swarm.md) — LaunchAgent space.hrhelper.nerve wakes roles via `nerve.py tap`; swarm keys:0 → Haiku; d1–d3 pilot = handoff track A

@@ -55,7 +55,7 @@ compose.override.yml
 .idea
 
 # TanStack Router generated cache
-apps/web/.tanstack/
+boards/apps/web/.tanstack/
 .pi/
 .superpowers/
 
@@ -65,3 +65,10 @@ apps/web/.tanstack/
 
 # t-boards: local secret files (AUTH_SECRET_FILE, POSTGRES_PASSWORD_FILE)
 .secrets/
+
+# eval: python artifacts and daemon runtime state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+eval/nerve/state/
+eval/swarm/state/

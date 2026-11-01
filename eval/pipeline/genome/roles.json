@@ -1,0 +1,77 @@
+{
+  "_doc": "П1/П3/П4: база генома + наложение роли. build.py пишет genome/<роль>.json. Роли — ключи реестра LANES-BASE 30.10. Менять здесь, не в сгенерированных файлах.",
+  "base": {
+    "enabledPlugins": {
+      "typescript-lsp@claude-plugins-official": false,
+      "pyright-lsp@claude-plugins-official": false,
+      "redis-development@claude-plugins-official": false,
+      "clickhouse-best-practices@claude-plugins-official": false,
+      "security-guidance@claude-plugins-official": false,
+      "frontend-design@claude-plugins-official": false,
+      "code-review@claude-plugins-official": false,
+      "chrome-devtools-mcp@claude-plugins-official": false,
+      "claude-security@claude-plugins-official": false,
+      "claude-mem-cowork@thedotmack": false
+    },
+    "skills_off": [
+      "animate", "animate-expo", "animation-vocabulary", "apple-design", "ask-sonner", "db-migration",
+      "emil-design-eng", "find-animation-opportunities", "fix-security-vulnerabilities-with-strix", "hr-domain",
+      "improve-animations", "incident-debug", "mobile-native", "nestjs-service", "penetration-testing-with-strix",
+      "pick-ui-library", "pr-review", "prototype", "react-feature", "release-check", "repo-restructure",
+      "review-animations", "security-check", "write-swift", "graphify"
+    ],
+    "skills_name_only": ["grill-task", "task-observer", "delegated-worktree-task"],
+    "deny": [
+      "Artifact", "ArtifactComments", "ArtifactData", "ArtifactCheck", "DesignSync", "Workflow", "NotebookEdit",
+      "RemoteTrigger", "mcp__hub__cloudflare*", "mcp__claude_ai_Claude_Docs", "mcp__notion"
+    ],
+    "env": {"CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH": "600"},
+    "claudeMdExcludes": [
+      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/CLAUDE.md",
+      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/00-*.md",
+      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/01-*.md",
+      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/90-team-t3.md",
+      "/private/tmp/claude-501/**/scratchpad/**/CLAUDE.md",
+      "/private/tmp/claude-501/**/scratchpad/**/.claude/rules/00-*.md",
+      "/private/tmp/claude-501/**/scratchpad/**/.claude/rules/01-*.md"
+    ],
+    "python": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3"
+  },
+  "roles": {
+    "coord": {
+      "title": "Менеджер / тестировщик",
+      "env": {"CLAUDE_CODE_EFFORT_LEVEL": "medium"},
+      "deny": ["mcp__docker", "mcp__github", "mcp__postgres-readonly", "mcp__hub__sentry*", "mcp__ai-council"],
+      "skills_on": []
+    },
+    "plan": {
+      "title": "Аналитик / архитектор",
+      "deny": ["mcp__docker", "mcp__github", "mcp__postgres-readonly", "mcp__hub__sentry*"],
+      "skills_on": ["hr-domain", "repo-restructure"]
+    },
+    "frontend": {
+      "title": "Фронтенд",
+      "deny": ["mcp__docker", "mcp__github", "mcp__postgres-readonly", "mcp__hub__sentry*", "mcp__ai-council"],
+      "skills_on": [
+        "react-feature", "animate", "review-animations", "emil-design-eng", "apple-design", "mobile-native",
+        "pick-ui-library", "ask-sonner", "improve-animations", "find-animation-opportunities", "animation-vocabulary",
+        "prototype"
+      ]
+    },
+    "backend": {
+      "title": "Бэкенд",
+      "deny": ["mcp__docker", "mcp__github", "mcp__hub__sentry*", "mcp__ai-council"],
+      "skills_on": ["nestjs-service", "db-migration", "hr-domain", "incident-debug"]
+    },
+    "release": {
+      "title": "DevOps / безопасность + Контроль (мёрж)",
+      "deny": [],
+      "skills_on": ["release-check", "security-check", "incident-debug", "pr-review"]
+    },
+    "boards": {
+      "title": "t-boards, aiBoards&eval, supertick-eval, админ-хост, d4dev",
+      "deny": ["mcp__docker", "mcp__github", "mcp__hub__sentry*", "mcp__ai-council", "mcp__postgres-readonly"],
+      "skills_on": []
+    }
+  }
+}

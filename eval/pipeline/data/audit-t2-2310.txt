@@ -1,0 +1,39 @@
+Окно 23.10 14:50 – 24.10 10:00: сессий 20, вызовов 6938, $1,298.0, средний контекст 515,184; модели: claude-opus-5-5 6817, claude-opus-4-8 80, <synthetic> 41
+1. Деньги: чтение кэша $703.5 (54.2%) · запись кэша 1 ч $395.7 (30.5%) · выход $169.2 (13.0%) · вход $29.7 (2.3%) · запись кэша 5 мин $0.0 (0.0%)
+   Холодные вызовы по причине: прочее 40 = $129.4 (10.0%) · сон > 60 мин 20 = $97.4 (7.5%) · сон 5–60 мин 5 = $28.8 (2.2%) · старт 14 = $8.2 (0.6%) · сжатие 7 = $4.7 (0.4%)
+2. Что лежит в контексте: n · токены · хвост · $ хвоста по чтению кэша Opus
+   результат:Bash                       4994 ·  2,034,981 ·    467,261,414 · $   93.5
+   вложение:nested_memory                373 ·  1,237,074 ·    253,330,515 · $   50.7
+   вложение:instructions                  28 ·    436,623 ·    107,297,476 · $   21.5
+   результат:Read                        299 ·    412,397 ·    103,741,518 · $   20.7
+   хук:UserPromptSubmit                  902 ·    342,652 ·     84,183,977 · $   16.8
+   результат:mcp:plugin_context-mode_context-mode    131 ·    317,469 ·     71,166,587 · $   14.2
+   вложение:skill_listing                 21 ·    183,351 ·     61,474,971 · $   12.3
+   результат:mcp:plugin_claude-mem_mcp-search    661 ·    227,910 ·     56,986,395 · $   11.4
+   сообщение:человек/прочее               59 ·     73,250 ·     25,025,928 · $    5.0
+   сообщение:сообщение                   346 ·    139,450 ·     19,423,186 · $    3.9
+   результат:SendMessage                 883 ·     89,478 ·     15,704,220 · $    3.1
+   хук:SessionStart                       21 ·     42,557 ·     13,706,671 · $    2.7
+   результат:mcp:notion                   24 ·     45,950 ·      9,850,036 · $    2.0
+   результат:Edit                        707 ·     40,823 ·      7,829,477 · $    1.6
+   результат:Write                       352 ·     23,484 ·      4,729,078 · $    0.9
+   хук:PreToolUse                        104 ·     17,386 ·      3,963,860 · $    0.8
+   итого хвост учтённого $265.1 из чтения кэша $703.5
+3. UserPromptSubmit по причине хода: сообщение 607/167,868т · человек/прочее 203/148,242т · монитор/фон 71/22,372т · сжатие 21/4,170т
+   Источники вставок хуков (событие, первый тег): UserPromptSubmit/dams-context 337/277,035т · UserPromptSubmit/grill-task-auto 552/55,200т · SessionStart/context_window_protection 14/28,718т · SessionStart/persisted-output 7/13,839т · PreToolUse/context_guidance 82/11,180т · UserPromptSubmit/persisted-output 13/10,417т · PreToolUse/без тега 15/3,209т · PreToolUse/claude-mem-retrieved-data 7/2,997т
+4. nested_memory по файлу (n · токены · из них повтор в том же контексте); повторы всего 644,381т
+   .claude/rules/00-antipatterns.md                       37 ·   298,791 ·   193,810
+   CLAUDE.md                                              37 ·   164,814 ·   106,906
+   .claude/rules/03-frontend.md                           13 ·   152,147 ·    58,532
+   .claude/rules/10-db-topology.md                        25 ·    89,486 ·    50,105
+   .claude/rules/00-task-ingress.md                       37 ·    60,910 ·    39,510
+   .claude/rules/06-testing.md                            24 ·    49,841 ·    33,201
+   .claude/rules/08-database-prisma.md                    10 ·    48,885 ·    19,567
+   .claude/rules/01-base.md                               37 ·    41,848 ·    27,144
+   .claude/rules/05-security.md                           10 ·    36,616 ·    14,659
+   .claude/rules/04-type-safety.md                        23 ·    31,346 ·    15,005
+   instructions по файлу (токены за окно): ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/memory/MEMORY.md 145,143 · CLAUDE.md 91,686 · .claude/rules/00-antipatterns.md 73,542 · ~/.claude/CLAUDE.md 51,639 · CLAUDE.local.md 36,183 · .claude/rules/01-base.md 22,218 · .claude/rules/00-task-ingress.md 16,212
+5. Инструменты: Bash 4994, SendMessage 883, Edit 707, mcp:plugin_claude-mem_mcp-search 661, Write 352, Read 299, mcp:plugin_context-mode_context-mode 131, ToolSearch 82, Monitor 79, TaskStop 42, mcp:owner-queue 37, CronCreate 32, mcp:notion 24, ListAgents 23, mcp:plugin_playwright_playwright 19, CronDelete 16, mcp:hub:notion 15, mcp:postgres-readonly 7, mcp:github 6, WebSearch 4, CronList 3, mcp:serena 2, Skill 2, mcp:ai-council 1
+   скиллы: grill-task 1, task-observer 1
+6. Первый вызов сессии: мин 86,216 · медиана 94,344 · макс 96,421 (сессий 14)
+7. Наблюдатель claude-mem: сессий 114, вызовов 114, $17.2 по прайсу; модели: claude-haiku-4-5-20251001 114

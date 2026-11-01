@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "author": "hr-helper-v2-d1 (Claude, сессия 02286257), 29.10.2026",
+  "source": "Свои сессии: задача 1 (admin-хост), задача 2 (d4dev), VPN и PresharedKey. Статусы PR сверены с GitHub 29.10 21:57.",
+  "product": "aiboards-eval",
+  "format": "Как supertick-eval/board/plan-65.json: key, title, status, priority, description, backlogId = key, parent, related, blocks, kind. Раздел meta — агентские поля карточек (/api/forest/{ws}/cards/{id}/meta): executor, sessions, branch, pullRequests, files, contextPack. tokens и costUsd не заполнены: измерений по этим карточкам нет, оценки не подставляю. Раздел edits — правки к карточкам сида и plan-65, без пересоздания.",
+  "split": "Делёж hr-helper-v2-65 ↔ hr-helper-v2-2c сохраняется. d1 добавляет только то, что знает из первых рук: ветку VPN под OPS-001 и агентские поля для ADM-001…008 и OPS-001/002/007.",
+  "projects": [
+    {
+      "key": "OPS",
+      "cards": [
+        {
+          "key": "OPS-012",
+          "title": "PresharedKey для Mac (10.77.0.2): постквантовый слой туннеля «France & Dev VPN»",
+          "status": "in-progress",
+          "priority": "medium",
+          "parent": "OPS-001",
+          "related": ["OPS-013", "OPS-007"],
+          "description": "Зачем: трафик, записанный сегодня, не расшифровать и будущим квантовым компьютером. Скорость и расход трафика не меняются: ключ участвует только в рукопожатии. Решение владельца 29.10: «добавляем».\n\nКак:\n- Ключ создаётся на Mac (`openssl rand`).\n- На VPS он уходит только по ssh, на stdin, с принудительно постквантовым обменом ключами (`mlkem768x25519-sha256`, `sntrup761x25519-sha512@openssh.com`). Без них ssh отказывает и ничего не меняется.\n- В буфер обмена ключ попадает только после подтверждения сервера и стирается через 5 минут.\n- Ключ не проходит через очередь, чат, argv, историю терминала и логи.\n- На VPS меняется только PresharedKey пира 10.77.0.2; остальной конфиг проверяется на неизменность, ключ применяется к живому `wg0`.\n- Бэкап с PrivateKey сервера удаляется после проверки. Любая остановка после записи печатает строку отката.\n\nСостояние на 29.10 21:57:\n- Скрипты и тесты готовы. Пункт `s-tb-wg-psk` (версия 1) ждёт владельца.\n- Шаг владельца на Mac: в профиль добавить `PresharedKey` и `MTU = 1380`.\n\nПроверено локально, с заглушкой `wg`:\n- shellcheck 0.10.0;\n- `run-tests.sh`: 52 проверки (macOS bash 3.2; Ubuntu 24.04 bash 5.2 + mawk);\n- `e2e.sh` под `dash`;\n- `cmd-test.sh`: 18 проверок под `zsh -f`.\n\nНе проверено: живой VPS, настоящий `wg`, приложение WireGuard на macOS, поддержка mlkem/sntrup в sshd VPS.\n\nАдверсариальная проверка, 3 участника:\n- security-expert — секрет и отказы;\n- tiel-coder локально — корректность shell;\n- code-reviewer — простота и откат.\n\nВсе находки применены.\n\nПриёмка (агент, после отметки владельца):\n1. С Mac `ping 10.77.0.1`.\n2. Внешний IP — 173.212.238.170.\n3. DNS работает.\n4. https://d4dev.admin.hrhelper.space/api/health — 200.\n5. Профиль fsn1-4 вернуть, если он менялся.\n6. `oq_agent_status s-tb-wg-psk done`.\n\nОткат: `cmd2` пункта (`--remove`), сначала выключить туннель.",
+          "backlogId": "OPS-012"
+        },
+        {
+          "key": "OPS-013",
+          "title": "Новые устройства WireGuard получают туннель без PresharedKey и без MTU",
+          "status": "to-do",
+          "priority": "low",
+          "parent": "OPS-001",
+          "related": ["OPS-007", "OPS-012"],
+          "description": "Найдено 29.10 при сверке OPS-012 с `deploy/vps`.\n\n`wg-issue.sh` (`1a0ab42`, строка 75) и `wg-setup.sh` (строка 155) дописывают `[Peer]` без `PresharedKey`. В клиентском профиле нет `MTU`. После OPS-012 у Mac будет постквантовый слой, у телефона из OPS-007 — нет.\n\nЧто сделать:\n- `wg-issue.sh`: на каждое устройство `wg genpsk`, одна и та же строка — в пир сервера и в выдаваемый конфиг/QR. Это канал, по которому устройство и так получает свой PrivateKey, так что новой утечки нет. В профиль клиента — `MTU = 1380`.\n- `wg-psk.sh` (OPS-012) не берёт замок `$CONF.lock`, который держит `wg-issue.sh` (строка 38). Взять тот же `flock`, чтобы параллельная выдача устройства и смена ключа не переписали конфиг друг другу.\n- `wg-setup.sh` (строка 136) и `wg-issue.sh` (строка 43) оставляют `wg0.conf.bak-*` с PrivateKey сервера и никогда их не удаляют. Нужен срок хранения: например, последние 3.\n\nПриёмка: `wg-selftest.sh` проверяет PSK у нового пира и в выданном профиле; повторная выдача не трогает чужие PSK.",
+          "backlogId": "OPS-013"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "ADM-001": {
+      "executor": "Claude Opus 5.5",
+      "sessions": ["02286257 (hr-helper-v2-d1)", "074b4e3e (hr-helper-v2-2a, наследник)"],
+      "branch": "feature/admin-host-nginx, feature/admin-host-backend, feature/admin-host-frontend, docs/platform-admin-mfa-plan",
+      "pullRequests": [
+        "#351 docs/platform-admin-mfa-plan → 310fec7ee (29.10 12:55 UTC)",
+        "#405 feature/admin-host-nginx → dc6a271d4 (29.10 12:56 UTC)",
+        "#404 feature/admin-host-backend → 7d1e2e185 (29.10 13:36 UTC)",
+        "#406 feature/admin-host-frontend → 9e8f73570 (29.10 14:01 UTC)"
+      ],
+      "files": [
+        "infra/nginx/admin-host.sh",
+        "infra/nginx/nginx.contabo.conf.template",
+        "infra/docker/frontend-site-config.sh",
+        "apps/backend/src/common/host/host-role.service.ts",
+        "apps/backend/src/common/host/same-host-origin.guard.ts",
+        "apps/backend/src/common/realtime/ws-session-auth.ts",
+        "apps/backend/src/config/admin-host.config.ts",
+        "apps/frontend/src/app/routing/appRouter.tsx",
+        "apps/frontend/src/features/auth/ProtectedRoute.tsx"
+      ],
+      "contextPack": "~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/admin-host/HANDOFF.md §3, §4.3–4.4"
+    },
+    "ADM-002": {
+      "contextPack": "admin-host/HANDOFF.md §4.5; пункт владельца c-admin-mfa-s1"
+    },
+    "ADM-003": {
+      "files": ["~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/final/glm-review-night.sh", "final/f404.txt", "final/f405.txt", "final/f406.txt", "final/review/"],
+      "contextPack": "handoff/2026-10-29/FINAL-PROMPT.md §4.1"
+    },
+    "ADM-004": {
+      "pullRequests": ["#365 docs/session-epoch-plan → 2ac0d7c74 (план, 27.10)", "#351 → 310fec7ee (план 2FA, 29.10)"],
+      "files": ["docs/plans/roadmap/session-epoch.md", "docs/plans/roadmap/platform-admin-mfa.md", "docs/plans/roadmap/extension-token-renewal.md"],
+      "contextPack": "FINAL-PROMPT.md §4.2; admin-host/HANDOFF.md §4.6"
+    },
+    "ADM-005": { "contextPack": "admin-host/HANDOFF.md §4.7; FINAL-PROMPT.md §4.3" },
+    "ADM-006": { "contextPack": "admin-host/HANDOFF.md §4.8; FINAL-PROMPT.md §4.3" },
+    "ADM-007": { "contextPack": "admin-host/HANDOFF.md §4.9; FINAL-PROMPT.md §4.3" },
+    "ADM-008": { "contextPack": "admin-host/HANDOFF.md §4.11; пункт владельца c-gh-actions-billing" },
+    "OPS-001": {
+      "sessions": ["02286257 (hr-helper-v2-d1)"],
+      "files": ["t-boards/app/deploy/vps/wg-setup.sh", "t-boards/app/deploy/vps/wg-selftest.sh"],
+      "contextPack": "admin-host/HANDOFF.md §4.10"
+    },
+    "OPS-002": {
+      "sessions": ["02286257 (hr-helper-v2-d1)"],
+      "contextPack": "admin-host/HANDOFF.md §4.10"
+    },
+    "OPS-007": {
+      "files": ["t-boards/app/deploy/vps/wg-issue.sh"],
+      "contextPack": "пункт владельца s-vpn-issue"
+    },
+    "OPS-012": {
+      "executor": "Claude Opus 5.5",
+      "sessions": ["02286257 (hr-helper-v2-d1)"],
+      "files": [
+        "~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-29/vpn/wg-psk.sh",
+        "vpn/build.sh",
+        "vpn/cmd.txt",
+        "vpn/rollback.txt",
+        "vpn/REVIEW-PACKET.md"
+      ],
+      "contextPack": "handoff/2026-10-29/vpn/REVIEW-PACKET.md; пункт владельца s-tb-wg-psk"
+    }
+  },
+  "edits": [
+    {
+      "key": "ADM-006",
+      "description": "Предлагаю переписать «после влитого #365» как «после влитого кода по плану #365 (ADM-004)». PR #365 — это план, его влили 27.10 (`2ac0d7c74`). Без уточнения карточка читается как уже разблокированная."
+    },
+    {
+      "key": "OPS-001",
+      "appendDescription": "29.10: полный режим работает (весь трафик Mac через VPS). Ветки: OPS-012 — PresharedKey для Mac; OPS-013 — PSK и MTU для новых устройств. Закрывать после OPS-012, только по «да» владельца."
+    }
+  ],
+  "links": [
+    { "parent": "OPS-001", "children": ["OPS-012", "OPS-013"] },
+    { "related": [["OPS-012", "OPS-007"], ["OPS-013", "OPS-007"]] }
+  ]
+}
