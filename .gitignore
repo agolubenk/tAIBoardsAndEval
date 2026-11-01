@@ -104,3 +104,6 @@ graphify-out/
 
 # Strix profile (infra/scripts/README.md)
 infra/scripts/security/.env.strix
+
+# pnpm store inside the tree (R4-PLAN Ф0.4: makes `git status -uall` slow)
+.pnpm-store/
