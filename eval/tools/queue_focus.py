@@ -13,10 +13,13 @@ Order is the board's law (`.claude/rules/17-notion-board.md`), not a guess:
 Out of the focus: final statuses (done, Брёвна, closed, выполненные, завершённые, закрыто), raw ideas (`halfBaked`
 — not taken without the owner's go-ahead) and decided «what we do not build» reports. A card blocked by an open card
 is listed under «blocked» with its blockers instead of being proposed. A card with open subtasks (a goal, a branch)
-is not a work item — its leaves are. Stdlib only.
+is not a work item — its leaves are. With `--session` (default `$TAIBE_LINEAGE`, set by `spawn_session.sh`) cards
+held by other sessions leave the focus and the WIP count: a descendant is not frozen by its siblings' work.
+Stdlib only.
 """
 import argparse
 import json
+import os
 import sys
 
 FINAL = {'done', 'closed', 'archived', 'брёвна', 'бревна', 'выполненные', 'завершённые', 'завершенные', 'закрыто'}
@@ -41,8 +44,9 @@ def load(paths):
                     cards.append(dict(card, _project=str(project.get('name') or project.get('key') or '')))
         else:
             rows = data.get('tasks', data.get('items', [])) if isinstance(data, dict) else data
-            for card in rows:
-                key = card.get('key') or card.get('ticketId') or card.get('backlogId') or card.get('id')
+            for n, card in enumerate(rows):
+                key = card.get('key') or card.get('ticketId') or card.get('backlogId') or card.get('id') \
+                    or '%s#%d' % (path, n)  # never let keyless cards overwrite each other
                 cards.append(dict(card, key=str(key), _project=str(card.get('project') or card.get('projectName') or '')))
     by_key = {}
     for card in cards:  # the same card in two plans: the later file wins (plans are patches)
@@ -66,22 +70,37 @@ def blockers_of(cards):
     return {k: sorted(b for b in v if b in cards and _status(cards[b]) not in FINAL) for k, v in out.items()}
 
 
-def unblocks(cards, key, seen=None):
-    """Open cards this one unblocks, transitively."""
-    seen = set() if seen is None else seen
-    for target in cards.get(key, {}).get('blocks', []) or []:
-        target = str(target)
-        if target in cards and target not in seen and _status(cards[target]) not in FINAL:
-            seen.add(target)
-            unblocks(cards, target, seen)
+def unblocks(cards, key):
+    """Open cards this one unblocks, transitively (explicit stack: long chains and cycles are fine)."""
+    seen, stack = set(), [key]
+    while stack:
+        for target in cards.get(stack.pop(), {}).get('blocks', []) or []:
+            target = str(target)
+            if target in cards and target not in seen and target != key and _status(cards[target]) not in FINAL:
+                seen.add(target)
+                stack.append(target)
     return seen
 
 
-def focus(cards, top=7, wip=3):
+def holder(card):
+    """The session that holds the card: lease, work state or the card's own `session` label."""
+    for field in ('session', 'leaseSession', 'leaseHolder', 'holder'):
+        if card.get(field):
+            return str(card[field])
+    state = card.get('workState') if isinstance(card.get('workState'), dict) else {}
+    return str(state.get('session') or '')
+
+
+def workable(card):
+    return _status(card) not in FINAL and not card.get('halfBaked') and not card.get('report')
+
+
+def focus(cards, top=7, wip=3, session=None):
     blocked_by = blockers_of(cards)
-    # A card with open subtasks is a root or a branch of the forest: the work is in its leaves.
-    containers = {str(c['parent']) for c in cards.values() if c.get('parent') and _status(c) not in FINAL}
-    skipped = {'final': 0, 'halfBaked': 0, 'report': 0, 'container': 0}
+    # A card with workable subtasks is a root or a branch of the forest: the work is in its leaves. Raw-idea and
+    # report children do not count — a goal with only those is still a work item.
+    containers = {str(c['parent']) for c in cards.values() if c.get('parent') and workable(c)}
+    skipped = {'final': 0, 'halfBaked': 0, 'report': 0, 'container': 0, 'others': 0}
     candidates, blocked = [], []
     for key, card in cards.items():
         status = _status(card)
@@ -96,6 +115,10 @@ def focus(cards, top=7, wip=3):
             continue
         if key in containers:
             skipped['container'] += 1
+            continue
+        held = holder(card)
+        if session and held and held != session and not held.startswith(session + '.'):
+            skipped['others'] += 1  # held by a sibling or the ancestor's other line — not this session's work
             continue
         item = {
             'key': key,
@@ -128,8 +151,8 @@ def focus(cards, top=7, wip=3):
 def render(result):
     sk = result['skipped']
     lines = ['Фокус (%s; открыто %d; вне фокуса: финальные %d, сырые идеи %d, отчёты %d, ветки с открытыми '
-             'подзадачами %d):' % (result['note'], result['open'], sk['final'], sk['halfBaked'], sk['report'],
-                                   sk['container'])]
+             'подзадачами %d, у других сессий %d):' % (result['note'], result['open'], sk['final'], sk['halfBaked'],
+                                                    sk['report'], sk['container'], sk['others'])]
     for i in result['focus']:
         tag = 'bug ' if i['bug'] else ''
         more = ' · открывает %d' % i['unblocks'] if i['unblocks'] else ''
@@ -146,9 +169,12 @@ def main(argv=None):
     ap.add_argument('files', nargs='+')
     ap.add_argument('--top', type=int, default=7)
     ap.add_argument('--wip', type=int, default=3, help='open in-progress/review cards before new starts stop')
+    ap.add_argument('--session', default=os.environ.get('TAIBE_LINEAGE'),
+                    help='own lineage id (default $TAIBE_LINEAGE): cards held by other sessions leave the focus and '
+                         'the WIP count; descendants of this lineage count as own')
     ap.add_argument('--json', action='store_true')
     args = ap.parse_args(argv)
-    result = focus(load(args.files), args.top, args.wip)
+    result = focus(load(args.files), args.top, args.wip, args.session)
     print(json.dumps(result, ensure_ascii=False, indent=1) if args.json else render(result))
     return 0
 

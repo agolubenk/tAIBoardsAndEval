@@ -31,5 +31,5 @@ jobs:
             echo "== $t"
             python3 "$t"
           done
-      - name: Layer versions are fresh and L1 within budget (eval/evolve/catalog.py)
+      - name: Always-loaded context (L1) of every role within budget (eval/evolve/catalog.py)
         run: python3 -I eval/evolve/catalog.py --check

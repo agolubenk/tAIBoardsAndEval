@@ -26,21 +26,26 @@ class AskOnceTest(unittest.TestCase):
         ledger = [
             {'id': 'd-locale', 'q': 'Какой язык интерфейса по умолчанию?', 'a': 'Английский, пока пользователь не выберет',
              'kw': 'default language locale english', 'source': 'чат 01.11', 'status': 'answered'},
-            {'id': 'q-parent', 'q': 'Запрещать ли второго родителя у подзадачи?', 'kw': 'subtask second parent',
-             'source': 'E7', 'status': 'open'},
+            {'id': 'd-cache', 'q': 'Включать ли кэш ассетов?', 'a': 'Нет', 'source': 'чат 31.10'},
+            {'id': 'd-cache', 'q': 'Включать ли кэш ассетов?', 'a': 'Да, кэш ок', 'source': 'чат 01.11'},  # correction
         ]
         write(self.root, a.LEDGER, ''.join(json.dumps(e, ensure_ascii=False) + '\n' for e in ledger))
         write(self.root, a.DONE_DIR + '/boards.md',
               '# Закрыто\n\n- **Кэш ассетов веба** (закрыто 2026-11-01): nginx отдаёт неизменённые чанки с expires 1y\n')
         write(self.root, a.SPEC, '| R-090 | Импорт карточек из Notion идёт пачками по сто | Q-031 |\n'
                                  '| R-101 | Форма перманентных вопросов владельца на доске | Q-104 |\n')
-        write(self.root, a.ROADMAP, '| B3 | Экран: что видно владельцу и агентам | R-041 | В: состав экрана | 🔲 |\n')
+        write(self.root, a.ROADMAP, '| B3 | Экран: что видно владельцу и агентам | R-041 | В: состав экрана | 🔲 |\n'
+                                    '| B5 | Стоимость и чтения журнала MCP через API | R-036 | А | 🔲 |\n')
+        write(self.root, 'oq.json', json.dumps([
+            {'id': 'c-7', 'data': {'kind': 'decision', 'title': 'Запрещать ли второго родителя у подзадачи?'}},
+            {'id': 'c-8', 'data': {'kind': 'decision', 'title': 'Сколько реплик Redis держать?', 'done': True}}],
+            ensure_ascii=False))
 
     def tearDown(self):
         shutil.rmtree(self.root)
 
-    def check(self, question):
-        return a.main(['--root', self.root, 'check', question])
+    def check(self, question, *extra):
+        return a.main(['--root', self.root, 'check', question, *extra])
 
     def test_answered_reworded_and_other_language(self):
         self.assertEqual(self.check('какой язык выбран по умолчанию в интерфейсе'), 3)
@@ -49,23 +54,28 @@ class AskOnceTest(unittest.TestCase):
         self.assertEqual(self.check('импорт карточек из Notion пачками?'), 3)  # spec row with an owner answer
 
     def test_open_questions_are_not_asked_twice(self):
-        self.assertEqual(self.check('can a subtask have a second parent'), 4)
+        oq = ['--oq', os.path.join(self.root, 'oq.json')]
+        self.assertEqual(self.check('второй родитель у подзадачи — запрещать?', *oq), 4)  # open in the owner queue
+        self.assertEqual(self.check('сколько реплик Redis держать', *oq), 0)  # done in the queue — not «open»
         self.assertEqual(self.check('форма перманентных вопросов владельца'), 4)  # spec Q-1xx
         self.assertEqual(self.check('что видно владельцу и агентам на экране'), 4)  # roadmap «В:»
 
-    def test_unknown_is_asked(self):
+    def test_unknown_and_near_misses_are_asked(self):
         self.assertEqual(self.check('сколько реплик Redis держать в проде'), 0)
+        self.assertEqual(self.check('какой язык писать в коммитах'), 0)  # not the UI-language answer
+        self.assertEqual(self.check('стоимость журнала MCP через API'), 0)  # a roadmap row is context, not a decision
 
-    def test_record_then_found(self):
-        a.main(['--root', self.root, 'record', '--q', 'Сколько реплик Redis держать?', '--open', '--source', 'oq 7',
-                '--date', '2026-11-01'])
-        self.assertEqual(self.check('сколько реплик Redis держать'), 4)
-        a.main(['--root', self.root, 'record', '--q', 'Сколько реплик Redis держать?', '--a', 'Одну', '--source', 'oq 7'])
-        with open(os.path.join(self.root, a.LEDGER), encoding='utf-8') as f:
-            last = json.loads(f.read().splitlines()[-1])
-        self.assertEqual((last['status'], last['a']), ('answered', 'Одну'))
+    def test_record_then_found_and_last_line_wins(self):
+        self.assertEqual(self.check('сколько реплик Redis держать'), 0)
+        entry = a.record(self.root, 'Сколько реплик Redis держать?', 'Одну', 'oq 7', '', '2026-11-01')
+        self.assertTrue(entry['id'].startswith('d-20261101-'))
+        self.assertNotEqual(entry['id'], a.record(self.root, 'q2', 'a2', 's', '', '2026-11-01')['id'])  # no collisions
+        self.assertEqual(self.check('сколько реплик Redis держать'), 3)
+        self.assertEqual(a.ledger(self.root)['d-cache'][1]['a'], 'Да, кэш ок')
+        texts = [t for _, _, t in a.documents(self.root)]
+        self.assertFalse(any(t.startswith('Включать ли кэш ассетов? → Нет') for t in texts))  # superseded
         with self.assertRaises(SystemExit):
-            a.record(self.root, 'q', '', 'src', '', False, '2026-11-01')  # an answer needs its text
+            a.record(self.root, 'q', '', 'src', '', '2026-11-01')  # an answer needs its text
 
     def test_stem_groups_word_forms(self):
         self.assertEqual(a.stem('вырубленного'), a.stem('вырубленные'))

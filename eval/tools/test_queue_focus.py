@@ -34,7 +34,9 @@ class QueueFocusTest(unittest.TestCase):
                             {'key': 'C', 'report': 'не строим'}, {'key': 'G'}, {'key': 'G-1', 'parent': 'G'},
                             {'key': 'L', 'status': 'Брёвна'}))
         self.assertEqual(self.keys(got), ['G-1'])  # the goal G has an open subtask — its leaf is the work
-        self.assertEqual(got['skipped'], {'final': 2, 'halfBaked': 1, 'report': 1, 'container': 1})
+        self.assertEqual(got['skipped'], {'final': 2, 'halfBaked': 1, 'report': 1, 'container': 1, 'others': 0})
+        idea_only = q.focus(cards({'key': 'G'}, {'key': 'G-1', 'parent': 'G', 'halfBaked': True}))
+        self.assertEqual(self.keys(idea_only), ['G'])  # only a raw idea under it — the goal is still the work
 
     def test_blocked_and_unblocking(self):
         got = q.focus(cards({'key': 'A', 'blocks': ['B']}, {'key': 'B', 'blocks': ['C']}, {'key': 'C'},
@@ -43,6 +45,20 @@ class QueueFocusTest(unittest.TestCase):
         self.assertEqual([(i['key'], i['blockedBy']) for i in got['blocked']], [('B', ['A']), ('C', ['B'])])
         done = q.focus(cards({'key': 'A', 'status': 'done', 'blocks': ['B']}, {'key': 'B'}))
         self.assertEqual(self.keys(done), ['B'])  # a closed blocker blocks nothing
+
+    def test_session_sees_only_its_own_wip(self):
+        board = cards({'key': 'A', 'status': 'in-progress', 'session': 'r.aa'},
+                      {'key': 'B', 'status': 'in-progress', 'session': 'r.bb'},
+                      {'key': 'C', 'status': 'in-progress', 'workState': {'session': 'r.aa.cc'}},
+                      {'key': 'D', 'priority': 'high'})
+        got = q.focus(board, wip=3, session='r.aa')
+        self.assertEqual(self.keys(got), ['A', 'C', 'D'])  # own line incl. descendant; sibling's B is out
+        self.assertEqual(got['skipped']['others'], 1)
+        self.assertEqual(len(q.focus(board, wip=3)['focus']), 3)  # without a session: WIP 3 — finish first
+
+    def test_long_chain_no_recursion_limit(self):
+        chain = cards(*({'key': 'K%04d' % i, 'blocks': ['K%04d' % (i + 1)]} for i in range(3000)))
+        self.assertEqual(q.unblocks(chain, 'K0000').__len__(), 2999)
 
     def test_wip_limit_stops_new_starts(self):
         got = q.focus(cards({'key': 'A', 'status': 'in-progress'}, {'key': 'B', 'status': 'на ревью'},
@@ -59,6 +75,12 @@ class QueueFocusTest(unittest.TestCase):
         finally:
             os.remove(f.name)
         self.assertEqual(self.keys(got), ['ОШИБКИ-3', 'ЗАДАЧИ-9'])
+        with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as f:
+            json.dump([{'title': 'a', 'status': 'to-do'}, {'title': 'b', 'status': 'to-do'}], f)
+        try:
+            self.assertEqual(len(q.load([f.name])), 2)  # keyless cards do not overwrite each other
+        finally:
+            os.remove(f.name)
         self.assertTrue(got['focus'][0]['bug'])
 
     @unittest.skipUnless(PLANS, 'no plan files')

@@ -104,9 +104,9 @@ genome-check:
 done-index:
 	python3 infra/scripts/misc/done-index.py
 
-# Версии слоя пишет Stop-хук stop-catalog.py; здесь — вручную и с отчётом о дублях.
+# Версии слоя — из git (catalog.py); здесь — отчёт: версии, L1 по ролям против бюджета, дубли.
 evolve:
-	python3 -I eval/evolve/catalog.py --write
+	python3 -I eval/evolve/catalog.py
 	python3 -I eval/evolve/dupes.py --top 10
 
 PLAN ?= eval/board/plan-*.json

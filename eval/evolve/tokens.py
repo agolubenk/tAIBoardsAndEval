@@ -18,12 +18,19 @@ def est_tokens(text):
 
 def front_matter(text):
     """(fields, body) of a markdown file with `---` front matter. Only what the layer reads: scalar `key: value`
-    lines and `key:` followed by `  - item` lists. Missing front matter → ({}, text)."""
+    lines, folded `key: >` / literal `key: |` blocks and `key:` followed by `  - item` lists.
+    Missing front matter → ({}, text)."""
     m = FRONT.match(text)
     if not m:
         return {}, text
-    fields, key = {}, None
+    fields, key, block = {}, None, None
     for line in m.group(1).splitlines():
+        if block and (line.startswith((' ', '\t')) or not line.strip()):
+            # folded `>` / literal `|` scalar: indented continuation lines belong to the key
+            sep = '\n' if block == '|' else ' '
+            fields[key] = (fields[key] + sep + line.strip()).strip() if fields[key] else line.strip()
+            continue
+        block = None
         item = re.match(r'\s+-\s+(.*)', line)
         if item and key:
             if not isinstance(fields.get(key), list):
@@ -33,5 +40,9 @@ def front_matter(text):
         kv = re.match(r'([A-Za-z_][\w-]*):\s*(.*)', line)
         if kv:
             key = kv.group(1)
-            fields[key] = kv.group(2).strip().strip('"\'')
+            value = kv.group(2).strip()
+            if value in ('>', '|', '>-', '|-', '>+', '|+'):
+                block, fields[key] = value[0], ''
+            else:
+                fields[key] = value.strip('"\'')
     return fields, text[m.end():]

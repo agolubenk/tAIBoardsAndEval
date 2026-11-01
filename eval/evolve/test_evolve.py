@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Evolution toolkit on a synthetic layer: catalog versions and L1 per role, duplicate clusters and handoff waste,
 blind A/B with a scripted judge. Run: python3 -I -m unittest discover -s eval/evolve -p 'test_*.py'"""
+import contextlib
+import io
 import json
 import os
 import shutil
@@ -44,12 +46,26 @@ def layer(root):
     os.makedirs(os.path.join(root, 'eval/evolve'), exist_ok=True)
 
 
+def setUpModule():
+    # the tools print reports; tests read return values — keep the test log readable
+    global _quiet
+    _quiet = contextlib.ExitStack()
+    _quiet.enter_context(contextlib.redirect_stdout(io.StringIO()))
+    _quiet.enter_context(contextlib.redirect_stderr(io.StringIO()))
+
+
+def tearDownModule():
+    _quiet.close()
+
+
 class TokensTest(unittest.TestCase):
     def test_estimate_and_front_matter(self):
         self.assertEqual(est_tokens(''), 0)
         self.assertGreater(est_tokens('привет'), est_tokens('hello!'))
         fields, body = front_matter('---\nname: x\npaths:\n  - a/**\n  - "b/**"\n---\nbody\n')
         self.assertEqual(fields, {'name': 'x', 'paths': ['a/**', 'b/**']})
+        folded = front_matter('---\nname: x\ndescription: >\n  long folded\n  text\nk: v\n---\n')[0]
+        self.assertEqual(folded, {'name': 'x', 'description': 'long folded text', 'k': 'v'})
         self.assertEqual(body, 'body\n')
         self.assertEqual(front_matter('no front')[0], {})
 
@@ -70,23 +86,27 @@ class CatalogTest(unittest.TestCase):
         self.assertEqual(paths['CLAUDE.md'], 'card')
         self.assertEqual(paths['eval/pipeline/genome/roles.json'], 'genome')
 
-    def test_versions_grow_by_themselves(self):
-        self.assertEqual(catalog.main(['--root', self.root, '--write', '--date', '2026-11-01']), 0)
-        self.assertEqual(catalog.main(['--root', self.root, '--check']), 0)
+    def test_versions_come_from_git(self):
+        git = lambda *a: subprocess.run(['git', '-C', self.root, *a], check=True, capture_output=True)  # noqa: E731
+        git('init', '-q')
+        write(self.root, '.gitignore', '.worktrees/\n.ai/task/\n')
+        write(self.root, '.worktrees/x/CLAUDE.md', 'a checkout of another branch\n')
+        write(self.root, '.ai/task/T1/CLAUDE.md', 'runtime case\n')
+        commit = lambda m: git('-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', m)  # noqa: E731
+        git('add', '.')
+        commit('v1')
         write(self.root, '.claude/skills/grill/SKILL.md',
               '---\nname: grill\ndescription: Roast a task before the work starts.\n---\n# grill\n\nBody v2.\n')
-        os.remove(os.path.join(self.root, '.claude/hooks/gate.py'))
-        self.assertEqual(catalog.main(['--root', self.root, '--check']), 1)  # stale lock fails CI
-        catalog.main(['--root', self.root, '--write', '--date', '2026-11-02'])
-        lock = catalog.load_lock(self.root)
-        self.assertEqual(lock['artifacts']['.claude/skills/grill/SKILL.md']['v'], 2)
-        self.assertEqual(lock['artifacts']['CLAUDE.md']['v'], 1)
-        self.assertNotIn('.claude/hooks/gate.py', lock['artifacts'])
-        with open(os.path.join(self.root, 'eval/evolve/history.jsonl'), encoding='utf-8') as f:
-            events = [json.loads(line) for line in f]
-        last = [(e['event'], e['path'], e['v']) for e in events if e['date'] == '2026-11-02']
-        self.assertIn(('changed', '.claude/skills/grill/SKILL.md', 2), last)
-        self.assertIn(('retired', '.claude/hooks/gate.py', 1), last)
+        git('add', '.')
+        commit('v2')
+        write(self.root, '.claude/skills/grill/SKILL.md', 'v3 in progress\n')
+        items = catalog.scan(self.root, with_versions=True)
+        self.assertFalse(any(p.startswith(('.worktrees/', '.ai/')) for p in items))  # ignored by git → not cataloged
+        grill, card = items['.claude/skills/grill/SKILL.md'], items['CLAUDE.md']
+        self.assertEqual((grill['v'], grill.get('dirty')), (2, True))
+        self.assertEqual((card['v'], card.get('dirty')), (1, None))
+        self.assertEqual(len(grill['rev']), len(card['rev']))
+
 
     def test_l1_per_role_follows_genome(self):
         items = catalog.scan(self.root)
@@ -99,14 +119,12 @@ class CatalogTest(unittest.TestCase):
         self.assertGreater(none['skills_listing'], front['skills_listing'])  # no genome: full grill description
 
     def test_budget_is_a_ratchet(self):
-        catalog.main(['--root', self.root, '--write'])
-        path = os.path.join(self.root, 'eval/evolve/catalog.lock.json')
-        with open(path, encoding='utf-8') as f:
-            lock = json.load(f)
-        lock['budget'] = {'coord': 1}
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(lock, f)
+        self.assertEqual(catalog.main(['--root', self.root, '--ratchet']), 0)
+        self.assertEqual(catalog.main(['--root', self.root, '--check']), 0)
+        catalog.save_budget(self.root, {'coord': 1})
         self.assertEqual(catalog.main(['--root', self.root, '--check']), 1)
+        catalog.save_budget(self.root, {})
+        self.assertEqual(catalog.main(['--root', self.root, '--check']), 0)  # no budget — nothing to hold
 
 
 class DupesTest(unittest.TestCase):
@@ -162,8 +180,19 @@ class AbTest(unittest.TestCase):
         always_x = lambda system, user: 'X'  # noqa: E731
         results = ab.run(always_x, self.CASES, 'a', 'b')
         self.assertEqual({r['winner'] for r in results}, {'tie'})
-        self.assertEqual(ab.select(results, 10, 12)['pick'], 'a')  # tie and B dearer → keep A
-        self.assertEqual(ab.select(results, 12, 10)['pick'], 'b')  # tie and B cheaper → B, quality not lost
+        self.assertEqual(ab.select(results, 10, 12)['pick'], 'a')
+        self.assertEqual(ab.select(results, 12, 10)['pick'], 'a')  # no decisive case is no evidence, even if cheaper
+
+    def test_not_worse_and_cheaper(self):
+        results = [{'winner': w} for w in ('a', 'b', 'tie')]
+        self.assertEqual(ab.select(results, 12, 10)['pick'], 'b')  # 1:1 — not worse, cheaper
+        self.assertEqual(ab.select(results, 10, 12)['pick'], 'a')
+
+    def test_broken_judge_is_no_evidence(self):
+        results = ab.run(lambda s, u: '', self.CASES, 'long old text', 'NEW')
+        self.assertEqual({r['winner'] for r in results}, {'broken'})
+        verdict = ab.select(results, 12, 2)
+        self.assertEqual((verdict['pick'], verdict['broken']), ('a', 4))
 
     def test_outputs_mode_judges_answers(self):
         def call(system, user):
@@ -182,8 +211,10 @@ class AbTest(unittest.TestCase):
 
     def test_parse_answer(self):
         self.assertEqual(ab.parse_answer('reasoning…\nY'), 'Y')
-        self.assertEqual(ab.parse_answer('Answer: tie'), 'TIE')
-        self.assertEqual(ab.parse_answer('no verdict'), 'TIE')
+        self.assertEqual(ab.parse_answer('X is longer\n**tie**'), 'TIE')
+        self.assertIsNone(ab.parse_answer('Answer: Y (X is longer)'))  # verdict mixed with prose — not guessed
+        self.assertIsNone(ab.parse_answer('no verdict'))
+        self.assertIsNone(ab.parse_answer(''))
 
     def test_cli_versions_from_git(self):
         root = tempfile.mkdtemp()

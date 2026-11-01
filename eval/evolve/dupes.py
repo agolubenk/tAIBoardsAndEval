@@ -132,7 +132,7 @@ def main(argv=None):
     ap.add_argument('--against-l1', metavar='FILE')
     ap.add_argument('--max-waste', type=int, default=None, help='exit 1 when waste (tokens) is larger')
     ap.add_argument('--threshold', type=float, default=0.6)
-    ap.add_argument('--top', type=int, default=15)
+    ap.add_argument('--top', type=int, default=10)
     ap.add_argument('--json', action='store_true')
     args = ap.parse_args(argv)
 
@@ -154,8 +154,9 @@ def main(argv=None):
         print(json.dumps({'waste': waste, 'l1_waste': l1_waste, 'clusters': found}, ensure_ascii=False, indent=1))
     else:
         for c in found[:args.top]:
-            print('%4d tok × %d  L1 %4d  %s\n      %s' % (c['tokens'], len(c['files']), c['l1_waste'],
-                                                     ' · '.join(c['files']), c['text'].replace('\n', ' ')))
+            files = ' · '.join(c['files'][:3]) + (' +%d' % (len(c['files']) - 3) if len(c['files']) > 3 else '')
+            print('%4d tok × %d  L1 %4d  %s\n      %s' % (c['tokens'], len(c['files']), c['l1_waste'], files,
+                                                     c['text'].replace('\n', ' ')[:120]))
         print('%d clusters: %d tokens of copies, %d of them in every session start (L1)' % (len(found), waste, l1_waste))
     return 1 if args.max_waste is not None and (l1_waste if args.l1 else waste) > args.max_waste else 0
 

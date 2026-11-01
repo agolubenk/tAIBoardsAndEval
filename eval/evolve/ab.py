@@ -14,8 +14,10 @@ same version in both orders (position bias cancels out), otherwise it is a tie.
   compares the answers — closer to real behaviour, twice the price.
 
 Selection never trades quality for tokens: B is selected when it wins (≥ 60 % of decisive cases and at least 2), or
-when it is not worse (no fewer wins than A) and cheaper; A is kept otherwise. `--record` appends the verdict to `history.jsonl`, next
-to the version log written by `catalog.py`. Untrusted text (the versions, the cases, the answers) reaches the judge
+when it is not worse (no fewer wins than A) and cheaper; A is kept otherwise — and always when fewer than 2 cases were
+decisive or the judge broke the answer format even once (a broken judge is no evidence). `--record` appends the
+verdict to `verdicts.jsonl` with both versions as commit ids (the version log itself is git, see `catalog.py`).
+Untrusted text (the versions, the cases, the answers) reaches the judge
 between fences with a random nonce per call, and the judge is told that fenced text is data — an instruction inside
 a skill cannot vote for itself (idea taken from agno, see docs/integrations/agno/). The blind A/B judge itself is
 the idea of i-have-adhd (MIT, docs/integrations/i-have-adhd/). The judge goes through the local llm-gateway
@@ -39,7 +41,8 @@ from tokens import est_tokens  # noqa: E402
 
 GATEWAY = 'http://127.0.0.1:8789/v1'
 TOKEN_FILE = 'infra/llm-gateway/.state/token'
-ANSWER = re.compile(r'\b(X|Y|TIE)\b')
+ANSWER = re.compile(r'^\W*(X|Y|TIE)\W*$')  # the verdict line holds the verdict and nothing else
+VERDICTS = 'verdicts.jsonl'
 
 
 def version_text(root, path, rev):
@@ -80,12 +83,10 @@ def judge_prompt(case, x, y, what, nonce):
 
 
 def parse_answer(text):
+    """X | Y | TIE from the judge's last line; None when the judge broke the format (never read as a tie)."""
     lines = [ln for ln in (text or '').strip().splitlines() if ln.strip()]
-    for line in reversed(lines[-3:]):
-        found = ANSWER.findall(line.upper())
-        if found:
-            return found[-1]
-    return 'TIE'
+    m = ANSWER.match(lines[-1].strip().upper()) if lines else None
+    return m.group(1) if m else None
 
 
 def gateway_call(root, model, timeout=120):
@@ -116,10 +117,21 @@ def fake_call(system, user):
     return 'X' if x < y else 'Y' if y < x else 'TIE'
 
 
+def resolve(root, rev):
+    """A revision as a commit id, so a verdict names exactly what was judged ('work' stays 'work')."""
+    if rev == 'work':
+        return rev
+    out = subprocess.run(['git', '-C', root, 'rev-parse', '--short', rev], capture_output=True, text=True)
+    return out.stdout.strip() or rev
+
+
 def compare(call, case, a, b, what):
-    """'a' | 'b' | 'tie' — two judgements with the sides swapped; a win must survive the swap."""
+    """'a' | 'b' | 'tie' — two judgements with the sides swapped; a win must survive the swap. 'broken' — the
+    judge answered out of format: such a case is not evidence for either side."""
     first = parse_answer(call(None, judge_prompt(case, a, b, what, secrets.token_hex(8))))   # X = a
     second = parse_answer(call(None, judge_prompt(case, b, a, what, secrets.token_hex(8))))  # X = b
+    if first is None or second is None:
+        return 'broken'
     pick1 = {'X': 'a', 'Y': 'b'}.get(first, 'tie')
     pick2 = {'X': 'b', 'Y': 'a'}.get(second, 'tie')
     return pick1 if pick1 == pick2 else 'tie'
@@ -142,9 +154,14 @@ def run(call, cases, text_a, text_b, mode='instructions'):
 def select(results, tokens_a, tokens_b, share=0.6, minimum=2):
     wins_a = sum(r['winner'] == 'a' for r in results)
     wins_b = sum(r['winner'] == 'b' for r in results)
+    broken = sum(r['winner'] == 'broken' for r in results)
     decisive = wins_a + wins_b
-    need = max(minimum, math.ceil(share * decisive)) if decisive else minimum
-    if wins_b >= need and wins_b > wins_a:
+    need = max(minimum, math.ceil(share * decisive))
+    if broken:
+        pick, why = 'a', '%d judgements out of format — no evidence, keep A (fix the judge first)' % broken
+    elif decisive < minimum:
+        pick, why = 'a', 'only %d decisive cases (need %d) — keep A' % (decisive, minimum)
+    elif wins_b >= need and wins_b > wins_a:
         pick, why = 'b', 'B wins %d of %d decisive' % (wins_b, decisive)
     elif wins_a >= need and wins_a > wins_b:
         pick, why = 'a', 'A wins %d of %d decisive' % (wins_a, decisive)
@@ -152,7 +169,8 @@ def select(results, tokens_a, tokens_b, share=0.6, minimum=2):
         pick, why = 'b', 'B is not worse (%d:%d) and %d tokens cheaper' % (wins_b, wins_a, tokens_a - tokens_b)
     else:
         pick, why = 'a', 'no clear winner — keep A'
-    return {'pick': pick, 'why': why, 'wins_a': wins_a, 'wins_b': wins_b, 'ties': len(results) - decisive,
+    return {'pick': pick, 'why': why, 'wins_a': wins_a, 'wins_b': wins_b, 'broken': broken,
+            'ties': len(results) - decisive - broken,
             'tokens_a': tokens_a, 'tokens_b': tokens_b}
 
 
@@ -178,7 +196,8 @@ def main(argv=None):
     call = fake_call if args.judge == 'fake' else gateway_call(args.root, args.model)
     results = run(call, load_cases(args.cases), text_a, text_b, args.mode)
     verdict = select(results, est_tokens(text_a), est_tokens(text_b))
-    line = {'date': args.date, 'event': 'ab', 'path': args.artifact, 'a': args.a, 'b': args.b, 'mode': args.mode,
+    line = {'date': args.date, 'path': args.artifact, 'a': resolve(args.root, args.a), 'b': resolve(args.root, args.b),
+            'mode': args.mode,
             'judge': args.judge if args.judge == 'fake' else '%s:%s' % (args.judge, args.model),
             'cases': len(results), **verdict}
     print(json.dumps({'results': results, **line}, ensure_ascii=False, indent=1))
@@ -186,7 +205,10 @@ def main(argv=None):
         if args.judge == 'fake':
             print('ab: a fake judge is not evidence — not recorded', file=sys.stderr)
             return 2
-        with open(os.path.join(args.root, catalog.FOLDER, catalog.HISTORY), 'a', encoding='utf-8') as f:
+        if line['b'] == 'work' or line['a'] == 'work':
+            print('ab: commit the version first — a verdict on the working tree names nothing', file=sys.stderr)
+            return 2
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), VERDICTS), 'a', encoding='utf-8') as f:
             f.write(json.dumps(line, ensure_ascii=False) + '\n')
     return 0
 
