@@ -1,3 +1,4 @@
+import { redact } from "@kaneo/redact";
 import type { ChatMessage } from "../llm/chat-completion";
 import type { NotebookHit } from "../search/search-notebook";
 
@@ -19,6 +20,11 @@ export function sourcesBlock(hits: NotebookHit[]): string {
     .join("\n\n");
 }
 
+// Everything here leaves for an external model: sources, history and the
+// question go through the same secret scrubber as the MCP journal (K-2, N-009),
+// so a token pasted into a card or a document never reaches the provider.
+const scrub = (text: string) => redact(text).text;
+
 // Earlier turns keep a follow-up question in context; the sources always
 // come from the newest question.
 export function buildPrompt(
@@ -29,9 +35,11 @@ export function buildPrompt(
   return [
     {
       role: "system",
-      content: `${SYSTEM}\n\nИсточники:\n\n${sourcesBlock(hits)}`,
+      content: scrub(`${SYSTEM}\n\nИсточники:\n\n${sourcesBlock(hits)}`),
     },
-    ...history.slice(-HISTORY_MESSAGES),
-    { role: "user", content: question },
+    ...history
+      .slice(-HISTORY_MESSAGES)
+      .map((turn) => ({ ...turn, content: scrub(turn.content) })),
+    { role: "user", content: scrub(question) },
   ];
 }

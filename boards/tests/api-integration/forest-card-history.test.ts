@@ -86,12 +86,22 @@ describe("API integration: card history and rollback (R-023)", () => {
         position: current.body.position ?? 0,
         dueDate: "2026-11-01T10:00:00.000Z",
       },
-      { "x-t-boards-fence": token },
+      // A card goes to review with a link to the PR or commit (card-fill rule).
+      {
+        "x-t-boards-fence": token,
+        "x-t-boards-link": "https://github.com/agolubenk/tAIBE/pull/1",
+      },
       "dev-1",
     );
     expect(edit.status).toBe(200);
 
-    const [entry] = await entries(forest, id);
+    // Going to review also triggers card-fill (assignee, start date): that is
+    // its own, later history entry by the server (actorId null), so the agent's
+    // edit is found by its author rather than taken as the newest entry.
+    const afterEdit = await entries(forest, id);
+    const entry = afterEdit.find((e) => /^key:.+:dev-1$/.test(e.actorId ?? ""));
+    const fill = afterEdit.find((e) => e.actorId === null);
+    expect(fill?.changes).toHaveProperty("assigneeId");
     expect(entry).toMatchObject({
       kind: "task",
       revision: before?.revision,
@@ -108,6 +118,7 @@ describe("API integration: card history and rollback (R-023)", () => {
     expect(undone.status).toBe(200);
     expect(undone.body).toMatchObject({ kind: "task", meta: null });
 
+    // One action returns everything the agent changed.
     const after = await taskRow(id);
     expect(after).toMatchObject({
       title: before?.title,
@@ -115,15 +126,23 @@ describe("API integration: card history and rollback (R-023)", () => {
       status: before?.status,
       columnId: before?.columnId,
       priority: before?.priority,
-      userId: before?.userId,
       dueDate: before?.dueDate,
-      startDate: before?.startDate,
     });
     expect(after?.revision).toBe(undone.body.revision);
+
+    // The server's card-fill is undone by its own entry; then the card matches
+    // the version before the agent touched it in every field.
+    const undoneFill = await forest.owner(rollback(id, String(fill?.id)), {});
+    expect(undoneFill.status).toBe(200);
+    expect(await taskRow(id)).toMatchObject({
+      userId: before?.userId,
+      startDate: before?.startDate,
+    });
 
     const [latest] = await entries(forest, id);
     expect(latest?.actorId).toMatch(/^session:/);
     expect(await journal("card.rollback", id)).toMatchObject([
+      { outcome: "allowed", actorKind: "owner-ui" },
       { outcome: "allowed", actorKind: "owner-ui" },
     ]);
   });

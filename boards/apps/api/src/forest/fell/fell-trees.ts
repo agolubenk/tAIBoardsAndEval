@@ -15,7 +15,6 @@ import {
 } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { assertProjectAccess } from "../../project-access/assert-project-access";
-import { queueStorageCleanup } from "../../storage/cleanup-queue";
 import type { ForestActor } from "../actor";
 import {
   type ApprovalAction,
@@ -101,7 +100,7 @@ async function fellInTx(
       ? [input.rootId]
       : await sectorRoots(tx, input.workspaceId, input.sectorId);
   const approvalId = await authorize(tx, input, action, targetId, rootIds);
-  const { materials, taskIds, assetObjectKeys } = await collectTreeMaterial(
+  const { materials, taskIds } = await collectTreeMaterial(
     tx,
     input.workspaceId,
     rootIds,
@@ -110,7 +109,7 @@ async function fellInTx(
     ...new Set(materials.flatMap((m) => m.tasks.map((task) => task.projectId))),
   ]);
 
-  // Brevna gate (spec R-007, D-011): every card of every tree must sit in a
+  // Brevna gate (owner, 31.10; spec R-028): every card of every tree must sit in a
   // final column (done or already in the timber yard) at the moment of the
   // felling. collectTreeMaterial locked the rows FOR UPDATE above, so a card
   // pulled back to work between check and cut rolls the transaction back.
@@ -227,8 +226,8 @@ async function fellInTx(
       .where(eq(sectorTable.id, input.sectorId));
   }
 
-  await queueStorageCleanup(tx, assetObjectKeys);
-  // Brevna (spec R-007, D-011): a felled tree stays on its boards — every
+  // Attachments are kept: felled cards stay readable in «Брёвна» (owner, 01.11).
+  // Brevna (owner, 31.10; spec R-028): a felled tree stays on its boards — every
   // card moves to the project's closed column in the same transaction, so
   // the timber yard shows exactly what was cut. Relations, leases and labels
   // live on; the logs and seeds keep the compressed copy.

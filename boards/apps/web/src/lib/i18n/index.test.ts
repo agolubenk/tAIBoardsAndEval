@@ -33,7 +33,7 @@ vi.mock("@i18n/resources", async (importOriginal) => {
   };
 });
 
-const { i18n, preloadNamespaces } = await import("./index");
+const { i18n, initialLocaleFor, preloadNamespaces } = await import("./index");
 
 function staleChunkError() {
   return new TypeError(
@@ -202,5 +202,23 @@ describe("stale-chunk reload recovery", () => {
     );
     await flushMicrotasks();
     expect(settled).toBe(false);
+  });
+});
+
+describe("initialLocaleFor (owner, 01.11: English until a language is chosen)", () => {
+  it("starts in English even when the browser asks for Russian", () => {
+    const spy = vi.spyOn(navigator, "language", "get").mockReturnValue("ru-RU");
+    expect(initialLocaleFor(null)).toBe("en-US");
+    expect(initialLocaleFor(undefined)).toBe("en-US");
+    spy.mockRestore();
+  });
+
+  it("keeps a language the user picked", () => {
+    expect(initialLocaleFor("ru-RU")).toBe("ru-RU");
+    expect(initialLocaleFor("ru")).toBe("ru-RU");
+  });
+
+  it("falls back to English for an unknown saved value", () => {
+    expect(initialLocaleFor("xx-YY")).toBe("en-US");
   });
 });

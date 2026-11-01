@@ -1,7 +1,8 @@
 # Аналитика встраивания внешних решений
 
-> **Статус (2026-11-01):** реестр заведён, разборов ещё нет. Единая точка входа: варианты и предложения по всем
-> инструментам — здесь, подробный разбор каждого — в его папке.
+> **Статус (2026-11-01):** первая волна — 8 инструментов разобрано по коду источников (коммиты — в разборах). Сводка
+> вариантов и предложений — ниже, подробный разбор — в папке инструмента. Адверсариальная проверка разборов — пока
+> только авторская (по три линзы в каждом файле); прогон линз консилиума — следующий шаг.
 
 ## Главный принцип
 
@@ -36,25 +37,38 @@
 
 | Инструмент | Источник | Статус | Что усиливает | Решение |
 |---|---|---|---|---|
-| [oh-my-openagent](oh-my-openagent/README.md) | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) | 🔲 не разобран | — | — |
-| [cognee](cognee/README.md) | [topoteretes/cognee](https://github.com/topoteretes/cognee) | 🔲 не разобран | — | — |
-| [agno](agno/README.md) | [agno-agi/agno](https://github.com/agno-agi/agno) | 🔲 не разобран | — | — |
-| [warp](warp/README.md) | [warpdotdev/warp](https://github.com/warpdotdev/warp) | 🔲 не разобран | — | — |
-| [ai-memory](ai-memory/README.md) | [akitaonrails/ai-memory](https://github.com/akitaonrails/ai-memory) | 🔲 не разобран | — | — |
-| [i-have-adhd](i-have-adhd/README.md) | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) | 🔲 не разобран | — | — |
-| [codebase-memory-mcp](codebase-memory-mcp/README.md) | [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | 🔲 не разобран | — | — |
-| [openproject](openproject/README.md) | [opf/openproject](https://github.com/opf/openproject) | 🔲 не разобран | — | — |
+| [oh-my-openagent](oh-my-openagent/README.md) | [code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) | 💡 взять идею | слой процесса: каждый запрет — хуком или `deny`, а не только текстом; дешёвый помощник рядом с сессией, просыпающийся по совпадению с памятью | инструмент — нет: другой harness, SUL-1.0 (не OSI), телеметрия по умолчанию |
+| [cognee](cognee/README.md) | [topoteretes/cognee](https://github.com/topoteretes/cognee) | 💡 взять идею | хаб и семена: дизайн дистилляции сессий (куратор → писатель/отклонитель `already_known`, проверка новизны, watermark) — для «семена → уроки» и ночной консолидации | сервис — нет: дублирует блокнот, 4–8 GB, телеметрия по умолчанию |
+| [agno](agno/README.md) | [agno-agi/agno](https://github.com/agno-agi/agno) | 💡 взять идею | консилиум и блокнот: обёртка недоверенного текста разделителями со случайным nonce на вызов (защита от инъекций в промптах ревью) | фреймворк — нет: заменил бы консилиум/Нерв, не-stdlib зависимости, телеметрия по умолчанию |
+| [warp](warp/README.md) | [warpdotdev/warp](https://github.com/warpdotdev/warp) | ❌ не берём | —; идея на потом: короткоживущий креденшл на одно действие через Unix-сокет с проверкой UID (ops-агент хоста) | AGPL-3.0, агентная часть закрыта; вернуться, если владелец перейдёт на Warp (`--terminal warp`) |
+| [ai-memory](ai-memory/README.md) | [akitaonrails/ai-memory](https://github.com/akitaonrails/ai-memory) | 💡 взять идею | `@kaneo/redact`: шаблоны секретов санитайзера (MIT) — расширить вычистку после E5; старение и handoff без LLM как образец | сервис — нет: заменил бы claude-mem, +25 описаний MCP-инструментов на старт |
+| [i-have-adhd](i-have-adhd/README.md) | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) | 💡 взять идею | eval: слепое A/B-сравнение ответов «со скиллом / без» (stdlib Python, MIT) — фитнес промптов; формат пунктов очереди «действие первым, один следующий шаг» | скилл always-on — нет: спорит с DoD, ~1,7K токенов на сессию |
+| [codebase-memory-mcp](codebase-memory-mcp/README.md) | [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | 💡 идея + пилот | `scout`, консилиум: `detect_changes` (дифф → затронутые символы, «радиус поражения»), экономный вывод курсором с лимитом; пилот MCP против Serena с замером | MIT, локально; заявленное «в 10 раз меньше токенов» — цифра авторов, проверить замером |
+| [openproject](openproject/README.md) | [opf/openproject](https://github.com/opf/openproject) | ✅ идея взята частично | доски: правила целостности графа связей при записи (`relatable.rb`): без циклов — внедрено; один родитель, без связей «предок–потомок» — решение владельца (E7) | сервис и код — нет: GPLv3, Rails + 4 GB RAM; только идеи |
 
 Статусы: 🔲 не разобран · 🔍 разбирается · ✅ взято (что именно — в столбце «Решение») · 💡 взята идея ·
 ⏸ вернуться позже · ❌ не берём.
 
 ## Варианты и предложения
 
-<!-- Сводка по итогам разборов: какие инструменты закрывают одну и ту же потребность, какой вариант выбран и почему,
-порядок внедрения, связи с картами tAI-Boards. Заполняется по мере разборов — каждое предложение со ссылкой на
-папку инструмента и на карточку. -->
+Сводка первой волны. Ни один инструмент не ставится целиком: каждый либо дублирует часть продукта (память, блокнот,
+консилиум, harness), либо тяжёл для VPS, либо несовместим по лицензии. Ценность — в конкретных механизмах, которые
+усиливают уже существующие части. Порядок — по отдаче на цену; у каждого предложения — замер «до/после».
 
-Пока пусто — разборы не начаты.
+| # | Предложение | Откуда | Куда в tAIBE | Замер | Цена |
+|---|---|---|---|---|---|
+| 1 | Целостность графа связей при записи: без циклов ✅ (E6); один родитель и запрет связей «предок–потомок» — решение владельца (E7) | [openproject](openproject/README.md) (идея) | `boards/apps/api/src/task-relation/` | нарушений в данных до/после (запрос по `task_relation`); тесты | часы |
+| 2 | Шаблоны секретов в `@kaneo/redact` (вендоринг шаблонов, MIT, с атрибуцией) | [ai-memory](ai-memory/README.md) | `boards/packages/redact`, блокнот (E5), журнал MCP | доля секретов из тестового набора, которые проходят вычистку | часы |
+| 3 | Разделители недоверенного текста со случайным nonce | [agno](agno/README.md) (идея) | `infra/ai-council/review_prompts.py`, `notebook/chat/build-prompt.ts` | набор инъекций в источниках: доля, на которые модель среагировала, до/после | часы |
+| 4 | «Инструкция ≠ граница прав»: каждый Never-запрет закрепить хуком или `deny` в геноме | [oh-my-openagent](oh-my-openagent/README.md) (принцип) | `.claude/rules` ↔ `.claude/hooks`, `eval/pipeline/genome/roles.json` | число правил без проверки; нарушения в транскриптах до/после | 1–2 дня |
+| 5 | Слепое A/B-сравнение версий скилла/промпта судьёй | [i-have-adhd](i-have-adhd/README.md) | `eval/pipeline/` — фитнес-функция эволюции промптов (`docs/plans/evolution-ideas.md` §3.1) | согласие судьи с владельцем на размеченной выборке | 1–2 дня, «да» владельца |
+| 6 | Пилот: граф кода по MCP (`detect_changes`, вывод курсором) против Serena | [codebase-memory-mcp](codebase-memory-mcp/README.md) | `scout`, консилиум (`infra/ai-council`), хаб `infra/mcp-hub` | токены и время на 10 задач навигации, RAM | день, замер |
+| 7 | Дистилляция сессий: куратор → писатель/отклонитель (`already_known`), проверка новизны, watermark | [cognee](cognee/README.md) (дизайн) | семена → уроки, хаб (`evolution-ideas.md` §2.7), ночная консолидация | доля дублей среди уроков; ручная оценка владельцем | 2–3 дня |
+| 8 | Пункты очереди владельца: действие первым, один следующий шаг, без пересказа | [i-have-adhd](i-have-adhd/README.md) (принципы 1/3/5) | протокол `oq_*` (`docs/specs/owner-queue.md`), скилл `successor-handoff` | время владельца на пункт, переспросы | часы |
+
+Не берём сейчас: warp (AGPL, не улучшает метрик), фреймворк agno, сервисы cognee и ai-memory, OpenProject как сервис,
+harness oh-my-openagent. Пересечение по памяти (cognee, ai-memory, claude-mem): канон остаётся claude-mem + блокнот,
+из внешних берём только механизмы 2 и 7.
 
 ## Как добавить инструмент
 

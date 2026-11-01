@@ -158,3 +158,44 @@ describe("task relation tenant boundaries", () => {
     );
   });
 });
+
+describe("subtask links stay a forest", () => {
+  async function addCard(projectId: string, title: string) {
+    const [task] = await db
+      .insert(schema.taskTable)
+      .values({ projectId, title, number: null })
+      .returning();
+    return task;
+  }
+
+  it("refuses a subtask link that would close a cycle through any ancestor", async () => {
+    const own = await context();
+    mockAuthenticatedSession(own.user);
+    const a = own.task;
+    const b = await addCard(a.projectId, "B");
+    const c = await addCard(a.projectId, "C");
+    const link = (
+      sourceTaskId: string,
+      targetTaskId: string,
+      relationType = "subtask",
+    ) => request("", "POST", { sourceTaskId, targetTaskId, relationType });
+
+    expect((await link(a.id, b.id)).status).toBe(200);
+    expect((await link(b.id, c.id)).status).toBe(200);
+
+    // The reversed pair was already refused as a duplicate of the same link.
+    expect((await link(b.id, a.id)).status).toBe(409);
+    // A cycle through an ancestor is what the duplicate check missed.
+    const deep = await link(c.id, a.id);
+    expect(deep.status).toBe(409);
+    expect((await readErrorBody(deep)).message).toContain("subtask_cycle");
+
+    // Other relation types are not tree edges and stay allowed.
+    expect((await link(c.id, a.id, "related")).status).toBe(200);
+    const subtasks = await db
+      .select()
+      .from(schema.taskRelationTable)
+      .where(eq(schema.taskRelationTable.relationType, "subtask"));
+    expect(subtasks).toHaveLength(2);
+  });
+});

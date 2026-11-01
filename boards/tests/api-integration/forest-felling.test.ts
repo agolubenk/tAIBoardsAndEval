@@ -18,6 +18,15 @@ async function plantTree(projectId: string, title: string) {
   return { root, child };
 }
 
+// Brevna gate (owner, 31.10): a tree is felled only when every card sits in a
+// final column. Tests that fell trees finish them first.
+async function finish(...taskIds: string[]) {
+  await db
+    .update(schema.taskTable)
+    .set({ status: "done" })
+    .where(inArray(schema.taskTable.id, taskIds));
+}
+
 describe("API integration: forest felling", () => {
   beforeEach(resetTestDatabase);
 
@@ -68,6 +77,15 @@ describe("API integration: forest felling", () => {
     const neighbour = await addTask(forest.project.id, "Neighbour");
     await relate(child.id, neighbour.id, "blocks");
 
+    const early = await forest.owner("/fell", {
+      kind: "tree",
+      rootId: root.id,
+      reason: "done",
+    });
+    expect(early.status).toBe(409);
+    expect(early.body.message).toContain("not_ready");
+    await finish(root.id, child.id);
+
     const approval = await forest.agent("/approvals", {
       action: "fell_tree",
       targetId: root.id,
@@ -98,14 +116,24 @@ describe("API integration: forest felling", () => {
     });
     expect(reused.status).toBe(403);
 
+    // Felled cards stay on the board in «Брёвна» (the closed column) and stay
+    // readable; nothing is leased or written on them — new work grows from
+    // seeds (owner, 01.11).
     const remaining = await db
-      .select({ id: schema.taskTable.id })
+      .select({ id: schema.taskTable.id, status: schema.taskTable.status })
       .from(schema.taskTable)
       .where(inArray(schema.taskTable.id, [root.id, child.id, neighbour.id]));
-    expect(remaining.map((row) => row.id)).toEqual([neighbour.id]);
+    expect(Object.fromEntries(remaining.map((r) => [r.id, r.status]))).toEqual({
+      [root.id]: "closed",
+      [child.id]: "closed",
+      [neighbour.id]: "to-do",
+    });
+    const readable = await forest.ownerApi("GET", `/task/${child.id}`);
+    expect(readable.status).toBe(200);
 
     const gone = await forest.agent("/leases", { taskId: child.id });
     expect(gone.status).toBe(410);
+    expect(gone.body.message).toContain("grow new work from its seeds");
 
     const log = await forest.agent(`/logs/${felled.body.logIds[0]}`);
     expect(log.status).toBe(200);
@@ -123,6 +151,7 @@ describe("API integration: forest felling", () => {
   it("lets the owner fell directly but not through a live lease or from a branch", async () => {
     const forest = await createForest();
     const { root, child } = await plantTree(forest.project.id, "Tree");
+    await finish(root.id, child.id);
 
     const branch = await forest.owner("/fell", {
       kind: "tree",
@@ -159,6 +188,7 @@ describe("API integration: forest felling", () => {
     const a = await plantTree(forest.project.id, "Alpha");
     const b = await plantTree(forest.project.id, "Beta");
     await relate(a.child.id, b.child.id, "related");
+    await finish(a.root.id, a.child.id, b.root.id, b.child.id);
 
     const detected = await forest.agent("/sectors/detect", {});
     expect(detected.status).toBe(200);

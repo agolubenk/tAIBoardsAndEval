@@ -1,4 +1,4 @@
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { assertProjectAccess } from "../../project-access/assert-project-access";
+import { wouldCloseSubtaskCycle } from "./subtask-cycle";
 
 async function createTaskRelation({
   sourceTaskId,
@@ -110,6 +111,23 @@ async function createTaskRelation({
     if (existing.length > 0) {
       throw new HTTPException(409, {
         message: "This relation already exists",
+      });
+    }
+
+    if (relationType === "subtask") {
+      // Two opposite links created at once would each pass the check alone;
+      // one lock per workspace serializes subtask links (cheap: they are rare).
+      await tx.execute(
+        sql`SELECT pg_advisory_xact_lock(hashtext(${`subtask:${workspaceId}`}))`,
+      );
+    }
+    if (
+      relationType === "subtask" &&
+      (await wouldCloseSubtaskCycle(tx, sourceTaskId, targetTaskId))
+    ) {
+      throw new HTTPException(409, {
+        message:
+          "subtask_cycle: the target is already this task's parent or ancestor",
       });
     }
 

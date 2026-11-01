@@ -4,7 +4,7 @@ import db from "../../database";
 import { taskLeaseTable } from "../../database/forest-schema";
 import { taskTable } from "../../database/schema";
 import type { ForestActor } from "../actor";
-import { findFelledLog } from "../find-felled-log";
+import { FELLED_MESSAGE, findFelledLog } from "../find-felled-log";
 import { ForestError } from "../forest-error";
 import { decideAcquire } from "./decide-acquire";
 
@@ -39,12 +39,12 @@ export async function acquireLease({
       .for("update");
     if (!task) {
       if (await findFelledLog(taskId, tx)) {
-        throw new ForestError(
-          "felled",
-          "the tree was felled; logs do not grow",
-        );
+        throw new ForestError("felled", FELLED_MESSAGE);
       }
       throw new HTTPException(404, { message: "Task not found" });
+    }
+    if (await findFelledLog(taskId, tx)) {
+      throw new ForestError("felled", FELLED_MESSAGE);
     }
 
     const [existing] = await tx

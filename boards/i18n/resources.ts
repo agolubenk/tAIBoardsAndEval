@@ -24,7 +24,9 @@ export const supportedLocales = [
 
 export type AppLocale = (typeof supportedLocales)[number];
 
-export const defaultLocale: AppLocale = "ru-RU";
+// Owner, 01.11: English until a person picks another language in settings;
+// the browser language does not override it (RU stays fully translated).
+export const defaultLocale: AppLocale = "en-US";
 
 export function isSupportedLocale(locale: string): locale is AppLocale {
   return (supportedLocales as readonly string[]).includes(locale);

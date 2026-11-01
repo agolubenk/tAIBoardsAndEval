@@ -60,3 +60,17 @@ describe("buildPrompt", () => {
     expect(messages.at(-2)?.content).toBe(`turn ${HISTORY_MESSAGES + 3}`);
   });
 });
+
+describe("buildPrompt scrubs secrets before they leave for the model", () => {
+  it("removes a database URL from a source, the history and the question", () => {
+    const leak = "postgresql://app:s3cr3t-pass@db.internal:5432/prod";
+    const messages = buildPrompt(
+      `почему не подключается ${leak}?`,
+      [hit("Стенд", "", `Строка подключения: ${leak}`)],
+      [{ role: "user", content: `раньше было ${leak}` }],
+    );
+    const sent = messages.map((m) => m.content).join("\n");
+    expect(sent).not.toContain("s3cr3t-pass");
+    expect(sent).toContain("Строка подключения");
+  });
+});
