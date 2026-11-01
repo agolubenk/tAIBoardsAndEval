@@ -146,6 +146,24 @@ def open_db():
     return conn
 
 
+class SearchResult(list):
+    """Rows of a search, plus how the search went — so «nothing found» is never confused with «search broken»
+    (bug E9, 01.11: an SQLite error used to come back as an empty list, and sessions re-asked the owner).
+
+    status: `found` — rows; `no_match` — the index answered, nothing matched; `no_terms` — nothing to search for;
+    `index_stale` — rows, but some are marked stale; `query_error` — the index failed (`error` says why).
+    It is still a list, so callers that iterate rows keep working."""
+
+    def __init__(self, rows=(), status="no_match", error=None):
+        super().__init__(rows)
+        self.status = status
+        self.error = error
+
+    @property
+    def failed(self):
+        return self.status == "query_error"
+
+
 def search(conn, terms, limit=8, doc_type=None, module=None, include_stale=True):
     """FTS5-поиск по индексу.
 
@@ -154,10 +172,15 @@ def search(conn, terms, limit=8, doc_type=None, module=None, include_stale=True)
     фильтр по status='active' превращал поиск в пустой ответ, неотличимый от
     «ничего релевантного нет». Устаревший текст полезнее пустоты — вызывающий
     видит поле status и решает сам. Активные всегда ранжируются выше stale.
+
+    Возвращает SearchResult: список строк с полем `status` (found / no_match / no_terms / index_stale /
+    query_error). Ошибка SQLite — `query_error`, а не пустой «ничего не найдено».
     """
     q = fts_query(terms)
     if not q:
-        return []
+        return SearchResult(status="no_terms")
+    if conn is None:
+        return SearchResult(status="query_error", error="index missing (no database)")
     sql = (
         "SELECT d.doc_id, d.doc_type, d.module, d.title, d.content, d.status, m.file_path "
         "FROM rag_docs d LEFT JOIN rag_meta m ON m.doc_id = d.doc_id "
@@ -179,9 +202,13 @@ def search(conn, terms, limit=8, doc_type=None, module=None, include_stale=True)
             "bm25(rag_docs, 1.0, 0.0, 1.0, 4.0, 1.0, 0.0, 2.0, 0.0) LIMIT ?")
     params.append(limit)
     try:
-        return [dict(r) for r in conn.execute(sql, params).fetchall()]
-    except sqlite3.Error:
-        return []
+        rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
+    except sqlite3.Error as e:
+        return SearchResult(status="query_error", error="%s: %s" % (type(e).__name__, e))
+    if not rows:
+        return SearchResult(status="no_match")
+    stale = any(r.get("status") == "stale" for r in rows)
+    return SearchResult(rows, status="index_stale" if stale else "found")
 
 
 def stale_counts(conn, doc_type=None):

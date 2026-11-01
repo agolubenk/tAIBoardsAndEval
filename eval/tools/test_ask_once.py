@@ -77,6 +77,13 @@ class AskOnceTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             a.record(self.root, 'q', '', 'src', '', '2026-11-01')  # an answer needs its text
 
+    def test_no_sources_is_not_no_answer(self):
+        empty = tempfile.mkdtemp()
+        try:
+            self.assertEqual(a.main(['--root', empty, 'check', 'какой язык по умолчанию']), 5)
+        finally:
+            shutil.rmtree(empty)
+
     def test_stem_groups_word_forms(self):
         self.assertEqual(a.stem('вырубленного'), a.stem('вырубленные'))
         self.assertEqual(a.stem('branches'), a.stem('branch'))
