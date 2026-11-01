@@ -1077,13 +1077,15 @@ export async function runStartupTasks() {
     runStartupMigrations: async () => {
       await migrateWorkspaceUserEmail();
       await migrateSessionColumn();
-      await migrateBrevnaColumns();
 
       console.log("🔄 Migrating database...");
       await migrate(getDatabase(), {
         migrationsFolder: `${currentDir}/../drizzle`,
       });
       console.log("✅ Database migrated successfully!");
+      // Renames rows of "column", so it runs after the migrations that create
+      // the table: before them a fresh database has no "column" and startup fails.
+      await migrateBrevnaColumns();
     },
   });
 
