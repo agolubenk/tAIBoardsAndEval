@@ -457,7 +457,7 @@ def stage_judge(state: _RunState, no: int, stage: dict) -> None:
     # findings участников ему не отдаём: иначе снятое возвращается в итог через пересказ.
     votes = {k: {f: o.get(f) for f in ("vote", "confidence", "summary", "missing_evidence")}
              for k, o in state.latest.items()}
-    out = state.ask(no, "judge", judge, P.text("review.judge"),
+    out = state.ask(no, "judge", judge, P.text("review.judge") + "\n" + P.FENCE_RULE,
                     P.judge_user(state.card.get("title") or "", votes, state.findings(), hint,
                                  state.note, state.consults), P.JUDGE_SCHEMA)
     if out is not None:
