@@ -60,4 +60,5 @@ python3 infra/scripts/misc/done-index.py --check
 - Instance paths live in exactly two places — `.claude/rules/*` (`paths:` sections) and `eval/nerve/config.json` (`repo_root`, `product_tree`, roles, queue); role genomes `eval/pipeline/genome/*.json` are rendered from it by `build.py` (`--check` in CI). When adapting the layer to a host project, change only those and re-render.
 - DB migrations (`boards/apps/api/drizzle/`, `infra/ops-console/server/db/`) and deploy steps are owner-approved changes.
 - Closing an item = card status on the board **and** a one-line entry in `docs/plans/done/<module>.md` (format — `docs/plans/DONE.md`).
+- External solutions are adopted only to strengthen and complement the product (measured before/after), never to replace a part or leave it at the same level; analysis lives in `docs/integrations/`. Whatever core, capability, design or principle is taken is credited in the tool's review, in the docs of the part it went into and in the root `README.md` (Origins).
 - PR checks green (boards / eval / layer, by touched paths) before merge to `board-agents`.

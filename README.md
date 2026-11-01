@@ -62,7 +62,7 @@ boards/        tAI-Boards — pnpm workspace (apps/api, apps/web, packages/*); d
 eval/          python-stdlib pipeline: nerve/, swarm/, pipeline/ (capsules, genome, reflex), tools/, data/, reports/
 infra/         ai-council/, owner-queue-mcp/, owner-queue-bot/, ops-console/, mcp-hub/, llm-gateway/, headroom/, scripts/
 process/       role prompts, operating model, overlay guide, TRANSFER.md (where things came from)
-docs/          cross-cutting specs (owner queue, AI council), closed-items log, AI notes
+docs/          specs/, plans/ (closed-items log), guides/ (how-tos), integrations/ (external solutions analysis), ai/, ops/
 .claude/ .continue/ .agents/ .windsurf/ .ai/   functional layer: rules, subagents, hooks, skills, knowledge, task cases
 .github/workflows   boards-ci · eval-ci · infra-ci · layer-ci
 ```
@@ -86,6 +86,12 @@ Third-party foundations:
 - `claude-plugins-official/` — vendored official Claude Code plugins (licenses inside each plugin).
 - UI and motion skills in `.claude/skills/` — vendored from [emilkowalski/skills](https://github.com/emilkowalski/skills)
   (MIT), provenance in [`.claude/skills/VENDORED.md`](.claude/skills/VENDORED.md).
+- **Borrowed solutions.** When the core, base capabilities, design or principles of an external solution are taken
+  into the product, it is named here («what was taken → where»), in the docs of the part it went into and in its
+  review under [`docs/integrations/`](docs/integrations/README.md). A solution is taken only if it strengthens and
+  complements tAIBE — measured before and after — never to replace a part or leave it at the same level. Under
+  review now: oh-my-openagent, cognee, agno, warp, ai-memory, i-have-adhd, codebase-memory-mcp, openproject
+  (nothing taken yet).
 - The MCP hub runs [1mcp](https://github.com/1mcp-app/agent); the AI council and the gateway use local
   [Ollama](https://ollama.com) models and hosted providers (GLM Z.AI, OpenRouter) through their public APIs.
 
