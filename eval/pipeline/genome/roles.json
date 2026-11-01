@@ -27,10 +27,10 @@
     ],
     "env": {"CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH": "600"},
     "claudeMdExcludes": [
-      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/CLAUDE.md",
-      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/00-*.md",
-      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/01-*.md",
-      "/Users/agolubenko/Desktop/Development/HR_Helper-v2/worktrees/**/.claude/rules/90-team-t3.md",
+      "{root}/worktrees/**/CLAUDE.md",
+      "{root}/worktrees/**/.claude/rules/00-*.md",
+      "{root}/worktrees/**/.claude/rules/01-*.md",
+      "{root}/worktrees/**/.claude/rules/90-team-t3.md",
       "/private/tmp/claude-501/**/scratchpad/**/CLAUDE.md",
       "/private/tmp/claude-501/**/scratchpad/**/.claude/rules/00-*.md",
       "/private/tmp/claude-501/**/scratchpad/**/.claude/rules/01-*.md"

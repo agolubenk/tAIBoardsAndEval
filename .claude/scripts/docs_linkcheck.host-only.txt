@@ -1,0 +1,21 @@
+# Документы предметной области host-проекта, на которые ссылаются его законы (.claude/rules/02–16, скиллы
+# hr-domain/nestjs-service/react-feature, эталон process/model/). В доме слоя их нет — см. process/TRANSFER.md.
+docs/plans/BACKLOG.md
+docs/plans/archive/
+docs/plans/roadmap/
+docs/api/
+docs/qa/
+docs/architecture/
+docs/agents/
+docs/i18n/
+docs/design/
+docs/legal/
+docs/engineering/frontend/
+docs/engineering/packages.md
+docs/engineering/packages-manifest.md
+docs/specs/mobile-app.md
+docs/specs/sourcing-module.md
+docs/specs/wiki-rework.md
+docs/ops/deploy-contabo.md
+docs/ops/telegram-session-manager.md
+docs/ops/p0-slo-alerts.md

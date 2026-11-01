@@ -1,0 +1,460 @@
+/* Примитивы консоли — стекло, капсулы и типографика главной страницы продукта.
+ * Таблицы — table.module.css, вкладки/поля/диалоги — controls.module.css; всё вместе — ./styles.ts. */
+
+/* ─── Стекло ───────────────────────────────────────────────────────────── */
+.panel {
+  position: relative;
+  min-width: 0;
+  padding: 20px;
+  border-radius: var(--lg-radius);
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--lg-outline);
+  box-shadow:
+    inset 0 1px 0 var(--lg-edge),
+    var(--lg-shadow);
+}
+.panelFlush {
+  padding: 0;
+  overflow: hidden;
+}
+.panelCompact {
+  padding: 14px 16px;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel {
+    background: var(--lg-glass-solid);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .panel {
+    background: var(--lg-glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more) {
+  .panel {
+    background: var(--lg-glass-solid);
+    border-color: var(--lg-text-3);
+  }
+}
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.panelFlush > .panelHeader {
+  padding: 18px 20px 0;
+}
+.panelTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+.panelHint {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--lg-text-2);
+  line-height: 1.45;
+}
+
+/* ─── Шапка страницы ───────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 4px 0;
+}
+.heroText {
+  min-width: 0;
+  max-width: 760px;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--lg-glass);
+  border: 1px solid var(--lg-outline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+  color: var(--lg-text-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.eyebrowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--lg-accent), var(--lg-accent-2));
+}
+.title {
+  margin: 12px 0 6px;
+  font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+}
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.lead {
+  color: var(--lg-text-2);
+  font-size: 15px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ─── Кнопки-капсулы ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--lg-outline);
+  background: var(--lg-glass);
+  color: var(--lg-text);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+  transition:
+    transform 160ms ease-out,
+    box-shadow 200ms ease-out,
+    background-color 200ms ease-out;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (hover: hover) {
+  .btn:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+}
+.btn:not(:disabled):active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+.btnPrimary {
+  color: var(--lg-on-accent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--lg-accent) 88%, white) 0%, var(--lg-accent) 100%);
+  border-color: color-mix(in srgb, var(--lg-accent) 70%, black);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 10px 24px -8px color-mix(in srgb, var(--lg-accent) 60%, transparent);
+}
+.btnDanger {
+  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--st-critical) 88%, white) 0%, var(--st-critical) 100%);
+  border-color: color-mix(in srgb, var(--st-critical) 70%, black);
+}
+.btnGhost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.btnGhost:not(:disabled):hover {
+  background: var(--lg-hover);
+}
+.btnSmall {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+.btnIcon {
+  width: 40px;
+  padding: 0;
+}
+.btnIcon.btnSmall {
+  width: 32px;
+}
+
+/* ─── Бейджи статусов (цвет + иконка + текст, никогда цвет один) ───────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px 2px 7px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.badge svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+.healthy {
+  background: var(--st-healthy-soft);
+  color: var(--st-healthy-text);
+}
+.warning {
+  background: var(--st-warning-soft);
+  color: var(--st-warning-text);
+}
+.critical {
+  background: var(--st-critical-soft);
+  color: var(--st-critical-text);
+}
+.unknown {
+  background: var(--st-unknown-soft);
+  color: var(--st-unknown-text);
+}
+.pending {
+  background: var(--st-pending-soft);
+  color: var(--st-pending-text);
+}
+.accent {
+  background: var(--lg-accent-soft);
+  color: var(--lg-accent-text);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* ─── Плитка показателя ────────────────────────────────────────────────── */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 112px;
+  text-decoration: none;
+  color: inherit;
+}
+a.stat {
+  transition: transform 0.15s ease;
+}
+a.stat:hover {
+  transform: translateY(-1px);
+}
+.statTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--lg-text-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.statValue {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.statSub {
+  font-size: 12px;
+  color: var(--lg-text-3);
+}
+.statAttention {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--st-warning) 70%, transparent),
+    var(--lg-shadow);
+}
+.statCritical {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--st-critical) 70%, transparent),
+    var(--lg-shadow);
+}
+
+/* ─── Метр ─────────────────────────────────────────────────────────────── */
+.meter {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--lg-accent-soft);
+  overflow: hidden;
+}
+.meterFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--lg-accent);
+}
+.meterWarning {
+  background: var(--st-warning-soft);
+}
+.meterWarning .meterFill {
+  background: var(--st-warning);
+}
+.meterCritical {
+  background: var(--st-critical-soft);
+}
+.meterCritical .meterFill {
+  background: var(--st-critical);
+}
+
+/* ─── Разное ───────────────────────────────────────────────────────────── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 28px 16px;
+  color: var(--lg-text-2);
+}
+.emptyIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--st-healthy-soft);
+  color: var(--st-healthy-text);
+}
+.emptyTitle {
+  font-weight: 700;
+  color: var(--lg-text);
+}
+.skeleton {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--lg-hover), var(--lg-outline), var(--lg-hover));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  font-size: 14px;
+}
+.kv dt {
+  color: var(--lg-text-3);
+}
+.kv dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--lg-outline);
+  background: var(--lg-glass);
+  font-size: 12.5px;
+  color: var(--lg-text-2);
+}
+.toastHost {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(420px, calc(100vw - 32px));
+}
+.toast {
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--lg-glass-solid);
+  border: 1px solid var(--lg-outline);
+  box-shadow: var(--lg-shadow);
+  font-size: 14px;
+  animation: toastIn 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.toastError {
+  border-color: color-mix(in srgb, var(--st-critical) 50%, transparent);
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+.muted {
+  color: var(--lg-text-2);
+}
+.faint {
+  color: var(--lg-text-3);
+}
+.small {
+  font-size: 13px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.between {
+  justify-content: space-between;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pre {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--lg-hover);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.divider {
+  height: 1px;
+  margin: 14px 0;
+  background: var(--lg-outline);
+  border: 0;
+}
+
+/* Кнопка, выглядящая как ссылка (внутри подсказки панели). */
+.linkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--lg-accent-text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Плитки в две колонки на телефоне: число помельче, чтобы «1 на связи» не переносилось. */
+@media (max-width: 560px) {
+  .statValue {
+    font-size: 22px;
+  }
+}

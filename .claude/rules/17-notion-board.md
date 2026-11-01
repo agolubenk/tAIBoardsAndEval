@@ -7,6 +7,8 @@ paths:
   - docs/plans/notion-board.md
   - scripts/*notion*
   - t-boards/**
+  - boards/docs/**
+  - eval/board/**
 ---
 
 # Доска задач — t-boards (канон открытого); Notion — архив только для чтения

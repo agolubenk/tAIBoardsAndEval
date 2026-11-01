@@ -28,9 +28,9 @@ P1+. У автора заметная часть выигрыша — от св�
 
 ## Ограничения (жёсткие)
 
-- **Ничего не меняй вне `supertick-eval/reports/` и `supertick-eval/shadow/`.** Никаких правок кода, правил,
+- **Ничего не меняй вне `eval/reports/` и `eval/shadow/`.** Никаких правок кода, правил,
   настроек, `~/.claude/`, `.claude/`, конфигов хаба и claude-mem.
-- **Git — только чтение:** никаких commit, push, branch, stash, worktree. Папка `supertick-eval/` намеренно не
+- **Git — только чтение:** никаких commit, push, branch, stash, worktree. Папка `eval/` намеренно не
   в git.
 - **Не трогай сессии и людей:**
   - ни сообщений сессиям, ни записей в очередь владельца (`oq_*`), Notion, `work_state_write`, GitHub;
@@ -49,7 +49,7 @@ P1+. У автора заметная часть выигрыша — от св�
 
 ## Карта материалов
 
-| Путь (от `supertick-eval/`) | Что там |
+| Путь (от `eval/`) | Что там |
 |---|---|
 | `EVALUATION.md` | оценка, таблицы, риски, итог двух линз. **Не правь** — твой результат идёт в `reports/` |
 | `context/our-team.md` | как устроена команда, что её будит, замеры Т2 и Т3, что ломалось |
@@ -191,8 +191,8 @@ cd /Users/agolubenko/Desktop/Development/HR_Helper-v2/supertick-eval
 - Свои цифры давай с источником: файл в `pipeline/data/` или команда, которую можно повторить. Оценки помечай
   как оценки.
 
-Ожидаемые чужие правки для критерия `git status`: ` M supertick-eval/tools/context_audit.py` и
-` M supertick-eval/pipeline/data/audit-t2-2310.{txt,json}` — это исправление аудита от Claude, не твои.
+Ожидаемые чужие правки для критерия `git status`: ` M eval/tools/context_audit.py` и
+` M eval/pipeline/data/audit-t2-2310.{txt,json}` — это исправление аудита от Claude, не твои.
 
 Первое сообщение в Kimi для C: «Прочитай KIMI.md, раздел „Задание C", и pipeline/PROTOCOL.md; выполни C, соблюдая
 ограничения».

@@ -1,0 +1,8 @@
+# Файлы для копирования в новый Claude Code worktree (локальные, не в git).
+# Один паттерн на строку. См. https://code.claude.com/docs/en/worktrees
+
+boards/.env
+boards/apps/web/.env.local
+infra/llm-gateway/.env
+infra/ops-console/.env
+.claude/settings.local.json

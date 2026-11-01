@@ -48,7 +48,7 @@
 ## Команды
 
 ```bash
-N=supertick-eval/nerve
+N=eval/nerve
 python3 -I $N/nerve.py status              # пульс, режим, лимит, волны, ошибки источников, последние адресные события
 python3 -I $N/nerve.py tap <роль>          # ← это ставит Monitor роли (persistent); --once — один проход
 python3 -I $N/nerve.py emit <роль> "текст" # назначение вручную (Координатор), класс nervous
@@ -57,7 +57,7 @@ python3 -I -m unittest discover -s $N -p 'test_*.py'
 ```
 
 Роли: `coord plan backend frontend release review` (ключи реестра Т3) и `supertick`, `tboards` (по `source` пунктов).
-Сессия роли ставит **один** Monitor: `python3 -I supertick-eval/nerve/nerve.py tap <роль>` — фильтр внутри, без `| grep`
+Сессия роли ставит **один** Monitor: `python3 -I eval/nerve/nerve.py tap <роль>` — фильтр внутри, без `| grep`
 (память `feedback_monitor_no_pipe_filters`). Курсор тапа — `state/tap-<роль>.json`, первый запуск начинает с конца журнала.
 
 ## Установка и откат

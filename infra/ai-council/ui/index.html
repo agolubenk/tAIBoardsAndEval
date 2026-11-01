@@ -1,0 +1,3446 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Council</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>%E2%9A%96</text></svg>">
+<!--
+  UI консилиума. Канон: docs/specs/ai-council.md §3, §12.
+
+  Один самодостаточный документ: ни сборки, ни npm, ни CDN — подсистема должна
+  подниматься там, где есть только Python. Отдаётся gateway.py с диска на каждый
+  запрос, поэтому правка видна по F5.
+
+  Весь текст из БД (заголовки карточек, вывод моделей, содержимое правил) вставляется
+  только через textContent либо esc(): это данные и генерация LLM, а не разметка.
+
+  Тема — атрибут data-theme на <html>, все цвета через переменные. Светлая тема не
+  «инверсия» тёмной: контраст подобран отдельно, иначе серый текст на светлом фоне
+  перестаёт читаться.
+-->
+<style>
+  :root {
+    --radius: 10px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  html[data-theme="dark"] {
+    --bg: #0e1116; --panel: #161b22; --panel-2: #1c2230; --line: #2a3140;
+    --ink: #e6edf3; --ink-dim: #9aa7b8; --ink-faint: #6b7889;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149; --accent: #58a6ff; --cloud: #bc8cff;
+    --ok-bd: #23502f; --warn-bd: #4a3a11; --bad-bd: #5c2222;
+    --accent-bd: #1f3d5c; --cloud-bd: #3f2d5c; --shadow: rgba(0,0,0,.45);
+  }
+  html[data-theme="light"] {
+    --bg: #f6f8fa; --panel: #ffffff; --panel-2: #eef1f5; --line: #d5dbe3;
+    --ink: #1c2128; --ink-dim: #4d5866; --ink-faint: #77818f;
+    --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e; --accent: #0969da; --cloud: #8250df;
+    --ok-bd: #aee0bb; --warn-bd: #e8d08a; --bad-bd: #f0b4b8;
+    --accent-bd: #a8cbf5; --cloud-bd: #d5c2f0; --shadow: rgba(16,24,40,.10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: var(--mono); }
+  a { color: var(--accent); }
+
+  /* ── шапка ───────────────────────────────────────────────────────────── */
+  /* Десктоп — одна строка. Узкий экран — две: бренд + статус + действия, под ними
+     разделы одной строкой с горизонтальной прокруткой (раньше шапка переносилась
+     в 4 строки и, будучи липкой, занимала четверть экрана телефона). */
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 8px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 20;
+  }
+  /* Название — вход на главную: пункта «Главная» в меню нет. */
+  .brand {
+    display: inline-flex; align-items: center; gap: 7px; flex: none;
+    background: none; border: 1px solid transparent; border-radius: 8px;
+    padding: 4px 9px; margin-left: -9px; cursor: pointer; color: var(--ink);
+    font-family: inherit; font-size: 15px; font-weight: 650; white-space: nowrap;
+  }
+  .brand:hover { background: var(--panel-2); }
+  .brand.on { background: var(--panel-2); border-color: var(--line); }
+  .brand-mark { color: var(--accent); line-height: 1; }
+  nav { display: flex; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    background: none; border: 1px solid transparent; color: var(--ink-dim);
+    padding: 5px 11px; border-radius: 7px; cursor: pointer; font-size: 13px;
+    font-family: inherit; white-space: nowrap;
+  }
+  nav button:hover { color: var(--ink); background: var(--panel-2); }
+  nav button.on { color: var(--ink); background: var(--panel-2); border-color: var(--line); }
+  .hdr-status { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: none; }
+  .hdr-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+  .hdr-actions button.icon {
+    width: 32px; height: 30px; padding: 0; display: inline-grid; place-items: center;
+    font-size: 14px; line-height: 1;
+  }
+  .spacer { flex: 1 1 auto; }
+  .pill {
+    font-size: 12px; padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-dim);
+  }
+  .pill.on { color: var(--ok); border-color: var(--ok-bd); }
+  .pill.off { color: var(--ink-faint); }
+  .pill.cloud { color: var(--cloud); border-color: var(--cloud-bd); }
+  .pill.warn { color: var(--warn); border-color: var(--warn-bd); }
+  /* Таблетки в шапке — кнопки: облако → «Облако», очередь → «Обзор», лента → лента. */
+  button.pill { font-family: inherit; cursor: pointer; }
+  button.pill:hover { border-color: var(--ink-faint); color: var(--ink); }
+  /* Таблетка «лента» — вход в ленту (пункта меню нет): выбранная вкладка подсвечивается
+     рамкой, а не цветом — цвет занят состоянием потока (on = подключён). */
+  button.pill.sel { border-color: var(--accent); color: var(--ink); }
+  .pill .cnt { display: inline-block; min-width: 18px; margin-left: 5px; padding: 0 5px;
+               border-radius: 999px; background: var(--accent); color: var(--bg);
+               font-size: 11px; font-weight: 650; line-height: 16px; text-align: center; }
+  .pill .cnt[hidden] { display: none; }        /* display выше перекрыл бы атрибут hidden */
+  .feed div.new { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 6px; }
+  /* Тумблер «всё на GLM 5.x» (§17.6) — кнопка-переключатель (role="switch"): состояние
+     читается и цветом, и значком ◉/○, и aria-checked. */
+  #hdr-glm .sw { margin-right: 4px; }
+  #hdr-cloud .c-mob { display: none; }
+  @media (max-width: 1240px) { #hdr-queue .q-extra { display: none; } }
+  @media (max-width: 760px) {
+    header { flex-wrap: wrap; gap: 8px; row-gap: 4px; padding: 6px 12px; }
+    nav { order: 10; flex: 1 0 100%; margin: 0 -4px; }
+    .hdr-status { gap: 6px; }
+    #guide-btn, #hdr-queue .q-label { display: none; }
+    /* Пункта «Облако» в меню больше нет — таблетка облака единственный вход на страницу,
+       поэтому на телефоне она не прячется, а сжимается до «☁ 12/100» / «GLM 12/500».
+       Тумблер GLM прячется: состояние видно по таблетке, переключение — на «Облаке». */
+    #hdr-cloud .c-extra, #hdr-glm { display: none; }
+    #hdr-cloud .c-mob { display: inline; }
+  }
+
+  main { padding: 16px; max-width: 1560px; margin: 0 auto; }
+
+  /* ── карточки и сетки ────────────────────────────────────────────────── */
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .split { display: grid; gap: 12px; grid-template-columns: minmax(260px, 1fr) 2fr; }
+  .split.wide-first { grid-template-columns: 2fr minmax(260px, 1fr); }
+  @media (max-width: 900px) { .split, .split.wide-first { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px; min-width: 0;
+  }
+  .card h3 {
+    margin: 0 0 10px; font-size: 11px; font-weight: 650; text-transform: uppercase;
+    letter-spacing: .7px; color: var(--ink-faint);
+  }
+  .big { font-size: 26px; font-weight: 650; line-height: 1.2; }
+  .sub { color: var(--ink-dim); font-size: 12px; }
+  .faint { color: var(--ink-faint); }
+  .muted { color: var(--ink-dim); }
+  .ok-txt { color: var(--ok); } .bad-txt { color: var(--bad); } .warn-txt { color: var(--warn); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .stack { display: flex; flex-direction: column; gap: 8px; }
+
+  /* ── таблицы: скролл внутри карточки, а не растягивание страницы ─────── */
+  .tablewrap { overflow-x: auto; border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--ink-faint); font-weight: 650; padding: 9px 10px;
+    border-bottom: 1px solid var(--line); background: var(--panel); white-space: nowrap;
+  }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--panel-2); }
+  tr.clickable { cursor: pointer; }
+  /* anywhere, а не break-word: только он уменьшает min-content ячейки, и длинный путь или
+     URL в названии карточки больше не растягивает таблицу за край экрана. */
+  td.wrap { min-width: 240px; overflow-wrap: anywhere; }
+  /* Метка в ячейке с переносом тоже переносится: одна длинная метка (модуль, ID) иначе
+     держала ширину всей колонки. */
+  td.wrap .tag, .tag.long { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+
+  .tag {
+    display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 5px;
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .tag.done, .tag.ok { color: var(--ok); border-color: var(--ok-bd); }
+  .tag.abstained, .tag.warn { color: var(--warn); border-color: var(--warn-bd); }
+  .tag.failed, .tag.bad, .tag.critical, .tag.P0 { color: var(--bad); border-color: var(--bad-bd); }
+  .tag.running, .tag.queued2 { color: var(--accent); border-color: var(--accent-bd); }
+  .tag.queued { color: var(--ink-faint); }
+  .tag.cloud { color: var(--cloud); border-color: var(--cloud-bd); }
+  .tag.high, .tag.P1 { color: var(--warn); border-color: var(--warn-bd); }
+
+  button.act {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
+    padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 13px;
+    font-family: inherit; white-space: nowrap;
+  }
+  button.act:hover { border-color: var(--ink-faint); }
+  button.act.ok { color: var(--ok); } button.act.bad { color: var(--bad); }
+  button.act.accent { color: var(--accent); }
+  button.act:disabled { opacity: .45; cursor: default; }
+  button.icon { padding: 5px 9px; }
+  select, input[type=text], input[type=number], textarea {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 7px; padding: 6px 9px; font-size: 13px; font-family: inherit;
+    max-width: 100%;
+  }
+  textarea { width: 100%; resize: vertical; line-height: 1.5; }
+  input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); }
+  label.field { display: flex; align-items: center; gap: 10px; justify-content: space-between;
+                padding: 7px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  label.field:last-child { border-bottom: none; }
+  label.field > span { flex: 1 1 200px; }
+
+  .bar { height: 6px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--accent); }
+  .bar.warn > span { background: var(--warn); }
+  .bar.bad > span { background: var(--bad); }
+
+  /* ── модалка ─────────────────────────────────────────────────────────── */
+  dialog {
+    background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 12px; padding: 0; width: min(1120px, 95vw); max-height: 92vh;
+    box-shadow: 0 18px 50px var(--shadow);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.62); }
+  .modal-head {
+    display: flex; gap: 12px; align-items: flex-start; padding: 15px 18px;
+    border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg);
+    z-index: 2; border-radius: 12px 12px 0 0;
+  }
+  .modal-body { padding: 14px 18px; overflow-y: auto; max-height: calc(92vh - 168px); }
+  .modal-foot {
+    display: flex; gap: 8px; align-items: center; padding: 11px 18px;
+    border-top: 1px solid var(--line); background: var(--panel); flex-wrap: wrap;
+    border-radius: 0 0 12px 12px;
+  }
+  details { border: 1px solid var(--line); border-radius: 8px; margin: 8px 0; }
+  details > summary { cursor: pointer; padding: 9px 12px; font-size: 13px;
+                      color: var(--ink-dim); user-select: none; }
+  details[open] > summary { border-bottom: 1px solid var(--line); color: var(--ink); }
+  details > div { padding: 12px; overflow-x: auto; }
+  pre.dump {
+    background: var(--panel-2); border-radius: 7px; padding: 10px; overflow-x: auto;
+    font-size: 12px; margin: 0; white-space: pre-wrap; word-break: break-word;
+    max-height: 440px; overflow-y: auto;
+  }
+  ul.tight { margin: 6px 0; padding-left: 20px; }
+  ul.tight li { margin: 3px 0; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  #toast {
+    position: fixed; right: 16px; bottom: 16px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 9px; padding: 10px 14px;
+    opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 60;
+    max-width: min(460px, 90vw); box-shadow: 0 8px 26px var(--shadow);
+  }
+  #toast.show { opacity: 1; }
+  .feed { max-height: 320px; overflow-y: auto; font-size: 12px; font-family: var(--mono); }
+  .feed div { padding: 3px 0; border-bottom: 1px solid var(--line); word-break: break-word; }
+  .feed div:last-child { border-bottom: none; }
+  .empty { padding: 22px; text-align: center; color: var(--ink-faint); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+  .kv > div:nth-child(odd) { color: var(--ink-faint); white-space: nowrap; }
+  .chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mention-drop {
+    position: absolute; z-index: 5; left: 0; right: 0; top: 100%;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
+    margin-top: 2px; max-height: 220px; overflow-y: auto; box-shadow: 0 8px 26px var(--shadow);
+  }
+  .mention-drop > div { padding: 7px 10px; cursor: pointer; }
+  .mention-drop > div:hover, .mention-drop > div.sel { background: var(--panel-2); }
+
+  /* ── доступность и мелочи ────────────────────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 0; }
+  .linkish {
+    background: none; border: none; padding: 0; margin-left: 4px; cursor: pointer;
+    color: var(--accent); font: inherit; text-decoration: underline;
+  }
+  #q-card { scroll-margin-top: 72px; }
+  /* Главная: форма слева, состав и оценка справа — на широком экране правая половина
+     раньше пустовала. */
+  .home-grid { display: grid; gap: 12px; max-width: 1240px; }
+  .home-side > .card + .card { margin-top: 12px; }
+  @media (min-width: 1100px) {
+    .home-grid { grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); align-items: start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="brand on" id="brand" data-tab="home" title="На главную — новая задача"
+    aria-label="AI Council — на главную"><span class="brand-mark" aria-hidden="true">⚖</span>AI&nbsp;Council</button>
+  <nav aria-label="Разделы">
+    <button data-tab="overview">Обзор</button>
+    <button data-tab="quality">Качество</button>
+    <button data-tab="cards">Карточки</button>
+    <button data-tab="review">Ревью</button>
+    <button data-tab="knowledge">Знания</button>
+  </nav>
+  <div class="hdr-status">
+    <!-- Пункт «Облако» из меню убран (2026-10-09): он дублировал эту таблетку. Вход на
+         страницу «Облако» — только здесь (и диплинк #cloud), поэтому таблетку не прячем
+         даже на телефоне. -->
+    <button id="hdr-cloud" class="pill off"
+      title="Облако: расход окна подписки — клик открывает страницу «Облако»">облако…</button>
+    <button id="hdr-glm" class="pill off" role="switch" aria-checked="false"
+      title="Режим GLM 5.x: ревью — в подписку Coding Plan; проработки карточек — локально (runs_on_glm в config.toml)"
+      ><span class="sw" aria-hidden="true">○</span>GLM 5.x</button>
+    <button id="hdr-queue" class="pill"
+      title="Очередь консилиума — клик: «Обзор» → «Управление очередью»">очередь…</button>
+    <button id="hdr-live" class="pill off" title="Лента: живые события и прогоны с вердиктами"
+      >лента<span id="hdr-live-n" class="cnt" hidden></span></button>
+  </div>
+  <div class="hdr-actions">
+    <button class="act icon" id="guide-btn" title="Как это работает: порядок работы и термины"
+      aria-label="Как это работает">?</button>
+    <button class="act icon" id="theme-btn" title="Сменить тему" aria-label="Сменить тему">◐</button>
+    <button class="act icon" data-tab="settings" id="gear-btn" title="Настройки"
+      aria-label="Настройки">⚙</button>
+  </div>
+</header>
+
+<main>
+  <!-- Пояснение к текущей вкладке: «что это» и «что здесь делать». Один элемент на все
+       вкладки — текст приходит из /api/guide, а не дублируется в рендерерах. -->
+  <div id="tab-doc" class="sub" style="margin-bottom:10px"></div>
+  <section id="tab-home"></section>
+  <section id="tab-overview" hidden></section>
+  <section id="tab-quality" hidden></section>
+  <section id="tab-feed" hidden></section>
+  <section id="tab-cards" hidden></section>
+  <section id="tab-review" hidden></section>
+  <section id="tab-knowledge" hidden></section>
+  <section id="tab-cloud" hidden></section>
+  <section id="tab-settings" hidden></section>
+</main>
+
+<dialog id="modal">
+  <div class="modal-head">
+    <div style="flex:1; min-width:0">
+      <div id="m-title" style="font-weight:650"></div>
+      <div id="m-sub" class="sub" style="margin-top:4px"></div>
+    </div>
+    <button class="act" onclick="document.getElementById('modal').close()">✕</button>
+  </div>
+  <div class="modal-body" id="m-body"></div>
+  <div class="modal-foot" id="m-foot"></div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Вкладка «Ревью» — отдельные файлы (index.html и так ~2.8k строк). Грузится ДО основного
+     скрипта: объявляет только функции, утилиты ($, esc, api…) берёт отсюда в момент вызова. -->
+<script src="/review.js"></script>
+<script src="/review-settings.js"></script>
+<script src="/bindings.js"></script>
+<script>
+"use strict";
+
+/* ── утилиты ──────────────────────────────────────────────────────────── */
+const $ = (sel, root = document) => root.querySelector(sel);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => (
+  { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const num = (v, d = 2) => (v === null || v === undefined || v === "") ? "—" : Number(v).toFixed(d);
+const pct = (v) => (v === null || v === undefined) ? "—" : Math.round(Number(v) * 100) + "%";
+const ago = (ts) => {
+  if (!ts) return "—";
+  const s = Math.max(0, Math.floor(Date.now() / 1000 - ts));
+  if (s < 60) return s + "с";
+  if (s < 3600) return Math.floor(s / 60) + "м";
+  if (s < 86400) return Math.floor(s / 3600) + "ч";
+  return Math.floor(s / 86400) + "д";
+};
+const dur = (ms) => !ms ? "—" : (ms < 60000 ? Math.round(ms / 1000) + "с"
+  : Math.floor(ms / 60000) + "м " + Math.round((ms % 60000) / 1000) + "с");
+const debounce = (fn, ms) => { let t = null;
+  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({ error: "ответ не в JSON" }));
+  if (data && data.error) throw new Error(data.error);
+  return data;
+}
+const post = (path, body) => api(path, {
+  method: "POST", headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(body) });
+
+let toastTimer = null;
+function toast(msg, bad) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.style.borderColor = bad ? "var(--bad-bd)" : "var(--line)";
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 4600);
+}
+function emptyRow(cols, text) {
+  return `<tr><td colspan="${cols}"><div class="empty">${esc(text)}</div></td></tr>`;
+}
+
+/* ── модалка ──────────────────────────────────────────────────────────────
+   Клик по затемнению закрывает (Esc закрывает и так — нативный dialog). Нажатие должно
+   начаться на затемнении: иначе выделение текста, отпущенное за краем окна, закрывало бы его. */
+let modalDownOnBackdrop = false;
+$("#modal").addEventListener("mousedown", (e) => { modalDownOnBackdrop = e.target === e.currentTarget; });
+$("#modal").addEventListener("click", (e) => {
+  if (modalDownOnBackdrop && e.target === e.currentTarget) e.currentTarget.close();
+});
+
+/* ── тема ─────────────────────────────────────────────────────────────── */
+const THEME_KEY = "ai-council-theme";
+function applyTheme(name, persist = true) {
+  document.documentElement.dataset.theme = name;
+  if (persist) {
+    try { localStorage.setItem(THEME_KEY, name); } catch (e) { /* private mode */ }
+  }
+  $("#theme-btn").textContent = name === "dark" ? "☀" : "☾";
+  $("#theme-btn").title = name === "dark" ? "Светлая тема" : "Тёмная тема";
+}
+// Без сохранённого выбора — тема системы, и она не запоминается: сменится тема ОС —
+// сменится и здесь. Запоминается только явный выбор кнопкой.
+(() => {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+  const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light" : "dark";
+  applyTheme(saved || system, false);
+})();
+$("#theme-btn").onclick = () =>
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+// Пилюля облака — единственный вход на страницу «Облако» (пункт меню убран как дубль):
+// расход видно в шапке, детали — в один клик.
+$("#hdr-cloud").onclick = () => selectTab("cloud");
+// Тумблер «всё на GLM 5.x» (§17.6) — переключается без рестарта воркера.
+$("#hdr-glm").onclick = () => toggleGlm(!(glmState && glmState.on));
+
+/* ── режим «всё на GLM 5.x» (§17.6) ─────────────────────────────────────────
+   Один переключатель в трёх местах (шапка, «Облако», Настройки → «Облако»): состояние
+   приходит с сервера (/api/cloud → glm), клиент его не придумывает. Воркер читает флаг на
+   каждом захвате — рестарт нужен только после правки лимитов режима в Настройках. */
+let glmState = null;
+const glmModelsText = (g) => Object.entries((g && g.models) || {})
+  .map(([role, model]) => `${role.replace("proposer.", "")}: ${model}`).join(" · ");
+async function toggleGlm(on) {
+  const g = glmState || {};
+  if (on && !confirm("Режим GLM 5.x: все роли новых ревью" + (g.runs_on_glm ? " и проработок" : "") +
+      " уходят в подписку Coding Plan (" + glmModelsText(g) + "), локально остаются только эмбеддинги." +
+      (g.runs_on_glm ? "" : " Проработки карточек идут локально, по одной.") + "\n" +
+      `Лимит облака на время режима — ${g.max_calls_per_window ?? 500} вызовов за ` +
+      `${g.window_hours ?? 10} ч, до ${g.max_calls_per_run ?? 40} на прогон.\nВключить?`)) return null;
+  try {
+    const r = await post("/api/glm", { on });
+    glmState = r;
+    toast(on ? `GLM 5.x включён: все роли → GLM 5.x, эмбеддинги — локально; лимит ` +
+               `${r.max_calls_per_window}/${r.window_hours} ч. Рестарт не нужен — со следующего прогона.`
+             : "GLM 5.x выключен — новые прогоны идут по ростеру профиля, лимиты облака обычные");
+    renderGlmPill();
+    refresh();
+    return r;
+  } catch (e) { toast(e.message, true); return null; }
+}
+function renderGlmPill() {
+  const g = glmState || {}, b = $("#hdr-glm");
+  b.setAttribute("aria-checked", g.on ? "true" : "false");
+  b.className = "pill " + (g.on ? (g.effective && !g.waiting ? "cloud" : "warn") : "off");
+  b.querySelector(".sw").textContent = g.on ? "◉" : "○";
+  b.title = !g.on ? "Режим «всё на GLM 5.x» выключен — клик: все роли новых прогонов в Coding Plan"
+    : g.effective && g.waiting ? `GLM 5.x включён: ${g.waiting} — клик выключит`
+    : g.effective ? `GLM 5.x включён: ${glmModelsText(g)}; эмбеддинги локально — клик выключит`
+    : `GLM 5.x включён, но не действует: ${g.why || "облако выключено"}`;
+}
+/* Карточка режима — на «Облаке» и в Настройках → «Облако». */
+function glmCard(g) {
+  const state = !g.on ? "выключен" : g.effective ? "включён" : "включён, но не действует";
+  return `<div class="card" style="margin-bottom:12px${g.effective ? "; border-color:var(--cloud-bd)" : ""}">
+    <h3>Режим «всё на GLM 5.x»</h3>
+    <div class="row" style="justify-content:space-between; align-items:flex-start">
+      <div>
+        <div class="big ${g.effective ? "ok-txt" : g.on ? "warn-txt" : "faint"}">${state}</div>
+        <div class="sub">${g.on && !g.effective ? esc(g.why || "облако выключено")
+          : "Каждая роль прогона — проработки и ревью — уходит в подписку Coding Plan на модели "
+            + "5-го поколения. Локально остаются только эмбеддинги: у Coding API их нет."}</div>
+      </div>
+      <button class="act ${g.on ? "bad" : "ok"}" data-glm-toggle
+        ${!g.on && !g.cloud_enabled ? 'disabled title="сначала включите облако"' : ""}>
+        ${g.on ? "Выключить" : "Включить"}</button>
+    </div>
+    <div class="kv" style="margin-top:12px">
+      <div>роли</div><div class="mono wrap">${esc(glmModelsText(g))} · embed: локально</div>
+      <div>лимиты режима</div><div class="mono">${Number(g.max_calls_per_window) || 0} вызовов за
+        ${Number(g.window_hours) || 0} ч · ${Number(g.max_calls_per_day) || 0} за сутки ·
+        ${Number(g.max_calls_per_run) || 0} на прогон</div>
+      ${g.on && g.at ? `<div>переключил</div><div class="sub">${esc(g.by || "")}, ${ago(g.at)} назад</div>` : ""}
+    </div>
+    <div class="sub" style="margin-top:8px">Тумблер действует со следующего прогона, без рестарта;
+      окно в шапке, пока режим включён, — окно режима. Отдельную задачу можно отправить в GLM 5.x
+      галочкой в диалоге запуска, не включая режим для всех. Лимиты правятся в Настройках →
+      «Облако»; их воркер подхватывает после перезапуска консилиума.</div>
+  </div>`;
+}
+function bindGlmToggle(root, rerender) {
+  root.querySelectorAll("[data-glm-toggle]").forEach((b) => {
+    b.onclick = async () => {
+      b.disabled = true;
+      const r = await toggleGlm(!(glmState && glmState.on));
+      b.disabled = false;
+      if (r && rerender) rerender();
+    };
+  });
+}
+// «Лента» — без пункта меню: вход через таблетку, она же показывает число новых событий.
+$("#hdr-live").onclick = () => selectTab("feed");
+// Очередь — к «Управлению очередью» на «Обзоре».
+$("#hdr-queue").onclick = async () => {
+  await selectTab("overview");
+  const card = $("#q-card");
+  if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+/* ── вкладки ──────────────────────────────────────────────────────────── */
+const TABS = ["home", "overview", "quality", "feed", "cards", "review",
+              "knowledge", "cloud", "settings"];
+// Прежние имена вкладок (до объединения 2026-08-21) остаются рабочими диплинками:
+// #control → #overview, #learning → #quality, #runs → #feed, #graph → #knowledge.
+// Их же шлют кнопки гайда/чек-листа, пока gateway не перезапущен со свежими текстами.
+const TAB_ALIASES = { control: "overview", learning: "quality",
+                      runs: "feed", graph: "knowledge" };
+let activeTab = "home";
+function selectTab(name, fromHash = false) {
+  if (!TABS.includes(name)) name = TAB_ALIASES[name] || "home";
+  // Сцена графа крутится в requestAnimationFrame — уходя с вкладки «Знания», где граф
+  // живёт теперь, её надо гасить, иначе она считает кадры в скрытом блоке до F5.
+  if (activeTab === "knowledge" && name !== "knowledge") stopGraph3d();
+  activeTab = name;
+  // Диплинк #tab: URL всегда отражает открытую вкладку — можно скопировать/открыть
+  // и попасть сразу на неё. replaceState (не push), чтобы история не разбухала от
+  // каждого клика по вкладкам. Перезапись нужна и при fromHash: старая ссылка
+  // #control канонизируется в #overview, а не висит битым именем.
+  if ("#" + name !== location.hash)
+    history.replaceState(null, "", "#" + name);
+  // Название (главная) и шестерёнка живут вне <nav> — подсветку получают все кнопки
+  // шапки с data-tab; aria-current — для чтения с экрана.
+  document.querySelectorAll("header [data-tab]").forEach((b) => {
+    b.classList.toggle("on", b.dataset.tab === name);
+    if (b.dataset.tab === name) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  });
+  // Меню на телефоне прокручивается — выбранный раздел держим в видимой части.
+  const curNav = document.querySelector("nav button.on");
+  if (curNav) curNav.scrollIntoView({ block: "nearest", inline: "nearest" });
+  $("#hdr-live").classList.toggle("sel", name === "feed");
+  // Таблетка облака — пункт меню страницы «Облако»: та же подсветка и aria-current.
+  markCloudPill(name);
+  TABS.forEach((t) => { $("#tab-" + t).hidden = (t !== name); });
+  renderTabDoc(name);
+  return render();
+}
+document.querySelectorAll("header [data-tab]").forEach((btn) => {
+  btn.onclick = () => selectTab(btn.dataset.tab);
+});
+function markCloudPill(name = activeTab) {
+  const pill = $("#hdr-cloud");
+  pill.classList.toggle("sel", name === "cloud");
+  if (name === "cloud") pill.setAttribute("aria-current", "page");
+  else pill.removeAttribute("aria-current");
+}
+
+/* ── «как это работает» ───────────────────────────────────────────────────
+   Интерфейс из восьми вкладок, двух биллинговых контуров и пяти демонов сам себя не
+   объясняет: вкладки показывают состояние, но не отвечают на «в каком порядке» и «что
+   здесь только моё дело». Пояснения приходят с сервера — половина зависит от конфига
+   (интервалы, потолки, права записи), и прозаическая копия в разметке разъезжалась бы
+   с ним молча. */
+let guideCache = null;
+async function loadGuide() {
+  if (!guideCache) guideCache = await api("/api/guide");
+  return guideCache;
+}
+// Объединённые вкладки наследуют пояснения исходных: пока gateway не перезапущен,
+// в /api/guide нет ключей «feed»/обновлённых текстов — склеиваем из прежних.
+const DOC_JOIN = {
+  overview: ["overview", "control"], quality: ["quality", "learning"],
+  feed: ["runs"], knowledge: ["knowledge", "graph"],
+};
+const TAB_DOC_KEY = "ai-council-tabdoc-open";
+function tabDocOpen() {
+  try { return localStorage.getItem(TAB_DOC_KEY) === "1"; } catch (e) { return false; }
+}
+async function renderTabDoc(name) {
+  const box = $("#tab-doc");
+  if (!box) return;
+  try {
+    const g = await loadGuide();
+    const tabs = g.tabs || {};
+    // Приоритет — DOC_JOIN, не tabs[name] напрямую: имя вкладки могло существовать и ДО
+    // объединения (overview/quality/knowledge) — на неперезапущенном шлюзе tabs[name] тогда
+    // резолвится в старый, ещё не смешанный с парой текст. После перезапуска шлюза старый
+    // ключ (control/learning/graph) исчезает из /api/guide, filter(Boolean) отбрасывает его,
+    // и остаётся один уже канонический tabs[name] — тот же код работает в обоих состояниях.
+    let doc;
+    if (DOC_JOIN[name]) {
+      const parts = DOC_JOIN[name].map((k) => tabs[k]).filter(Boolean);
+      if (parts.length)
+        doc = { what: parts.map((p) => p.what).join(" "),
+                do: parts.map((p) => p.do).join(" ") };
+    }
+    if (!doc) doc = tabs[name];
+    if (!doc) { box.textContent = ""; return; }
+    // Свёрнуто до одной фразы: полный текст нужен в первый раз, а дальше только
+    // отодвигает содержимое вкладки вниз. Выбор помнится в браузере.
+    const open = tabDocOpen();
+    box.innerHTML = `<b>${esc(doc.what)}</b>
+      <span id="tab-doc-rest" ${open ? "" : "hidden"}>${esc(doc.do)}
+        <a href="#" id="tab-doc-more">как это работает целиком →</a></span>
+      <button class="linkish" id="tab-doc-toggle" aria-expanded="${open}">${open ? "свернуть" : "подробнее"}</button>`;
+    $("#tab-doc-more").onclick = (e) => { e.preventDefault(); openGuide(); };
+    $("#tab-doc-toggle").onclick = () => {
+      try { localStorage.setItem(TAB_DOC_KEY, open ? "0" : "1"); } catch (e) { /* private mode */ }
+      renderTabDoc(name);
+    };
+  } catch (err) {
+    box.textContent = "";                      // шлюз недоступен — вкладка важнее подсказки
+  }
+}
+
+async function openGuide() {
+  const g = await loadGuide();
+  $("#m-title").textContent = "Как это работает";
+  $("#m-sub").textContent = "Порядок работы, что делает владелец и что значат слова "
+    + "в интерфейсе. Числа — из текущего конфига, не из описания.";
+  const who = { "владелец": "ok", "консилиум": "cloud", "сервис": "" };
+  $("#m-body").innerHTML = `
+    <div class="stack">
+      ${(g.steps || []).map((s) => `<div class="card">
+        <div class="row" style="gap:8px; align-items:baseline">
+          <b>${s.n}. ${esc(s.title)}</b>
+          <span class="tag ${who[s.who] || ""}">${esc(s.who)}</span>
+          <div class="spacer"></div>
+          <span class="sub">${esc(s.cost || "")}</span></div>
+        <div class="sub" style="margin-top:6px">${esc(s.what)}</div>
+        <div class="row" style="gap:6px; margin-top:8px">
+          ${s.tab ? `<button class="act" data-guide-tab="${esc(s.tab)}">Открыть вкладку</button>` : ""}
+          ${s.op ? `<span class="sub">операция: <span class="mono">${esc(s.op)}</span></span>` : ""}
+        </div></div>`).join("")}
+      <div class="card"><b>Профили — кто работает и во что это встаёт</b>
+        <div class="tablewrap" style="margin-top:8px"><table>
+          <thead><tr><th>Профиль</th><th>Участники</th><th>Облако</th><th>Вызовов на карточку</th></tr></thead>
+          <tbody>${(g.profiles || []).map((p) => `<tr>
+            <td class="mono">${esc(p.name)}</td>
+            <td class="sub">${esc(p.note)} · ${p.roles} ролей</td>
+            <td class="sub mono">${(p.cloud_models || []).map(esc).join(", ") || "—"}</td>
+            <td class="mono">${p.cloud_calls_per_card || "—"}</td></tr>`).join("")}</tbody>
+        </table></div></div>
+      <div class="card"><b>Только владелец</b>
+        <ul class="sub" style="margin:8px 0 0; padding-left:18px">
+          ${(g.owner_only || []).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+        ${(g.forbidden_writeback || []).length ? `<div class="sub" style="margin-top:8px">
+          запрещено коду в Notion: <span class="mono">${(g.forbidden_writeback || [])
+            .map(esc).join(", ")}</span></div>` : ""}</div>
+      <div class="card"><b>Словарь</b>
+        <div class="kv" style="margin-top:8px">${(g.glossary || []).map((t) => `
+          <div><b>${esc(t.term)}</b></div><div class="sub">${esc(t.text)}</div>`).join("")}</div></div>
+    </div>`;
+  $("#m-foot").innerHTML = "";
+  $("#m-body").querySelectorAll("[data-guide-tab]").forEach((btn) => {
+    btn.onclick = () => { $("#modal").close(); selectTab(btn.dataset.guideTab); };
+  });
+  $("#modal").showModal();
+}
+$("#guide-btn").onclick = openGuide;
+
+/* ── обзор + управление (объединены 2026-08-21) ──────────────────────────
+   Статистика и ручные операции — одна вкладка: между ними один шаг (увидел
+   состояние → запустил операцию). Меняющиеся блоки вынесены в отдельные
+   контейнеры: refresh() каждые 5 с обновляет только #ov-stats/#ov-svc и не
+   трогает поля формы «План на рабочее окно» — полный re-render на тике
+   сбрасывал бы ввод пользователя до значений по умолчанию. */
+function ovStatsGrid(s) {
+  const q = s.queue || {};
+  const order = ["queued", "running", "done", "abstained", "failed"];
+  const queueRows = order.filter((k) => q[k]).map((k) =>
+    `<span class="tag ${k}">${k}: ${q[k]}</span>`).join(" ") || '<span class="faint">пусто</span>';
+  const c = s.cloud || {}, w = c.window || {};
+  const used = w.max ? Math.min(100, Math.round(100 * w.calls / w.max)) : 0;
+  return `
+    <div class="grid">
+      <div class="card">
+        <h3>Карточки борда</h3>
+        <div class="big">${s.cards.total}</div>
+        <div class="sub">${s.cards.bugs} ошибок · ${s.cards.half_baked} half-baked</div>
+      </div>
+      <div class="card">
+        <h3>Ждут ревью</h3>
+        <div class="big ${s.verdicts.awaiting_review ? "" : "faint"}">${s.verdicts.awaiting_review}</div>
+        <div class="sub">вердиктов поставлено: ${s.verdicts.total}</div>
+      </div>
+      <div class="card">
+        <h3>Очередь</h3>
+        <div class="chip-row" style="margin-top:6px">${queueRows}</div>
+        <div class="sub" style="margin-top:9px">модельный лок: ${s.model_lock
+          ? esc(s.model_lock.model) + " (" + esc(s.model_lock.holder) + ")" : "свободен"}</div>
+      </div>
+      <div class="card">
+        <h3>Окно подписки</h3>
+        <div class="big">${w.calls ?? "—"}<span class="sub"> / ${w.max ?? "—"}</span></div>
+        <div class="sub">вызовов за ${w.hours ?? "—"} ч · облако ${c.enabled
+          ? '<span class="ok-txt">включено</span>' : '<span class="faint">выключено</span>'}</div>
+        <div class="${used >= 90 ? "bar bad" : used >= 60 ? "bar warn" : "bar"}" style="margin-top:8px">
+          <span style="width:${used}%"></span></div>
+      </div>
+    </div>`;
+}
+
+function ovSvcRows(s) {
+  return (s.services || []).map((x) =>
+    `<div class="row" style="justify-content:space-between">
+       <span class="mono">${esc(x.name)}</span>
+       <span class="tag ${x.alive ? "done" : "failed"}">${x.alive ? "работает" : "стоит"}</span>
+     </div>`).join("");
+}
+
+/* ── управление очередью (queue_control.py) ─────────────────────────────
+   Пауза не трогает очередь: «Продолжить» продолжит ровно с того места. «Снять» —
+   отдельная, разрушающая операция; снятое и не начатое можно вернуть на прежние места. */
+function queueCtlCard(s, batches) {
+  const qc = s.queue_ctl || {}, q = s.queue || {};
+  const blocked = Object.entries(qc.memory_blocked || {});
+  const resumable = (batches || []).reduce((n, b) => n + (b.resumable || 0), 0);
+  const paused = (batches || []).reduce((n, b) => n + (b.paused || 0), 0);
+  return `<div class="card" id="q-card" style="margin-top:12px${qc.paused ? ";border-color:var(--warn-bd)" : ""}">
+    <h3>Управление очередью</h3>
+    <div class="row">
+      ${qc.paused
+        ? `<span class="tag warn">на паузе с ${new Date(qc.paused.at * 1000).toLocaleString("ru-RU")}${
+            qc.paused.reason ? " — " + esc(qc.paused.reason) : ""}</span>
+           <button class="act ok" id="q-resume">Продолжить с того же места</button>`
+        : `<span class="tag ok">идёт</span>
+           <button class="act" id="q-pause" title="Текущий прогон доделается, новые не берутся; порядок не меняется">Пауза</button>`}
+      <span class="sub">в очереди ${q.queued || 0} · идёт ${q.running || 0}${paused ? ` · серии на паузе: ${paused}` : ""}</span>
+      ${resumable ? `<button class="act" id="q-restore" title="Вернуть снятые владельцем и просроченные, не начатые — на прежние места; дубли по карточке пропускаются">Вернуть снятые (${resumable})</button>` : ""}
+    </div>
+    ${escalationLine(qc.escalation)}
+    ${blocked.length ? `<div class="sub" style="margin-top:8px">Ждут память (их прогоны стоят на своих местах, остальная очередь идёт):
+      <ul class="tight">${blocked.map(([k, v]) => `<li><b>${esc(v.label || k.replace("runs:", "профиль ").replace("review:", "ревью-профиль "))}</b> —
+        ${esc(v.why)} <span class="faint">с ${ago(v.since)} назад</span></li>`).join("")}</ul></div>` : ""}
+  </div>`;
+}
+
+/* Облачная эскалация (§17.4): задачи, ждущие памяти дольше порога, уходят в облако
+   с теми же условиями; отказ всех провайдеров → пауза облака до времени повтора. */
+// Параметр — info, не esc: имя esc перекрыло бы глобальную esc() экранирования
+// (так и было — «Обзор» не рисовался, пока облако на паузе).
+function escalationLine(info) {
+  if (!info) return "";
+  if (!info.enabled) return `<div class="sub faint" style="margin-top:8px">Облачная эскалация выключена
+    (models.cloud_escalation.enabled или облако выключено).</div>`;
+  const hours = Math.round((info.after_seconds || 7200) / 360) / 10;
+  const waiting = (info.waiting_runs || 0) + (info.waiting_reviews || 0);
+  const due = (info.due_runs || 0) + (info.due_reviews || 0);
+  const done = (info.done_runs || 0) + (info.done_reviews || 0);
+  const oldest = Math.min(...[info.oldest_runs, info.oldest_reviews].filter(Boolean));
+  const cd = info.cooldown;
+  const at = (ts) => new Date(ts * 1000).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return `<div class="sub" style="margin-top:8px">☁ Облачная эскалация (ждут памяти дольше ${hours} ч):
+    ${waiting ? `ждут памяти ${waiting}${Number.isFinite(oldest) ? `, дольше всех — ${ago(oldest)}` : ""}` : "никто не ждёт памяти"}${
+    due ? ` · <b>готовы к облаку: ${due}</b>` : ""}${done ? ` · переведено в облако: ${done}` : ""}${
+    cd ? `<br><span class="warn-txt">облако на паузе до ${at(cd.until)} — ${esc_kind(cd.kind)}</span>
+      <span class="faint">${esc(String(cd.why || "").slice(0, 220))}</span>` : ""}</div>`;
+}
+function esc_kind(kind) {
+  return ({ quota: "квота/токены кончились: сброс + 2 мин", overload: "провайдер перегружен: повтор через 5 мин",
+            down: "сеть/провайдер недоступен: повтор через 5 мин", ok: "сбой был разовым",
+            no_key: "нет ключа/доступа", config: "ошибка конфигурации", disabled: "облако выключено" })[kind] || kind;
+}
+
+function bindQueueCtl(scope, rerender) {
+  const root = document.querySelector(scope);
+  const call = async (path, body, msg) => {
+    try { const r = await post(path, body); toast(msg(r)); rerender(); refresh(); }
+    catch (e) { toast(e.message, true); }
+  };
+  const pauseBtn = root.querySelector("#q-pause");
+  if (pauseBtn) pauseBtn.onclick = () => call("/api/queue/pause", {}, () => "очередь на паузе — текущий прогон доделается");
+  const resumeBtn = root.querySelector("#q-resume");
+  if (resumeBtn) resumeBtn.onclick = () => call("/api/queue/resume", {},
+    (r) => `продолжено: в очереди ${r.queued}` + (r.resumed ? `, серий с паузы ${r.resumed}` : ""));
+  const restoreBtn = root.querySelector("#q-restore");
+  if (restoreBtn) restoreBtn.onclick = () => call("/api/queue/resume",
+    { include_cancelled: true, include_expired: true },
+    (r) => `возвращено ${r.restored}` + (r.skipped_duplicates ? `, пропущено дублей ${r.skipped_duplicates}` : ""));
+  root.querySelectorAll("[data-qpause]").forEach((b) => {
+    b.onclick = () => call("/api/queue/pause", { batch_id: b.dataset.qpause }, (r) => `серия на паузе: ${r.paused}`);
+  });
+  root.querySelectorAll("[data-qresume]").forEach((b) => {
+    b.onclick = () => call("/api/queue/resume", { batch_id: b.dataset.qresume }, (r) => `серия продолжена: ${r.resumed}`);
+  });
+  root.querySelectorAll("[data-qrestore]").forEach((b) => {
+    b.onclick = () => call("/api/queue/resume", { batch_id: b.dataset.qrestore, include_cancelled: true, include_expired: true },
+      (r) => `возвращено ${r.restored}` + (r.skipped_duplicates ? `, дублей пропущено ${r.skipped_duplicates}` : ""));
+  });
+}
+
+async function renderOverview(s) {
+  if (!s) s = await api("/api/state");
+  const [ops, batches, plan] = await Promise.all([
+    api("/api/ops"), api("/api/batches"), api("/api/plan"),
+  ]);
+  const svc = Object.fromEntries((s.services || []).map((x) => [x.name, x.alive]));
+  const councilUp = svc.supervisor && svc.council;
+  const c = s.cloud || {}, w = c.window || {};
+
+  const opBtn = (name, title, extra) => {
+    const o = (ops.ops || []).find((x) => x.name === name) || {};
+    return `<button class="act ${extra || ""}" data-op="${name}"
+              ${o.destructive ? 'data-confirm="1"' : ""}>${esc(title)}</button>`;
+  };
+
+  const jobs = (ops.jobs || []).map((j) => `<details ${j.status === "running" ? "open" : ""}>
+    <summary><span class="tag ${j.status === "done" ? "done" : j.status === "running"
+      ? "running" : "failed"}">${esc(j.status)}</span>
+      <b>${esc(j.title)}</b> <span class="faint mono">${esc(j.cmd)}</span>
+      <span class="faint">· ${ago(j.started_at)} назад${j.code !== null
+        ? ", код " + j.code : ""}</span></summary>
+    <div><pre class="dump">${esc(j.output_tail || "…")}</pre></div></details>`).join("")
+    || '<div class="empty">операций ещё не запускали</div>';
+
+  const batchRows = (batches || []).map((b) => `<tr>
+    <td class="mono">${esc(b.batch_id)}</td>
+    <td><span class="tag ${["hybrid", "cloud"].includes(b.profile) ? "cloud" : ""}">${esc(b.profile)}</span></td>
+    <td class="mono">${b.total}</td>
+    <td class="chip-row">
+      ${b.running ? `<span class="tag running">идут ${b.running}</span>` : ""}
+      ${b.queued ? `<span class="tag queued">в очереди ${b.queued}</span>` : ""}
+      ${b.done ? `<span class="tag done">готово ${b.done}</span>` : ""}
+      ${b.abstained ? `<span class="tag abstained">воздержались ${b.abstained}</span>` : ""}
+      ${b.paused ? `<span class="tag warn">на паузе ${b.paused}</span>` : ""}
+      ${b.dropped ? `<span class="tag failed">снято ${b.dropped}</span>` : ""}</td>
+    <td class="sub">${b.not_before ? "с " + new Date(b.not_before * 1000)
+      .toLocaleString("ru-RU", { hour: "2-digit", minute: "2-digit", day: "2-digit",
+                                month: "2-digit" }) : "сразу"}
+      ${b.expires_at ? "<br>до " + new Date(b.expires_at * 1000)
+        .toLocaleString("ru-RU", { hour: "2-digit", minute: "2-digit", day: "2-digit",
+                                   month: "2-digit" }) : ""}</td>
+    <td style="white-space:nowrap">
+      ${b.queued ? `<button class="act" data-qpause="${esc(b.batch_id)}" title="Остановить серию, не трогая порядок">Пауза</button>` : ""}
+      ${b.paused ? `<button class="act ok" data-qresume="${esc(b.batch_id)}">Продолжить</button>` : ""}
+      ${b.resumable ? `<button class="act" data-qrestore="${esc(b.batch_id)}"
+        title="Вернуть снятые/просроченные и не начатые — на прежние места">Вернуть ${b.resumable}</button>` : ""}
+      ${b.queued ? `<button class="act bad" data-cancel="${esc(b.batch_id)}">Снять</button>` : ""}</td>
+  </tr>`).join("");
+
+  const planRows = (plan && plan.items || []).map((i) => `<tr>
+    <td class="mono">${esc(i.from || i.start || "")}–${esc(i.to || i.end || "")}</td>
+    <td class="wrap">${esc(i.title || i.card_id || "")}
+      <div class="sub">${esc(i.why || i.reason || "")}</div></td>
+    <td>${i.est ? `<span class="tag">${esc(i.est)}</span>` : ""}</td>
+    <td class="mono">${num(i.score, 1)}</td></tr>`).join("");
+
+  $("#tab-overview").innerHTML = `
+    <div class="card" id="setup-card" style="margin-bottom:12px">
+      <h3>С чего начать</h3><div class="sub">проверяем…</div></div>
+    <div id="ov-stats">${ovStatsGrid(s)}</div>
+    <div class="split" style="margin-top:12px">
+      <div class="card">
+        <h3>Консилиум</h3>
+        <div class="big ${councilUp ? "ok-txt" : "faint"}">${councilUp ? "работает" : "остановлен"}</div>
+        <div class="stack" style="margin-top:10px" id="ov-svc">${ovSvcRows(s)}</div>
+        <div class="kv" style="margin-top:14px">
+          <div>профиль</div><div class="mono">${esc(s.profile)}</div>
+          <div>git</div><div class="mono">${esc(s.git)}</div>
+          <div>конфиг</div><div class="mono">${esc(s.config_hash)}</div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          ${opBtn("council_start", "Запустить", "ok")}
+          ${opBtn("council_stop", "Остановить", "bad")}
+          ${opBtn("council_restart", "Перезапустить")}
+        </div>
+        <div class="sub" style="margin-top:8px">Перезапуск нужен после правки настроек:
+          воркеры читают конфиг при старте.</div>
+      </div>
+
+      <div class="card">
+        <h3>Облако — состояние</h3>
+        <div class="row" style="justify-content:space-between; align-items:flex-start">
+          <div>
+            <div class="big ${c.enabled ? "ok-txt" : "faint"}">${c.enabled
+              ? "включено" : "выключено"}</div>
+            <div class="sub">${c.enabled
+              ? `израсходовано ${w.calls} из ${w.max} вызовов за ${w.hours} ч`
+              : "профили hybrid и cloud недоступны, консилиум работает только локально"}</div>
+          </div>
+          <button class="act ${c.enabled ? "bad" : "ok"}" id="cloud-toggle">
+            ${c.enabled ? "Выключить облако" : "Включить облако"}</button>
+        </div>
+        <div class="${w.max && w.calls / w.max >= 0.9 ? "bar bad"
+          : w.max && w.calls / w.max >= 0.6 ? "bar warn" : "bar"}" style="margin-top:10px">
+          <span style="width:${w.max ? Math.min(100, Math.round(100 * w.calls / w.max)) : 0}%"></span></div>
+        <div class="kv" style="margin-top:12px">
+          <div>осталось в окне</div><div class="mono">${w.max ? w.max - w.calls : "—"} вызовов</div>
+          <div>хватит карточек</div>
+          <div class="mono">hybrid ≈ ${w.max ? Math.floor((w.max - w.calls) / 2) : "—"} ·
+            cloud ≈ ${w.max ? Math.floor((w.max - w.calls) / 8) : "—"}</div>
+          <div>режим GLM 5.x</div>
+          <div>${c.glm && c.glm.on ? (c.glm.effective
+            ? '<span class="tag cloud">включён — все роли в Coding Plan</span>'
+            : '<span class="tag warn">включён, но облако выключено</span>')
+            : '<span class="faint">выключен</span>'}</div>
+        </div>
+        <div class="sub" style="margin-top:8px">Тумблер меняет конфиг; чтобы его увидели
+          воркеры, нажмите «Перезапустить». Режим GLM 5.x, детали биллинга и проверка связи —
+          <a href="#cloud">страница «Облако»</a> (таблетка облака в шапке).</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Операции</h3>
+      <div class="row">
+        ${opBtn("sync", "Синхронизировать борд")}
+        ${opBtn("reindex", "Переиндексировать знания")}
+        ${opBtn("graph", "Собрать граф")}
+        ${opBtn("selftest", "Самопроверки")}
+        ${opBtn("doctor", "Предполётная проверка")}
+      </div>
+      <div class="row" style="margin-top:8px">
+        ${opBtn("emit", "Что уйдёт в Notion (черновик)")}
+        ${opBtn("emit_apply", "Записать в Notion", "bad")}
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>План на рабочее окно</h3>
+      <div class="row">
+        <label class="row" style="gap:6px"><span class="sub">дата</span>
+          <input type="text" id="plan-date" value="today+1" style="width:110px"></label>
+        <label class="row" style="gap:6px"><span class="sub">с</span>
+          <input type="text" id="plan-from" value="09:30" style="width:78px"></label>
+        <label class="row" style="gap:6px"><span class="sub">до</span>
+          <input type="text" id="plan-to" value="18:00" style="width:78px"></label>
+        ${opBtn("plan", "Собрать черновик", "accent")}
+        ${opBtn("plan_apply", "Собрать и записать", "bad")}
+      </div>
+      ${plan && plan.id ? `<div class="sub" style="margin-top:10px">
+          последний: ${esc(plan.window_from || "")} → ${esc(plan.window_to || "")},
+          собран ${ago(plan.created_at)} назад</div>
+        <div class="tablewrap" style="margin-top:8px"><table>
+          <thead><tr><th>Время</th><th>Пункт</th><th>Оценка</th><th>Скор</th></tr></thead>
+          <tbody>${planRows || emptyRow(4, "план пуст")}</tbody></table></div>`
+        : '<div class="empty">планов ещё нет</div>'}
+    </div>
+
+    ${queueCtlCard(s, batches)}
+
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">Серии запусков</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Серия</th><th>Профиль</th><th>Карточек</th><th>Состояние</th>
+          <th>Окно</th><th></th></tr></thead>
+        <tbody>${batchRows || emptyRow(6, "серий не запускали")}</tbody></table></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Журнал операций</h3>${jobs}
+    </div>`;
+
+  document.querySelectorAll("#tab-overview [data-op]").forEach((b) => {
+    b.onclick = async () => {
+      if (b.dataset.confirm && !confirm(`${b.textContent.trim()} — выполнить?`)) return;
+      const params = b.dataset.op.startsWith("plan")
+        ? { date: $("#plan-date").value, time_from: $("#plan-from").value,
+            time_to: $("#plan-to").value } : {};
+      b.disabled = true;
+      try {
+        const r = await post("/api/ops", { name: b.dataset.op, params });
+        toast("запущено: " + r.title);
+        setTimeout(renderOverview, 1200);
+      } catch (e) { toast(e.message, true); b.disabled = false; }
+    };
+  });
+  bindQueueCtl("#tab-overview", renderOverview);
+  document.querySelectorAll("#tab-overview [data-cancel]").forEach((b) => {
+    b.onclick = async () => {
+      if (!confirm("Снять из очереди все ожидающие карточки серии?")) return;
+      try {
+        const r = await post("/api/cancel", { batch_id: b.dataset.cancel });
+        toast(`снято прогонов: ${r.cancelled}`);
+        renderOverview();
+      } catch (e) { toast(e.message, true); }
+    };
+  });
+  $("#cloud-toggle").onclick = async () => {
+    try {
+      await post("/api/settings", { key: "models.cloud.enabled", value: !c.enabled });
+      toast(c.enabled ? "облако выключено" : "облако включено — перезапустите консилиум");
+      renderOverview();
+    } catch (e) { toast(e.message, true); }
+  };
+  renderSetup();
+}
+
+/* Тиковое обновление обзора: только счётчики и сервисы, без полного re-render —
+   см. комментарий у renderOverview (поля формы «План»). */
+function updateOverviewStats(s) {
+  const stats = $("#ov-stats");
+  if (stats) stats.innerHTML = ovStatsGrid(s);
+  const svc = $("#ov-svc");
+  if (svc) svc.innerHTML = ovSvcRows(s);
+}
+
+/* ── «с чего начать»: чек-лист готовности ─────────────────────────────── */
+// Подсистема из пяти демонов, двух ключей, борда, индекса и графа не объясняет себя
+// интерфейсом сама. Этот блок отвечает на «что уже работает / что сломано / куда жать»
+// в одном месте — без него порядок действий приходится держать в голове.
+const SETUP_STATE_KEY = "ai-council-setup-open";
+// Обзор перерисовывается каждые 5 с, а проверка готовности дёргает Ollama, облако и
+// четыре запроса к базе — на таком интервале это трата ради цифры, которая так часто
+// не меняется. Держим ответ минуту и перерисовываем из него.
+const setupCache = { at: 0, data: null };
+async function renderSetup(force = false) {
+  const box = $("#setup-card");
+  if (!box) return;
+  let d = setupCache.data;
+  if (force || !d || Date.now() - setupCache.at > 60000) {
+    try {
+      d = await api("/api/setup");
+      setupCache.data = d; setupCache.at = Date.now();
+    } catch (e) {
+      box.innerHTML = `<h3>С чего начать</h3><div class="sub">${esc(e.message)}</div>`;
+      return;
+    }
+  }
+
+  const problems = d.steps.filter((s) => !s.ok || s.level === "warn");
+  let open;
+  try { open = localStorage.getItem(SETUP_STATE_KEY); } catch (e) { open = null; }
+  // Раскрыт сам — только если не готов обязательный шаг. «Частично» (ждут вердикта) —
+  // рабочее состояние, а не поломка: из-за него список занимал весь первый экран «Обзора».
+  const hard = d.steps.filter((s) => s.level !== "ok" && s.level !== "warn");
+  const expanded = open === null ? hard.length > 0 : open === "1";
+  const pending = problems.filter((s) => s.level !== "ok");
+
+  const row = (s) => `
+    <div class="row" style="justify-content:space-between; gap:10px; padding:5px 0;
+         border-top:1px solid var(--line)">
+      <div>
+        <span class="tag ${s.level === "ok" ? "done" : s.level === "warn" ? "queued" : "failed"}">${
+          s.level === "ok" ? "готово" : s.level === "warn" ? "частично" : "нет"}</span>
+        <b style="margin-left:6px">${esc(s.title)}</b>
+        <div class="sub">${esc(s.detail)}${s.level === "ok" ? "" : " — " + esc(s.fix)}</div>
+      </div>
+      <div class="row" style="gap:6px">${
+        // Кнопка действия — только у незакрытых пунктов: «Выполнить» рядом с зелёной
+        // галкой читается как «а надо ещё что-то сделать?».
+        s.op && s.level !== "ok"
+          ? `<button class="act" data-setup-op="${esc(s.op)}">Выполнить</button>` : ""}${
+        s.tab ? `<button class="act" data-setup-tab="${esc(s.tab)}">Открыть</button>` : ""}</div>
+    </div>`;
+
+  box.innerHTML = `
+    <div class="row" style="justify-content:space-between; align-items:center">
+      <h3 style="margin:0">С чего начать — готово ${d.ready} из ${d.total}</h3>
+      <div class="row" style="gap:6px">
+        <button class="act" id="setup-guide">Как это работает</button>
+        <button class="act" id="setup-toggle">${expanded ? "свернуть" : "развернуть"}</button>
+      </div>
+    </div>
+    <div class="sub" id="setup-summary" ${expanded ? "hidden" : ""} style="margin-top:4px">${
+      pending.length
+        ? "Осталось: " + pending.map((s) => `${esc(s.title)} <span class="faint">(${
+            s.level === "warn" ? "частично" : "нет"})</span>`).join(" · ")
+        : "Всё готово."}</div>
+    <div id="setup-list" ${expanded ? "" : "hidden"} style="margin-top:8px">
+      <div class="sub" style="margin-bottom:6px">Порядок работы: борд синхронизируется сам →
+        прогон карточки (вкладка «Карточки») → ревью результата и вердикт («лента» справа
+        в шапке — это единственный сигнал обучения) → план на день собирается автоматически →
+        выгрузка в Notion — только явной операцией на вкладке «Обзор».
+        Подробно, с ценой каждого шага и словарём — кнопка «Как это работает».</div>
+      ${d.steps.map(row).join("")}</div>`;
+
+  $("#setup-guide").onclick = openGuide;
+  $("#setup-toggle").onclick = () => {
+    const list = $("#setup-list");
+    list.hidden = !list.hidden;
+    $("#setup-summary").hidden = !list.hidden;
+    try { localStorage.setItem(SETUP_STATE_KEY, list.hidden ? "0" : "1"); } catch (e) { /* private */ }
+    $("#setup-toggle").textContent = list.hidden ? "развернуть" : "свернуть";
+  };
+  box.querySelectorAll("[data-setup-op]").forEach((btn) => {
+    btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        const r = await post("/api/ops", { name: btn.dataset.setupOp });
+        toast(r.title ? `${r.title}: запущено — ход виден на вкладке «Обзор»`
+                      : "запущено");
+        setTimeout(() => renderSetup(true), 20000);
+      } catch (e) { toast(e.message, true); btn.disabled = false; }
+    };
+  });
+  box.querySelectorAll("[data-setup-tab]").forEach((btn) => {
+    btn.onclick = () => selectTab(btn.dataset.setupTab);
+  });
+}
+
+/* ── качество, процессы и обучение (объединены 2026-08-21) ────────────── */
+const QUALITY_RUNNING_CAP = 15;
+const QUALITY_RUBRIC_CAP = 6;
+let qualityAllRunning = false;
+let qualityAllRubric = false;
+// Выборка моделей в «Надёжности» и «Кому какая роль» — один переключатель на обе карточки.
+let learnScope = "all";
+const SCOPE_LABELS = { all: "все модели", local: "локальные", cloud: "облачные" };
+const inScope = (cloud) => learnScope === "all" || (learnScope === "cloud") === !!cloud;
+const whereTag = (cloud) => `<span class="tag ${cloud ? "cloud" : ""}">${cloud ? "облако" : "локально"}</span>`;
+// Окно таблицы «Модели»: по умолчанию неделя — история целиком прячет текущее состояние за старыми сбоями.
+let qualityDays = 7;
+let qualityGen = 0;   // рисуем только ответ последнего запроса: быстрая смена окна иначе покажет чужой период
+const REFUSAL_LABELS = { quota: "квота подписки", budget: "наш лимит вызовов", network: "сеть/таймаут",
+  provider: "перегрузка провайдера", unparsed: "ответ не разобран", other: "прочее" };
+async function renderQuality() {
+  // Обе половины грузим параллельно; обучение — с деградацией: если его эндпоинт
+  // недоступен, вкладка качества остаётся рабочей, а вместо секций обучения —
+  // карточка с причиной.
+  const gen = ++qualityGen;
+  const [d, ld] = await Promise.all([
+    api("/api/quality?days=" + qualityDays),
+    api("/api/learning?module=" + encodeURIComponent(learnModule))
+      .catch((e) => ({ error: e.message })),
+  ]);
+  if (gen !== qualityGen) return;
+  const r = d.runs, cov = d.coverage;
+  const rate = Math.round((r.done_rate || 0) * 100);
+
+  const reasons = (d.abstain_reasons || []).map((x) => {
+    const total = (d.abstain_reasons || []).reduce((a, b) => a + b.n, 0) || 1;
+    return `<div style="margin:7px 0">
+      <div class="row" style="justify-content:space-between">
+        <span>${esc(x.reason)}</span><span class="mono">${x.n}</span></div>
+      <div class="bar warn"><span style="width:${Math.round(100 * x.n / total)}%"></span></div>
+    </div>`;
+  }).join("") || '<div class="faint">воздержаний не было</div>';
+
+  const profiles = (d.by_profile || []).map((p) => `<tr>
+    <td><span class="tag ${["hybrid", "cloud"].includes(p.profile) ? "cloud" : ""}">${esc(p.profile)}</span></td>
+    <td class="mono">${p.n}</td>
+    <td class="mono">${p.done}</td>
+    <td class="mono">${p.n ? Math.round(100 * p.done / p.n) + "%" : "—"}</td>
+    <td class="mono">${num(p.readiness)}</td>
+    <td class="mono">${num(p.confidence)}</td>
+    <td class="sub">${dur(p.wall_ms)}</td>
+  </tr>`).join("");
+
+  // Очередь бывает в сотни прогонов — показываем начало, остальное по кнопке
+  // (страница «Качества» была 24 000 px высотой из-за этой одной таблицы).
+  const runningAll = d.running || [];
+  const runningShown = qualityAllRunning ? runningAll : runningAll.slice(0, QUALITY_RUNNING_CAP);
+  const running = runningShown.map((x) => `<tr class="clickable" data-run="${esc(x.id)}">
+    <td class="wrap">${esc(x.title || x.card_id)}</td>
+    <td><span class="tag ${["hybrid", "cloud"].includes(x.profile) ? "cloud" : ""}">${esc(x.profile)}</span></td>
+    <td><span class="tag">${esc(x.track || "")}</span></td>
+    <td class="sub">${x.started_at ? ago(x.started_at) + " идёт" : "в очереди"}</td>
+  </tr>`).join("");
+
+  const runningMore = runningAll.length > QUALITY_RUNNING_CAP
+    ? `<tr><td colspan="4"><button class="act" id="q-run-more">${qualityAllRunning
+        ? "свернуть" : `показать все ${runningAll.length}`}</button></td></tr>` : "";
+  const recent = (d.recent || []).map((x) => `<tr class="clickable" data-run="${esc(x.id)}">
+    <td class="wrap">${esc(x.title || "—")}</td>
+    <td><span class="tag ${esc(x.status)}">${esc(x.status)}</span></td>
+    <td><span class="tag ${["hybrid", "cloud"].includes(x.profile) ? "cloud" : ""}">${esc(x.profile)}</span></td>
+    <td class="mono">${num(x.readiness)}</td>
+    <td class="mono">${num(x.confidence)}</td>
+    <td class="sub">${dur(x.wall_ms)} · ${ago(x.finished_at)} назад</td>
+  </tr>`).join("");
+
+  // Отказы до генерации (квота, наш лимит) — не качество модели: показываем их отдельно от «успеха».
+  const refusalText = (r) => Object.entries(r || {}).filter(([, n]) => n)
+    .map(([k, n]) => `${REFUSAL_LABELS[k] || k} ${n}`).join(", ");
+  const models = (d.models || []).map((m) => {
+    // Попытки, дошедшие до модели, считает сервер (зажато между «успешных» и «всех»); старый gateway — всех.
+    const attempted = m.reached ?? m.n;
+    const cls = attempted <= 0 ? "faint" : m.ok === attempted ? "ok-txt" : m.ok === 0 ? "bad-txt" : "warn-txt";
+    return `<tr>
+    <td class="mono">${esc(m.model)}</td>
+    <td>${esc(m.role)}</td>
+    <td class="mono">${m.n}</td>
+    <td class="mono ${cls}">${m.ok}/${Math.max(attempted, 0)}</td>
+    <td class="mono">${m.no_answer || 0}</td>
+    <td class="mono">${m.unparsed || 0}</td>
+    <td class="sub">${m.ms_ok ? dur(Math.round(m.ms_ok)) : "—"}</td>
+    <td class="mono">${m.tokens_ok ? Math.round(m.tokens_ok) : "—"}</td>
+    <td class="sub wrap">${esc(refusalText(m.cloud_refusals)) || "—"}</td>
+  </tr>`;
+  }).join("");
+  const mw = d.models_window || {};
+  const refusalInTable = refusalText(mw.cloud_refusals);
+  const refusalTotals = refusalInTable + (mw.cloud_refusals_outside
+    ? `${refusalInTable ? "; " : ""}ещё ${mw.cloud_refusals_outside} — у ролей вне таблицы (ревью, извлечение терминов)` : "");
+  const daysOptions = [[1, "сутки"], [7, "7 дней"], [30, "30 дней"], [0, "вся история"]]
+    .map(([v, label]) => `<option value="${v}" ${v === qualityDays ? "selected" : ""}>${label}</option>`).join("");
+
+  const v = d.verdicts || {};
+
+  /* ── секции обучения (бывшая вкладка «Обучение», §9) ── */
+  let learnBar = "", learnCards = "", learnTables = "";
+  if (ld.error) {
+    learnTables = `<div class="card" style="margin-top:12px; border-color:var(--warn-bd)">
+      <h3>Обучение</h3><div class="sub">недоступно: ${esc(ld.error)}</div></div>`;
+  } else {
+    const s = ld.signals, cfg = ld.settings;
+
+    const modOpts = (ld.modules && ld.modules.length ? ld.modules : ["*"]).map((m) =>
+      `<option value="${esc(m)}"${m === learnModule ? " selected" : ""}>${
+        m === "*" ? "все модули (агрегат)" : esc(m)}</option>`).join("");
+
+    // Старый шлюз без отметки облака: выборка не работает — показываем все, селектор выключен.
+    const scopeReady = !!ld.role_board;
+    if (!scopeReady) learnScope = "all";
+    const relRows = (ld.reliability || []).filter((x) => inScope(x.cloud));
+    // «В общей массе»: один апостериор по выборке — наблюдения складываются, приор 1/1 берётся один раз.
+    const relSum = relRows.reduce((acc, x) => ({ a: acc.a + (x.alpha - 1), b: acc.b + (x.beta - 1) }), { a: 0, b: 0 });
+    const relTotal = relRows.length ? (relSum.a + 1) / (relSum.a + relSum.b + 2) : null;
+    const relCounts = { local: 0, cloud: 0 };
+    for (const x of ld.reliability || []) relCounts[x.cloud ? "cloud" : "local"]++;
+    const scopeOpts = Object.entries(SCOPE_LABELS).map(([v, label]) =>
+      `<option value="${v}"${v === learnScope ? " selected" : ""}>${label}${
+        v === "all" ? "" : ` (${relCounts[v]})`}</option>`).join("");
+    const rel = relRows.map((x) => `<tr${x.prior ? ' class="faint" title="наблюдений нет — приор 1/1"' : ""}>
+      <td class="mono">${esc(x.model)}</td>
+      <td>${whereTag(x.cloud)}</td>
+      <td>${esc(x.role)}</td>
+      <td class="mono">${num(x.reliability, 2)}</td>
+      <td>${reliabilityBar(x.reliability)}</td>
+      <td class="mono">${num(x.alpha, 1)} / ${num(x.beta, 1)}</td>
+      <td class="mono ${x.observations >= cfg.min_observations ? "" : "faint"}">${
+        num(x.observations, 0)}</td>
+    </tr>`).join("");
+
+    const reviews = (ld.reviews || []).map((x) => `<tr>
+      <td class="mono">${esc(x.model)}</td>
+      <td>${esc(x.role)}</td>
+      <td class="mono">${x.n}</td>
+      <td class="mono ${Math.abs((x.w || 1) - 1) < 0.005 ? "faint" : ""}">${num(x.w, 2)}</td>
+    </tr>`).join("");
+
+    const clouds = new Set(((ld.role_board || {}).cloud) || []);
+    const rb = ld.role_board || { roles: {}, rosters: {} };
+    const scopeWord = { all: "", local: " из локальных", cloud: " из облачных" }[learnScope];
+    // Ростеры — одной компактной таблицей «профиль → роли»; в блоках ролей — только кандидаты и статус.
+    const boardRoles = Object.keys(rb.roles || {});
+    const rosterRows = Object.entries(rb.rosters || {}).map(([profile, roster]) => `<tr>
+      <td><span class="tag">${esc(profile)}</span></td>${boardRoles.map((role) => {
+        const m = roster[role];
+        return `<td class="mono ${m && inScope(clouds.has(m)) ? "" : "faint"}" style="font-size:11px">${
+          m ? esc(m) : "—"}</td>`;
+      }).join("")}</tr>`).join("");
+    const rosterTable = rosterRows ? `<div class="tablewrap" style="margin:6px 0 8px"><table>
+      <thead><tr><th>Профиль</th>${boardRoles.map((r) => `<th>${esc(r.replace("proposer.", ""))}</th>`).join("")}</tr></thead>
+      <tbody>${rosterRows}</tbody></table></div>` : "";
+    const roleBoard = Object.entries(rb.roles || {}).map(([role, rows]) => {
+      const cands = rows.filter((x) => inScope(x.cloud));
+      const best = cands[0];
+      // «В деле» — по ростерам той же выборки, что и строка кандидатов.
+      const bestIn = best ? (best.in || []).filter((profile) => inScope(clouds.has(((rb.rosters || {})[profile] || {})[role]))) : [];
+      const badge = !cands.length ? `<span class="tag">в выборке никого</span>`
+        : best.basis === "prior" ? `<span class="tag">данных мало</span>`
+        : bestIn.length ? `<span class="tag done">лучший${scopeWord} уже в деле</span>`
+        : `<span class="tag warn">лучший${scopeWord} не назначен</span>`;
+      const top = cands.slice(0, 3).map((x) => `<div class="sub" style="margin:2px 0">
+        <span class="mono">${esc(x.model)}</span> ${whereTag(x.cloud)}
+        <span class="mono">${num(x.score, 2)}</span>
+        <span class="faint">(${esc(BASIS_NOTE[x.basis] || x.basis)}${x.in && x.in.length
+          ? `; сейчас: ${esc(x.in.join(", "))}` : ""})</span></div>`).join("");
+      return `<div style="margin:10px 0; padding-top:8px; border-top:1px solid var(--line, #eee)">
+        <div class="row" style="justify-content:space-between"><b>${esc(role)}</b>${badge}</div>
+        ${top || '<div class="sub faint">кандидатов в выборке нет</div>'}
+      </div>`;
+    }).join("");
+    const glmSwap = rb.glm_swap ? [rb.glm_swap] : [];
+    // Профиль попадает в выборку, если в его ростере есть модель этой выборки (hybrid — в обеих).
+    const recInScope = (x) => learnScope === "all"
+      || Object.values(x.current || {}).some((m) => inScope(clouds.has(m)));
+    const recs = [...(ld.recommendations || []), ...glmSwap].filter(recInScope).map((x) => {
+      if (!x.available) {
+        return `<div style="margin:9px 0">
+          <div class="row" style="justify-content:space-between">
+            <b>${esc(x.profile)}</b><span class="tag">нет данных</span></div>
+          <div class="sub">${esc(x.reason || "")}</div></div>`;
+      }
+      const changes = Object.entries(x.changes || {});
+      if (!changes.length) {
+        return `<div style="margin:9px 0">
+          <div class="row" style="justify-content:space-between">
+            <b>${esc(x.profile)}</b><span class="tag done">уже лучшее</span></div>
+          <div class="sub">перестановка ролей ничего не улучшает</div></div>`;
+      }
+      const rows = changes.map(([role, ch]) => {
+        const basis = (x.basis || {})[role + ":" + ch.to] || {};
+        return `<div class="sub" style="margin:3px 0">${esc(role)}:
+          <span class="mono">${esc(ch.from)}</span> → <span class="mono">${esc(ch.to)}</span>
+          <span class="faint">(${esc(BASIS_NOTE[basis.from] || "—")})</span></div>`;
+      }).join("");
+      return `<div style="margin:9px 0">
+        <div class="row" style="justify-content:space-between">
+          <b>${esc(x.profile)}</b>
+          <span class="tag ${x.applied ? "running" : "warn"}">${
+            x.applied ? "применяется" : "предложение"}</span></div>
+        ${rows}
+        <div class="sub faint">сумма надёжности ${num(x.current_score, 2)} →
+          ${num(x.recommended_score, 2)}</div></div>`;
+    }).join("");
+
+    // Новые (ждут решения) — сверху, внутри — по числу повторов; список длиной в сотни
+    // карточек растягивал «Качество» на 18 000 px — показываем начало, остальное по кнопке.
+    const rubricAll = [...(ld.rubric || [])].sort((a, b) =>
+      ((a.status === "new" ? 0 : 1) - (b.status === "new" ? 0 : 1)) || ((b.hits || 0) - (a.hits || 0)));
+    const rubricShown = qualityAllRubric ? rubricAll : rubricAll.slice(0, QUALITY_RUBRIC_CAP);
+    const rubricNew = rubricAll.filter((x) => x.status === "new").length;
+    const rubricMore = rubricAll.length > QUALITY_RUBRIC_CAP
+      ? `<button class="act" id="q-rubric-more">${qualityAllRubric ? "свернуть"
+          : `показать все ${rubricAll.length}`}</button>` : "";
+    const rubric = rubricShown.map((x) => `<div class="card" style="margin-bottom:8px">
+      <div class="row" style="justify-content:space-between">
+        <b>${esc(x.pattern)}</b>
+        <span class="chip-row">
+          <span class="tag long">${esc(x.target)}</span>
+          <span class="tag ${x.status === "applied" ? "done" : x.status === "dismissed"
+            ? "failed" : "running"}">${
+            x.status === "applied" ? "внесено" : x.status === "dismissed"
+              ? "отклонено" : "новое"}</span>
+          <span class="tag">повторов: ${x.hits}</span></span></div>
+      <div style="margin:6px 0">${esc(x.suggestion)}</div>
+      <details><summary class="sub">улики — ${(x.evidence || []).length} причин</summary>
+        ${(x.evidence || []).map((e) => `<div class="sub" style="margin:4px 0">
+          <span class="tag ${e.decision === "reject" ? "failed" : "running"}">${
+            esc(e.decision)}</span> ${esc(e.comment)}</div>`).join("")}
+      </details>
+      ${x.status === "new" ? `<div class="chip-row" style="margin-top:8px">
+        <button class="act" data-rubric="${x.id}" data-decide="applied">Внёс в промпт</button>
+        <button class="act" data-rubric="${x.id}" data-decide="dismissed">Не нужно</button>
+      </div>` : ""}
+    </div>`).join("") || `<div class="empty">предложений нет — либо причин отклонений меньше
+      ${cfg.rubric_drift_suggest_after}, либо повторяющегося дефекта среди них не нашлось</div>`;
+
+    learnBar = `
+    <div class="toolbar">
+      <select id="f-learn-module">${modOpts}</select>
+      <button class="act" id="learn-run">Учесть вердикты сейчас</button>
+      <span class="sub">${ld.enabled ? "обучение включено" : "обучение выключено в конфиге"}
+        · проход каждые ${cfg.rebuild_minutes} мин</span>
+    </div>`;
+
+    learnCards = `
+      <div class="card">
+        <h3>Ждут вашего вердикта</h3>
+        <div class="big ${s.awaiting_verdict ? "warn-txt" : "ok-txt"}">${s.awaiting_verdict}</div>
+        <div class="sub">без вердикта прогон ничему не учит — это единственный сигнал §9</div>
+      </div>
+      <div class="card">
+        <h3>Вердиктов учтено</h3>
+        <div class="big">${s.verdicts_counted}</div>
+        <div class="chip-row" style="margin-top:6px">
+          <span class="tag done">принято: ${(s.verdicts || {}).accept || 0}</span>
+          <span class="tag running">с правками: ${(s.verdicts || {}).edit || 0}</span>
+          <span class="tag failed">отклонено: ${(s.verdicts || {}).reject || 0}</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Галлюцинаций начислено</h3>
+        <div class="big ${s.hallucinations_counted ? "warn-txt" : ""}">${
+          s.hallucinations_counted}</div>
+        <div class="sub">от верификатора, независимо от вердикта</div>
+      </div>
+      <div class="card">
+        <h3>Образцов в корпусе</h3>
+        <div class="big ${s.exemplars ? "ok-txt" : "faint"}">${s.exemplars}</div>
+        <div class="sub">принятые результаты подмешиваются в улики следующих прогонов</div>
+      </div>`;
+
+    learnTables = `
+    <div class="split wide-first" style="margin-top:12px">
+      <div class="card" style="padding:0">
+        <div class="row" style="padding:14px 14px 0; justify-content:space-between; gap:8px; flex-wrap:wrap">
+          <h3 style="margin:0">Надёжность моделей — Beta(α, β)</h3>
+          <label class="sub" ${scopeReady ? "" : 'title="обновите шлюз консилиума — нет отметки облака"'}>выборка
+            <select id="learn-scope" ${scopeReady ? "" : "disabled"}>${scopeOpts}</select></label>
+        </div>
+        <div class="sub" style="padding:0 14px">Доля удачного из учтённого: вердикты
+          владельца плюс находки верификатора. Приор 1/1 даёт 0.50 без данных —
+          новая модель не наказана и не поощрена. Показаны все пары «модель × роль», из которых
+          выбирает совет; бледные строки — пары без наблюдений.</div>
+        ${!s.verdicts_counted && s.hallucinations_counted ? `<div class="sub warn-txt"
+          style="padding:6px 14px 0">Вердиктов пока ноль: всё, что ниже, набрано
+          выдуманными ссылками, которые поймал верификатор. Это не оценка полезности
+          модели — это только её аккуратность. Поставьте вердикты, чтобы числа начали
+          значить то, что написано в заголовке.</div>` : ""}
+        <div class="tablewrap"><table>
+          <thead><tr><th>Модель</th><th>Где</th><th>Роль</th><th>Надёжность</th><th></th>
+            <th>α / β</th><th>Наблюдений</th></tr></thead>
+          <tbody>${rel || emptyRow(7, (ld.reliability || []).length
+            ? `в выборке «${SCOPE_LABELS[learnScope]}» строк нет`
+            : "вердиктов ещё не было — статистике неоткуда взяться")}</tbody>
+          ${relTotal !== null ? `<tfoot><tr>
+            <td colspan="3"><b>В общей массе</b> <span class="sub">— ${esc(SCOPE_LABELS[learnScope])},
+              строк ${relRows.length}; взвешено числом наблюдений, роли не разделены</span></td>
+            <td class="mono"><b>${num(relTotal, 2)}</b></td><td>${reliabilityBar(relTotal)}</td>
+            <td class="mono">${num(relSum.a + 1, 1)} / ${num(relSum.b + 1, 1)}</td>
+            <td class="mono">${num(relSum.a + relSum.b, 0)}</td></tr></tfoot>` : ""}
+        </table></div>
+      </div>
+      <div class="card">
+        <h3>Кому какая роль <span class="faint">— ${esc(SCOPE_LABELS[learnScope])}</span></h3>
+        <div class="sub">Кто играет роль сейчас (таблица) и три лучших кандидата по данным в выборке слева.
+          Оценка — та же, что у перестановки: по роли, иначе по репутации модели; без данных — в конце.</div>
+        ${rosterTable}${roleBoard || '<div class="empty">ростеров нет</div>'}
+        <h4 style="margin:14px 0 4px">Перестановка внутри ростера</h4>
+        <div class="sub">Состав моделей и число свопов не меняются. Автоприменение
+          ${cfg.role_selection ? "<b>включено</b>" : "выключено"}
+          (learning.role_selection); у GLM 5.x роли — из [models.glm_all.models].</div>
+        ${recs || `<div class="empty">профилей в выборке «${esc(SCOPE_LABELS[learnScope])}» нет</div>`}
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:12px; align-items:start">
+      <div class="card" style="padding:0">
+        <h3 style="padding:14px 14px 0">Вес рецензентов</h3>
+        <div class="sub" style="padding:0 14px">Взвешивание
+          ${cfg.review_weighting ? "включено" : "<b>выключено</b>"}; вес 1.00 означает
+          «данных меньше ${cfg.min_observations} наблюдений, оценка не искажается».</div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Модель</th><th>Роль</th><th>Рецензий</th><th>Средний вес</th></tr></thead>
+          <tbody>${reviews || emptyRow(4, "рецензий не было")}</tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <h3>Дрейф рубрики — предложения <span class="faint">(${rubricAll.length}${
+          rubricNew ? `, новых ${rubricNew}` : ""})</span></h3>
+        <div class="sub" style="margin-bottom:8px">Повторяющиеся причины отклонений.
+          Система не правит промпты сама: это коммит в git. Здесь — отметка о вашем решении.</div>
+        ${rubric}${rubricMore}
+      </div>
+    </div>`;
+  }
+
+  $("#tab-quality").innerHTML = `${learnBar}
+    <div class="grid">
+      <div class="card">
+        <h3>Доля результативных прогонов</h3>
+        <div class="big ${rate >= 50 ? "ok-txt" : rate >= 25 ? "warn-txt" : "bad-txt"}">${rate}%</div>
+        <div class="sub">${r.done} из ${r.finished} завершённых дали результат</div>
+        <div class="${rate >= 50 ? "bar" : rate >= 25 ? "bar warn" : "bar bad"}" style="margin-top:8px">
+          <span style="width:${rate}%"></span></div>
+      </div>
+      <div class="card">
+        <h3>Покрытие борда</h3>
+        <div class="big">${cov.cards_with_result}<span class="sub"> / ${cov.cards_total}</span></div>
+        <div class="sub">карточек с проработкой</div>
+        <div class="bar" style="margin-top:8px"><span style="width:${
+          cov.cards_total ? Math.round(100 * cov.cards_with_result / cov.cards_total) : 0}%"></span></div>
+      </div>
+      <div class="card">
+        <h3>Идут сейчас</h3>
+        <div class="big ${(d.running || []).length ? "" : "faint"}">${(d.running || []).length}</div>
+        <div class="sub">в работе и в очереди</div>
+      </div>
+      <div class="card">
+        <h3>Вердикты владельца</h3>
+        <div class="big">${(v.accept || 0) + (v.edit || 0) + (v.reject || 0)}</div>
+        <div class="chip-row" style="margin-top:6px">
+          <span class="tag done">принято: ${v.accept || 0}</span>
+          <span class="tag running">с правками: ${v.edit || 0}</span>
+          <span class="tag failed">отклонено: ${v.reject || 0}</span>
+        </div>
+      </div>
+      ${learnCards}
+    </div>
+
+    <div class="split" style="margin-top:12px">
+      <div class="card">
+        <h3>Почему консилиум воздерживается</h3>
+        ${reasons}
+        <div class="sub" style="margin-top:10px">Классы, а не тексты: одинаковые причины
+          формулируются по-разному, а чинятся одинаково.</div>
+      </div>
+      <div class="card" style="padding:0">
+        <h3 style="padding:14px 14px 0">Профили</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Профиль</th><th>Прогонов</th><th>Результат</th><th>Доля</th>
+            <th>Готовность</th><th>Уверенность</th><th>Время</th></tr></thead>
+          <tbody>${profiles || emptyRow(7, "прогонов не было")}</tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">Процессы — идут сейчас
+        <span class="faint">(${runningAll.length})</span></h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Карточка</th><th>Профиль</th><th>Трек</th><th>Состояние</th></tr></thead>
+        <tbody>${running || emptyRow(4, "очередь пуста")}${runningMore}</tbody>
+      </table></div>
+    </div>
+
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">Процессы — прошедшие</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Карточка</th><th>Статус</th><th>Профиль</th><th>Готовность</th>
+          <th>Уверенность</th><th>Когда</th></tr></thead>
+        <tbody>${recent || emptyRow(6, "завершённых прогонов нет")}</tbody>
+      </table></div>
+    </div>
+
+    <div class="card" style="margin-top:12px; padding:0">
+      <div class="row" style="padding:14px 14px 0; justify-content:space-between; gap:8px; flex-wrap:wrap">
+        <h3 style="margin:0">Модели — доставка и разбор ответов</h3>
+        <label class="sub">окно <select id="q-days">${daysOptions}</select></label>
+      </div>
+      <div class="sub" style="padding:6px 14px 0">Контур проработки карточек (журнал вызовов консилиума); шаги ревью —
+        на вкладке «Ревью». «Успех» — ответ получен и разобран, из попыток, дошедших до модели: отказы квоты подписки
+        и нашего лимита вызовов — не качество модели и вынесены в последнюю колонку. Время и токены — по успешным.
+        Полезность (принятые результаты) — в блоке вердиктов ниже.${refusalTotals
+          ? `<br>Отказы облака за окно: ${esc(refusalTotals)}.` : ""}</div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Модель</th><th>Роль</th><th>Попыток</th><th>Успех</th><th>Без ответа</th>
+          <th>Не разобран</th><th>Время (успешных)</th><th>Токенов (успешных)</th><th>Отказы облака</th></tr></thead>
+        <tbody>${models || emptyRow(9, "вызовов за окно не было")}</tbody>
+      </table></div>
+    </div>
+    ${learnTables}`;
+  bindRunRows("#tab-quality");
+  const daysSel = $("#q-days");
+  if (daysSel) daysSel.onchange = (e) => { qualityDays = Number(e.target.value) || 0; renderQuality(); };
+  const runMore = $("#q-run-more");
+  if (runMore) runMore.onclick = () => { qualityAllRunning = !qualityAllRunning; renderQuality(); };
+  const rubMore = $("#q-rubric-more");
+  if (rubMore) rubMore.onclick = () => { qualityAllRubric = !qualityAllRubric; renderQuality(); };
+  const scopeSel = $("#learn-scope");
+  if (scopeSel) scopeSel.onchange = (e) => { learnScope = e.target.value || "all"; renderQuality(); };
+  const modSel = $("#f-learn-module");
+  if (modSel) modSel.onchange = (e) => { learnModule = e.target.value; renderQuality(); };
+  const learnBtn = $("#learn-run");
+  if (learnBtn) learnBtn.onclick = async () => {
+    try {
+      await post("/api/ops", { name: "learning" });
+      toast("Проход обучения запущен — результат появится через несколько секунд");
+      setTimeout(renderQuality, 4000);
+    } catch (err) { toast(err.message, true); }
+  };
+  document.querySelectorAll("#tab-quality [data-rubric]").forEach((btn) => {
+    btn.onclick = async () => {
+      try {
+        await post("/api/rubric", { id: Number(btn.dataset.rubric),
+                                    status: btn.dataset.decide });
+        toast("Отмечено");
+        renderQuality();
+      } catch (err) { toast(err.message, true); }
+    };
+  });
+}
+
+function bindRunRows(scope) {
+  document.querySelectorAll(`${scope} tr[data-run]`).forEach((tr) => {
+    tr.onclick = () => openRun(tr.dataset.run);
+  });
+}
+
+/* ── обучение (§9) — данные и хелперы; UI-секция живёт на вкладке «Качество» ──
+   Блок отвечает на вопрос, который до него не имел ответа нигде: «мои вердикты
+   куда-нибудь деваются?». Поэтому показан весь путь сигнала, а не только его
+   итог: сколько прогонов ждут вердикта → сколько вердиктов учтено → во что они
+   превратились (α/β) → на что это уже влияет (веса рецензий, подбор ролей).
+   Всё, что система ПРЕДЛАГАЕТ (перестановка ролей, дополнение рубрики), помечено
+   как предложение: правка промптов — коммит в git, а не побочный эффект сервиса. */
+let learnModule = "*";
+const BASIS_NOTE = {
+  role: "по этой же роли", model: "по репутации модели",
+  model_global: "по репутации модели в целом", prior: "данных нет",
+};
+
+function reliabilityBar(v) {
+  const pct = Math.round((v || 0) * 100);
+  const cls = pct >= 66 ? "bar" : pct >= 33 ? "bar warn" : "bar bad";
+  return `<div class="${cls}" style="min-width:70px"><span style="width:${pct}%"></span></div>`;
+}
+
+/* ── лента: прогоны и события (объединены 2026-08-21) ─────────────────── */
+let runFilter = "";
+let feedGen = 0; // монотонный счётчик поколений renderFeed()/renderRunsTable() — сравнение по
+                 // значению runFilter не различает "A(v)→B(v2)→C(v)" с резолвом не по порядку старта
+function feedCountCards(q) {
+  const cur = (q.running || 0) + (q.queued || 0);
+  const past = (q.done || 0) + (q.abstained || 0) + (q.failed || 0);
+  return `
+      <div class="card">
+        <h3>Текущие прогоны</h3>
+        <div class="big ${cur ? "" : "faint"}">${cur}</div>
+        <div class="sub">в работе: ${q.running || 0} · в очереди: ${q.queued || 0}</div>
+      </div>
+      <div class="card">
+        <h3>Прошедшие прогоны</h3>
+        <div class="big">${past}</div>
+        <div class="sub">с результатом: ${q.done || 0} · воздержались: ${q.abstained || 0}
+          · с ошибкой: ${q.failed || 0}</div>
+      </div>`;
+}
+function updateFeedCounts(s) {
+  const el = $("#feed-counts");
+  if (el) el.innerHTML = feedCountCards(s.queue || {});
+}
+function runsTableHtml(rows) {
+  return `<div class="tablewrap"><table>
+        <thead><tr><th>Карточка</th><th>Профиль</th><th>Статус</th><th>Готовность</th>
+          <th>Уверенность</th><th>Время</th><th>Вердикт</th></tr></thead>
+        <tbody>${rows.map(runRow).join("") || emptyRow(7, "прогонов нет")}</tbody>
+      </table></div>`;
+}
+async function renderFeed() {
+  const myFilter = runFilter;
+  const myGen = ++feedGen;
+  const [rows, st] = await Promise.all([
+    api("/api/runs?limit=200" + (myFilter ? "&status=" + myFilter : "")),
+    api("/api/state"),
+  ]);
+  if (myGen !== feedGen) return; // более свежий renderFeed()/renderRunsTable() уже победил (счётчик поколений, не сравнение значения — переживает возврат к тому же runFilter)
+  const opts = ["", "done", "abstained", "queued", "running", "failed"].map((v) =>
+    `<option value="${v}"${v === myFilter ? " selected" : ""}>${v || "все статусы"}</option>`).join("");
+  $("#tab-feed").innerHTML = `
+    <div class="grid" id="feed-counts">${feedCountCards(st.queue || {})}</div>
+    <div class="card" style="margin-top:12px">
+      <h3>Живая лента</h3>
+      <div class="feed" id="feed"><div class="faint">ждём событий…</div></div>
+    </div>
+    <div class="card" style="margin-top:12px; padding:0">
+      <div class="row" style="padding:14px 14px 10px; justify-content:space-between; flex-wrap:wrap">
+        <h3 style="margin:0">Прогоны</h3>
+        <div class="row" style="gap:8px">
+          <select id="f-status">${opts}</select>
+          <span class="sub" id="f-count">${rows.length} прогонов</span>
+        </div>
+      </div>
+      <div id="runs-wrap">${runsTableHtml(rows)}</div>
+    </div>`;
+  feedEl = $("#feed");
+  // Лента заполняется с сервера, а не из памяти вкладки: счётчик на таблетке считает
+  // события и до загрузки страницы, и открытая лента должна их показать. Новые с
+  // прошлого просмотра подсвечены; после рендера всё считается просмотренным.
+  // Первый заход браузера (места ещё нет) — подсвечивать нечего: «новое» начинается сейчас.
+  const seenBefore = feedSeen === null ? Infinity : feedSeen;
+  try {
+    const tail = await api("/api/events?tail=" + FEED_MAX);
+    if (myGen !== feedGen) return;
+    if (tail.length) {
+      feedEl.innerHTML = "";
+      // Хвост известен и до ответа /api/events/unread (диплинк #feed при загрузке):
+      // иначе markFeedSeen запомнил бы 0, и следующая загрузка показала бы «999+».
+      feedLatest = Math.max(feedLatest, Number(tail[tail.length - 1].id) || 0);
+    }
+    tail.forEach((ev) => appendFeed(ev, true, ev.id > seenBefore));
+  } catch (e) { /* лента не критична — прогоны ниже уже отрисованы */ }
+  markFeedSeen();
+  $("#f-status").onchange = (e) => { runFilter = e.target.value; renderFeed(); };
+  bindRunRows("#tab-feed");
+}
+
+/* Обновление только таблицы прогонов: SSE-событие (прогон завершён, вердикт, статус)
+   прилетает чаще, чем меняется что-то ещё, а полный re-render вкладки дёргал бы
+   ленту и селектор фильтра под рукой пользователя. */
+async function renderRunsTable() {
+  const wrap = $("#runs-wrap");
+  if (!wrap) return;
+  const myFilter = runFilter;
+  const myGen = ++feedGen;
+  const rows = await api("/api/runs?limit=200" + (myFilter ? "&status=" + myFilter : ""));
+  if (myGen !== feedGen) return; // более свежий renderFeed()/renderRunsTable() уже победил (счётчик поколений, не сравнение значения)
+  wrap.innerHTML = runsTableHtml(rows);
+  const cnt = $("#f-count");
+  if (cnt) cnt.textContent = `${rows.length} прогонов`;
+  bindRunRows("#tab-feed");
+}
+
+/* Прогон ушёл в облако после долгого ожидания памяти (§17.4) — или ждёт облако. */
+function runCloudTag(r) {
+  // Режим «всё на GLM 5.x» (§17.6): прогон отмечен им при постановке или прошёл в нём.
+  // Отложен режимом до освобождения окна подписки — не воздержание, а ожидание облака.
+  if (r.status === "queued" && String(r.error || "").startsWith("GLM 5.x ждёт облако"))
+    return ` <span class="tag warn" title="${esc(r.error)}">GLM 5.x ждёт окно</span>`;
+  if (r.cloud_mode === "glm5")
+    return ` <span class="tag cloud" title="все роли — GLM 5.x (Coding Plan), локально только эмбеддинги">GLM 5.x</span>`;
+  let e = null;
+  try { e = r.escalation ? JSON.parse(r.escalation) : null; } catch (err) { e = null; }
+  if (e && e.state === "done") {
+    const models = Object.entries(e.models || {}).map(([k, v]) => `${k}: ${v.from} → ${v.to}`).join("; ");
+    return ` <span class="tag cloud" title="${esc(`ждал памяти ${Math.round((e.waited_s || 0) / 60)} мин → ${e.provider}. ${models}`)}">☁ облако</span>`;
+  }
+  if (e && e.state === "gave_up" && r.status === "queued")
+    return ` <span class="tag warn" title="${esc(`облако отложено до ${new Date(e.retry_at * 1000)
+      .toLocaleString("ru-RU")}: ${e.deferrals} откладываний, потрачено ${e.calls_spent || 0} вызовов`)}">☁ облако отложено</span>`;
+  if (e && e.state === "waiting_cloud" && r.status === "queued")
+    return ` <span class="tag warn" title="${esc(e.why || "")}">☁ ждёт облако</span>`;
+  if (r.mem_wait_since && r.status === "queued")
+    return ` <span class="tag" title="ждёт памяти с ${new Date(r.mem_wait_since * 1000).toLocaleString("ru-RU")}">⏳ ${ago(r.mem_wait_since)}</span>`;
+  return "";
+}
+
+function runRow(r) {
+  const sev = r.severity || r.priority || "";
+  return `<tr class="clickable" data-run="${esc(r.id)}">
+    <td class="wrap">
+      <div>${esc(r.title || r.card_id || "—")}</div>
+      <div class="sub">
+        ${sev ? `<span class="tag ${esc(sev)}">${esc(sev)}</span> ` : ""}
+        <span class="tag">${esc(r.db || "?")}</span>
+        ${r.half_baked ? '<span class="tag warn">half-baked</span>' : ""}
+        ${r.outcome ? " " + esc(String(r.outcome).slice(0, 90)) : ""}
+      </div>
+    </td>
+    <td><span class="tag ${["hybrid", "cloud"].includes(r.profile) ? "cloud" : ""}">${esc(r.profile)}</span>${runCloudTag(r)}</td>
+    <td><span class="tag ${esc(r.status)}">${esc(r.status)}</span></td>
+    <td class="mono">${num(r.readiness)}</td>
+    <td class="mono">${num(r.confidence)}</td>
+    <td class="sub">${dur(r.wall_ms)}<br><span class="faint">${ago(r.finished_at || r.started_at)} назад</span></td>
+    <td>${r.verdict ? `<span class="tag ${r.verdict === "accept" ? "done"
+      : r.verdict === "reject" ? "failed" : "running"}">${esc(r.verdict)}</span>`
+      : '<span class="faint">—</span>'}</td>
+  </tr>`;
+}
+
+/* ── разбор прогона ───────────────────────────────────────────────────── */
+async function openRun(runId) {
+  const d = await api("/api/runs/" + encodeURIComponent(runId));
+  if (!d.run) return toast("прогон не найден", true);
+  const r = d.run, p = r.payload || {};
+  $("#m-title").textContent = r.title || r.card_id || runId;
+  $("#m-sub").innerHTML =
+    `<span class="tag ${esc(r.status)}">${esc(r.status)}</span>
+     <span class="tag ${["hybrid", "cloud"].includes(r.profile) ? "cloud" : ""}">${esc(r.profile)}</span>
+     <span class="tag">${esc(r.track || "")}</span>
+     готовность <span class="mono">${num(r.readiness)}</span> ·
+     уверенность <span class="mono">${num(r.confidence)}</span> · ${dur(r.wall_ms)}
+     ${r.url ? ` · <a href="${esc(r.url)}" target="_blank">Notion ↗</a>` : ""}`;
+
+  const parts = [];
+  if (r.outcome) parts.push(`<div class="card" style="border-color:var(--warn-bd)">
+    <h3>Почему консилиум не дал результат</h3>${esc(r.outcome)}</div>`);
+
+  if (p.statement || p.decomposition) {
+    parts.push(`<div class="card">
+      <h3>Постановка</h3>
+      <div><b>${esc(p.statement?.goal || "—")}</b></div>
+      ${(p.statement?.non_goals || []).length ? `<div class="sub" style="margin-top:6px">
+        не входит: ${esc(p.statement.non_goals.join("; "))}</div>` : ""}
+      ${listBlock("Декомпозиция", (p.decomposition || []).map((s) =>
+        `${esc(s.what || "")} <span class="faint mono">${esc((s.files || []).join(", "))}</span>`
+        + (s.est ? ` <span class="tag">${esc(s.est)}</span>` : "")))}
+      ${listBlock("Критерии приёмки", (p.acceptance || []).map(esc))}
+      ${listBlock("Риски", (p.risks || []).map((x) => typeof x === "string" ? esc(x)
+        : `${esc(x.what || "")} <span class="tag ${esc(x.severity || "")}">${esc(x.severity || "")}</span>
+           <span class="faint">${esc(x.mitigation || "")}</span>`))}
+      ${listBlock("Открытые вопросы", (p.open_questions || []).map(esc))}
+      ${p.verification_cmd ? `<div style="margin-top:10px"><span class="faint">проверка:</span>
+        <code>${esc(p.verification_cmd)}</code></div>` : ""}
+      ${(p.removed_by_verifier || []).length ? `<div style="margin-top:10px" class="warn-txt">
+        вырезано верификатором: ${esc(p.removed_by_verifier.join("; "))}</div>` : ""}
+    </div>`);
+  }
+
+  const touched = p.touched || {};
+  const trows = Object.entries(touched).filter(([, v]) => (v || []).length)
+    .map(([k, v]) => `<div><span class="faint">${esc(k)}:</span>
+      <span class="mono">${esc((v || []).join(", "))}</span></div>`).join("");
+  if (trows) parts.push(`<div class="card"><h3>Затронуто</h3>${trows}</div>`);
+
+  if ((d.proposals || []).length) {
+    const byProp = {};
+    (d.verifications || []).forEach((v) => { byProp[v.proposal_id] = v; });
+    parts.push(`<div class="card"><h3>Предложения участников</h3>` + d.proposals.map((pr) => {
+      const v = byProp[pr.id] || {};
+      const halls = (v.hallucinations || []).map((h) =>
+        `<li class="bad-txt">${esc(h.kind)}: <span class="mono">${esc(h.ref)}</span>
+         ${h.hint ? `<span class="faint">— ${esc(h.hint)}</span>` : ""}</li>`).join("");
+      const defects = (v.checked || []).filter((c) => !c.ok &&
+        !(v.hallucinations || []).some((h) => h.ref === c.ref)).map((c) =>
+        `<li class="warn-txt">${esc(c.kind)}: <span class="mono">${esc(c.ref)}</span>
+         ${c.hint ? `<span class="faint">— ${esc(c.hint)}</span>` : ""}</li>`).join("");
+      const okCount = (v.checked || []).filter((c) => c.ok).length;
+      return `<details><summary>
+          <b>${esc(pr.role)}</b> · <span class="mono">${esc(pr.model)}</span>
+          · оценка <span class="mono">${num(pr.review_score, 1)}/15</span>
+          · подтверждено <span class="mono">${okCount}/${(v.checked || []).length}</span>
+          ${(v.hallucinations || []).length
+            ? `<span class="tag bad">${v.hallucinations.length} выдумок</span>` : ""}
+        </summary><div>
+          ${halls ? `<div><b class="bad-txt">Не существует (вето):</b><ul class="tight">${halls}</ul></div>` : ""}
+          ${defects ? `<div><b class="warn-txt">Дефекты (не вето):</b><ul class="tight">${defects}</ul></div>` : ""}
+          <pre class="dump">${esc(JSON.stringify(pr.payload, null, 1))}</pre>
+        </div></details>`;
+    }).join("") + `</div>`);
+  }
+
+  if ((d.reviews || []).length) {
+    parts.push(`<div class="card" style="padding:0"><h3 style="padding:14px 14px 0">Рецензии</h3>
+      <div class="tablewrap"><table>
+      <thead><tr><th>Рецензент</th><th>Кого</th><th>Рубрика</th><th>Возражения</th></tr></thead>
+      <tbody>${d.reviews.map((rv) => `<tr>
+        <td class="mono">${esc(rv.reviewer_role || "")}<br><span class="faint">${esc(rv.reviewer_model)}</span></td>
+        <td class="mono">${esc(rv.target_proposal)}</td>
+        <td class="mono">${esc(Object.entries(rv.scores || {}).map(([k, x]) => k + "=" + x).join("  "))}</td>
+        <td class="wrap">${(rv.objections || []).map(esc).join("<br>") || '<span class="faint">—</span>'}</td>
+      </tr>`).join("")}</tbody></table></div></div>`);
+  }
+
+  if ((d.cloud || []).length) {
+    parts.push(`<div class="card" style="border-color:var(--cloud-bd); padding:0">
+      <h3 style="padding:14px 14px 0">Облачные вызовы</h3><div class="tablewrap"><table>
+      <thead><tr><th>Модель</th><th>Роль</th><th>Токены</th><th>Время</th><th></th></tr></thead>
+      <tbody>${d.cloud.map((c) => `<tr>
+        <td class="mono">${esc(c.model)}</td><td>${esc(c.role)}</td>
+        <td class="mono">${c.tokens_in}+${c.tokens_out}</td><td>${dur(c.ms)}</td>
+        <td>${c.ok ? '<span class="ok-txt">✓</span>'
+          : `<span class="bad-txt">⊘ ${esc(c.refused || c.error || "")}</span>`}</td>
+      </tr>`).join("")}</tbody></table></div></div>`);
+  }
+
+  parts.push(`<details><summary>Полный транскрипт — ${(d.messages || []).length} вызовов
+    (клик по строке раскрывает промпт и ответ)</summary><div><div class="tablewrap"><table>
+    <thead><tr><th>Раунд</th><th>Роль</th><th>Модель</th><th>Токены</th><th>Время</th><th></th></tr></thead>
+    <tbody>${(d.messages || []).map((m) => `<tr class="clickable" data-msg="${m.id}">
+      <td class="mono">R${m.round}</td><td>${esc(m.role)}</td><td class="mono">${esc(m.model)}</td>
+      <td class="mono">${m.tokens_in}+${m.tokens_out}</td><td>${dur(m.ms)}</td>
+      <td>${m.ok ? '<span class="ok-txt">✓</span>' : '<span class="bad-txt">✗</span>'}</td>
+    </tr>`).join("")}</tbody></table></div></div></details>`);
+
+  if ((d.verdicts || []).length) {
+    parts.push(`<div class="card"><h3>История вердиктов</h3>` + d.verdicts.map((v) =>
+      `<div class="row" style="justify-content:space-between; padding:4px 0">
+        <span><span class="tag ${v.decision === "accept" ? "done"
+          : v.decision === "reject" ? "failed" : "running"}">${esc(v.decision)}</span>
+        ${esc(v.comment || "")}</span>
+        <span class="faint">${ago(v.created_at)} назад</span></div>`).join("") + `</div>`);
+  }
+
+  $("#m-body").innerHTML = parts.join("");
+  document.querySelectorAll("#m-body tr[data-msg]").forEach((tr) => {
+    tr.onclick = () => openMessage(tr.dataset.msg);
+  });
+
+  $("#m-foot").innerHTML = `
+    <input type="text" id="v-comment" placeholder="комментарий к вердикту (необязательно)"
+           style="flex:1; min-width:220px">
+    <button class="act ok" data-v="accept">Принять</button>
+    <button class="act accent" data-v="edit">Принять с правками</button>
+    <button class="act bad" data-v="reject">Отклонить</button>`;
+  $("#m-foot").querySelectorAll("button[data-v]").forEach((b) => {
+    b.onclick = async () => {
+      try {
+        await post("/api/verdict", { run_id: runId, decision: b.dataset.v,
+                                     comment: $("#v-comment").value });
+        toast("вердикт «" + b.dataset.v + "» записан");
+        $("#modal").close();
+        render();
+      } catch (e) { toast(e.message, true); }
+    };
+  });
+  $("#modal").showModal();
+}
+
+function listBlock(title, items) {
+  if (!items || !items.length) return "";
+  return `<div style="margin-top:10px"><div class="faint">${esc(title)}</div>
+    <ul class="tight">${items.map((i) => "<li>" + i + "</li>").join("")}</ul></div>`;
+}
+
+async function openMessage(id) {
+  const m = await api("/api/messages/" + id);
+  const w = window.open("", "_blank", "width=920,height=820");
+  if (!w) return toast("браузер заблокировал окно", true);
+  w.document.title = `${m.role} · ${m.model}`;
+  const style = w.document.createElement("style");
+  style.textContent = `body{background:#0e1116;color:#e6edf3;font:13px/1.55 ui-monospace,Menlo,monospace;padding:18px}
+    h2{font-size:12px;color:#9aa7b8;text-transform:uppercase;letter-spacing:.6px;margin:18px 0 6px}
+    pre{white-space:pre-wrap;word-break:break-word;background:#161b22;padding:12px;border-radius:8px;margin:0}`;
+  w.document.head.appendChild(style);
+  const add = (title, text) => {
+    const h = w.document.createElement("h2"); h.textContent = title;
+    const pre = w.document.createElement("pre"); pre.textContent = text || "—";
+    w.document.body.append(h, pre);
+  };
+  add(`${m.role} · ${m.model} · раунд ${m.round} · ${m.tokens_in}+${m.tokens_out} токенов`, "");
+  add("Промпт", m.prompt);
+  add("Ответ", m.response);
+}
+
+/* ── карточки борда ───────────────────────────────────────────────────── */
+let cardQuery = "", cardDb = "", cardProfile = "fast", cardOnlyHalf = false;
+let STATUSES = {};
+const selected = new Set();      // выбранная серия, переживает перерисовку по фильтру
+async function renderCards() {
+  const [rows, models] = await Promise.all([
+    api(`/api/cards?limit=400&db=${encodeURIComponent(cardDb)}&q=${encodeURIComponent(cardQuery)}`),
+    STATUSES.tasks ? Promise.resolve(null) : api("/api/statuses"),
+  ]);
+  if (models) STATUSES = models;
+  const shown = cardOnlyHalf ? rows.filter((c) => c.half_baked) : rows;
+
+  // Выбранное переживает перерисовку по фильтру: собирать серию из 20 карточек,
+  // теряя отметки при каждом уточнении поиска, невозможно.
+  const visibleIds = new Set(shown.map((c) => c.card_id));
+  [...selected].forEach((id) => { if (!visibleIds.has(id)) { /* оставляем */ } });
+
+  $("#tab-cards").innerHTML = `
+    <div class="toolbar">
+      <input type="text" id="c-q" placeholder="поиск по названию или Backlog ID"
+             value="${esc(cardQuery)}" style="min-width:240px">
+      <select id="c-db">
+        <option value="">обе базы</option>
+        <option value="bugs"${cardDb === "bugs" ? " selected" : ""}>Ошибки</option>
+        <option value="tasks"${cardDb === "tasks" ? " selected" : ""}>Задачи</option>
+      </select>
+      <label class="row" style="gap:6px"><input type="checkbox" id="c-half"
+        ${cardOnlyHalf ? "checked" : ""}> <span class="sub">только half-baked</span></label>
+      <button class="act" id="c-all">Отметить показанные</button>
+      <button class="act" id="c-none">Снять отметки</button>
+      <span class="spacer"></span>
+      <span class="sub">${shown.length} карточек</span>
+      <button class="act accent" id="c-series" ${selected.size ? "" : "disabled"}>
+        Прогнать серию (${selected.size})</button>
+    </div>
+    <div class="card" style="padding:0">
+      <div class="tablewrap"><table>
+        <thead><tr><th style="width:34px"></th><th>Карточка</th><th>Статус</th><th>Важность</th>
+          <th>Прогонов</th><th>Готовность</th><th>Указание</th><th></th></tr></thead>
+        <tbody>${shown.map(cardRow).join("") || emptyRow(8, "ничего не найдено")}</tbody>
+      </table></div>
+    </div>`;
+
+  $("#c-q").oninput = debounce((e) => { cardQuery = e.target.value; renderCards(); }, 320);
+  $("#c-db").onchange = (e) => { cardDb = e.target.value; renderCards(); };
+  $("#c-half").onchange = (e) => { cardOnlyHalf = e.target.checked; renderCards(); };
+  $("#c-all").onclick = () => { shown.forEach((c) => selected.add(c.card_id)); renderCards(); };
+  $("#c-none").onclick = () => { selected.clear(); renderCards(); };
+  $("#c-series").onclick = () => openSeries(rows);
+  document.querySelectorAll("#tab-cards [data-open]").forEach((el) => {
+    el.onclick = () => openCard(el.dataset.open);
+  });
+  document.querySelectorAll("#tab-cards [data-pick]").forEach((el) => {
+    el.onchange = () => {
+      if (el.checked) selected.add(el.dataset.pick); else selected.delete(el.dataset.pick);
+      $("#c-series").disabled = selected.size === 0;
+      $("#c-series").textContent = `Прогнать серию (${selected.size})`;
+    };
+  });
+}
+
+function cardRow(c) {
+  const sev = c.severity || c.priority || "";
+  let mods = [];
+  try { mods = JSON.parse(c.modules || "[]"); } catch (e) { mods = []; }
+  return `<tr>
+    <td><input type="checkbox" data-pick="${esc(c.card_id)}"
+         ${selected.has(c.card_id) ? "checked" : ""}></td>
+    <td class="wrap">
+      <div>${esc(c.title)}</div>
+      <div class="sub chip-row" style="margin-top:4px">
+        <span class="tag${c.db === "draft" ? " warn" : ""}">${c.db === "draft"
+          ? "черновик — нет в Notion" : esc(c.db)}</span>
+        ${c.backlog_id ? `<span class="tag mono" title="${esc(c.backlog_id)}">${
+          esc(c.backlog_id.length > 40 ? c.backlog_id.slice(0, 38) + "…" : c.backlog_id)}</span>` : ""}
+        ${c.half_baked ? '<span class="tag warn">HALF-BAKED — не брать в работу</span>' : ""}
+        ${mods.slice(0, 3).map((m) => `<span class="tag">${esc(m)}</span>`).join("")}
+      </div>
+    </td>
+    <td><span class="tag">${esc(c.status || "—")}</span></td>
+    <td>${sev ? `<span class="tag ${esc(sev)}">${esc(sev)}</span>` : '<span class="faint">—</span>'}</td>
+    <td class="mono">${c.runs || 0}</td>
+    <td class="mono">${num(c.readiness)}</td>
+    <td class="sub wrap">${c.note ? esc(String(c.note).slice(0, 70)) : '<span class="faint">—</span>'}</td>
+    <td><button class="act" data-open="${esc(c.card_id)}">Открыть</button></td>
+  </tr>`;
+}
+
+/* Радио-выбор профиля запуска — общий рендер для openSeries/openCard/renderHome (DRY). */
+function renderProfileRadios(models, radioName, selectedName, warnText) {
+  const rows = Object.entries(models.profiles || {}).map(([name, p]) => `
+    <label class="field"><span><b>${esc(name)}</b>
+      <span class="sub">${esc(Object.entries(p.roles)
+        .filter(([k]) => k.startsWith("proposer") || k === "arbiter")
+        .map(([k, v]) => k.replace("proposer.", "") + ": " + v).join(" · "))}</span></span>
+      <input type="radio" name="${radioName}" value="${esc(name)}"
+        ${name === selectedName ? "checked" : ""}
+        ${p.uses_cloud.length && !models.cloud_enabled ? "disabled" : ""}></label>`).join("");
+  const warn = !models.cloud_enabled
+    ? `<div class="sub warn-txt" style="margin-top:8px">${esc(warnText)}</div>` : "";
+  return rows + warn + glmOption(models, radioName);
+}
+/* «GLM 5.x» на одну задачу (§17.6): тот же профиль и трек, но все роли — в Coding Plan.
+   Режим включён в шапке — галочка уже стоит и заблокирована: он и так действует на всё. */
+function glmOption(models, name) {
+  const g = models.glm || {};
+  const global = !!g.effective;
+  const disabled = global || !models.cloud_enabled;
+  const why = global ? "режим включён в шапке — действует на все задачи"
+    : !models.cloud_enabled ? "нужно включённое облако"
+    : `все роли → GLM 5.x (${glmModelsText(g)}), локально только эмбеддинги; до
+       ${Number(g.max_calls_per_run) || 0} облачных вызовов на прогон`;
+  return `<label class="field" style="margin-top:6px"><span><b>GLM 5.x</b>
+      <span class="sub">${esc(why)}</span></span>
+    <input type="checkbox" id="${name}-glm" ${global ? "checked" : ""} ${disabled ? "disabled" : ""}></label>`;
+}
+// Отметка задачи для запроса: только явная галочка (глобальный режим сервер знает сам).
+const glmChoice = (name) => {
+  const el = document.getElementById(name + "-glm");
+  return el && el.checked && !el.disabled ? "glm5" : "";
+};
+
+/* Серия карточек: профиль, комментарий к запуску, окно времени, оценка. */
+async function openSeries(allCards) {
+  const models = await api("/api/models");
+  const chosen = allCards.filter((c) => selected.has(c.card_id));
+  const half = chosen.filter((c) => c.half_baked).length;
+
+  const fmtLocal = (d) => {
+    const p = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
+  const now = new Date();
+  const tonight = new Date(now); tonight.setHours(23, 30, 0, 0);
+  const morning = new Date(now); morning.setDate(morning.getDate() + 1); morning.setHours(7, 30, 0, 0);
+
+  $("#m-title").textContent = `Серия из ${chosen.length} карточек`;
+  $("#m-sub").innerHTML = `<span class="tag">${chosen.filter((c) => c.db === "bugs").length} ошибок</span>
+    <span class="tag">${chosen.filter((c) => c.db === "tasks").length} задач</span>
+    ${half ? `<span class="tag warn">${half} half-baked — пойдут отдельным треком</span>` : ""}`;
+
+  $("#m-body").innerHTML = `
+    <div class="card">
+      <h3>Кто будет работать</h3>
+      ${renderProfileRadios(models, "sprof", cardProfile,
+        "Облачные профили выключены — включить на вкладке «Обзор», карточка «Облако — состояние».")}
+    </div>
+
+    <div class="card">
+      <h3>Комментарий к запуску</h3>
+      <div class="sub" style="margin-bottom:8px">Пойдёт как указание владельца к КАЖДОЙ карточке
+        серии: в капсулу, с приоритетом выше выводов из кода. Перезапишет прежние указания
+        по этим карточкам.</div>
+      <textarea id="s-note" rows="3"
+        placeholder="например: смотреть только на бэкенд; не предлагать миграций схемы"></textarea>
+    </div>
+
+    <div class="card">
+      <h3>Окно запуска</h3>
+      <div class="sub" style="margin-bottom:8px">Раньше начала карточки не берутся, после конца —
+        снимаются из очереди. Проверяется воркером при захвате, а не только здесь.</div>
+      <label class="field"><span>Начать не раньше</span>
+        <input type="datetime-local" id="s-start" value="${fmtLocal(tonight)}"></label>
+      <label class="field"><span>Не начинать новые после</span>
+        <input type="datetime-local" id="s-end" value="${fmtLocal(morning)}"></label>
+      <div class="row" style="margin-top:8px">
+        <button class="act" id="s-now">Начать сразу</button>
+        <button class="act" id="s-noend">Без ограничения по концу</button>
+      </div>
+    </div>
+
+    <div class="card" id="s-estimate"><h3>Оценка</h3><div class="faint">считаю…</div></div>`;
+
+  $("#m-foot").innerHTML = `<span class="spacer"></span>
+    <button class="act accent" id="s-go">Поставить серию в очередь</button>`;
+
+  async function refreshEstimate() {
+    const prof = document.querySelector('input[name="sprof"]:checked');
+    const profile = prof ? prof.value : cardProfile;
+    const e = await api(`/api/estimate?profile=${encodeURIComponent(profile)}&count=${chosen.length}` +
+                        `&cloud_mode=${glmChoice("sprof")}`);
+    const hours = Math.floor(e.total_seconds / 3600), mins = Math.round((e.total_seconds % 3600) / 60);
+    const startEl = $("#s-start").value, endEl = $("#s-end").value;
+    let verdict = "";
+    if (startEl && endEl) {
+      const windowSec = (new Date(endEl) - new Date(startEl)) / 1000;
+      verdict = windowSec <= 0 ? '<span class="bad-txt">конец окна раньше начала</span>'
+        : e.total_seconds > windowSec
+          ? `<span class="warn-txt">в окно (${Math.round(windowSec / 3600)} ч) не помещается —
+             успеет примерно ${Math.floor(windowSec / (e.per_card_seconds || 1))} из ${chosen.length},
+             остальные снимутся</span>`
+          : `<span class="ok-txt">помещается в окно (${Math.round(windowSec / 3600)} ч)</span>`;
+    }
+    $("#s-estimate").innerHTML = `<h3>Оценка</h3>
+      <div class="kv">
+        <div>карточек</div><div class="mono">${chosen.length}</div>
+        <div>на карточку</div><div class="mono">≈ ${e.per_card_seconds} с
+          ${e.measured_on ? `<span class="faint">(по ${e.measured_on} прошлым прогонам)</span>`
+            : '<span class="faint">(своих замеров нет, грубый ориентир)</span>'}</div>
+        <div>всего</div><div class="mono">≈ ${hours ? hours + " ч " : ""}${mins} мин</div>
+        ${e.cloud_calls ? `<div>облачных вызовов</div>
+          <div class="mono">до ${e.cloud_calls} <span class="faint">— сверьтесь с окном подписки${
+            e.glm ? ` (GLM 5.x: ${Number(e.glm_window?.max) || 0} за ${Number(e.glm_window?.hours) || 0} ч)` : ""}</span></div>` : ""}
+      </div>
+      <div style="margin-top:10px">${verdict}</div>`;
+  }
+  document.querySelectorAll('input[name="sprof"]').forEach((r) => { r.onchange = refreshEstimate; });
+  const sGlm = $("#sprof-glm");
+  if (sGlm) sGlm.onchange = refreshEstimate;
+  $("#s-start").onchange = refreshEstimate;
+  $("#s-end").onchange = refreshEstimate;
+  $("#s-now").onclick = () => { $("#s-start").value = fmtLocal(new Date()); refreshEstimate(); };
+  $("#s-noend").onclick = () => { $("#s-end").value = ""; refreshEstimate(); };
+  refreshEstimate();
+
+  $("#s-go").onclick = async () => {
+    const prof = document.querySelector('input[name="sprof"]:checked');
+    const toTs = (v) => v ? Math.floor(new Date(v).getTime() / 1000) : null;
+    try {
+      const r = await post("/api/enqueue-batch", {
+        card_ids: [...selected], profile: prof ? prof.value : cardProfile,
+        note: $("#s-note").value, start_at: toTs($("#s-start").value),
+        deadline: toTs($("#s-end").value), cloud_mode: glmChoice("sprof"),
+      });
+      toast(`серия ${r.batch_id}: поставлено ${r.queued}` +
+            (r.skipped ? `, пропущено ${r.skipped}` : ""));
+      selected.clear();
+      $("#modal").close();
+      renderCards();
+    } catch (e) { toast(e.message, true); }
+  };
+  $("#modal").showModal();
+}
+
+/* Карточка: указания владельца, статус, запуск с выбором профиля и ролей. */
+async function openCard(cardId) {
+  const [cards, notes, models] = await Promise.all([
+    api(`/api/cards?limit=400&q=`), api("/api/notes/" + encodeURIComponent(cardId)),
+    api("/api/models"),
+  ]);
+  const c = cards.find((x) => x.card_id === cardId);
+  if (!c) return toast("карточка не найдена", true);
+
+  $("#m-title").textContent = c.title;
+  $("#m-sub").innerHTML = `<span class="tag">${esc(c.db)}</span>
+    <span class="tag">${esc(c.status || "—")}</span>
+    ${c.half_baked ? '<span class="tag warn">HALF-BAKED</span>' : ""}
+    ${c.backlog_id ? `<span class="tag mono">${esc(c.backlog_id)}</span>` : ""}
+    ${c.url ? ` · <a href="${esc(c.url)}" target="_blank">Notion ↗</a>` : ""}`;
+
+  const allowed = STATUSES[c.db] || [];
+  const profileRows = renderProfileRadios(models, "prof", cardProfile,
+    "Профили с облачными моделями выключены: облако выключено в настройках.");
+
+  $("#m-body").innerHTML = `
+    ${c.half_baked ? `<div class="card" style="border-color:var(--warn-bd)">
+      <h3>Half-baked idea</h3>Карточка помечена владельцем как сырая идея. В работу не берётся
+      (<span class="mono">.claude/rules/17-notion-board.md §1</span>); консилиум прорабатывает её
+      отдельным треком — что нужно решить, чтобы она стала задачей.</div>` : ""}
+
+    <div class="card">
+      <h3>Указание консилиуму</h3>
+      <div class="sub" style="margin-bottom:8px">Уходит в капсулу с приоритетом выше выводов из кода
+        и применяется к каждому следующему прогону этой карточки. Новое гасит предыдущее.</div>
+      <textarea id="note-text" rows="3"
+        placeholder="например: трогать только backend; прошлый подход через шаблоны не сработал"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="act accent" id="note-save">Сохранить указание</button>
+        ${notes.length ? `<span class="sub">${notes.length} в истории</span>` : ""}
+      </div>
+      ${notes.length ? `<div class="stack" style="margin-top:10px">${notes.map((n) =>
+        `<div class="sub" style="border-left:2px solid var(--line); padding-left:8px">
+          <span class="tag ${n.active ? "ok" : ""}">${n.active ? "активно" : "заменено"}</span>
+          ${esc(n.note)} <span class="faint">· ${ago(n.created_at)} назад</span></div>`).join("")}</div>` : ""}
+    </div>
+
+    <div class="card">
+      <h3>Статус в Notion</h3>
+      <div class="row">
+        <select id="st-select">${allowed.map((s) =>
+          `<option value="${esc(s)}"${s === c.status ? " selected" : ""}>${esc(s)}</option>`).join("")}</select>
+        <button class="act" id="st-save">Перевести</button>
+      </div>
+      <div class="sub" style="margin-top:8px">Из UI доступны статусы до «на ревью». Финальный
+        (<span class="mono">завершённые</span>/<span class="mono">закрыто</span>) ставится вручную
+        в Notion — консилиум карточки не закрывает.</div>
+    </div>
+
+    <div class="card">
+      <h3>Запуск — кто будет работать</h3>
+      ${profileRows}
+    </div>`;
+
+  $("#m-foot").innerHTML = `<span class="spacer"></span>
+    <button class="act accent" id="run-btn">Прогнать карточку</button>`;
+
+  $("#note-save").onclick = async () => {
+    try {
+      await post("/api/notes", { card_id: cardId, note: $("#note-text").value });
+      toast("указание сохранено — применится со следующего прогона");
+      openCard(cardId);
+    } catch (e) { toast(e.message, true); }
+  };
+  $("#st-save").onclick = async () => {
+    try {
+      const r = await post("/api/status", { card_id: cardId, status: $("#st-select").value });
+      toast("статус в Notion: " + r.status);
+      $("#modal").close(); renderCards();
+    } catch (e) { toast(e.message, true); }
+  };
+  $("#run-btn").onclick = async () => {
+    const chosen = document.querySelector('input[name="prof"]:checked');
+    try {
+      const r = await post("/api/enqueue",
+                           { card_id: cardId, profile: chosen ? chosen.value : cardProfile,
+                             cloud_mode: glmChoice("prof") });
+      toast("поставлено в очередь: " + r.run_id + (r.cloud_mode ? " · GLM 5.x" : ""));
+      $("#modal").close(); render();
+    } catch (e) { toast(e.message, true); }
+  };
+  $("#modal").showModal();
+}
+
+/* ── главная: новая задача с @-упоминаниями (Ф1/P2) ──────────────────────
+   Черновик — ЛОКАЛЬНАЯ карточка (db='draft'), в Notion не попадает. Связи — явные
+   @[упоминания], резолвит их сервер (POST /api/tasks), а не клиент: чип мог быть
+   отредактирован после выбора из дропдауна. */
+let homeLinks = [], homeProfile = "fast";
+function renderHomeChips() {
+  const wrap = $("#h-chips");
+  if (!wrap) return;
+  wrap.innerHTML = homeLinks.map((title, i) => `<span class="tag">${esc(title)}
+    <a href="#" data-i="${i}" style="margin-left:4px; text-decoration:none">×</a></span>`).join("");
+  wrap.querySelectorAll("[data-i]").forEach((a) => {
+    a.onclick = (e) => {
+      e.preventDefault();
+      const [title] = homeLinks.splice(Number(a.dataset.i), 1);
+      // Снять чип должно снимать и вставленный им токен — иначе текст задачи продолжает
+      // утверждать связь, которой больше нет в структурных данных (`links`, отправляемых
+      // на сервер). Одна и та же карточка может быть выбрана из дропдауна дважды (два
+      // упоминания одного заголовка в разных местах текста) при одном чипе (homeLinks
+      // дедуплицирует по title) — удаляем ВСЕ вхождения токена, не только первое
+      // (split/join, не regex — title может содержать regex-спецсимволы).
+      const body = $("#h-body");
+      if (body && title) {
+        const token = `@[${title}] `;
+        body.value = body.value.split(token).join("");
+      }
+      renderHomeChips();
+    };
+  });
+  const count = $("#h-chip-count");
+  if (count) count.textContent = homeLinks.length ? `связано: ${homeLinks.length}/5` : "";
+}
+async function renderHome() {
+  const models = await api("/api/models");
+  $("#tab-home").innerHTML = `
+    <div class="home-grid">
+    <form id="h-form" class="card" novalidate>
+      <h3>Новая задача</h3>
+      <label class="sub" for="h-title" style="display:block;margin-bottom:4px">Заголовок</label>
+      <input type="text" id="h-title" maxlength="1900" style="width:100%"
+        placeholder="о чём задача" autocomplete="off">
+      <div class="sub" id="h-title-count" style="margin:2px 0 0;min-height:1em"></div>
+      <label class="sub" for="h-body" style="display:block;margin:10px 0 4px">Текст — наберите «@» и ≥2 символа, чтобы связать
+        с существующей карточкой (до 5 связей)</label>
+      <div style="position:relative">
+        <textarea id="h-body" rows="8" maxlength="8000"
+          placeholder="постановка задачи; @[Название карточки] — связь с существующей работой"
+          aria-autocomplete="list" aria-controls="h-mentions" aria-expanded="false"></textarea>
+        <div id="h-mentions" class="mention-drop" role="listbox" aria-label="Подсказки карточек" hidden></div>
+      </div>
+      <div class="sub" id="h-body-count" style="margin:2px 0 0;min-height:1em"></div>
+      <div class="chip-row" id="h-chips" style="margin-top:8px"></div>
+      <div class="sub" id="h-chip-count" style="margin-top:4px"></div>
+    </form>
+    <div class="home-side">
+    <div class="card">
+      <h3>Кто будет работать</h3>
+      ${renderProfileRadios(models, "hprof", homeProfile,
+        "Облачные профили выключены — включить на вкладке «Обзор», карточка «Облако — состояние».")}
+    </div>
+    <div class="card" id="h-estimate">
+      <h3>Оценка</h3><div class="faint">считаю…</div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="act accent" id="h-go" type="submit" form="h-form">Создать и поставить в очередь</button>
+    </div>
+    </div>
+    </div>`;
+  renderHomeChips();
+
+  async function refreshEstimate() {
+    const prof = document.querySelector('input[name="hprof"]:checked');
+    const profile = prof ? prof.value : homeProfile;
+    const e = await api(`/api/estimate?profile=${encodeURIComponent(profile)}&count=1` +
+                        `&cloud_mode=${glmChoice("hprof")}`);
+    const mins = Math.round(e.per_card_seconds / 60);
+    $("#h-estimate").innerHTML = `<h3>Оценка</h3>
+      <div class="kv">
+        <div>ориентир</div><div class="mono">≈ ${mins} мин
+          ${e.measured_on ? `<span class="faint">(по ${e.measured_on} прошлым прогонам)</span>`
+            : '<span class="faint">(своих замеров нет, грубый ориентир)</span>'}</div>
+        ${e.cloud_calls ? `<div>облачных вызовов</div><div class="mono">до ${e.cloud_calls}${
+          e.glm ? ' <span class="faint">(GLM 5.x)</span>' : ""}</div>` : ""}
+      </div>`;
+  }
+  document.querySelectorAll('input[name="hprof"]').forEach((r) => {
+    r.onchange = () => { homeProfile = r.value; refreshEstimate(); };
+  });
+  const hGlm = $("#hprof-glm");
+  if (hGlm) hGlm.onchange = refreshEstimate;
+  refreshEstimate();
+
+  const body = $("#h-body"), dropdown = $("#h-mentions");
+  let mentionHits = [];
+  let mentionSel = -1;
+  let mentionAtPos = -1; // atPos, для которого реально шёл поиск (живой @-контекст) — см. Notion R2-1
+  const hideMentions = () => {
+    dropdown.hidden = true; mentionSel = -1; mentionAtPos = -1;
+    body.setAttribute("aria-expanded", "false");
+    body.removeAttribute("aria-activedescendant");
+  };
+  const markMentionSel = () => {
+    dropdown.querySelectorAll("[data-i]").forEach((el) => {
+      const on = Number(el.dataset.i) === mentionSel;
+      el.classList.toggle("sel", on);
+      el.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) { el.id = "h-mention-opt"; body.setAttribute("aria-activedescendant", "h-mention-opt"); }
+      else if (el.id === "h-mention-opt") { el.removeAttribute("id"); }
+    });
+  };
+  const runMentionSearch = debounce(async (term, atPos) => {
+    if (term.length < 2) { hideMentions(); return; }
+    try {
+      mentionHits = await api("/api/cards/autocomplete?q=" + encodeURIComponent(term));
+    } catch (e) { hideMentions(); return; }
+    if (!mentionHits.length) { hideMentions(); return; }
+    mentionSel = 0;
+    mentionAtPos = atPos;
+    dropdown.innerHTML = mentionHits.map((h, i) => `<div data-i="${i}" role="option">
+      <b>${esc(h.title)}</b>
+      <span class="sub">${esc(h.db)}${h.backlog_id ? " · " + esc(h.backlog_id) : ""}${h.half_baked ? " · half-baked" : ""}</span>
+    </div>`).join("");
+    dropdown.hidden = false;
+    body.setAttribute("aria-expanded", "true");
+    markMentionSel();
+    dropdown.querySelectorAll("[data-i]").forEach((el) => {
+      el.onclick = () => pickMention(mentionHits[Number(el.dataset.i)], atPos);
+    });
+  }, 200);
+
+  function pickMention(card, atPos) {
+    hideMentions();
+    if (homeLinks.length >= 5) { toast("не более 5 связанных карточек", true); return; }
+    const cursor = body.selectionStart;
+    const before = body.value.slice(0, atPos), after = body.value.slice(cursor);
+    const inserted = `@[${card.title}] `;
+    body.value = before + inserted + after;
+    const at = (before + inserted).length;
+    body.setSelectionRange(at, at);
+    body.focus();
+    if (!homeLinks.includes(card.title)) { homeLinks.push(card.title); renderHomeChips(); }
+  }
+
+  const syncCount = (el, max, out) => {
+    const n = el.value.length;
+    out.textContent = n > max * 0.9 ? `${n}/${max}` : "";
+  };
+  const titleEl = $("#h-title"), titleCount = $("#h-title-count"), bodyCount = $("#h-body-count");
+  titleEl.oninput = () => syncCount(titleEl, 1900, titleCount);
+  // Заголовок — однострочный input внутри <form>: обычный Enter триггерит нативный
+  // implicit submit (спека HTML), что обходит задуманный Cmd/Ctrl+Enter-only UX и может
+  // уйти в очередь с пустым body. Глушим — форма шлётся только через goBtn/Cmd+Enter.
+  titleEl.onkeydown = (e) => { if (e.key === "Enter") e.preventDefault(); };
+  body.oninput = () => {
+    syncCount(body, 8000, bodyCount);
+    const cursor = body.selectionStart;
+    const before = body.value.slice(0, cursor);
+    const at = before.lastIndexOf("@");
+    const term = at === -1 ? "" : before.slice(at + 1);
+    if (at === -1 || /\s/.test(term)) { hideMentions(); return; }
+    runMentionSearch(term, at);
+  };
+  // Клавиатура дропдауна: ↑/↓ — выбор, Enter/Tab — вставить, Esc — закрыть;
+  // без дропдауна Cmd/Ctrl+Enter — отправка (привычка чат-композеров).
+  body.onkeydown = (e) => {
+    if (dropdown.hidden) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        $("#h-form").requestSubmit();
+      }
+      return;
+    }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!mentionHits.length) return;
+      mentionSel = (mentionSel + (e.key === "ArrowDown" ? 1 : -1) + mentionHits.length) % mentionHits.length;
+      markMentionSel();
+    } else if (e.key === "Enter" || e.key === "Tab") {
+      const before = body.value.slice(0, body.selectionStart);
+      const at = before.lastIndexOf("@");
+      const term = at === -1 ? "" : before.slice(at + 1);
+      // Живой @-контекст — это ТОТ ЖЕ @, для которого шёл поиск (mentionAtPos),
+      // без пробела между ним и курсором. Курсор мог уйти от него без oninput
+      // (мышь/стрелки/программно) и оказаться рядом с более ранним «чужим» @ —
+      // тогда at !== mentionAtPos, дропдаун показывает результаты не для этого
+      // токена и вставка ушла бы не в тот @ (Notion: «вставка по чужому @»).
+      // Как и с полностью потерянным @-контекстом — не глушим Tab, иначе
+      // keyboard trap (WCAG 2.1.2), фокус не может уйти с textarea естественно.
+      const liveContext = at !== -1 && at === mentionAtPos && !/\s/.test(term);
+      if (!liveContext) { hideMentions(); return; }
+      e.preventDefault();
+      if (mentionSel >= 0) pickMention(mentionHits[mentionSel], at);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      hideMentions();
+    }
+  };
+
+  const form = $("#h-form"), goBtn = $("#h-go");
+  let sending = false;
+  form.onsubmit = (e) => { e.preventDefault(); submitHome(); };
+  async function submitHome() {
+    if (sending) return;
+    const title = titleEl.value.trim();
+    if (!title) {
+      titleEl.setAttribute("aria-invalid", "true");
+      titleEl.focus();
+      toast("заголовок обязателен", true);
+      return;
+    }
+    titleEl.removeAttribute("aria-invalid");
+    const prof = document.querySelector('input[name="hprof"]:checked');
+    sending = true; goBtn.disabled = true; goBtn.textContent = "Ставлю в очередь…";
+    try {
+      const r = await post("/api/tasks", {
+        title, body: body.value.trim(), links: homeLinks,
+        profile: prof ? prof.value : homeProfile, cloud_mode: glmChoice("hprof"),
+      });
+      toast(`черновик ${r.card_id} создан, поставлен в очередь`);
+      titleEl.value = ""; body.value = ""; homeLinks = [];
+      syncCount(titleEl, 1900, titleCount);
+      syncCount(body, 8000, bodyCount);
+      renderHomeChips();
+      openRun(r.run_id);
+    } catch (e) { toast(e.message, true); }
+    finally {
+      sending = false; goBtn.disabled = false; goBtn.textContent = "Создать и поставить в очередь";
+    }
+  }
+}
+
+/* ── знания + граф (объединены 2026-08-21) ────────────────────────────── */
+let kQuery = "", kKind = "", kPage = 1;
+/* Две панели на одной вкладке: каталог — динамический (поиск/пагинация
+   перерисовывают только #k-pane), граф — стационарный (#graph-pane): заново
+   инициализировать 3D-симуляцию на каждый ввод в поиске нельзя. При выходе с
+   вкладки selectTab гасит сцену целиком. */
+async function renderKnowledge() {
+  if (!$("#k-pane")) {
+    $("#tab-knowledge").innerHTML =
+      `<div id="k-pane"></div><div id="graph-pane" style="margin-top:12px"></div>`;
+    renderGraph();                       // асинхронно заполнит #graph-pane
+  }
+  const qs = new URLSearchParams({ q: kQuery, kind: kKind, page: kPage, page_size: 50 });
+  const d = await api("/api/knowledge?" + qs);
+  const total = (d.kinds || []).reduce((a, b) => a + b.n, 0);
+  const KIND_RU = { rule: "правила проекта", agent: "саб-агенты", skill: "скиллы",
+                    chunk: "DAMS-чанки", card: "карточки борда", done_md: "закрытое (DONE.md)",
+                    exemplar: "принятые образцы", graph_node: "узлы графа",
+                    session: "сессии (P4)", role: "роли (CLAUDE.md)",
+                    client_rule: "правила ИИ-клиентов", memory: "память Claude Code",
+                    mem_obs: "решения claude-mem" };
+  const chip = (k, label, n) =>
+    `<button class="act${kKind === k ? " accent" : ""}" data-k="${esc(k)}">${label}${n != null ? ` · ${n}` : ""}</button>`;
+  const dateRu = (ts) => ts ? new Date(ts * 1000).toLocaleDateString("ru-RU") : "";
+  $("#k-pane").innerHTML = `
+    <div class="grid">
+      <div class="card"><h3>Документов в базе</h3><div class="big">${total}</div>
+        <div class="sub">с эмбеддингами: ${d.embedded}</div></div>
+      ${(d.kinds || []).map((k) => `<div class="card">
+        <h3>${esc(KIND_RU[k.kind] || k.kind)}</h3>
+        <div class="big">${k.n}</div><div class="sub mono">${esc(k.kind)}</div></div>`).join("")}
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>${d.mode === "search" ? "Поиск по базе знаний консилиума" : "Каталог корпуса знаний"}</h3>
+      <div class="sub" style="margin-bottom:8px">Тот же корпус, из которого собираются улики для
+        моделей. Пустой запрос — полный каталог (${d.total} док.) с пагинацией; синтаксис поиска — FTS5.</div>
+      <div class="row">
+        <input type="text" id="k-q" value="${esc(kQuery)}" style="flex:1; min-width:240px"
+               placeholder="пусто — весь каталог; запрос — FTS5-поиск">
+        <button class="act accent" id="k-go">${kQuery ? "Найти" : "Каталог"}</button>
+        ${kQuery ? `<button class="act" id="k-clear">Сброс</button>` : ""}
+      </div>
+      <div class="row" style="margin-top:8px; flex-wrap:wrap; gap:6px">
+        ${chip("", "все", d.kinds && total)}
+        ${(d.kinds || []).map((k) => chip(k.kind, KIND_RU[k.kind] || k.kind, k.n)).join("")}
+      </div>
+      ${d.error ? `<div class="bad-txt" style="margin-top:10px">${esc(d.error)}</div>` : ""}
+      <div class="stack" style="margin-top:12px">
+        ${(d.hits || []).map((h) => `<div style="border-left:2px solid var(--accent); padding-left:10px">
+          <div><span class="tag">${esc(h.kind)}</span> <b>${esc(h.title)}</b></div>
+          <div class="sub mono">${esc(h.source_ref || "")}${h.indexed_at ? " · " + dateRu(h.indexed_at) : ""}</div>
+          <div class="sub" style="margin-top:4px; white-space:pre-wrap">${esc(h.snippet)}</div>
+        </div>`).join("") || '<div class="empty">ничего не найдено</div>'}
+      </div>
+      ${d.pages > 1 ? `
+      <div class="row" style="margin-top:10px; align-items:center; gap:8px">
+        <button class="act" id="k-prev" ${d.page <= 1 ? "disabled" : ""}>←</button>
+        <span class="sub">стр. ${d.page} из ${d.pages} · всего ${d.total}</span>
+        <button class="act" id="k-next" ${d.page >= d.pages ? "disabled" : ""}>→</button>
+      </div>` : ""}
+    </div>`;
+  const go = () => { kQuery = $("#k-q").value.trim(); kPage = 1; renderKnowledge(); };
+  $("#k-go").onclick = go;
+  $("#k-q").onkeydown = (e) => { if (e.key === "Enter") go(); };
+  const clear = $("#k-clear");
+  if (clear) clear.onclick = () => { kQuery = ""; kPage = 1; renderKnowledge(); };
+  document.querySelectorAll("[data-k]").forEach((b) =>
+    b.onclick = () => { kKind = b.dataset.k; kPage = 1; renderKnowledge(); });
+  const prev = $("#k-prev"), next = $("#k-next");
+  if (prev) prev.onclick = () => { if (kPage > 1) { kPage--; renderKnowledge(); } };
+  if (next) next.onclick = () => { if (kPage < d.pages) { kPage++; renderKnowledge(); } };
+}
+
+/* ── граф ─────────────────────────────────────────────────────────────── */
+/* Раскладка и отрисовка — свои, на canvas 2D: правило «ни сборки, ни CDN» здесь не
+   формальность, шлюз отдаёт один файл с диска и должен работать без сети. Готовая
+   3D-библиотека (three.js/3d-force-graph) — это мегабайт с внешнего домена ради того,
+   что здесь занимает две сотни строк.
+
+   Почему 3D, а не круг по окружности, как было: в круговой раскладке расстояние между
+   точками ничего не значит — соседи по кругу не связаны, и «связанным» граф не выглядит
+   никогда. В силовой раскладке расстояние = связность, а третья ось снимает главную беду
+   плоской: на сотнях узлов рёбра пересекаются так, что структура превращается в шум.
+
+   Симуляция: пружины по рёбрам + отталкивание всех со всеми через пространственный хеш
+   (полный перебор — O(n²), на 1000 узлов это миллион пар на кадр) + слабое притяжение к
+   центру, чтобы несвязные куски не улетали. Затухание alpha: раскладка «застывает» за
+   ~300 шагов, после чего кадр только вращается. */
+let graph3d = null;
+let graphDrill = null;   // { communityId, label } — открытое сообщество в drill-down, иначе null
+let graphToken = 0;      // бампается на каждый leave/новый рендер — гасит устаревший in-flight fetch
+
+function stopGraph3d() {
+  graphToken++;
+  if (graph3d) { graph3d.stop(); graph3d = null; }
+}
+
+const GRAPH_PREFS_KEY = "ai-council-graph-prefs";
+const GRAPH_BUDGET_SCALE = [150, 300, 500, 1000, 1500, 2500, 5000, 8000, 10000, 15000, 25000, "all"];
+const graphPrefs = Object.assign(
+  { limit: 300, level: "files", rel: [], spin: true, labels: true },
+  (() => {
+    try { return JSON.parse(localStorage.getItem(GRAPH_PREFS_KEY) || "{}"); }
+    catch (e) { return {}; }
+  })());
+function saveGraphPrefs() {
+  try { localStorage.setItem(GRAPH_PREFS_KEY, JSON.stringify(graphPrefs)); }
+  catch (e) { /* private mode */ }
+}
+
+function graphHue(node) {
+  const community = parseInt(node.community, 10);
+  if (Number.isFinite(community)) return (community * 47) % 360;
+  let hash = 0;
+  for (const ch of node.id) hash = (hash * 31 + ch.charCodeAt(0)) % 360;
+  return hash;
+}
+
+function startGraph3d(canvas, data, onSelect) {
+  const ctx = canvas.getContext("2d");
+  const nodes = data.nodes || [];
+  const N = nodes.length;
+  const index = new Map(nodes.map((n, i) => [n.id, i]));
+  const edges = (data.edges || []).map((e) => ({
+    s: index.get(e.source), t: index.get(e.target), w: e.weight || 1,
+  })).filter((e) => e.s !== undefined && e.t !== undefined && e.s !== e.t);
+
+  const x = new Float64Array(N), y = new Float64Array(N), z = new Float64Array(N);
+  const vx = new Float64Array(N), vy = new Float64Array(N), vz = new Float64Array(N);
+  // Старт — точки сферы Фибоначчи: детерминированно (один и тот же граф даёт одну и ту
+  // же картинку) и без слипшихся пар, из которых отталкивание выбрасывает узлы рывком.
+  const R0 = 240;
+  for (let i = 0; i < N; i++) {
+    const t = (i + 0.5) / Math.max(N, 1);
+    const phi = Math.acos(1 - 2 * t), theta = Math.PI * (1 + Math.sqrt(5)) * i;
+    x[i] = R0 * Math.sin(phi) * Math.cos(theta);
+    y[i] = R0 * Math.sin(phi) * Math.sin(theta);
+    z[i] = R0 * Math.cos(phi);
+  }
+
+  const adj = nodes.map(() => []);
+  for (const e of edges) { adj[e.s].push(e.t); adj[e.t].push(e.s); }
+  const maxDeg = Math.max(1, ...nodes.map((n) => n.degree || 1));
+  const top = nodes.map((n, i) => i).sort((a, b) =>
+    (nodes[b].degree || 0) - (nodes[a].degree || 0)).slice(0, 20);
+  const topSet = new Set(top);
+
+  const CELL = 72, REPULSION = 1400, SPRING_LEN = 58, MAX_STEP = 26;
+  let alpha = 1;
+
+  function step() {
+    // Отталкивание: только внутри своей ячейки и 26 соседних. Дальние узлы влияют на
+    // раскладку пренебрежимо, а полный перебор на 1000 узлов — полмиллиона пар на шаг.
+    const grid = new Map();
+    for (let i = 0; i < N; i++) {
+      const k = Math.round(x[i] / CELL) + "," + Math.round(y[i] / CELL) + ","
+              + Math.round(z[i] / CELL);
+      const cell = grid.get(k);
+      if (cell) cell.push(i); else grid.set(k, [i]);
+    }
+    for (let i = 0; i < N; i++) {
+      const cx = Math.round(x[i] / CELL), cy = Math.round(y[i] / CELL),
+            cz = Math.round(z[i] / CELL);
+      for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) for (let c = -1; c <= 1; c++) {
+        const cell = grid.get((cx + a) + "," + (cy + b) + "," + (cz + c));
+        if (!cell) continue;
+        for (const j of cell) {
+          if (j <= i) continue;                       // пара учитывается один раз
+          const dx = x[i] - x[j], dy = y[i] - y[j], dz = z[i] - z[j];
+          const d2 = dx * dx + dy * dy + dz * dz + 0.5;
+          const d = Math.sqrt(d2);
+          const f = Math.min(REPULSION / d2, 6) / d;
+          vx[i] += dx * f; vy[i] += dy * f; vz[i] += dz * f;
+          vx[j] -= dx * f; vy[j] -= dy * f; vz[j] -= dz * f;
+        }
+      }
+    }
+    for (const e of edges) {
+      const dx = x[e.t] - x[e.s], dy = y[e.t] - y[e.s], dz = z[e.t] - z[e.s];
+      const d = Math.sqrt(dx * dx + dy * dy + dz * dz) + 0.001;
+      const f = 0.008 * Math.min(e.w, 4) * (d - SPRING_LEN) / d;
+      vx[e.s] += dx * f; vy[e.s] += dy * f; vz[e.s] += dz * f;
+      vx[e.t] -= dx * f; vy[e.t] -= dy * f; vz[e.t] -= dz * f;
+    }
+    const clamp = (v) => (v > MAX_STEP ? MAX_STEP : v < -MAX_STEP ? -MAX_STEP : v);
+    for (let i = 0; i < N; i++) {
+      vx[i] = (vx[i] - x[i] * 0.0022) * 0.80;         // + слабая гравитация к центру
+      vy[i] = (vy[i] - y[i] * 0.0022) * 0.80;
+      vz[i] = (vz[i] - z[i] * 0.0022) * 0.80;
+      x[i] += clamp(vx[i]) * alpha;
+      y[i] += clamp(vy[i]) * alpha;
+      z[i] += clamp(vz[i]) * alpha;
+    }
+    alpha = Math.max(0, alpha - 0.0035);
+  }
+
+  // ── камера ────────────────────────────────────────────────────────────
+  let yaw = 0.5, pitch = -0.22, dist = 780, dragging = false, dirty = true;
+  let hover = -1, pinned = -1, w = 0, h = 0;
+  const px = new Float64Array(N), py = new Float64Array(N),
+        pk = new Float64Array(N), pz = new Float64Array(N);
+
+  function project() {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw);
+    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    for (let i = 0; i < N; i++) {
+      const X = x[i] * cy + z[i] * sy;
+      const Zr = -x[i] * sy + z[i] * cy;
+      const Y = y[i] * cp - Zr * sp;
+      const Z = y[i] * sp + Zr * cp;
+      const depth = dist + Z;
+      const k = depth > 40 ? (dist * 0.92) / depth : 0;
+      px[i] = w / 2 + X * k; py[i] = h / 2 + Y * k; pk[i] = k; pz[i] = Z;
+    }
+  }
+
+  function draw() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cw = canvas.clientWidth, ch = canvas.clientHeight;
+    if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+      canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
+      dirty = true;
+    }
+    w = cw; h = ch;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    project();
+
+    const css = getComputedStyle(document.documentElement);
+    const lineColor = css.getPropertyValue("--line").trim() || "#2a3140";
+    const accent = css.getPropertyValue("--accent").trim() || "#58a6ff";
+    const ink = css.getPropertyValue("--ink").trim() || "#e6edf3";
+    const light = document.documentElement.dataset.theme === "light";
+    const focus = pinned >= 0 ? pinned : hover;
+    const near = focus >= 0 ? new Set(adj[focus]) : null;
+
+    // Обычные рёбра — одним путём в одну обводку: 6000 отдельных stroke() на кадр
+    // роняют частоту кадров, а различать их по цвету всё равно незачем.
+    ctx.strokeStyle = lineColor;
+    ctx.globalAlpha = focus >= 0 ? 0.12 : (light ? 0.5 : 0.35);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (const e of edges) {
+      if (focus >= 0 && (e.s === focus || e.t === focus)) continue;
+      if (pk[e.s] <= 0 || pk[e.t] <= 0) continue;
+      ctx.moveTo(px[e.s], py[e.s]); ctx.lineTo(px[e.t], py[e.t]);
+    }
+    ctx.stroke();
+    if (focus >= 0) {
+      ctx.strokeStyle = accent; ctx.globalAlpha = 0.9; ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      for (const e of edges) {
+        if (e.s !== focus && e.t !== focus) continue;
+        if (pk[e.s] <= 0 || pk[e.t] <= 0) continue;
+        ctx.moveTo(px[e.s], py[e.s]); ctx.lineTo(px[e.t], py[e.t]);
+      }
+      ctx.stroke();
+    }
+
+    // Узлы — дальние раньше ближних (алгоритм художника): иначе передний план
+    // затирается тем, что за ним, и глубина читается наоборот.
+    const order = Array.from({ length: N }, (_, i) => i).sort((a, b) => pz[b] - pz[a]);
+    for (const i of order) {
+      if (pk[i] <= 0) continue;
+      const node = nodes[i];
+      const r = (2.4 + 6 * Math.sqrt((node.degree || 1) / maxDeg)) * pk[i];
+      const depth = Math.max(0.25, Math.min(1, pk[i]));
+      const dim = focus >= 0 && i !== focus && !near.has(i);
+      ctx.globalAlpha = dim ? 0.12 : 0.35 + 0.65 * depth;
+      ctx.fillStyle = `hsl(${graphHue(node)} 65% ${light ? 42 : 34 + 26 * depth}%)`;
+      ctx.beginPath();
+      ctx.arc(px[i], py[i], Math.max(r, 1), 0, 6.283);
+      ctx.fill();
+      if (i === focus) {
+        ctx.globalAlpha = 1; ctx.strokeStyle = accent; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(px[i], py[i], Math.max(r, 1) + 3, 0, 6.283); ctx.stroke();
+      }
+    }
+
+    if (graphPrefs.labels || focus >= 0) {
+      // Подписи рисуются по убыванию важности и только если не налезают на уже
+      // поставленные: без этого центр графа превращается в кашу из наложенного текста,
+      // где не читается ни одно имя — то есть подписей как бы и нет.
+      ctx.font = "11px -apple-system, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      const placed = [];
+      const candidates = [];
+      for (const i of order) {
+        if (pk[i] <= 0) continue;
+        if (i === focus || (focus >= 0 && near.has(i)) || (graphPrefs.labels && topSet.has(i)
+            && focus < 0)) candidates.push(i);
+      }
+      candidates.sort((a, b) => (a === focus ? -1 : b === focus ? 1 : 0)
+                             || (nodes[b].degree || 0) - (nodes[a].degree || 0));
+      for (const i of candidates) {
+        const text = nodes[i].label.slice(0, 34);
+        const r = (2.4 + 6 * Math.sqrt((nodes[i].degree || 1) / maxDeg)) * pk[i];
+        const half = ctx.measureText(text).width / 2 + 2;
+        const box = { x1: px[i] - half, x2: px[i] + half,
+                      y1: py[i] - r - 16, y2: py[i] - r - 3 };
+        if (box.x2 < 0 || box.x1 > w || box.y1 < 0 || box.y2 > h) continue;
+        if (i !== focus && placed.some((p) => box.x1 < p.x2 && box.x2 > p.x1
+                                           && box.y1 < p.y2 && box.y2 > p.y1)) continue;
+        placed.push(box);
+        ctx.globalAlpha = 0.85;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = light ? "#ffffff" : "#0e1116";   // подложка под текст
+        ctx.strokeText(text, px[i], py[i] - r - 5);
+        ctx.globalAlpha = i === focus ? 1 : 0.9;
+        ctx.fillStyle = ink;
+        ctx.fillText(text, px[i], py[i] - r - 5);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function pick(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = clientX - rect.left, my = clientY - rect.top;
+    let best = -1, bestD = 16 * 16;
+    for (let i = 0; i < N; i++) {
+      if (pk[i] <= 0) continue;
+      const dx = px[i] - mx, dy = py[i] - my, d2 = dx * dx + dy * dy;
+      if (d2 < bestD) { bestD = d2; best = i; }
+    }
+    return best;
+  }
+
+  let last = { x: 0, y: 0 };
+  const onDown = (e) => {
+    dragging = true; last = { x: e.clientX, y: e.clientY };
+    canvas.setPointerCapture(e.pointerId); canvas.style.cursor = "grabbing";
+  };
+  const onMove = (e) => {
+    if (dragging) {
+      yaw += (e.clientX - last.x) * 0.006;
+      pitch = Math.max(-1.5, Math.min(1.5, pitch + (e.clientY - last.y) * 0.006));
+      last = { x: e.clientX, y: e.clientY };
+      dirty = true;
+      return;
+    }
+    const hit = pick(e.clientX, e.clientY);
+    if (hit !== hover) {
+      hover = hit; dirty = true;
+      canvas.style.cursor = hit >= 0 ? "pointer" : "grab";
+      canvas.title = hit >= 0 ? `${nodes[hit].label} — связей: ${nodes[hit].degree}` : "";
+    }
+  };
+  const onUp = (e) => {
+    if (dragging && Math.abs(e.clientX - last.x) < 3 && Math.abs(e.clientY - last.y) < 3) {
+      const hit = pick(e.clientX, e.clientY);
+      pinned = hit === pinned ? -1 : hit;
+      onSelect(pinned >= 0 ? nodes[pinned] : null,
+               pinned >= 0 ? adj[pinned].map((i) => nodes[i]) : []);
+    }
+    dragging = false; canvas.style.cursor = "grab"; dirty = true;
+  };
+  const onWheel = (e) => {
+    e.preventDefault();
+    dist = Math.max(220, Math.min(2600, dist * (e.deltaY > 0 ? 1.12 : 0.89)));
+    dirty = true;
+  };
+  canvas.addEventListener("pointerdown", onDown);
+  canvas.addEventListener("pointermove", onMove);
+  canvas.addEventListener("pointerup", onUp);
+  canvas.addEventListener("wheel", onWheel, { passive: false });
+
+  let running = true;
+  function frame() {
+    if (!running) return;
+    if (alpha > 0) { step(); step(); dirty = true; }
+    if (graphPrefs.spin && !dragging) { yaw += 0.0022; dirty = true; }
+    if (dirty) { draw(); dirty = false; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  return {
+    stop() {
+      running = false;
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerup", onUp);
+      canvas.removeEventListener("wheel", onWheel);
+    },
+    reheat() { alpha = 1; dirty = true; },
+    focusNode(id) {
+      const i = index.get(id);
+      if (i === undefined) return;
+      pinned = i; dirty = true;
+      onSelect(nodes[i], adj[i].map((j) => nodes[j]));
+    },
+    invalidate() { dirty = true; },
+  };
+}
+
+function graphRelParam() {
+  return graphPrefs.rel.length ? `&rel=${graphPrefs.rel.map(encodeURIComponent).join(",")}` : "";
+}
+function graphEffectiveLevel(limit, level) {
+  return (limit === "all" || limit > 2500) ? "communities" : level;
+}
+
+async function renderGraph() {
+  stopGraph3d();
+  graphDrill = null;
+  const myToken = graphToken;
+  const level = graphEffectiveLevel(graphPrefs.limit, graphPrefs.level);
+  const limitParam = graphPrefs.limit === "all" ? "all" : graphPrefs.limit;
+  const d = await api(`/api/graph?limit=${limitParam}&level=${level}${graphRelParam()}`);
+  if (myToken !== graphToken) return; // вкладку покинули (или запущен новый рендер) пока грузили
+  renderGraphPane(d, { level, forcedByBudget: level !== graphPrefs.level });
+}
+
+async function renderGraphDrill(communityId, label) {
+  const level = graphPrefs.level === "communities" ? "symbols" : graphPrefs.level;
+  const limit = graphPrefs.limit === "all" ? 25000 : graphPrefs.limit;
+  toast(`загрузка сообщества «${label}»…`);
+  const myToken = ++graphToken; // бампаем сами: два перекрывающихся drill-клика должны гасить друг друга по клику, не по резолву
+  const d = await api(`/api/graph/community/${encodeURIComponent(communityId)}`
+    + `?limit=${limit}&level=${level}${graphRelParam()}`);
+  if (myToken !== graphToken) return;
+  if (!d.available) { toast(d.hint || "сообщество не найдено", true); return; }
+  graphDrill = { communityId, label };
+  renderGraphPane(d, { level, drill: true, communityLabel: label });
+}
+
+function renderGraphPane(d, opts) {
+  const buildBtn = `<button class="act accent" id="g-build">Собрать граф</button>
+    <span class="sub">AST-извлечение, без вызовов моделей. На этом репозитории ≈1 мин.</span>`;
+  if (!d.available) {
+    $("#graph-pane").innerHTML = `<div class="card"><h3>Граф проекта</h3>
+      <div class="empty">${esc(d.hint || "граф недоступен")}</div>
+      <div class="row" style="margin-top:10px">${buildBtn}</div>
+      <div class="sub" style="margin-top:10px">Кнопка собирает структурную часть графа —
+        связи из кода по AST. Семантические узлы из документов и человеческие названия
+        сообществ даёт только агентный <span class="mono">/graphify</span>; здесь сообщества
+        останутся под номерами.</div></div>`;
+    bindGraphBuild();
+    return;
+  }
+  const nodes = d.nodes || [], edges = d.edges || [];
+  const isCommunities = opts.level === "communities" && !opts.drill;
+  const options = GRAPH_BUDGET_SCALE.map((n) =>
+    `<option value="${n}"${n === graphPrefs.limit ? " selected" : ""}>${
+      n === "all" ? "все" : n + " узлов"}</option>`).join("");
+  const levels = [["files", "файлы"], ["symbols", "функции и классы"], ["communities", "сообщества"]]
+    .map(([v, t]) => `<option value="${v}"${v === graphPrefs.level ? " selected" : ""}>${t}</option>`)
+    .join("");
+  const relOptions = (d.available_relations || []).map((r) => `
+    <label class="sub" style="white-space:nowrap">
+      <input type="checkbox" class="g-rel" value="${esc(r)}"${
+        graphPrefs.rel.includes(r) ? " checked" : ""}> ${esc(r)}</label>`).join("");
+
+  const budgetNote = opts.drill
+    ? `<div class="sub" style="margin:6px 0 8px">Сообщество «${esc(opts.communityLabel)}» —
+        ${d.community_size} узлов, показан связный кусок из ${nodes.length}.
+        <a href="#" id="g-back">← ко всем сообществам</a></div>`
+    : isCommunities
+      ? `<div class="sub" style="margin:6px 0 8px">Режим LOD: ${d.total_nodes} узлов свёрнуто
+          в ${nodes.length} сообществ (лимит бюджета игнорируется на этом уровне) — клик по
+          сообществу открывает его детальный срез отдельным запросом.</div>`
+      : `<div class="sub" style="margin:6px 0 8px">Тянуть мышью — повернуть · колесо — приблизить ·
+          клик по точке — выделить узел и его связи (повторный клик снимает). Размер точки —
+          число связей, расстояние — связность: близкие точки реально ссылаются друг на друга.
+          Срез — не «топ по связям», а связная окрестность самого нагруженного узла.</div>`;
+
+  $("#graph-pane").innerHTML = `
+    <div class="grid">
+      <div class="card"><h3>${opts.drill ? "Узлов в сообществе"
+          : opts.level === "files" ? "Файлов в графе"
+          : opts.level === "communities" ? "Сообществ" : "Узлов в графе"}</h3>
+        <div class="big">${opts.drill ? d.community_size : d.level_nodes}</div>
+        <div class="sub">показан связный кусок из ${nodes.length}${opts.drill ? ""
+          : `; всего узлов ${d.total_nodes}`}</div></div>
+      <div class="card"><h3>Связей</h3><div class="big">${opts.drill ? "—" : d.total_edges}</div>
+        <div class="sub">в срезе ${edges.length} после склейки дублей</div></div>
+      <div class="card"><h3>${isCommunities ? "Всего узлов до свёртки" : "Сообществ в срезе"}</h3>
+        <div class="big">${isCommunities ? d.total_nodes
+          : new Set(nodes.map((n) => n.community).filter(Boolean)).size}</div>
+        <div class="sub">${isCommunities ? "«все» = честно все, свёрнутые в супер-узлы"
+          : "цвет точки = сообщество"}</div></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="row" style="justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap">
+        <h3 style="margin:0">Карта проекта — 3D</h3>
+        <div class="row" style="gap:8px; flex-wrap:wrap">
+          <select id="g-level"${opts.drill ? " disabled" : ""}>${levels}</select>
+          <select id="g-limit"${opts.drill ? " disabled" : ""}>${options}</select>
+          <label class="sub"><input type="checkbox" id="g-spin"${graphPrefs.spin ? " checked" : ""}> вращение</label>
+          <label class="sub"><input type="checkbox" id="g-labels"${graphPrefs.labels ? " checked" : ""}> подписи</label>
+          <button class="act" id="g-reheat">Переразложить</button>
+        </div>
+      </div>
+      <div class="row" id="g-rel-row" style="gap:10px; flex-wrap:wrap; margin-top:4px">
+        <span class="sub">связи:</span>${relOptions || '<span class="sub">—</span>'}
+      </div>
+      ${budgetNote}
+      <canvas id="g-canvas" style="width:100%; height:560px; display:block; cursor:grab;
+        border:1px solid var(--line); border-radius:8px; background:var(--panel-2);
+        touch-action:none"></canvas>
+      <div id="g-selected" class="sub" style="margin-top:10px">Узел не выбран.</div>
+      <div class="row" style="margin-top:10px">${buildBtn}</div>
+    </div>
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">${isCommunities ? "Крупнейшие сообщества" : "Самые связанные узлы"}</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Узел</th><th>Файл</th><th>Связей</th><th>Сообщество</th></tr></thead>
+        <tbody>${nodes.slice().sort((a, b) => b.degree - a.degree).slice(0, 40)
+          .map((n) => `<tr>
+          <td class="wrap"><a href="#" class="g-pick" data-id="${esc(n.id)}">${esc(n.label)}</a></td>
+          <td class="mono sub wrap">${esc(n.file || "—")}</td>
+          <td class="mono">${n.degree}</td>
+          <td class="sub">${esc(n.community || "—")}</td></tr>`).join("")}</tbody>
+      </table></div>
+    </div>`;
+
+  const showSelected = (node, neighbours) => {
+    const box = $("#g-selected");
+    if (!node) { box.textContent = "Узел не выбран."; return; }
+    if (isCommunities) { renderGraphDrill(node.id, node.label); return; }
+    const list = neighbours.slice(0, 12).map((n) =>
+      `<a href="#" class="g-pick" data-id="${esc(n.id)}">${esc(n.label)}</a>`).join(", ");
+    box.innerHTML = `<b>${esc(node.label)}</b>
+      <span class="mono sub">${esc(node.file || node.id)}</span> — связей ${node.degree},
+      сообщество ${esc(node.community || "—")}${neighbours.length
+        ? `<div style="margin-top:4px">Связан с: ${list}${
+            neighbours.length > 12 ? ` и ещё ${neighbours.length - 12}` : ""}</div>` : ""}`;
+    bindPicks();
+  };
+  const bindPicks = () => {
+    document.querySelectorAll("#graph-pane .g-pick").forEach((a) => {
+      a.onclick = (e) => {
+        e.preventDefault();
+        if (isCommunities) { renderGraphDrill(a.dataset.id, a.textContent); return; }
+        if (graph3d) graph3d.focusNode(a.dataset.id);
+      };
+    });
+  };
+
+  if (graph3d) graph3d.stop();
+  graph3d = startGraph3d($("#g-canvas"), d, showSelected);
+  bindPicks();
+  $("#g-spin").onchange = (e) => {
+    graphPrefs.spin = e.target.checked; saveGraphPrefs(); graph3d.invalidate();
+  };
+  $("#g-labels").onchange = (e) => {
+    graphPrefs.labels = e.target.checked; saveGraphPrefs(); graph3d.invalidate();
+  };
+  $("#g-reheat").onclick = () => graph3d.reheat();
+  if (!opts.drill) {
+    $("#g-limit").onchange = (e) => {
+      const raw = e.target.value;
+      graphPrefs.limit = raw === "all" ? "all" : (parseInt(raw, 10) || 300);
+      saveGraphPrefs(); renderGraph();
+    };
+    $("#g-level").onchange = (e) => {
+      graphPrefs.level = e.target.value; saveGraphPrefs(); renderGraph();
+    };
+  }
+  const backLink = $("#g-back");
+  if (backLink) backLink.onclick = (e) => { e.preventDefault(); renderGraph(); };
+  document.querySelectorAll("#g-rel-row .g-rel").forEach((cb) => {
+    cb.onchange = () => {
+      graphPrefs.rel = [...document.querySelectorAll("#g-rel-row .g-rel:checked")]
+        .map((el) => el.value);
+      saveGraphPrefs();
+      opts.drill && graphDrill ? renderGraphDrill(graphDrill.communityId, graphDrill.label) : renderGraph();
+    };
+  });
+  bindGraphBuild();
+}
+
+function bindGraphBuild() {
+  const btn = $("#g-build");
+  if (!btn) return;
+  btn.onclick = async () => {
+    btn.disabled = true;
+    try {
+      await post("/api/ops", { name: "graph" });
+      toast("сборка графа запущена — ход виден на вкладке «Обзор»");
+      // Пересборка занимает около минуты; опрашиваем, пока задача не завершится.
+      const poll = setInterval(async () => {
+        const ops = await api("/api/ops");
+        const job = (ops.jobs || []).find((j) => j.name === "graph");
+        if (job && job.status !== "running") {
+          clearInterval(poll);
+          toast(job.status === "done" ? "граф собран" : "сборка не удалась — см. «Обзор»",
+                job.status !== "done");
+          renderGraph();
+        }
+      }, 4000);
+    } catch (e) { toast(e.message, true); btn.disabled = false; }
+  };
+}
+
+/* ── облако ───────────────────────────────────────────────────────────── */
+async function renderCloud() {
+  const c = await api("/api/cloud");
+  const w = c.window || {}, d = c.day || {};
+  const used = w.max ? Math.min(100, Math.round(100 * w.calls / w.max)) : 0;
+  glmState = c.glm || glmState;
+  const glmOn = !!(glmState && glmState.effective);
+  $("#tab-cloud").innerHTML = `
+    ${glmCard(glmState || {})}
+    <div class="grid">
+      <div class="card"><h3>Окно подписки${glmOn ? " — режим GLM 5.x" : ""}</h3>
+        <div class="big">${w.calls} <span class="sub">/ ${w.max}</span></div>
+        <div class="sub">за ${w.hours} ч — главный лимит Coding Plan${glmOn
+          ? " (лимиты режима, пока он включён)" : ""}</div>
+        <div class="${used >= 90 ? "bar bad" : used >= 60 ? "bar warn" : "bar"}" style="margin-top:8px">
+          <span style="width:${used}%"></span></div></div>
+      <div class="card"><h3>За сутки</h3>
+        <div class="big">${d.calls} <span class="sub">/ ${d.max_calls}</span></div>
+        <div class="sub">${d.tokens} токенов · $${num(d.usd, 4)} / $${d.max_usd}</div></div>
+      <div class="card"><h3>Состояние</h3>
+        <div class="big">${c.enabled ? '<span class="ok-txt">включено</span>'
+          : '<span class="faint">выключено</span>'}</div>
+        <div class="sub">${c.enabled ? "" : "включается в Настройках → Облако"}</div></div>
+      <div class="card"><h3>Лестница</h3>
+        <div class="mono" style="margin-top:6px">${(c.ladder || []).map(esc).join(" → ")}</div>
+        <div class="chip-row" style="margin-top:10px">${Object.entries(c.per_profile || {})
+          .map(([k, v]) => `<span class="tag cloud">${esc(k)}: ${v} выз./карточку</span>`).join("")}</div>
+        ${glmOn ? `<div class="sub" style="margin-top:8px">В режиме GLM 5.x не действуют: судья тупика —
+          ${esc((glmState.models || {}).judge || "")}, потолок — ${Number(glmState.max_calls_per_run) || 0}
+          на прогон любого профиля.</div>` : ""}</div>
+    </div>
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">Контуры биллинга</h3>
+      <div class="sub" style="padding:4px 14px 0">Один ключ — не одна касса. Подписку Coding
+        Plan держит окно вызовов, платный General API — свой суточный потолок вызовов и
+        денег. Проверка связи — настоящий вызов: на подписке тратит обращение из окна, на
+        платном контуре стоит денег.</div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Контур</th><th>Endpoint</th><th>Ключ</th><th>Расход за сутки</th><th></th></tr></thead>
+        <tbody>${Object.entries(c.contours || {}).flatMap(([provider, list]) =>
+          (list || []).map((k) => `<tr>
+            <td>${k.contour === "fallback" ? "└ " : ""}${esc(k.label)}
+              <div class="sub mono">${esc(provider)}</div></td>
+            <td class="mono wrap sub">${esc(k.base_url)}</td>
+            <td>${k.has_key ? '<span class="tag ok">есть</span>'
+              : '<span class="tag bad">нет</span>'}
+              <div class="sub mono">${esc(k.key_source || "—")}</div></td>
+            <td class="sub">${k.contour === "fallback"
+              ? `${k.calls_today}/${k.max_calls_per_day} вызовов · $${num(k.usd_today, 4)}/$${k.max_usd_per_day}
+                 <div class="sub">включается при ${esc((k.when || []).join(", "))}</div>`
+              : "тарифицируется окном подписки"}</td>
+            <td><button class="act" data-ping="${esc(provider)}" data-contour="${esc(k.contour)}"
+              ${k.has_key ? "" : "disabled"}>Проверить связь</button>
+              <div class="sub" data-ping-out="${esc(provider)}:${esc(k.contour)}"></div></td>
+          </tr>`)).join("") || emptyRow(5, "облачных провайдеров нет")}</tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:12px; padding:0">
+      <h3 style="padding:14px 14px 0">Последние вызовы</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Когда</th><th>Модель</th><th>Роль</th><th>Токены</th><th>$</th><th></th></tr></thead>
+        <tbody>${(c.recent || []).map((x) => `<tr>
+          <td class="sub">${ago(x.created_at)} назад</td><td class="mono">${esc(x.model)}</td>
+          <td>${esc(x.role)}</td><td class="mono">${x.tokens_in}+${x.tokens_out}</td>
+          <td class="mono">${x.usd ? "$" + Number(x.usd).toFixed(4) : "—"}</td>
+          <td>${x.ok ? '<span class="ok-txt">✓</span>'
+            : `<span class="bad-txt">⊘ ${esc(x.refused || x.error || "")}</span>`}</td>
+        </tr>`).join("") || emptyRow(6, "вызовов не было")}</tbody></table></div>
+    </div>`;
+
+  bindGlmToggle($("#tab-cloud"), renderCloud);
+  // Проверка контура стоит вызова (а на платном — денег), поэтому спрашиваем прежде,
+  // чем тратить, и показываем результат рядом с кнопкой, а не только тостом.
+  $("#tab-cloud").querySelectorAll("[data-ping]").forEach((btn) => {
+    btn.onclick = async () => {
+      const provider = btn.dataset.ping, contour = btn.dataset.contour;
+      const price = contour === "fallback"
+        ? "Это платный контур: проверка стоит денег по прайсу General API."
+        : "Проверка израсходует одно обращение из окна подписки.";
+      if (!confirm(`${price}\nОтправить проверочный запрос?`)) return;
+      const out = $(`[data-ping-out="${provider}:${contour}"]`);
+      btn.disabled = true; out.textContent = "проверяем…";
+      try {
+        const r = await post("/api/cloud-ping", { provider, contour });
+        out.innerHTML = r.ok
+          ? `<span class="ok-txt">✓ ${esc(r.model)}: ${esc(r.detail)}</span>`
+          : `<span class="bad-txt">✗ ${esc(r.detail || r.error || "")}</span>`;
+        if (!r.ok) toast(r.detail || r.error || "проверка не прошла", true);
+        // Перерисовку не запускаем: она стёрла бы только что показанный результат.
+        // Итог проверки уже содержит и время ответа, и записанную стоимость.
+      } finally { btn.disabled = false; }
+    };
+  });
+}
+
+/* ── настройки ────────────────────────────────────────────────────────── */
+let settingsTab = "council";
+async function renderSettings() {
+  const d = await api("/api/settings");
+  // Карточка режима GLM 5.x в группе «Облако» — состояние тумблера свежее, не из тика шапки.
+  if (settingsTab === "cloud") {
+    try { glmState = await api("/api/glm"); } catch (e) { /* карточка покажет прежнее */ }
+  }
+  const titles = { ...(d.group_titles || {}), bindings: "Модели и промпты" };
+  const groups = { ...(d.groups || {}), bindings: [] };
+  const order = ["council", "bindings", "cloud", "api", "outputs"];
+  // «Модели и промпты» — свой экран (ui/bindings.js), не список полей config.toml.
+  if (settingsTab === "bindings") {
+    $("#tab-settings").innerHTML = `<div class="toolbar">${order.map((g) =>
+      `<button class="act ${g === settingsTab ? "accent" : ""}" data-sgroup="${g}">${esc(titles[g] || g)}</button>`).join("")}
+      <span class="spacer"></span><span class="sub mono">${esc(d.config_path)} · ${esc(d.config_hash)}</span></div>
+      <div id="bind-root"><div class="empty">загрузка…</div></div>`;
+    document.querySelectorAll("#tab-settings [data-sgroup]").forEach((b) => {
+      b.onclick = () => { settingsTab = b.dataset.sgroup; renderSettings(); };
+    });
+    await renderBindings($("#bind-root"));
+    return;
+  }
+
+  const fields = (groups[settingsTab] || []).map((f) => {
+    const id = "set-" + f.key.replace(/\./g, "-");
+    let input;
+    if (f.type === "bool") {
+      input = `<input type="checkbox" id="${id}" data-key="${esc(f.key)}" data-type="bool"
+                 ${f.value ? "checked" : ""}>`;
+    } else if (f.type === "choice") {
+      input = `<select id="${id}" data-key="${esc(f.key)}" data-type="choice">${
+        (f.choices || []).map((o) => `<option${o === f.value ? " selected" : ""}>${esc(o)}</option>`)
+          .join("")}</select>`;
+    } else {
+      input = `<input type="${f.type === "str" ? "text" : "number"}" id="${id}"
+                 data-key="${esc(f.key)}" data-type="${esc(f.type)}"
+                 ${f.type === "float" ? 'step="0.05"' : ""}
+                 value="${esc(f.value ?? "")}" style="width:min(280px,50vw)">`;
+    }
+    return `<label class="field"><span>${esc(f.label)}
+      <span class="sub mono" style="display:block">${esc(f.key)}</span></span>${input}</label>`;
+  }).join("");
+
+  const a = d.api || {};
+  const apiBlock = settingsTab !== "api" ? "" : `
+    <div class="card" style="margin-top:12px">
+      <h3>Состояние внешних API</h3>
+      <div class="sub" style="margin-bottom:10px">Сами ключи здесь не показываются и не правятся —
+        только факт наличия и место, откуда они читаются. Меняются ключи в файлах и
+        <span class="mono">.continue/.env</span>, не через веб-интерфейс.</div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Сервис</th><th>Адрес</th><th>Ключ</th><th>Состояние</th></tr></thead>
+        <tbody>
+          <tr><td><b>Ollama</b><div class="sub">локальные модели, бесплатны</div></td>
+            <td class="mono wrap">${esc(a.ollama?.url || "")}</td><td class="faint">не нужен</td>
+            <td>${a.ollama?.alive ? '<span class="tag ok">отвечает</span>'
+              : '<span class="tag bad">не отвечает</span>'}</td></tr>
+          <tr><td><b>Headroom</b><div class="sub">прокси сжатия контекста</div></td>
+            <td class="mono wrap">${esc(a.headroom?.url || "")}
+              <div><a href="${esc(a.headroom?.dashboard || "")}" target="_blank">дашборд ↗</a></div></td>
+            <td class="faint">не нужен</td>
+            <td>${a.headroom?.alive ? '<span class="tag ok">отвечает</span>'
+                : '<span class="tag bad">не отвечает</span>'}
+              ${a.headroom?.enabled ? '<span class="tag cloud">облако идёт через него</span>'
+                : '<span class="tag">в обход</span>'}</td></tr>
+          ${(a.cloud_providers || []).map((p) => `<tr>
+            <td><b>${esc(p.name)}</b><div class="sub">${esc((p.models || []).join(", "))}</div></td>
+            <td class="mono wrap">${esc(p.base_url)}<div class="sub">таймаут ${p.timeout}с</div></td>
+            <td>${p.has_key ? '<span class="tag ok">есть</span>' : '<span class="tag bad">нет</span>'}
+              <div class="sub mono">${esc(p.key_source)}</div></td>
+            <td>${a.cloud_enabled ? '<span class="tag ok">облако включено</span>'
+              : '<span class="tag">облако выключено</span>'}</td></tr>
+          ${p.fallback ? `<tr>
+            <td class="sub">└ ${esc(p.fallback.label)}<div class="sub">те же модели,
+              второй кошелёк</div></td>
+            <td class="mono wrap sub">${esc(p.fallback.base_url)}</td>
+            <td>${p.fallback.has_key ? '<span class="tag ok">есть</span>'
+              : '<span class="tag warn">нет</span>'}
+              <div class="sub mono">${esc(p.fallback.key_source)}</div></td>
+            <td class="sub">включается при ${esc((p.fallback.when || []).join(", "))};
+              не более ${p.fallback.max_calls_per_day} вызовов и
+              $${p.fallback.max_usd_per_day} в сутки</td></tr>` : ""}`).join("")}
+          <tr><td><b>Notion</b><div class="sub">борд Задач и Ошибок</div></td>
+            <td class="mono wrap">${esc(a.notion?.key_file || "")}</td>
+            <td>${a.notion?.has_key ? '<span class="tag ok">есть</span>'
+              : '<span class="tag bad">нет</span>'}
+              <div class="sub mono">${esc(a.notion?.key_file_mode || "")}</div></td>
+            <td>${a.notion?.key_file_exists ? '<span class="tag ok">файл на месте</span>'
+              : '<span class="tag warn">файла нет</span>'}</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>Локальные источники</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Источник</th><th>Путь</th><th>Состояние</th></tr></thead>
+        <tbody>
+          <tr><td>RAG-индекс DAMS</td><td class="mono">${esc(a.local_sources?.rag_index?.path || "")}</td>
+            <td>${a.local_sources?.rag_index?.exists ? '<span class="tag ok">есть</span>'
+              : '<span class="tag bad">нет</span>'}</td></tr>
+          <tr><td>Граф graphify</td><td class="mono">${esc(a.local_sources?.graph?.path || "")}</td>
+            <td>${a.local_sources?.graph?.exists ? '<span class="tag ok">есть</span>'
+              : '<span class="tag warn">не построен</span>'}</td></tr>
+          ${(d.knowledge_sources || []).map((s) => `<tr>
+            <td>База знаний — ${esc(s.kind)}</td><td class="mono">${esc(s.path)}</td>
+            <td>${s.enabled === false ? '<span class="tag warn">выключен</span>'
+              : s.exists ? `<span class="tag ok">${s.unit === "БД" ? "БД" : `${s.files} файлов`}${
+                s.docs != null ? ` · ${s.docs} док.` : ""}</span>`
+              : '<span class="tag bad">нет каталога</span>'}</td></tr>`).join("")}
+        </tbody></table></div>
+    </div>`;
+
+  $("#tab-settings").innerHTML = `
+    <div class="toolbar">
+      ${order.filter((g) => groups[g]).map((g) =>
+        `<button class="act ${g === settingsTab ? "accent" : ""}" data-sgroup="${g}">${
+          esc(titles[g] || g)}</button>`).join("")}
+      <span class="spacer"></span>
+      <span class="sub mono">${esc(d.config_path)} · ${esc(d.config_hash)}</span>
+    </div>
+    ${settingsTab === "cloud" ? glmCard(glmState || {}) + `<div class="sub" style="margin:-4px 0 12px">
+      Расход окна, контуры биллинга и проверка связи — <a href="#cloud">страница «Облако»</a>
+      (она же — таблетка облака в шапке).</div>` : ""}
+    <div class="card">
+      <h3>${esc(titles[settingsTab] || settingsTab)}</h3>
+      ${fields || '<div class="empty">нет полей</div>'}
+      <div class="row" style="margin-top:12px">
+        <button class="act accent" id="set-save">Сохранить изменения</button>
+        <span class="sub">Правится только перечисленное; остальное — руками в config.toml,
+          где у каждого значения есть обоснование. Сервисы подхватят после
+          <span class="mono">npm run ai-pipeline:restart</span>.</span>
+      </div>
+    </div>
+    ${apiBlock}`;
+
+  bindGlmToggle($("#tab-settings"), renderSettings);
+  document.querySelectorAll("#tab-settings [data-sgroup]").forEach((b) => {
+    b.onclick = () => { settingsTab = b.dataset.sgroup; renderSettings(); };
+  });
+  $("#set-save").onclick = async () => {
+    const inputs = document.querySelectorAll("#tab-settings [data-key]");
+    let saved = 0, failed = 0;
+    for (const el of inputs) {
+      const value = el.dataset.type === "bool" ? el.checked : el.value;
+      try { await post("/api/settings", { key: el.dataset.key, value }); saved++; }
+      catch (e) { failed++; toast(el.dataset.key + ": " + e.message, true); }
+    }
+    if (!failed) toast(`сохранено полей: ${saved} — перезапустите пайплайн`);
+    renderSettings();
+  };
+}
+
+/* ── живая лента (SSE) ────────────────────────────────────────────────── */
+let feedEl = null;
+const FEED_MAX = 80;
+// Непросмотренное — по id события, а не по счётчику в памяти: переживает перезагрузку и
+// не задваивается. Место хранится в браузере (localStorage), сервер считает до 1000.
+const FEED_SEEN_KEY = "ai-council-feed-seen";
+let feedSeen = (() => {
+  try { const v = localStorage.getItem(FEED_SEEN_KEY); return v === null ? null : Number(v); }
+  catch (e) { return null; }
+})();
+let feedLatest = 0, feedUnread = 0;
+
+function feedLine(ev) {
+  const t = new Date((ev.created_at || 0) * 1000).toLocaleTimeString("ru-RU");
+  return `${t}  ${ev.kind}  ${ev.ref || ""} ${String(ev.detail || "").slice(0, 110)}`;
+}
+function renderFeedBadge() {
+  const el = $("#hdr-live-n");
+  el.hidden = feedUnread <= 0;
+  el.textContent = feedUnread >= 1000 ? "999+" : String(feedUnread);
+  $("#hdr-live").title = feedUnread > 0
+    ? `Лента: ${feedUnread >= 1000 ? "больше 999" : feedUnread} новых событий с прошлого просмотра`
+    : "Лента: живые события и прогоны с вердиктами";
+  document.title = (feedUnread > 0 ? `(${el.textContent}) ` : "") + "AI Council";
+}
+function markFeedSeen() {
+  if (!feedLatest) return;                     // хвост журнала ещё неизвестен — нечего запоминать
+  feedSeen = Math.max(feedSeen || 0, feedLatest);
+  try { localStorage.setItem(FEED_SEEN_KEY, String(feedSeen)); } catch (e) { /* private mode */ }
+  feedUnread = 0;
+  renderFeedBadge();
+}
+
+function appendFeed(ev, silent, isNew) {
+  if (feedEl) {
+    const first = feedEl.firstElementChild;
+    if (first && first.classList.contains("faint")) feedEl.innerHTML = "";
+    const div = document.createElement("div");
+    div.textContent = feedLine(ev);             // событие — данные, не разметка
+    if (isNew) div.className = "new";
+    feedEl.prepend(div);
+    while (feedEl.childElementCount > FEED_MAX) feedEl.lastElementChild.remove();
+  }
+  if (!silent && /run\.(done|abstained|failed)|verdict|status\./.test(ev.kind || "")) {
+    refresh();
+    // На «Ленте» завершение прогона меняет и счётчики, и сам список — таблица
+    // обновляется точечно, лента и фильтр не перерисовываются.
+    if (activeTab === "feed") renderRunsTable();
+  }
+}
+
+async function connectStream() {
+  // Сначала — сколько накопилось с прошлого просмотра и где хвост журнала; поток
+  // подключается ровно с этого хвоста: без дыры и без двойного счёта между запросами.
+  try {
+    const u = await api("/api/events/unread?since=" + (feedSeen === null ? "" : feedSeen));
+    feedLatest = u.latest || 0;
+    if (feedSeen === null) markFeedSeen();     // первый заход браузера: новое — с этого момента
+    else feedUnread = u.count || 0;
+  } catch (e) { /* шлюз недоступен — поток ниже скажет «✗» */ }
+  if (activeTab === "feed") markFeedSeen();
+  renderFeedBadge();
+  const src = new EventSource("/api/stream?since=" + feedLatest);
+  src.onopen = () => { $("#hdr-live").classList.add("on"); $("#hdr-live").classList.remove("off"); };
+  src.onerror = () => { $("#hdr-live").classList.add("off"); $("#hdr-live").classList.remove("on"); };
+  src.onmessage = (e) => {
+    try {
+      const ev = JSON.parse(e.data);
+      feedLatest = Math.max(feedLatest, Number(ev.id) || 0);
+      if (activeTab === "feed" && !document.hidden) {
+        appendFeed(ev, false, false);
+        markFeedSeen();
+      } else {
+        if (activeTab === "feed") appendFeed(ev, false, true);
+        else appendFeed(ev, false, false);
+        feedUnread += 1;
+        renderFeedBadge();
+      }
+    } catch (err) { /* битое событие — лента не критична */ }
+  };
+}
+// Вкладка браузера в фоне с открытой лентой копит «новое»; вернулись — просмотрено.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && activeTab === "feed") markFeedSeen();
+});
+
+/* ── цикл обновления ──────────────────────────────────────────────────── */
+async function refresh() {
+  try {
+    const s = await api("/api/state");
+    const q = s.queue || {};
+    const qc = s.queue_ctl || {};
+    const blockedN = Object.keys(qc.memory_blocked || {}).length;
+    const awaiting = (s.verdicts || {}).awaiting_review || 0;
+    // Коротко — число в очереди; подробности прячутся по ширине (CSS .q-extra/.q-label),
+    // полный текст — в подсказке. Только числа — innerHTML здесь безопасен.
+    $("#hdr-queue").innerHTML = (qc.paused ? "⏸ " : "") +
+      `<span class="q-label">очередь </span>${Number(q.queued) || 0}<span class="q-extra">` +
+      ` · в работе ${Number(q.running) || 0} · без вердикта ${Number(awaiting) || 0}` +
+      `${blockedN ? ` · ждут память ${blockedN}` : ""}</span>`;
+    $("#hdr-queue").title = (qc.paused ? "Очередь на паузе. " : "") +
+      `В очереди ${q.queued || 0}, в работе ${q.running || 0}, результатов без вердикта ${awaiting}` +
+      (blockedN ? `, профилей ждут память: ${blockedN}` : "") + " — клик: «Обзор» → «Управление очередью»";
+    $("#hdr-queue").className = "pill" + (qc.paused || blockedN ? " warn" : "");
+    const c = s.cloud || {}, w = c.window || {};
+    glmState = c.glm || glmState;
+    renderGlmPill();
+    const glmOn = !!(glmState && glmState.effective);
+    // Пока действует режим GLM 5.x, окно — окно режима (сервер уже подставил его лимиты).
+    // Только числа и статичный текст — innerHTML безопасен; узкий экран прячет .c-extra.
+    const calls = Number(w.calls) || 0, max = Number(w.max) || 0, hours = Number(w.hours) || 0;
+    const pill = $("#hdr-cloud");
+    pill.className = "pill " + (c.enabled ? "cloud" : "off");
+    pill.innerHTML = !c.enabled
+      ? `<span class="c-mob" aria-hidden="true">☁ </span>облако<span class="c-extra"> выключено</span>`
+      : (glmOn ? `GLM<span class="c-extra"> 5.x</span>`
+               : `<span class="c-mob" aria-hidden="true">☁</span><span class="c-extra">облако</span>`)
+        + ` ${calls}/${max}<span class="c-extra"> за ${hours}ч</span>`;
+    const label = !c.enabled ? "Облако выключено"
+      : `${glmOn ? "Режим GLM 5.x" : "Облако"}: израсходовано ${calls} из ${max} вызовов за ${hours} ч`;
+    pill.setAttribute("aria-label", label + " — открыть страницу «Облако»");
+    pill.title = label + " — клик открывает страницу «Облако»";
+    markCloudPill();
+    // Тик обновляет только счётчики: полный re-render вкладок с формами
+    // (план на «Обзоре») и с интерактивом сбрасывал бы ввод пользователя.
+    if (activeTab === "overview") updateOverviewStats(s);
+    else if (activeTab === "feed") updateFeedCounts(s);
+  } catch (e) {
+    $("#hdr-queue").textContent = "шлюз недоступен";
+  }
+}
+
+const RENDERERS = {
+  home: renderHome,
+  overview: renderOverview, quality: renderQuality, feed: renderFeed,
+  cards: renderCards, review: renderReview, knowledge: renderKnowledge, cloud: renderCloud,
+  settings: renderSettings,
+};
+async function render() {
+  try { await RENDERERS[activeTab](); }
+  catch (e) { toast(e.message, true); }
+}
+
+render();
+renderTabDoc(activeTab);
+connectStream();
+// Шапка (облако, очередь) — на любой вкладке и сразу при открытии: раньше она
+// обновлялась только на «Обзоре»/«Качестве»/ленте, а на остальных висели «облако…/очередь…».
+refresh();
+setInterval(() => { if (!document.hidden) refresh(); }, 5000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+
+/* ── диплинки #tab ──────────────────────────────────────────────────────
+   selectTab пишет hash через replaceState, поэтому hashchange приходит только
+   от ручной навигации (ввод #knowledge в адресной строке, ссылка
+   <a href="#knowledge">) — зацикливания нет. Прежние имена (#graph, #runs,
+   #control, #learning) резолвятся алиасами в TAB_ALIASES. Восстановление —
+   после инициализации рендереров. */
+function tabFromHash() {
+  let name;
+  try { name = decodeURIComponent(location.hash.slice(1)); }
+  catch (e) { return null; } // мусорный %-escape (#%zz) — не крашить, как любой другой невалидный hash
+  return TABS.includes(name) ? name : (TAB_ALIASES[name] || null);
+}
+window.addEventListener("hashchange", () => {
+  const name = tabFromHash();
+  if (name && name !== activeTab) selectTab(name, true);
+});
+const initialTab = tabFromHash();
+if (initialTab && initialTab !== activeTab) selectTab(initialTab, true);
+else if (!initialTab) history.replaceState(null, "", "#" + activeTab);
+</script>
+</body>
+</html>

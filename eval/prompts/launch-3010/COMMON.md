@@ -19,7 +19,7 @@
    файл, закрой (`status: "dropped"`, `note: "перенесено в launch-3010"`). Дальше веди тот же список.
 3. **Очередь.** Пункты из раздела «Захватить» своего файла перехвати через `oq_agent_status` с `session`. Без
    `session` agentBy не меняется.
-4. **Нерв.** Один Monitor (persistent): `python3 -I supertick-eval/nerve/nerve.py tap <ключ>`. Без `| grep`: фильтр
+4. **Нерв.** Один Monitor (persistent): `python3 -I eval/nerve/nerve.py tap <ключ>`. Без `| grep`: фильтр
    уже внутри.
 5. **Готово.** `forest_set_work_state` со `step: "дела приняты от <id, id>; дальше — <первое дело>"`. Это и есть сигнал
    оркестратору перезапуска, сообщений не нужно. Старым сессиям не пиши: «передано» шлёт оркестратор.
@@ -30,7 +30,7 @@
   состояние целиком, поэтому шли `branch`, `taskId` и `waiting` каждый раз.
 - Статус чужой работы не спрашивай. Читай `forest_list_work_state`, `gh pr view`, `oq_list`.
 - Карточку правь только под арендой. Порядок и правила заполнения — в `T-BOARDS.md`.
-- Капсула роли — перед уходом и после крупного шага: `python3 -I supertick-eval/pipeline/capsule.py <ключ> --notes
+- Капсула роли — перед уходом и после крупного шага: `python3 -I eval/pipeline/capsule.py <ключ> --notes
   <notes.json> --repo <worktree>`. Вторым файлом капсула пишет `capsules/<ключ>.pack.txt` — его в `contextPack`
   карточки.
 

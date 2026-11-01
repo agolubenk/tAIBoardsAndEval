@@ -1,0 +1,10 @@
+node_modules
+dist
+server-dist
+data
+.vercel
+.env
+.env.*
+!.env.example
+agent/__pycache__
+*.log

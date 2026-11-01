@@ -13,6 +13,11 @@ TARGET_REPO_STRUCTURE.md. `--all` — весь репозиторий, вклю�
     python3 .claude/scripts/docs_linkcheck.py                      # код 1, если есть висячие ссылки
     python3 .claude/scripts/docs_linkcheck.py --all                # отчёт по всему репозиторию
     python3 .claude/scripts/docs_linkcheck.py --include-untracked  # до git add
+
+Слой общий для дома продукта и инстанса над host-проектом: законы предметной области хоста ссылаются на его
+документы (`docs/api/`, `docs/plans/BACKLOG.md`, …), которых в доме нет. Префиксы таких путей — по одному на строку
+в `.claude/scripts/docs_linkcheck.host-only.txt` (нет файла — проверяется всё): висячие ссылки на них печатаются
+отдельной сводкой и код возврата не меняют. В инстансе файл не нужен — там эти документы есть.
 """
 import posixpath
 import re
@@ -78,8 +83,18 @@ def heading_slugs(rel):
     return slugs
 
 
+def host_only_prefixes():
+    path = REPO_ROOT / ".claude/scripts/docs_linkcheck.host-only.txt"
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return ()
+    return tuple(ln.strip() for ln in lines if ln.strip() and not ln.lstrip().startswith("#"))
+
+
 def main():
     scan_all = "--all" in sys.argv
+    host_only = host_only_prefixes()
     files = tracked_files(include_untracked="--include-untracked" in sys.argv)
     fileset = set(files)
     dirs = set()
@@ -117,7 +132,7 @@ def main():
                     if f.endswith(".md") and anchor and anchor not in heading_slugs(f):
                         ln = line_of(m.start())
                         if not HISTORY.search(lines[ln - 1]):
-                            problems.append((f, ln, target))
+                            problems.append((f, ln, target, f))
                     continue
                 if EXTERNAL.match(target):
                     continue
@@ -134,7 +149,7 @@ def main():
                     continue
                 ln = line_of(m.start())
                 if not HISTORY.search(lines[ln - 1]):
-                    problems.append((f, ln, target))
+                    problems.append((f, ln, target, resolved))
         for m in MENTION_RE.finditer(text):
             p = m.group(1)
             # проверяем только то, что однозначно путь: файл с расширением или каталог со слешем
@@ -142,13 +157,21 @@ def main():
                 continue
             ln = line_of(m.start())
             if not HISTORY.search(lines[ln - 1]):
-                problems.append((f, ln, p))
+                problems.append((f, ln, p, posixpath.normpath(p)))
 
-    for f, ln, target in sorted(set(problems)):
+    def of_host(path):
+        return any(path == pre.rstrip("/") or path.startswith(pre) for pre in host_only)
+
+    host = sorted({pr[:3] for pr in problems if of_host(pr[3])})
+    real = sorted({pr[:3] for pr in problems if not of_host(pr[3])})
+    for f, ln, target in real:
         print("%s:%d\t%s" % (f, ln, target))
     scope = "весь репозиторий" if scan_all else "слой документации"
-    print("— %s: висячих ссылок %d" % (scope, len(set(problems))), file=sys.stderr)
-    return 1 if problems else 0
+    if host:
+        print("— документы host-проекта (docs_linkcheck.host-only.txt): ссылок %d, код возврата не меняют" % len(host),
+              file=sys.stderr)
+    print("— %s: висячих ссылок %d" % (scope, len(real)), file=sys.stderr)
+    return 1 if real else 0
 
 
 if __name__ == "__main__":

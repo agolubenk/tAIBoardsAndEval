@@ -1,34 +1,42 @@
-# aiBoards & eval
+# tAIBE — tasks, AI Boards & Eval pipelines
 
-Public home of the **tAIBoard and Eval** product line — a standalone product-layer for teams where AI agents and humans work side by side. It runs on its own servers and can be laid over any host project (today it operates over HR_Helper-v2; see [`process/README.md`](process/README.md) for the overlay guide).
+A product layer for teams where long-lived AI coding sessions and people work side by side. Its goal is one:
+the team spends fewer tokens and less context **without losing speed or quality**, and never stands idle on a
+usage limit. It is laid over a host project and changes nothing visible there: pull requests, cards, the owner
+queue, the bot and "merge = deploy" look as before.
 
 | Part | Path | What it is |
 |---|---|---|
-| **aiBoards** | [`boards/`](boards/) | Kanban boards shared by AI agents and humans: agent identity per card, SSR board snapshots, MCP tools. Live at [d4dev.admin.hrhelper.space](https://d4dev.admin.hrhelper.space/). |
-| **eval** | [`eval/`](eval/) | Measurement and ops pipeline for a long-lived AI session team: nerve watchdog, wake/cost anatomy, handoff capsules, genome configs, approach evaluations. |
-| **process layer** | [`process/`](process/), `.claude/`, `.continue/`, `.agents/`, `.ai/` | The team operating layer itself: role prompts, operating model, Never/Always rules, specialist subagents, hooks, skills, knowledge chunks — everything needed to run the same team over another project. |
+| **tAI-Boards** | [`boards/`](boards/) | Where the work lives: kanban for agents first and people second. Task forest (trees, branches, sectors, felling, seeds), leases with fencing tokens, work state written after every step, agent fields on cards (`branch`, `pullRequests`, `contextPack`, `tokens`, `costUsd`), an approval matrix (agents bring a card to "review" at most), per-product data segmentation, history with rollback, Notion import, claude-mem binding, a token-cheap MCP. Spec — [`boards/docs/`](boards/docs/README.md). |
+| **eval** | [`eval/`](eval/) | How the team works cheaply: the economy model (calls × context × price + cold rewrites + output) and mechanisms P1–P11 — role genomes (`claude --settings`), handoff capsules (`contextPack`), the Nerve watchdog (wakes a session only when it must act), the swarm (routine on cheap models behind an egress filter), wake/cost anatomy and measurements. |
+| **Control & AI tooling** | [`infra/`](infra/CLAUDE.md) | Services the process runs on: AI council (model lenses for adversarial review, daily plan, review of "on review" cards), owner queue (MCP `oq_*`, Telegram bot, ops console), shared MCP hub, LLM gateway with key/model rotation, context compression. |
+| **Process layer** | [`process/`](process/README.md), `.claude/`, `.continue/`, `.agents/`, `.windsurf/`, `.ai/`, [`docs/`](docs/README.md) | The team operating layer: role launch prompts, operating model, Never/Always rules, specialist subagents, hooks, skills, knowledge chunks, task-case templates, worktree workflow, closed-items log. |
+
+Target metrics: ≤ $20 per PR, mean context ≤ 120K, first call ≤ 55K tokens, "read the task and start" 55–75 %
+cheaper than a Notion-based process, RPO ≤ 2 h, zero team stops the owner does not know about.
 
 ## Quick start
 
-### aiBoards (`boards/`)
+```bash
+make help            # all layer commands
+make check           # eval + layer hooks/skills + infra services (stdlib python, node built-ins)
+make check-boards    # boards gates (pnpm)
+make wt-fix NAME=x   # isolated git worktree with its own dependencies
+```
+
+### tAI-Boards (`boards/`)
 
 ```bash
 cd boards
 cp .env.sample .env.local          # fill in the values
 docker compose -f compose.local.yml up
-```
-
-Or run from source (Node 24, pnpm 10):
-
-```bash
-cd boards
-pnpm install --frozen-lockfile
-pnpm dev
+# or from source (Node 24, pnpm 10):
+pnpm install --frozen-lockfile && pnpm dev
 ```
 
 ### eval (`eval/`)
 
-Pure Python 3 standard library — no dependencies to install:
+Pure Python 3 standard library — nothing to install:
 
 ```bash
 python3 -I -m unittest discover -s eval/nerve    -p 'test_*.py'
@@ -36,22 +44,63 @@ python3 -I -m unittest discover -s eval/pipeline -p 'test_*.py'
 python3 -I -m unittest discover -s eval/swarm    -p 'test_*.py'
 ```
 
+### Control & AI tooling (`infra/`)
+
+```bash
+npm run mcp-hub:status        # shared MCP hub
+npm run llm-gateway:status    # model gateway
+npm run ai-council:status     # AI council
+npm run done:check            # closed-items index
+```
+
+Laying the layer over another project — [`process/README.md`](process/README.md).
+
 ## Repository layout
 
 ```
-boards/            aiBoards — pnpm workspace (apps/web, apps/api, packages/*), fork of Kaneo
-  docs/            product spec + architecture overview
-eval/              python-stdlib pipeline: nerve/, swarm/, tools/, capsules, measurements
-process/           team layer: role prompts (SUCCESSOR-PROMPT*), operating model, overlay guide
-.claude/ .continue/ .agents/ .ai/    functional layer config: rules, subagents, hooks, skills, knowledge
-.github/workflows  boards-ci.yml · eval-ci.yml · layer-ci.yml
+boards/        tAI-Boards — pnpm workspace (apps/api, apps/web, packages/*); docs/ spec, architecture, implementation log; tools/ stand probes
+eval/          python-stdlib pipeline: nerve/, swarm/, pipeline/ (capsules, genome, reflex), tools/, data/, reports/
+infra/         ai-council/, owner-queue-mcp/, owner-queue-bot/, ops-console/, mcp-hub/, llm-gateway/, headroom/, scripts/
+process/       role prompts, operating model, overlay guide, TRANSFER.md (where things came from)
+docs/          specs/, plans/ (closed-items log), guides/ (how-tos), integrations/ (external solutions analysis), ai/, ops/
+.claude/ .continue/ .agents/ .windsurf/ .ai/   functional layer: rules, subagents, hooks, skills, knowledge, task cases
+.github/workflows   boards-ci · eval-ci · infra-ci · layer-ci
 ```
 
-## Attribution & license
+## Origins, forks & licenses
 
-- aiBoards is a fork of [Kaneo](https://github.com/usekaneo/kaneo) by its authors — MIT, see [LICENSE](LICENSE). Upstream marketing/community files were trimmed for this fork.
-- `eval/context/supertick-src/` carries excerpts of [denizen24/supertick](https://github.com/denizen24/supertick) (MIT) for evaluation purposes — see its [LICENSE](eval/context/supertick-src/LICENSE).
+The product was incubated inside another repository where the team worked (`agolubenk/HR_Helper-v2`):
+it was assembled from that repository's
+subprojects `supertick-eval/` (→ `eval/`) and `t-boards/` (→ `boards/`), its AI-tooling services (→ `infra/`) and
+its functional layer (→ `.claude/` & co.). Path mapping and what was not carried over — [`process/TRANSFER.md`](process/TRANSFER.md).
+
+Third-party foundations:
+
+- **tAI-Boards** is a fork of [Kaneo](https://github.com/usekaneo/kaneo) — MIT; the root [LICENSE](LICENSE) is Kaneo's
+  licence and covers the fork in `boards/`. The internal `@kaneo/*` package scope and `KANEO_*` env names are kept
+  until the split.
+- **eval** started as an evaluation of [denizen24/supertick](https://github.com/denizen24/supertick) (MIT): two of its
+  mechanisms were adopted in shadow mode (a model-free watchdog → the Nerve; an external engine for one-off
+  read-only roles). Excerpts — [`eval/context/supertick-src/`](eval/context/supertick-src/) with its LICENSE; verdict —
+  [`eval/EVALUATION.md`](eval/EVALUATION.md).
+- `claude-plugins-official/` — vendored official Claude Code plugins (licenses inside each plugin).
+- UI and motion skills in `.claude/skills/` — vendored from [emilkowalski/skills](https://github.com/emilkowalski/skills)
+  (MIT), provenance in [`.claude/skills/VENDORED.md`](.claude/skills/VENDORED.md).
+- **Borrowed solutions.** When the core, base capabilities, design or principles of an external solution are taken
+  into the product, it is named here («what was taken → where»), in the docs of the part it went into and in its
+  review under [`docs/integrations/`](docs/integrations/README.md). A solution is taken only if it strengthens and
+  complements tAIBE — measured before and after — never to replace a part or leave it at the same level. Under
+  review now: oh-my-openagent, cognee, agno, warp, ai-memory, i-have-adhd, codebase-memory-mcp, openproject
+  (nothing taken yet).
+- The MCP hub runs [1mcp](https://github.com/1mcp-app/agent); the AI council and the gateway use local
+  [Ollama](https://ollama.com) models and hosted providers (GLM Z.AI, OpenRouter) through their public APIs.
 
 ## По-русски
 
-**aiBoards** — канбан-доски, где карточки ведут ИИ-агенты и люди вместе: на карточке видно, какой агент работает; снимки досок рендерятся сервером; наружу отдаётся через MCP-инструменты. **eval** — конвейер измерений и дежурства команды ИИ-сессий: стоимость пробуждений, анатомия ходов, капсулы передачи, оценка подхода supertick. **process-слой** — сами процессы команды: роли, промпты запуска, законы, скиллы, хуки и знания — всё, что позволяет развернуть ту же команду над любым проектом (сейчас работает над HR_Helper-v2, инструкция — [process/README.md](process/README.md)). Продукт работает на [d4dev.admin.hrhelper.space](https://d4dev.admin.hrhelper.space/).
+**tAIBE** — продукт-слой для команды долгоживущих ИИ-сессий и людей: меньше токенов и контекста без потери скорости
+и качества, без простоев на лимите. **tAI-Boards** — где живёт работа: доски в первую очередь для агентов (лес задач,
+аренды с fencing, состояние после каждого шага, капсулы на карточке, матрица прав, импорт Notion). **eval** — как
+команда работает дёшево: геномы ролей, капсулы, Нерв, рой, замеры. **infra** — сервисы контроля: ИИ-консилиум,
+очередь владельца, MCP-хаб, шлюз моделей. **Слой процесса** — промпты ролей, законы, скиллы, хуки, знания,
+worktrees и журнал закрытого. Продукт собран из подпроектов `supertick-eval/` и `t-boards/` репозитория-инкубатора
+и его ИИ-инструментов; карта переноса — [`process/TRANSFER.md`](process/TRANSFER.md).

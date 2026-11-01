@@ -11,7 +11,7 @@ Evaluates how a long-lived team of AI coding sessions spends money and attention
 | `data/` | Measurements: wake anatomy runs, cost audits per team wave. |
 | `reports/`, `shadow/` | Lens reports; shadow-mode watchdog probe. |
 | `context/` | Background: the evaluated [supertick](https://github.com/denizen24/supertick) approach (excerpt in `context/supertick-src/`, MIT) and team notes. |
-| `board/`, `prompts/`, `t-boards/` | Plan cards, prompts, board-side architecture notes. |
+| `board/`, `prompts/`, `boards/` | Plan cards, prompts, board-side architecture notes. |
 
 Deep docs (RU): [EVALUATION.md](EVALUATION.md) — supertick applicability verdict · [ADVANTAGES.md](ADVANTAGES.md) · [HANDOFF-2026-10-28.md](HANDOFF-2026-10-28.md) — current team handoff · [Dev4dev — инженерный контур](Dev4dev%20%20итоговая%20архитектура%20и%20оптимизация%20инженерного%20контура.md).
 

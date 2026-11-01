@@ -1,0 +1,72 @@
+name: infra CI
+
+# Dev-AI and control services of the layer: owner queue (MCP + bot), llm-gateway, ai-council, ops-console,
+# and the closed-items index. Each service is self-contained (stdlib python / node built-ins / its own lockfile).
+on:
+  push:
+    branches: [board-agents, main]
+    paths: ["infra/**", "docs/**", ".claude/**", "**/*.md", ".github/workflows/infra-ci.yml"]
+  pull_request:
+    paths: ["infra/**", "docs/**", ".claude/**", "**/*.md", ".github/workflows/infra-ci.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: infra-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  services:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: owner-queue MCP
+        run: node --test infra/owner-queue-mcp/test/*.test.mjs
+      - name: owner-queue bot
+        working-directory: infra/owner-queue-bot
+        run: node --test test/*.test.mjs
+      - name: llm-gateway
+        run: node --test infra/llm-gateway/test/*.test.mjs
+      - name: ai-council selftest
+        working-directory: infra/ai-council
+        run: |
+          python3 -m pip install --quiet -r requirements.txt
+          python3 selftest.py
+      - name: closed-items index and docs links
+        run: |
+          python3 infra/scripts/misc/done-index.py --check
+          python3 .claude/scripts/docs_linkcheck.py
+      - name: dev-ai scripts parse
+        run: for f in infra/scripts/dev-ai/*.sh infra/scripts/dev-ai/lib/*.sh infra/scripts/dev/*.sh; do bash -n "$f"; done
+
+  ops-console:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: infra/ops-console
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: infra/ops-console/package-lock.json
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - name: host agent
+        working-directory: infra/ops-console/agent
+        run: for t in test_*.py; do python3 "$t"; done

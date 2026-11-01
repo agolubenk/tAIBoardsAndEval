@@ -28,4 +28,4 @@
 - ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-23/analyst/undo-v1.md
 - ~/.claude/projects/-Users-agolubenko-Desktop-Development-HR-Helper-v2/handoff/2026-10-23/frontend/fe-gate-undo-v1.log
 - https://github.com/agolubenk/HR_Helper-v2/pull/449
-- supertick-eval/prompts/launch-3010/roles/3-frontend.md
+- eval/prompts/launch-3010/roles/3-frontend.md

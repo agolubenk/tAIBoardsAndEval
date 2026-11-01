@@ -1,0 +1,209 @@
+/* Живая карточка деплоя (LiveDeploy.tsx): шапка, шкала фаз, проверки, rollback-prev. */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+}
+.sha {
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--lg-glass);
+  border: 1px solid var(--lg-outline);
+}
+.title {
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.runLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lg-accent-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.runLink:hover {
+  text-decoration: underline;
+}
+
+/* Шкала фаз: вертикальная линия и точка статуса у каждой фазы. */
+.phases {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0 0 0 18px;
+  position: relative;
+}
+.phases::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: var(--lg-outline-strong);
+  border-radius: 1px;
+}
+.phase {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 84px;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 6px 0 6px 12px;
+}
+.phase > :last-child {
+  text-align: right;
+}
+.phase::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: calc(50% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--lg-glass-solid);
+  border: 2px solid var(--lg-outline-strong);
+}
+.phaseName {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 0;
+}
+.phase_ok::before {
+  border-color: var(--st-healthy);
+  background: var(--st-healthy);
+}
+.phase_warn::before {
+  border-color: var(--st-warning);
+  background: var(--st-warning);
+}
+.phase_failed::before {
+  border-color: var(--st-critical);
+  background: var(--st-critical);
+}
+.phase_running::before {
+  border-color: var(--lg-accent);
+  animation: phasePulse 1.6s ease-in-out infinite;
+}
+.phase_stale::before {
+  border-color: var(--lg-text-3);
+  animation: none;
+}
+.phase_pending .phaseName,
+.phase_skipped .phaseName {
+  color: var(--lg-text-3);
+  font-weight: 500;
+}
+@keyframes phasePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--lg-accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--lg-accent-soft);
+  }
+}
+
+.details {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 1180px) {
+  .details {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.subTitle {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.url {
+  max-width: 320px;
+  overflow-wrap: anywhere;
+}
+
+/* Колонка «Связь» таблицы деплоев (QueueLinks.tsx): пункты очереди владельца, по одному в строку. */
+.relation {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+/* Трек minmax(0, 1fr): иначе минимальная ширина строки — весь заголовок в одну строку, обрезка не срабатывает и
+   колонка распирает таблицу. Остальные семь колонок оставляют «Связи» ~150 px даже на 1512 px — поэтому заголовок
+   переносится максимум на две строки под себя (вид — слева, висячий отступ), полный — в title ссылки. */
+.qLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  /* 8 px: однострочная ссылка ~17 px — шаг 25 px не меньше 24 px цели касания (WCAG 2.5.8). */
+  gap: 8px;
+  min-width: 16ch;
+  max-width: 34ch;
+}
+.qLinks > li {
+  min-width: 0;
+}
+.qLink {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--lg-accent-text);
+  text-decoration: none;
+}
+.qLink:hover .qTitle,
+.qLink:focus-visible .qTitle {
+  text-decoration: underline;
+}
+.qKind {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  /* text-2, не text-3: у мелкого текста text-3 на светлой теме ~3.9:1 — ниже AA. */
+  color: var(--lg-text-2);
+}
+.qDone {
+  flex: none;
+  color: var(--st-healthy-text);
+}
+.qTitle {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  /* break-word, не anywhere: anywhere сужает min-content и рвёт слово посреди («Проверит|ь») даже там, где оно влезает. */
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.qMore {
+  font-size: 12px;
+  color: var(--lg-text-2);
+}
+/* Выполненное приглушено, как на странице очереди: открытое видно с первого взгляда, не только по ✓. */
+.qIsDone .qTitle {
+  color: var(--lg-text-2);
+}
+/* Высокая ячейка «Связи» не должна оттягивать статус и коммит строки в середину. */
+table.top td {
+  vertical-align: top;
+}

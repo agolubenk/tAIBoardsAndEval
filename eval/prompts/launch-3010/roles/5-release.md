@@ -115,7 +115,7 @@
 - Trial-worktree d9 в `/private/tmp/claude-501/-Users-agolubenko-Desktop-Development-HR-Helper-v2/77fe3a74-0e51-43d3-ab0f-3374b69ff744/scratchpad/`:
   trial-412, trial-434, wt-330, wt-396, wt-397, wt429. Не пушить; удалить через `git worktree remove`.
 - worktree 85 `scratchpad/wt429` (detached 17478ed06, только симлинки) — тоже можно убрать.
-- worktree t-boards/app `worktrees/feature/tb-b10` (ветка b10, f9275c5f — источник `s-tb-update-b10`) — удалять
+- worktree boards `worktrees/feature/tb-b10` (ветка b10, f9275c5f — источник `s-tb-update-b10`) — удалять
   только после выкладки b10 на VPS.
 - #445: строку отката перепроверяла 85 — теперь это твоя линза; автор PR — роль 2.
 

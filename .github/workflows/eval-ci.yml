@@ -28,5 +28,11 @@ jobs:
         run: python3 -I -m unittest discover -s eval/nerve -p 'test_*.py'
       - name: pipeline tests
         run: python3 -I -m unittest discover -s eval/pipeline -p 'test_*.py'
+      - name: reflex tests
+        run: python3 -I -m unittest discover -s eval/pipeline/reflex -p 'test_*.py'
+      - name: genome tests and freshness (rendered for the instance in eval/nerve/config.json)
+        run: |
+          python3 -I -m unittest discover -s eval/pipeline/genome -p 'test_*.py'
+          python3 -I eval/pipeline/genome/build.py --check
       - name: swarm tests
         run: python3 -I -m unittest discover -s eval/swarm -p 'test_*.py'

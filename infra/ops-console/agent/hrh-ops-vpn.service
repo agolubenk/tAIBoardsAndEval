@@ -1,0 +1,47 @@
+[Unit]
+Description=HR Helper Ops — сборщик WireGuard для агента (пиры, трафик, направления)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# root — ради двух вещей: netlink WireGuard (`wg show`, CAP_NET_ADMIN) и таблицы conntrack. Входа у процесса нет,
+# пишет он только свой файл: каталог 0750 root:hrh-ops, файл 0640 — агент читает его через группу.
+User=root
+Group=hrh-ops
+UMask=0027
+Environment=OPS_VPN_FILE=/run/hrh-ops-vpn/vpn.json
+ExecStart=/usr/bin/python3 -I /opt/hrh-ops/hrh-ops-vpnd.py
+RuntimeDirectory=hrh-ops-vpn
+RuntimeDirectoryMode=0750
+Restart=always
+RestartSec=10
+Nice=10
+CPUQuota=10%
+MemoryMax=96M
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ReadOnlyPaths=/
+# Чужие секреты root процессу не видны вовсе: ключи WireGuard (`wg show` берёт данные из ядра, не из конфигов), env
+# агента с его секретом, теневые пароли, ssh, сертификаты, прод и docker. «-» — пути может не быть.
+InaccessiblePaths=-/etc/wireguard -/etc/hrh-ops-agent.env -/etc/shadow -/etc/gshadow -/etc/ssh -/etc/letsencrypt
+InaccessiblePaths=-/opt/hr-helper -/var/lib/docker -/var/lib/hrh-ops -/run/docker.sock
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectClock=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

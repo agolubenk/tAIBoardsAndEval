@@ -1,0 +1,20 @@
+{
+  "serena": [{ "label": "дашборд", "url": "${SERENA_DASHBOARD}" }],
+  "ai-council": [{ "label": "консилиум", "url": "http://127.0.0.1:8790/" }],
+  "headroom": [{ "label": "дашборд", "url": "http://127.0.0.1:8787/dashboard" }],
+  "mcp-search": [{ "label": "claude-mem", "url": "http://127.0.0.1:37701/" }],
+  "dams-rag": [{ "label": "AI-tooling", "url": "http://127.0.0.1:8788/" }],
+  "git": [{ "label": "коммиты", "url": "https://github.com/agolubenk/HR_Helper-v2/commits/main" }],
+  "github": [
+    { "label": "репозиторий", "url": "https://github.com/agolubenk/HR_Helper-v2" },
+    { "label": "PR", "url": "https://github.com/agolubenk/HR_Helper-v2/pulls" }
+  ],
+  "notion": [{ "label": "Notion", "url": "https://www.notion.so/" }],
+  "sentry": [{ "label": "Sentry", "url": "https://sentry.io/" }],
+  "cloudflare": [{ "label": "Cloudflare", "url": "https://dash.cloudflare.com/" }],
+  "context7": [{ "label": "Context7", "url": "https://context7.com/" }],
+  "t-boards": [{ "label": "t-boards", "url": "https://d4dev.admin.hrhelper.space/" }],
+  "markitdown": [{ "label": "README", "url": "https://github.com/microsoft/markitdown" }],
+  "docker": [],
+  "postgres-readonly": []
+}

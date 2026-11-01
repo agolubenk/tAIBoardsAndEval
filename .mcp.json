@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headersHelper": "bash infra/scripts/dev-ai/mcp-auth-headers.sh GITHUB_PAT"
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "docker": {
+      "command": "uvx",
+      "args": ["mcp-server-docker"]
+    },
+    "ai-council": {
+      "command": "python3",
+      "args": ["infra/ai-council/mcp_server.py"]
+    },
+    "owner-queue": {
+      "command": "node",
+      "args": ["infra/owner-queue-mcp/server.mjs"]
+    }
+  }
+}

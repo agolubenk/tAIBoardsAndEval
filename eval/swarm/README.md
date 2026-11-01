@@ -31,7 +31,7 @@
 ## Команды
 
 ```bash
-S=supertick-eval/swarm
+S=eval/swarm
 python3 -I $S/swarm.py ask "почему упал гейт" путь/к/логу.txt           # файлы — с номерами строк
 npm run test 2>&1 | python3 -I $S/swarm.py ask "первая причина падения" -  # stdin
 python3 -I $S/swarm.py ask "…" файл --dry-run                            # что уйдёт наружу, без отправки

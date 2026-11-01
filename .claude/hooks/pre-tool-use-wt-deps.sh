@@ -23,6 +23,18 @@ if [ -n "$lead" ]; then
   esac
   dir="$lead"
 fi
+# `pnpm -C X …` / `pnpm --dir X …` (или `=X`) меняет каталог гейта так же, как ведущий `cd`.
+pdir="$(printf '%s' "$cmd" | sed -nE 's/.*pnpm([[:space:]]+[^[:space:]]+)*[[:space:]]+(-C|--dir)(=|[[:space:]]+)("([^"]+)"|([^[:space:]&;|]+)).*/\5\6/p')"
+if [ -n "$pdir" ]; then
+  case "$pdir" in
+    "~"*) pdir="$HOME${pdir#\~}" ;;
+    /*) ;;
+    *) pdir="${dir:-.}/$pdir" ;;
+  esac
+  dir="$pdir"
+fi
+# `make check-boards` гоняет гейты досок.
+case "$cmd" in *"make check-boards"*) [ -d "${dir:-.}/boards" ] && dir="${dir:-.}/boards" ;; esac
 [ -n "$dir" ] && [ -d "$dir" ] || exit 0
 
 script="$(dirname "$0")/../../infra/scripts/dev/wt-deps.sh"

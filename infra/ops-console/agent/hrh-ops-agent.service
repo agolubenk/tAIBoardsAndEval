@@ -1,0 +1,33 @@
+[Unit]
+Description=HR Helper Ops — локальный контроллер хоста (метрики, docker, перезапуски)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hrh-ops
+Group=hrh-ops
+# docker.sock даёт права уровня root — поэтому агент сам ограничивает перезапуски
+# (OPS_RESTART_ALLOW/DENY, cooldown) и не открывает входящих портов.
+SupplementaryGroups=docker adm
+EnvironmentFile=/etc/hrh-ops-agent.env
+ExecStart=/usr/bin/python3 /opt/hrh-ops/hrh-ops-agent.py
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadOnlyPaths=/
+# Прошлые значения счётчиков для скоростей в hrh-business.sh: /var/lib/hrh-ops, единственное место записи. Там же учёт
+# направлений VPN — история посещений пиров, поэтому каталог 0700 и файлы агента без доступа группе и остальным.
+StateDirectory=hrh-ops
+StateDirectoryMode=0700
+UMask=0077
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
