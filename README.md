@@ -69,15 +69,16 @@ docs/          cross-cutting specs (owner queue, AI council), closed-items log, 
 
 ## Origins, forks & licenses
 
-The product was incubated inside another repository where the team worked
-([agolubenk/HR_Helper-v2](https://github.com/agolubenk/HR_Helper-v2)): it was assembled from that repository's
+The product was incubated inside another repository where the team worked (`agolubenk/HR_Helper-v2`):
+it was assembled from that repository's
 subprojects `supertick-eval/` (→ `eval/`) and `t-boards/` (→ `boards/`), its AI-tooling services (→ `infra/`) and
 its functional layer (→ `.claude/` & co.). Path mapping and what was not carried over — [`process/TRANSFER.md`](process/TRANSFER.md).
 
 Third-party foundations:
 
-- **tAI-Boards** is a fork of [Kaneo](https://github.com/usekaneo/kaneo) — MIT, see [LICENSE](LICENSE); the internal
-  `@kaneo/*` package scope and `KANEO_*` env names are kept until the split.
+- **tAI-Boards** is a fork of [Kaneo](https://github.com/usekaneo/kaneo) — MIT; the root [LICENSE](LICENSE) is Kaneo's
+  licence and covers the fork in `boards/`. The internal `@kaneo/*` package scope and `KANEO_*` env names are kept
+  until the split.
 - **eval** started as an evaluation of [denizen24/supertick](https://github.com/denizen24/supertick) (MIT): two of its
   mechanisms were adopted in shadow mode (a model-free watchdog → the Nerve; an external engine for one-off
   read-only roles). Excerpts — [`eval/context/supertick-src/`](eval/context/supertick-src/) with its LICENSE; verdict —

@@ -1,4 +1,9 @@
-# Локальные модели Ollama (HR Helper)
+# Локальные модели Ollama
+
+> **В доме слоя (2026-11-01):** здесь — модели ИИ-контура разработки (Tiel-Coder для deep-роли консилиума, доп.
+> модели Continue, прогрев: `npm run ollama:tiel-coder`, `ollama:extra-models`, `ollama:warmup`). Роли `hr-helper-*`,
+> agent pipeline FlowsAssistant, `dev-start-with-ai.sh` и Open WebUI — модели и dev-стек первого host-проекта: их
+> скрипты и Modelfile остались там, разделы ниже про них — справка инстанса.
 
 > **Статус (2026-10-23):** владелец удалил с Mac `qwen3-coder:30b`, `qwen3.6:27b` (и алиасы `hr-helper-text`,
 > `hr-helper-resume`), `mistral-small3.2` (и `hr-helper-analytics`, `hr-helper-json`) — решение d-mac-models = drop-4.

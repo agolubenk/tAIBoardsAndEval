@@ -24,7 +24,7 @@
 
 1. **Отдельный worktree, не общая папка.** Параллельно в `boards` работает Claude. Ворктри волны 1
    (`app-kimi`, `app-kimi2`) удалены 29.10 — создай свежий:
-   `git -C /Users/agolubenko/Desktop/Development/HR_Helper-v2/t-boards/app worktree add ../app-kimi -b kimi/k6-metrics`.
+   `make wt-feature NAME=k6-metrics   # было: worktree форка в t-boards/app-kimi, ветка kimi/k6-metrics`.
    - В новом worktree — свой `pnpm install --config.engine-strict=false`: `node_modules` у worktree свои.
    - На каждую задачу — своя ветка `kimi/k<n>-<тема>` от `t-boards`.
    - Коммитить локально; в отчёте указать SHA.

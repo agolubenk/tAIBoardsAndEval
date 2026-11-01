@@ -89,6 +89,8 @@ check-infra:
 	cd infra/owner-queue-bot && node --test test/*.test.mjs
 	cd infra/ai-council && python3 selftest.py
 	python3 infra/scripts/misc/done-index.py --check
+	python3 .claude/scripts/docs_linkcheck.py
+	@for f in infra/scripts/dev-ai/*.sh infra/scripts/dev-ai/lib/*.sh infra/scripts/dev/*.sh; do bash -n "$$f" || exit 1; done
 
 check-boards:
 	cd boards && pnpm lint && pnpm typecheck && pnpm test

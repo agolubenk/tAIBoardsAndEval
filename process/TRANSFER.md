@@ -43,6 +43,8 @@ supertick-eval/…`), строки про инстанс, измерения в 
 | В git лежали живые папки дел `.ai/task/` (выгрузки Notion, трассы) и сгенерированный `.continue/agents/llm-gateway.yaml` — в инкубаторе оба в `.gitignore` | убраны из git, закрыты `.gitignore` |
 | `docs/` отсутствовал, а базовые правила слоя ссылаются на `docs/README.md`, `docs/CLAUDE.md`, `docs/plans/done/` | заведены карта, стандарт, оглавление закрытого и модули `boards`, `eval`, `dev-tooling`, `ops-control` |
 | Нет `.windsurf/skills` — `sync-agent-skills.sh --check` не проходил | зеркало пересобрано |
+| Скрипты ИИ-контура подключали `infra/scripts/dev/dev-common.sh` — `npm run ai-pipeline:*`, `ollama:*` падали на первой строке | `dev-common.sh` — только помощники Ollama и локального env; скрипты предметной области хоста (роли `hr-helper-*`, его dev-стек, Open WebUI) не переносятся; `bash -n` всех скриптов — в `infra-ci.yml` |
+| Гейт ссылок документации (`docs_linkcheck.py`) не переносился и падал | `npm run docs:check` и шаг `infra-ci.yml`; ссылки законов хоста на его документы — в `.claude/scripts/docs_linkcheck.host-only.txt`, считаются отдельно |
 
 ## Что сознательно не перенесено
 
@@ -50,6 +52,8 @@ supertick-eval/…`), строки про инстанс, измерения в 
   `.claude/skill-observations/`, `.serena/`, `graphify-out/`, `node_modules`, `.env`.
 - **Продуктовое хоста:** бизнес-код, его CI и деплой, `docs/` предметной области, OpenExecutive (разбор идей
   публичного сайта хоста), продуктовые скрипты `infra/scripts/{prod,misc}` кроме названных выше.
+- **Документы предметной области хоста:** его SLO и алерты прода (`docs/ops/p0-slo-alerts.md`), API, QA, архитектура —
+  список префиксов в `.claude/scripts/docs_linkcheck.host-only.txt`.
 - **Мусор корня инкубатора:** снимки процессов и памяти (`mem.txt`, `ps.txt`, …) и посторонние заметки.
 
 ## Что остаётся инстанс-зависимым (проверить при развёртывании над новым хостом)
@@ -59,4 +63,15 @@ supertick-eval/…`), строки про инстанс, измерения в 
 - `eval/nerve/config.json` (`repo_root`, `product_tree`, репозиторий, адрес очереди, роли) и сгенерированные из него
   геномы `eval/pipeline/genome/*.json`; `infra/ai-council/config.toml` (источники, модели).
 - Адрес стенда досок и туннеля (`T_BOARDS_URL`), Keychain-сервис секретов `hr-helper-mcp`, ops-консоль с SSO
-  через бэкенд хоста.
+  через бэкенд хоста; её бизнес-метрики (`infra/ops-console/agent/hrh-business.sh`) и встроенные P0-правила
+  (`server/alerts/builtin.ts`) описывают прод хоста.
+- `eval/nerve/space.hrhelper.nerve.plist` — launchd-агент Нерва с путями машины владельца.
+- Адрес VPS и раскладка WireGuard упоминаются в документах и сидах досок и ops-консоли (`boards/docs/impl/impl-b4-vps.md`,
+  `boards/deploy/vps/seed/`, тесты ops-консоли) — так было и до переноса; если репозиторий публичный, вынести их в
+  конфиг — решение владельца.
+
+## История git
+
+Первый перенос закоммитил живые папки дел `.ai/task/` (выгрузки Notion `ai-council-backlog/raw.json`, `cards.json`,
+трассы ревью) и сгенерированный `.continue/agents/llm-gateway.yaml`. Сверка убрала их из дерева, но в истории
+`board-agents` они остаются (секретов и почт в них не найдено). Переписывать историю или нет — решение владельца.

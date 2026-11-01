@@ -5,9 +5,9 @@ name: infra CI
 on:
   push:
     branches: [board-agents, main]
-    paths: ["infra/**", "docs/plans/**", ".github/workflows/infra-ci.yml"]
+    paths: ["infra/**", "docs/**", ".claude/**", "**/*.md", ".github/workflows/infra-ci.yml"]
   pull_request:
-    paths: ["infra/**", "docs/plans/**", ".github/workflows/infra-ci.yml"]
+    paths: ["infra/**", "docs/**", ".claude/**", "**/*.md", ".github/workflows/infra-ci.yml"]
   workflow_dispatch:
 
 concurrency:
@@ -42,8 +42,12 @@ jobs:
         run: |
           python3 -m pip install --quiet 'mcp<2'
           python3 selftest.py
-      - name: closed-items index
-        run: python3 infra/scripts/misc/done-index.py --check
+      - name: closed-items index and docs links
+        run: |
+          python3 infra/scripts/misc/done-index.py --check
+          python3 .claude/scripts/docs_linkcheck.py
+      - name: dev-ai scripts parse
+        run: for f in infra/scripts/dev-ai/*.sh infra/scripts/dev-ai/lib/*.sh infra/scripts/dev/*.sh; do bash -n "$f"; done
 
   ops-console:
     runs-on: ubuntu-latest

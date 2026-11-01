@@ -53,17 +53,14 @@
     "ai-council:gateway": "python3 infra/ai-council/gateway.py",
     "ai-council:ui": "open http://127.0.0.1:8790 || echo 'Gateway: http://127.0.0.1:8790'",
     "ai-council:night": "python3 infra/ai-council/supervisor.py run --card all --profile hybrid",
-    "ollama:setup": "bash infra/scripts/dev-ai/ollama-setup-models.sh",
-    "ollama:pipeline": "bash infra/scripts/dev-ai/ollama-setup-agent-pipeline.sh",
     "ollama:warmup": "bash infra/scripts/dev-ai/ollama-warmup.sh",
     "ollama:tiel-coder": "bash infra/scripts/dev-ai/ollama-setup-tiel-coder.sh",
     "ollama:extra-models": "bash infra/scripts/dev-ai/ollama-setup-extra-models.sh",
-    "open-webui:prepare": "bash infra/scripts/dev-ai/open-webui-prepare.sh",
-    "open-webui:up": "bash infra/scripts/dev-ai/open-webui-up.sh",
     "done:check": "python3 infra/scripts/misc/done-index.py --check",
     "owner-queue:test": "node --test infra/owner-queue-mcp/test/*.test.mjs && cd infra/owner-queue-bot && node --test test/*.test.mjs",
     "check": "make check",
     "wt:help": "make wt-help",
-    "wt:list": "make wt-list"
+    "wt:list": "make wt-list",
+    "docs:check": "python3 infra/scripts/misc/done-index.py --check && python3 .claude/scripts/docs_linkcheck.py"
   }
 }
