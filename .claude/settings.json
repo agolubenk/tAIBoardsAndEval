@@ -45,6 +45,12 @@
             "if": "Bash(vp *)",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-tool-use-wt-deps.sh\"",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "if": "Bash(make check-boards*)",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-tool-use-wt-deps.sh\"",
+            "timeout": 10
           }
         ]
       }

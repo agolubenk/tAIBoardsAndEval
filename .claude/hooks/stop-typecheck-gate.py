@@ -6,8 +6,9 @@ Quality-gate — Stop hook: best-effort typecheck затронутых паке�
 затронутые top-level пакеты (apps/*, packages/*) и запускает `turbo run
 typecheck --filter=./<pkg>` только для них — turbo-кэш держит повторный
 запуск (без новых правок) почти бесплатным. Пакеты pnpm-workspace досок
-(boards/apps/*, boards/packages/* — дом слоя) проверяются
-`pnpm --dir boards --filter ./<pkg> run typecheck`, если у пакета есть такой скрипт.
+(`boards/` в доме слоя, `t-boards/app/` в инстансе-инкубаторе; env BOARDS_TREE —
+другое место; apps/*, packages/* внутри) проверяются
+`pnpm --dir <доски> --filter ./<pkg> run typecheck`, если у пакета есть такой скрипт.
 
 Non-blocking: только additionalContext (см. `hidekazu-konishi.com/.../hooks`,
 Claude Code v2.1.163+) — никогда не "decision":"block" и не мешает Stop.
@@ -26,7 +27,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 EDIT_TOOLS = {"Write", "Edit", "MultiEdit"}
 TOP_LEVEL_DIRS = ("apps", "packages")
-BOARDS = "boards"
+BOARDS_CANDIDATES = ("boards", "t-boards/app")
+
+
+def boards_tree(repo_root):
+    """Папка pnpm-workspace досок относительно корня (по pnpm-lock.yaml); None — досок нет."""
+    for cand in (os.environ.get("BOARDS_TREE"),) + BOARDS_CANDIDATES:
+        if cand and (repo_root / cand / "pnpm-lock.yaml").exists():
+            return cand.strip("/")
+    return None
 TAIL_BYTES = 2 * 1024 * 1024
 SUBPROCESS_TIMEOUT_S = 90
 MAX_OUTPUT = 2000
@@ -42,6 +51,7 @@ def touched_top_level_dirs(transcript_path, repo_root):
         raw = raw[raw.find(b"\n") + 1:]
 
     dirs = set()
+    boards = boards_tree(repo_root)
     for line in raw.decode("utf-8", "replace").splitlines():
         try:
             entry = json.loads(line)
@@ -65,9 +75,11 @@ def touched_top_level_dirs(transcript_path, repo_root):
             except ValueError:
                 continue
             parts = rel.parts
-            if len(parts) >= 3 and parts[0] == BOARDS and parts[1] in TOP_LEVEL_DIRS:
-                parts = parts[1:]
-                prefix = BOARDS + "/"
+            depth = len(Path(boards).parts) if boards else 0
+            if boards and tuple(parts[:depth]) == Path(boards).parts and len(parts) >= depth + 2 \
+                    and parts[depth] in TOP_LEVEL_DIRS:
+                parts = parts[depth:]
+                prefix = boards + "/"
             else:
                 prefix = ""
             if len(parts) >= 2 and parts[0] in TOP_LEVEL_DIRS:
@@ -87,14 +99,15 @@ def has_typecheck_script(pkg_dir):
 
 def typecheck_commands(dirs, repo_root):
     """(cwd, argv) на каждый прогон: один turbo на пакеты npm-монорепо, один pnpm на пакеты досок."""
-    host = sorted(d for d in dirs if not d.startswith(BOARDS + "/"))
-    boards = sorted(d[len(BOARDS) + 1:] for d in dirs
-                    if d.startswith(BOARDS + "/") and has_typecheck_script(repo_root / d))
+    tree = boards_tree(repo_root)
+    in_boards = (lambda d: d.startswith(tree + "/")) if tree else (lambda d: False)
+    host = sorted(d for d in dirs if not in_boards(d))
+    boards = sorted(d[len(tree) + 1:] for d in dirs if in_boards(d) and has_typecheck_script(repo_root / d))
     cmds = []
     if host:
         cmds.append((repo_root, ["npx", "turbo", "run", "typecheck"] + ["--filter=./%s" % d for d in host]))
     if boards:
-        argv = ["pnpm", "--dir", str(repo_root / BOARDS)]
+        argv = ["pnpm", "--dir", str(repo_root / tree)]
         for d in boards:
             argv += ["--filter", "./%s" % d]
         cmds.append((repo_root, argv + ["run", "typecheck"]))
@@ -140,7 +153,8 @@ def main():
     if not dirs:
         return
 
-    target = dc.REPO_ROOT / BOARDS if any(d.startswith(BOARDS + "/") for d in dirs) else None
+    tree = boards_tree(dc.REPO_ROOT)
+    target = dc.REPO_ROOT / tree if tree and any(d.startswith(tree + "/") for d in dirs) else None
     problem = deps_problem(dc.REPO_ROOT, target)
     if problem:
         emit("Typecheck skipped for %s — зависимости worktree не свои, результат был бы ложным:\n%s"

@@ -40,6 +40,7 @@ with tempfile.TemporaryDirectory() as tmp:
     for rel, scripts in pkgs.items():
         (root / rel / "src").mkdir(parents=True)
         (root / rel / "package.json").write_text(json.dumps({"scripts": scripts}))
+    (root / "boards/pnpm-lock.yaml").write_text("")
     (root / "eval").mkdir()
     transcript = root / "t.jsonl"
     transcript.write_text("\n".join([
@@ -60,6 +61,23 @@ with tempfile.TemporaryDirectory() as tmp:
           cmds[1][1] == ["pnpm", "--dir", str(root / "boards"), "--filter", "./apps/api", "run", "typecheck"])
     check("только доски — одна команда pnpm", len(gate.typecheck_commands({"boards/apps/api"}, root)) == 1)
     check("пакет досок без скрипта — команд нет", gate.typecheck_commands({"boards/packages/mcp"}, root) == [])
+
+# Инстанс-инкубатор: доски в t-boards/app, npm-монорепо в корне.
+with tempfile.TemporaryDirectory() as tmp:
+    root = Path(tmp).resolve()
+    for rel, scripts in {"apps/frontend": {"typecheck": "tsc"}, "t-boards/app/apps/web": {"typecheck": "vp"}}.items():
+        (root / rel / "src").mkdir(parents=True)
+        (root / rel / "package.json").write_text(json.dumps({"scripts": scripts}))
+    (root / "t-boards/app/pnpm-lock.yaml").write_text("")
+    transcript = root / "t.jsonl"
+    transcript.write_text("\n".join([edit(root / "apps/frontend/src/a.ts"),
+                                      edit(root / "t-boards/app/apps/web/src/b.tsx")]) + "\n")
+    dirs = gate.touched_top_level_dirs(transcript, root)
+    check("инкубатор: пакет хоста и пакет досок в t-boards/app", dirs == {"apps/frontend", "t-boards/app/apps/web"})
+    cmds = gate.typecheck_commands(dirs, root)
+    check("инкубатор: pnpm в t-boards/app",
+          cmds[-1][1] == ["pnpm", "--dir", str(root / "t-boards/app"), "--filter", "./apps/web", "run", "typecheck"])
+    check("инкубатор: turbo только для apps/frontend", cmds[0][1][-1] == "--filter=./apps/frontend")
 
 print("typecheck_gate: %d failed" % failed)
 sys.exit(1 if failed else 0)

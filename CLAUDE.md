@@ -40,7 +40,7 @@ for t in .claude/hooks/test_*.py .claude/scripts/test_*.py; do python3 "$t"; don
 ```bash
 node --test infra/owner-queue-mcp/test/*.test.mjs infra/llm-gateway/test/*.test.mjs
 (cd infra/owner-queue-bot && node --test test/*.test.mjs)
-(cd infra/ai-council && python3 selftest.py)      # нужен python-пакет mcp<2
+(cd infra/ai-council && python3 selftest.py)      # pip install -r infra/ai-council/requirements.txt (mcp<2)
 (cd infra/ops-console && npm ci && npm run typecheck && npm test)
 python3 infra/scripts/misc/done-index.py --check
 ```

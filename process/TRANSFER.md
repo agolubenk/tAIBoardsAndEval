@@ -36,7 +36,7 @@ supertick-eval/…`), строки про инстанс, измерения в 
 |---|---|
 | Нет документов реализации досок (`impl-*`, `migration/`, `kimi-*`, `archive/`, пробы) — ссылки спеки и handoff вели в пустоту | перенесены в `boards/docs/`, `boards/tools/`; архив и пробы исключены из `vp check` |
 | Слой ссылался на сервисы, которых нет в репозитории: консилиум (линзы GLM для адверсариальной проверки), очередь владельца (`oq_*`), MCP-хаб, шлюз моделей роя, headroom | сервисы перенесены в `infra/`, тесты дают тот же результат, что в инкубаторе; CI — `infra-ci.yml` |
-| Хук `PreToolUse` звал `infra/scripts/dev/wt-deps.sh`, которого не было, — гейт worktree молча выключен | скрипт перенесён и понимает pnpm-workspace `boards/`; хук ловит и `pnpm …`/`vp …` |
+| Хук `PreToolUse` звал `infra/scripts/dev/wt-deps.sh`, которого не было, — гейт worktree молча выключен | скрипт перенесён и понимает pnpm-workspace досок (`boards/` в доме, `t-boards/app/` в инкубаторе, `BOARDS_TREE`); хук ловит и `pnpm …`/`vp …`/`pnpm -C|--dir`/`make check-boards` |
 | Stop-хук typecheck видел только `apps/*`/`packages/*` — правки досок не проверял | добавлен pnpm-путь для `boards/apps/*`, `boards/packages/*`; тест `test_typecheck_gate.py` |
 | `genome/build.py` жёстко держал `supertick-eval`, `roles.json` — абсолютные пути Mac; тест геномов падал вне инстанса | пути инстанса — `repo_root` и `product_tree` в `eval/nerve/config.json`; `build.py --check` воспроизводит геномы байт-в-байт; тесты геномов и рефлексов — в `eval-ci.yml` |
 | Консилиум искал улики только в `apps/`/`packages/`, самопроверка падала на чужом дереве (Prisma, turbo-пакеты хоста) | корни `boards/`, `eval/`, `process/`; проверки хоста — на фикстуре или явный пропуск |

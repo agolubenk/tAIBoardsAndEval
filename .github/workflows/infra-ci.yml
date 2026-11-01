@@ -38,9 +38,8 @@ jobs:
         run: node --test infra/llm-gateway/test/*.test.mjs
       - name: ai-council selftest
         working-directory: infra/ai-council
-        # the only third-party module: the stdio MCP server (FastMCP — mcp 1.x API)
         run: |
-          python3 -m pip install --quiet 'mcp<2'
+          python3 -m pip install --quiet -r requirements.txt
           python3 selftest.py
       - name: closed-items index and docs links
         run: |

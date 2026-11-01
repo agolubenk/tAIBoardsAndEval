@@ -20,7 +20,13 @@ if [[ -z "$T_BOARDS_INT_LOCKED" ]]; then
   fi
 fi
 env_file="$app/.env"
-[[ -f "$env_file" ]] || env_file="$root/.env"
+if [[ ! -f "$env_file" ]]; then
+  # Linked worktree без своего .env — берём .env досок основного checkout.
+  main="$(git -C "$root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)"
+  main="${main:h}"
+  rel="${root#$(git -C "$root" rev-parse --show-toplevel)/}"
+  env_file="$main/$rel/.env"
+fi
 while IFS='=' read -r k v; do
   case "$k" in POSTGRES_HOST|POSTGRES_PORT|POSTGRES_DB|POSTGRES_USER|POSTGRES_PASSWORD_FILE) export "$k=$v" ;; esac
 done < "$env_file"
