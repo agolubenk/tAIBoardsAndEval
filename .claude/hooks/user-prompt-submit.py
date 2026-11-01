@@ -373,6 +373,12 @@ def dams_parts(dc, prompt, session_id, deadline=None, transcript_path=None):
         fresh = [r for r in rows if r["doc_id"] not in sess["rag"]][:L3_MAX_HITS]
         dc.log_query(conn, " ".join(terms), "hook", rows, session_id)
         conn.close()
+        if getattr(rows, "failed", False):
+            # E9: a broken index is said once, plainly — otherwise «no pointers» reads as «nothing is known»
+            # and the session re-asks the owner what the index already holds.
+            parts.append("<!-- DAMS rag: индекс не ответил (%s) — отсутствие указателей не значит, что ответа нет; "
+                         "ищи `git grep` или `python3 .claude/scripts/rag_query.py` -->"
+                         % str(getattr(rows, "error", ""))[:120])
         if fresh:
             # [stale] — срез индекса помечен устаревшим после правки файла:
             # указатель всё ещё полезен, но тело документа могло разойтись с диском.
