@@ -48,7 +48,8 @@ function fileAtHead(repoRoot, path, git = "git") {
 }
 
 const sha256 = (text) => createHash("sha256").update(text).digest("hex");
-const stamp = (message) => console.log(`${new Date().toISOString()} ${message}`);
+const stamp = (message) =>
+  console.log(`${new Date().toISOString()} ${message}`);
 
 async function ssrApi(config, path, method, body, timeoutMs = 60_000) {
   const url = `${config.baseUrl}/api/ssr/${encodeURIComponent(config.workspaceId)}${path}`;
@@ -63,7 +64,9 @@ async function ssrApi(config, path, method, body, timeoutMs = 60_000) {
   });
   const text = await response.text();
   if (!response.ok) {
-    throw new Error(`${method} ${path}: HTTP ${response.status} ${text.slice(0, 300)}`);
+    throw new Error(
+      `${method} ${path}: HTTP ${response.status} ${text.slice(0, 300)}`,
+    );
   }
   return text ? JSON.parse(text) : null;
 }
@@ -82,14 +85,20 @@ async function main() {
       stamp(`skip ${path}: larger than ${FILE_MAX} bytes`);
       continue;
     }
-    files.push({ path, sha256: sha256(content), content: content.toString("utf8") });
+    files.push({
+      path,
+      sha256: sha256(content),
+      content: content.toString("utf8"),
+    });
   }
 
   // Ask which shas the server already stores so only new content uploads.
   const known = new Set(
-    (await ssrApi(config, "/known-shas", "POST", {
-      shas: files.map((file) => file.sha256),
-    })).shas ?? [],
+    (
+      await ssrApi(config, "/known-shas", "POST", {
+        shas: files.map((file) => file.sha256),
+      })
+    ).shas ?? [],
   );
   const payload = {
     commitSha,

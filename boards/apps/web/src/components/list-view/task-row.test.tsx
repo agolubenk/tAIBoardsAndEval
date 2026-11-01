@@ -1,4 +1,5 @@
 import { DndContext, KeyboardSensor } from "@dnd-kit/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import {
   afterEach,
@@ -8,6 +9,7 @@ import {
   it,
   vi,
 } from "vite-plus/test";
+import type { ReactNode } from "react";
 import type Task from "@/types/task";
 import useBulkSelectionStore from "@/store/bulk-selection";
 import BacklogTaskRow from "../backlog-list-view/backlog-task-row";
@@ -30,6 +32,12 @@ afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
+
+let client: QueryClient;
+function withClient(node: ReactNode) {
+  client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return <QueryClientProvider client={client}>{node}</QueryClientProvider>;
+}
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => navigate,
@@ -136,16 +144,18 @@ describe("TaskRow", () => {
       useBulkSelectionStore.getState().setSelectionAnchor("anchor");
       const onDragStart = vi.fn();
       render(
-        <DndContext
-          sensors={[{ sensor: KeyboardSensor, options: {} }]}
-          onDragStart={onDragStart}
-        >
-          {view === "board" ? (
-            <TaskCard task={task} />
-          ) : (
-            <TaskRow task={task} projectSlug="kan" />
-          )}
-        </DndContext>,
+        withClient(
+          <DndContext
+            sensors={[{ sensor: KeyboardSensor, options: {} }]}
+            onDragStart={onDragStart}
+          >
+            {view === "board" ? (
+              <TaskCard task={task} />
+            ) : (
+              <TaskRow task={task} projectSlug="kan" />
+            )}
+          </DndContext>,
+        ),
       );
 
       fireEvent.keyDown(
@@ -179,10 +189,12 @@ describe("TaskRow", () => {
     "takes keyboard focus and marks itself as a shortcut surface in the %s view",
     (view) => {
       render(
-        view === "board" ? (
-          <TaskCard task={task} />
-        ) : (
-          <TaskRow task={task} projectSlug="kan" />
+        withClient(
+          view === "board" ? (
+            <TaskCard task={task} />
+          ) : (
+            <TaskRow task={task} projectSlug="kan" />
+          ),
         ),
       );
       const row = screen.getByRole("button", { name: /Row from payload/ });
@@ -203,18 +215,20 @@ describe("TaskRow", () => {
         .getState()
         .setAvailableTasks([task.id, "middle", otherTask.id]);
       render(
-        <>
-          {view === "board" ? (
-            <TaskCard task={task} />
-          ) : (
-            <TaskRow task={task} projectSlug="kan" />
-          )}
-          {view === "board" ? (
-            <TaskCard task={otherTask} />
-          ) : (
-            <TaskRow task={otherTask} projectSlug="kan" />
-          )}
-        </>,
+        withClient(
+          <>
+            {view === "board" ? (
+              <TaskCard task={task} />
+            ) : (
+              <TaskRow task={task} projectSlug="kan" />
+            )}
+            {view === "board" ? (
+              <TaskCard task={otherTask} />
+            ) : (
+              <TaskRow task={otherTask} projectSlug="kan" />
+            )}
+          </>,
+        ),
       );
       fireEvent.click(screen.getByText(task.title));
       expect(navigate).toHaveBeenCalled();

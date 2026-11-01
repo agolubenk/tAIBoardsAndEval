@@ -44,7 +44,10 @@ function artifactTool(
 
 // SSR serving tools (spec RU-5/RU-8, D-006): read-only versioned access for
 // sessions. Writing versions is the Mac sync agent's job; the owner decides.
-export function registerSsrTools(registerTool: RegisterTool, client: ToolClient) {
+export function registerSsrTools(
+  registerTool: RegisterTool,
+  client: ToolClient,
+) {
   artifactTool(
     registerTool,
     client,
@@ -75,10 +78,9 @@ export function registerSsrTools(registerTool: RegisterTool, client: ToolClient)
     },
     ({ workspaceId }) =>
       run(() =>
-        client.json(
-          `/api/ssr/${encodeURIComponent(workspaceId)}/entities`,
-          { method: "GET" },
-        ),
+        client.json(`/api/ssr/${encodeURIComponent(workspaceId)}/entities`, {
+          method: "GET",
+        }),
       ),
   );
 }

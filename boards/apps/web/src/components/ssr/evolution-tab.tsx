@@ -1,5 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { listSsrTimeline, type SsrTimelineEvent } from "@/fetchers/ssr/ssr-fetchers";
+import {
+  listSsrTimeline,
+  type SsrTimelineEvent,
+} from "@/fetchers/ssr/ssr-fetchers";
 import { useQuery } from "@tanstack/react-query";
 
 const originLabels: Record<string, string> = {
@@ -19,7 +22,11 @@ export function EvolutionTab({ workspaceId }: { workspaceId: string }) {
   });
 
   if (timeline.isPending) {
-    return <p className="text-muted-foreground px-1 py-8 text-sm">{t("common:loading")}</p>;
+    return (
+      <p className="text-muted-foreground px-1 py-8 text-sm">
+        {t("common:loading")}
+      </p>
+    );
   }
   if (timeline.isError) {
     return (
@@ -31,7 +38,9 @@ export function EvolutionTab({ workspaceId }: { workspaceId: string }) {
   const events = timeline.data ?? [];
   if (events.length === 0) {
     return (
-      <p className="text-muted-foreground px-1 py-8 text-sm">{t("workspace:ssr.empty")}</p>
+      <p className="text-muted-foreground px-1 py-8 text-sm">
+        {t("workspace:ssr.empty")}
+      </p>
     );
   }
 
@@ -52,12 +61,17 @@ export function EvolutionTab({ workspaceId }: { workspaceId: string }) {
                 {originLabels[event.origin] ?? event.origin} · {event.status}
               </span>
             </div>
-            <time className="text-muted-foreground text-xs" dateTime={event.createdAt}>
+            <time
+              className="text-muted-foreground text-xs"
+              dateTime={event.createdAt}
+            >
               {new Date(event.createdAt).toLocaleString()}
             </time>
           </div>
           {event.message ? (
-            <p className="text-muted-foreground mt-1 text-sm">{event.message}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {event.message}
+            </p>
           ) : null}
           {event.commitSha ? (
             <p className="text-muted-foreground mt-1 font-mono text-xs">

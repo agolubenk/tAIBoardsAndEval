@@ -40,7 +40,14 @@ function VersionRow({
   const [diffOpen, setDiffOpen] = useState(false);
 
   const diff = useQuery({
-    queryKey: ["ssr", "diff", workspaceId, entity.id, version.number, fromVersion],
+    queryKey: [
+      "ssr",
+      "diff",
+      workspaceId,
+      entity.id,
+      version.number,
+      fromVersion,
+    ],
     queryFn: () =>
       getSsrDiff(
         workspaceId,
@@ -52,7 +59,9 @@ function VersionRow({
   });
 
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["ssr", "entities", workspaceId] });
+    queryClient.invalidateQueries({
+      queryKey: ["ssr", "entities", workspaceId],
+    });
 
   const approve = useMutation({
     mutationFn: () => approveSsrDraft(workspaceId, entity.id, version.id),
@@ -80,7 +89,10 @@ function VersionRow({
           <span className="text-muted-foreground text-xs">
             {version.status} · {version.origin}
           </span>
-          <time className="text-muted-foreground text-xs" dateTime={version.createdAt}>
+          <time
+            className="text-muted-foreground text-xs"
+            dateTime={version.createdAt}
+          >
             {new Date(version.createdAt).toLocaleString()}
           </time>
         </div>
@@ -91,7 +103,9 @@ function VersionRow({
               className="bg-background border-input rounded-md border px-1 py-0.5 text-xs"
               value={fromVersion ?? ""}
               onChange={(event) =>
-                setFromVersion(event.target.value ? Number(event.target.value) : null)
+                setFromVersion(
+                  event.target.value ? Number(event.target.value) : null,
+                )
               }
             >
               <option value="">latest</option>
@@ -108,7 +122,9 @@ function VersionRow({
             size="sm"
             onClick={() => setDiffOpen((open) => !open)}
           >
-            {diffOpen ? t("workspace:ssr.diffHide") : t("workspace:ssr.diffShow")}
+            {diffOpen
+              ? t("workspace:ssr.diffHide")
+              : t("workspace:ssr.diffShow")}
           </Button>
           {version.status === "draft" ? (
             <>
@@ -131,7 +147,9 @@ function VersionRow({
               </Button>
             </>
           ) : null}
-          {!isLatest && version.status !== "draft" && version.status !== "rejected" ? (
+          {!isLatest &&
+          version.status !== "draft" &&
+          version.status !== "rejected" ? (
             <Button
               type="button"
               variant="outline"
@@ -147,10 +165,14 @@ function VersionRow({
       {diffOpen ? (
         <div className="mt-3 flex flex-col gap-2">
           {diff.isPending ? (
-            <p className="text-muted-foreground text-xs">{t("common:loading")}</p>
+            <p className="text-muted-foreground text-xs">
+              {t("common:loading")}
+            </p>
           ) : null}
           {diff.isError ? (
-            <p className="text-destructive text-xs">{t("workspace:ssr.loadError")}</p>
+            <p className="text-destructive text-xs">
+              {t("workspace:ssr.loadError")}
+            </p>
           ) : null}
           {diff.data
             ? diff.data.files.map((file) => (
@@ -165,7 +187,9 @@ function VersionRow({
         </div>
       ) : null}
       {approve.isError || reject.isError || rollback.isError ? (
-        <p className="text-destructive mt-2 text-xs">{t("workspace:ssr.loadError")}</p>
+        <p className="text-destructive mt-2 text-xs">
+          {t("workspace:ssr.loadError")}
+        </p>
       ) : null}
     </li>
   );
@@ -179,24 +203,33 @@ export function RegistryTab({ workspaceId }: { workspaceId: string }) {
   });
 
   if (entities.isPending) {
-    return <p className="text-muted-foreground px-1 py-8 text-sm">{t("common:loading")}</p>;
+    return (
+      <p className="text-muted-foreground px-1 py-8 text-sm">
+        {t("common:loading")}
+      </p>
+    );
   }
   if (entities.isError) {
     return (
-      <p className="text-destructive px-1 py-8 text-sm">{t("workspace:ssr.loadError")}</p>
+      <p className="text-destructive px-1 py-8 text-sm">
+        {t("workspace:ssr.loadError")}
+      </p>
     );
   }
   const list = entities.data ?? [];
   if (list.length === 0) {
     return (
-      <p className="text-muted-foreground px-1 py-8 text-sm">{t("workspace:ssr.empty")}</p>
+      <p className="text-muted-foreground px-1 py-8 text-sm">
+        {t("workspace:ssr.empty")}
+      </p>
     );
   }
 
   const latestNumbers = new Map(
     list.map((entity) => [
       entity.id,
-      entity.versions.find((version) => version.status === "latest")?.number ?? null,
+      entity.versions.find((version) => version.status === "latest")?.number ??
+        null,
     ]),
   );
 
@@ -214,7 +247,9 @@ export function RegistryTab({ workspaceId }: { workspaceId: string }) {
                 {entity.kind} · {entity.path}
               </span>
             </div>
-            <span className="text-muted-foreground text-xs">{entity.status}</span>
+            <span className="text-muted-foreground text-xs">
+              {entity.status}
+            </span>
           </header>
           <ol>
             {entity.versions.slice(0, 10).map((version) => (

@@ -79,9 +79,9 @@ export async function getSsrDiff(
   from: string,
   to: string,
 ) {
-  const response = await client.ssr[":workspaceId"].entities[":entityId"].diff.$get(
-    { param: { workspaceId, entityId }, query: { from, to } },
-  );
+  const response = await client.ssr[":workspaceId"].entities[
+    ":entityId"
+  ].diff.$get({ param: { workspaceId, entityId }, query: { from, to } });
   return (await toResult(response)) as SsrDiff;
 }
 
@@ -90,12 +90,12 @@ export async function approveSsrDraft(
   entityId: string,
   versionId: string,
 ) {
-  const response = await client.ssr[":workspaceId"].entities[":entityId"].approve.$post(
-    {
-      param: { workspaceId, entityId },
-      json: { versionId },
-    },
-  );
+  const response = await client.ssr[":workspaceId"].entities[
+    ":entityId"
+  ].approve.$post({
+    param: { workspaceId, entityId },
+    json: { versionId },
+  });
   return toResult(response);
 }
 
@@ -104,12 +104,12 @@ export async function rejectSsrDraft(
   entityId: string,
   versionId: string,
 ) {
-  const response = await client.ssr[":workspaceId"].entities[":entityId"].reject.$post(
-    {
-      param: { workspaceId, entityId },
-      json: { versionId },
-    },
-  );
+  const response = await client.ssr[":workspaceId"].entities[
+    ":entityId"
+  ].reject.$post({
+    param: { workspaceId, entityId },
+    json: { versionId },
+  });
   return toResult(response);
 }
 
@@ -118,11 +118,11 @@ export async function rollbackSsrEntity(
   entityId: string,
   toVersion: number,
 ) {
-  const response = await client.ssr[":workspaceId"].entities[":entityId"].rollback.$post(
-    {
-      param: { workspaceId, entityId },
-      json: { toVersion },
-    },
-  );
+  const response = await client.ssr[":workspaceId"].entities[
+    ":entityId"
+  ].rollback.$post({
+    param: { workspaceId, entityId },
+    json: { toVersion },
+  });
   return toResult(response);
 }
