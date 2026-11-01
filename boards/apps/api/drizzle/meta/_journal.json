@@ -548,6 +548,20 @@
       "tag": "0077_tai_boards_ssr",
       "breakpoints": true,
       "record": ""
+    },
+    {
+      "idx": 78,
+      "version": "7",
+      "when": 1793439174457,
+      "tag": "0078_t_boards_completed_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "7",
+      "when": 1793439175457,
+      "tag": "0079_t_boards_instance_setting",
+      "breakpoints": true
     }
   ]
 }

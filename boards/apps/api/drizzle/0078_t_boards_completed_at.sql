@@ -1,4 +1,6 @@
-ALTER TABLE "task" ADD COLUMN "completed_at" timestamp;--> statement-breakpoint
+-- Renumbered 2026-11-01 from 0077 (that number went to 0077_tai_boards_ssr) and made re-runnable: a database
+-- that already applied the old 0077 on the stand must accept this one again without errors.
+ALTER TABLE "task" ADD COLUMN IF NOT EXISTS "completed_at" timestamp;--> statement-breakpoint
 -- t-boards (d-tb-card-fill: «готово» → the end date): a card gets its end
 -- date when it enters a final column of its project and loses it when it
 -- leaves, whichever path wrote the status. Moving between two final columns
@@ -26,6 +28,7 @@ BEGIN
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;--> statement-breakpoint
+DROP TRIGGER IF EXISTS "task_completed_at" ON "task";--> statement-breakpoint
 CREATE TRIGGER "task_completed_at" BEFORE INSERT OR UPDATE OF "status", "project_id" ON "task" FOR EACH ROW
 EXECUTE FUNCTION "t_boards_task_completed_at"();--> statement-breakpoint
 -- A column that becomes final dates its cards by their last move into it,
@@ -52,6 +55,7 @@ BEGIN
 	RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;--> statement-breakpoint
+DROP TRIGGER IF EXISTS "column_completed_at" ON "column";--> statement-breakpoint
 CREATE TRIGGER "column_completed_at" AFTER UPDATE OF "is_final" ON "column" FOR EACH ROW
 WHEN (OLD."is_final" IS DISTINCT FROM NEW."is_final")
 EXECUTE FUNCTION "t_boards_column_completed_at"();--> statement-breakpoint
