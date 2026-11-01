@@ -11,8 +11,10 @@ In code: `import pipeline_settings; pipeline_settings.enabled("successorAuto")`.
 Where the switches come from:
 1. the board — cached in `.claude/pipeline-settings.json` (gitignored, runtime), written by `fetch` and refreshed by
    itself at most every 10 minutes when the board's address (`boards.url` in `eval/nerve/config.json` or
-   `T_BOARDS_URL`; https, or http only to localhost), the product (`boards.workspace` or `T_BOARDS_WORKSPACE`) and
-   the key (`T_BOARDS_API_KEY`: env, else Keychain via `infra/scripts/dev-ai/mcp-secret.sh`) are known; the board
+   `T_BOARDS_URL`; https, or http only to localhost) and the key (`T_BOARDS_API_KEY`: env, else Keychain via
+   `infra/scripts/dev-ai/mcp-secret.sh`) are known. The product is found by itself: the one product the key
+   reaches, or among several the one named in `boards.product` / `T_BOARDS_PRODUCT` (name or slug, as people see
+   it); an explicit id (`boards.workspace` / `T_BOARDS_WORKSPACE`) still wins. The board
    answers `GET /api/pipeline-settings/workspace/{id}`. A cache of another workspace is ignored;
 2. defaults — every switch on — when the board was never read;
 3. on top of either, `TAIBE_PIPELINE` in the environment can only switch parts OFF — `off` (everything) or
@@ -116,8 +118,34 @@ def _instance(root):
 
 
 def _workspace(root):
+    """An explicitly configured workspace id, or '' — then the product is resolved from the key (see `resolve`)."""
     return (os.environ.get('T_BOARDS_WORKSPACE', '').strip()
             or str(_instance(root).get('workspace') or '').strip())
+
+
+def _product(root):
+    """The product's name or slug as people see it (`T_BOARDS_PRODUCT` or `boards.product`), or ''."""
+    return (os.environ.get('T_BOARDS_PRODUCT', '').strip()
+            or str(_instance(root).get('product') or '').strip())
+
+
+def pick_workspace(workspaces, product):
+    """(id, error) from the key's workspaces: one → it; several → the one whose name or slug is `product`."""
+    rows = [w for w in workspaces if isinstance(w, dict) and w.get('id')]
+    if product:
+        want = product.casefold()
+        hits = [w for w in rows if want in (str(w.get('name', '')).casefold(), str(w.get('slug', '')).casefold())]
+        if len(hits) == 1:
+            return hits[0]['id'], None
+        names = ', '.join(sorted(str(w.get('name', '?')) for w in rows)) or '—'
+        return None, 'not connected: no single product named %r among the key\'s products (%s)' % (product, names)
+    if len(rows) == 1:
+        return rows[0]['id'], None
+    if not rows:
+        return None, 'not connected: the key reaches no product'
+    names = ', '.join(sorted(str(w.get('name', '?')) for w in rows))
+    return None, ('not connected: the key reaches several products (%s) — name one in boards.product '
+                  '(or T_BOARDS_PRODUCT), or use a key limited to one product' % names)
 
 
 def _key(root):
@@ -167,32 +195,53 @@ def fetch(root=ROOT, timeout=TIMEOUT_SECONDS):
         if host not in allowed:
             return None, ('not connected: boards.url host %r is not trusted — the key is sent only to known hosts; '
                           'set T_BOARDS_URL or T_BOARDS_ALLOWED_HOSTS in your own environment' % host)
-    ws = _workspace(root)
-    if not (raw_url and ws):
-        return None, 'not connected: set boards.url and boards.workspace in eval/nerve/config.json (or T_BOARDS_URL, ' \
-                     'T_BOARDS_WORKSPACE)'
+    if not raw_url:
+        return None, 'not connected: set boards.url in eval/nerve/config.json (or T_BOARDS_URL)'
     key = _key(root)
     if not key:
         return None, 'not connected: no T_BOARDS_API_KEY (env or Keychain, infra/scripts/dev-ai/mcp-secret.sh)'
     if url is None:
         return None, 'T_BOARDS_URL must be https (http only to localhost)'
-    req = urllib.request.Request('%s/api/pipeline-settings/workspace/%s' % (url, urllib.parse.quote(ws, safe='')),
-                                 headers={'x-api-key': key, 'accept': 'application/json'})
     opener = urllib.request.build_opener(_NoRedirect)
+
+    deadline = time.monotonic() + timeout  # one budget for the whole refresh, however many calls it takes
+
+    def get(path):
+        req = urllib.request.Request(url + path, headers={'x-api-key': key, 'accept': 'application/json'})
+        left = max(0.05, deadline - time.monotonic())
+        with opener.open(req, timeout=left) as resp:  # noqa: S310 — the board's own URL, checked above
+            return resp.status, json.loads(resp.read().decode('utf-8'))
+
+    product = _product(root)
+    data = _read_cache(root)
+    if data.get('broken'):
+        data = {}
     error, settings = None, None
+    ws = _workspace(root)
+    resolved = None  # the id found by name: kept in the cache, so a refresh is one call, not two
+    if not ws and data.get('product', '') == product and data.get('workspace'):
+        ws = resolved = str(data['workspace'])
     try:
-        with opener.open(req, timeout=timeout) as resp:  # noqa: S310 — the board's own URL, checked above
-            settings = complete(json.loads(resp.read().decode('utf-8')))
+        if not ws:
+            # People see products by name; the system needs the id — take it from what the key reaches.
+            _, workspaces = get('/api/workspace')
+            ws, error = pick_workspace(workspaces if isinstance(workspaces, list) else [], product)
+            resolved = ws
+        if ws:
+            status, body = get('/api/pipeline-settings/workspace/%s' % urllib.parse.quote(ws, safe=''))
+            settings = complete(body)
             if settings is None:
-                error = 'HTTP %s: incomplete settings in the answer' % resp.status
+                error = 'HTTP %s: incomplete settings in the answer' % status
     except urllib.error.HTTPError as e:
         error = 'HTTP %s' % e.code
+        if resolved and e.code in (403, 404):
+            ws = None  # the product is gone or renamed: find it again on the next refresh
     except Exception as e:  # noqa: BLE001 — any failure keeps the last known switches
         error = '%s: %s' % (type(e).__name__, str(e)[:120])
-    data = _read_cache(root)
-    if data.get('broken') or data.get('workspace') not in (None, ws):
+    if data.get('workspace') not in (None, ws) or (not _workspace(root) and data.get('product', product) != product):
         data = {}
-    data.update({'workspace': ws, 'lastAttempt': time.time()})
+    # A failure is remembered too — unresolved product included — so the board is asked once per TTL, not per hook.
+    data.update({'workspace': ws, 'product': product, 'lastAttempt': time.time()})
     if settings is not None:
         data.update({'fetchedAt': data['lastAttempt'], 'settings': settings, 'lastError': None})
     else:
@@ -208,7 +257,8 @@ def _base(root, refresh):
     """(settings, source) from the board's cache or defaults, before the environment."""
     data = _read_cache(root)
     ws = _workspace(root)
-    if data.get('broken') or (ws and data.get('workspace') not in (None, ws)):
+    if data.get('broken') or (ws and data.get('workspace') not in (None, ws)) \
+            or (not ws and data.get('product', '') != _product(root)):
         data = {}  # another product's switches are not this product's
     try:
         last = max(float(data.get('lastAttempt') or 0), float(data.get('fetchedAt') or 0))
