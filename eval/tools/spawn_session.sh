@@ -89,7 +89,7 @@ first_message() {
 
 # Одна сессия: пусковой скрипт в $TMPDIR, затем окно терминала (или печать команды).
 spawn_one() {
-  local role="$1" msg genome="" dir launcher cmd stamp lineage
+  local role="$1" msg genome="" dir launcher cmd lineage
   lineage="$(child_lineage)"
   msg="$(first_message "$role" "$lineage")"
   if [ -n "$role" ]; then

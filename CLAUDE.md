@@ -47,7 +47,8 @@ python3 infra/scripts/misc/done-index.py --check
 
 ## CI
 
-- `.github/workflows/boards-ci.yml` — lint / typecheck / unit / build / i18n / openapi on `boards/**`
+- `.github/workflows/boards-ci.yml` — lint / typecheck / unit / build / i18n / openapi / API integration on PostgreSQL on `boards/**`
+- `.github/workflows/checks-ci.yml` — model-free gates on every PR: secrets, hygiene, data integrity, syntax, shellcheck, actionlint, dependency advisories (`infra/checks/README.md`)
 - `.github/workflows/eval-ci.yml` — unittest on `eval/**`
 - `.github/workflows/infra-ci.yml` — owner queue, llm-gateway, ai-council, ops-console, closed-items index on `infra/**`, `docs/plans/**`
 - `.github/workflows/layer-ci.yml` — hook/script tests and the L1 budget per role (`eval/evolve/catalog.py --check`) on `.claude/**`, `eval/tools/**`, `eval/evolve/**`, prompts, role cards

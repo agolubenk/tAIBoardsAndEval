@@ -8,11 +8,11 @@ TRACK ?=
 NAME ?=
 
 .PHONY: help wt-help wt-list wt-add wt-deps wt-check wt-rm wt-feature wt-fix wt-refactor wt-spike wt-review \
-	check check-eval check-layer check-boards check-infra genome-check done-index evolve focus
+	check check-eval check-layer check-boards check-infra check-repo genome-check done-index evolve focus
 
 help: wt-help
 	@echo ""
-	@echo "Проверки: make check (eval + слой + infra) · make check-boards (pnpm-гейты досок)"
+	@echo "Проверки: make check (репозиторий + eval + слой + infra) · make check-boards (pnpm-гейты досок)"
 	@echo "Геномы:   make genome-check · закрытое: make done-index"
 	@echo "Эволюция: make evolve (версии слоя, L1 по ролям, дубли) · make focus PLAN='eval/board/plan-*.json'"
 	@echo "ИИ-контур: npm run mcp-hub:status | llm-gateway:status | ai-council:status (корневой package.json)"
@@ -71,7 +71,12 @@ wt-spike:
 wt-review:
 	$(MAKE) wt-add TRACK=review NAME=$(NAME)
 
-check: check-eval check-layer check-infra
+check: check-repo check-eval check-layer check-infra
+
+# Детерминированные проверки репозитория без модели: секреты, гигиена, полнота данных, синтаксис (infra/checks).
+check-repo:
+	python3 -I infra/checks/test_checks.py
+	python3 -I infra/checks/run.py
 
 check-eval:
 	python3 -I -m unittest discover -s eval/nerve -p 'test_*.py'
