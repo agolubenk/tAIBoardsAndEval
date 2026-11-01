@@ -1,0 +1,70 @@
+=== [tasks] прожаренные явные задачи | https://app.notion.com/p/MI-11-3badd207a82581068394df91c30a5ab0
+    title: MI-11: Резюмирование по промпту
+    title_hits: [('промпт', ['промпт'])]
+    body_hits: [('\\bollama\\b', ['ollama']), ('\\bgemini\\b', ['gemini']), ('\\bclaude\\b', ['claude', 'Claude']), ('промпт', ['промпт', 'промпт'])]
+    comments_hits: []
+    snippet_body: ationProviderRegistryService (openai/claude/gemini/groq/zai/ollama — существующий реестр, новый провайдер заводить не требуетс
+    modules=backend ai-tooling/mcp | pr=P2 | hb=0 | bid=MI-11
+=== [tasks] прожаренные явные задачи | https://app.notion.com/p/MI-13-3badd207a82581a1890be1bd35021839
+    title: MI-13: Мульти-рубрика скоринг
+    title_hits: [('рубрик', ['рубрик'])]
+    body_hits: [('\\brubric\\b', ['rubric']), ('рубрик', ['рубрик', 'рубрик'])]
+    comments_hits: []
+    snippet_body: Обобщить rubric-scoring transcribe-local (src/routes/rubrics.js: весовые кр
+    modules=backend | pr=P2 | hb=0 | bid=MI-13
+=== [tasks] завершённые | https://app.notion.com/p/RAG-QR-1-4-Query-Rewriter-3b9dd207a8258127b024efe38bd9c526
+    title: RAG-QR-1..4 — Query Rewriter
+    title_hits: [('\\brag\\b', ['RAG'])]
+    body_hits: []
+    comments_hits: []
+    snippet_body: 
+    modules=docs | pr=None | hb=0 | bid=RAG-QR-1..4
+=== [tasks] завершённые | https://app.notion.com/p/WIKI-Phase-7-AI-ModuleChatContext-WIKI-MCP-3b9dd207a82581b6a629d5a001d7be63
+    title: [WIKI] Phase 7 — AI-чат по вики (ModuleChatContext.WIKI) + MCP-инструмент
+    title_hits: [('\\bmcp\\b', ['MCP'])]
+    body_hits: []
+    comments_hits: []
+    snippet_body: 
+    modules=docs | pr=None | hb=0 | bid=WIKI
+=== [tasks] завершённые | https://app.notion.com/p/FAB-Phase-11-MCP-tools-FAB-INT-1-backend-3b9dd207a82581e38d3cd3ba684078a0
+    title: [FAB] Phase 11 — MCP tools (FAB-INT-1), последняя backend-фаза трека
+    title_hits: [('\\bmcp\\b', ['MCP'])]
+    body_hits: []
+    comments_hits: []
+    snippet_body: 
+    modules=backend | pr=None | hb=0 | bid=FAB
+=== [tasks] прожаренные явные задачи | https://app.notion.com/p/MCP-Server-3b9dd207a8258136a138de4173409684
+    title: MCP Server
+    title_hits: [('\\bmcp\\b', ['MCP'])]
+    body_hits: [('\\bmcp\\b', ['mcp', 'mcp'])]
+    comments_hits: []
+    snippet_body: — метка «Фаза D (Q4 2026)» была устаревшей. В коде (modules/mcp/): auth guard (Bearer, ключи-хэши), SSE-ticket, API keys, H
+    modules=ai-tooling/mcp security/auth realtime | pr=P2 | hb=0 | bid=None
+=== [tasks] прожаренные явные задачи | https://app.notion.com/p/TG-RAG-VAC-RAG--3b9dd207a82581d986d9dd33768af0a3
+    title: TG-RAG-VAC: Автоматическая RAG-база по вакансии + определение вакансии по фамилии кандидата (новое, запрос вла
+    title_hits: [('\\brag\\b', ['RAG', 'RAG'])]
+    body_hits: [('\\brag\\b', ['rag', 'RAG'])]
+    comments_hits: []
+    snippet_body: ский корпус (TELEGRAM_WIKI_RELATED_APP='telegram', telegram-rag.util.ts) без привязки к вакансии вообще. Два новых требован
+    modules=telegram recruiting/ats backend | pr=P2 | hb=0 | bid=TG-RAG-VAC
+=== [bugs] открыто | https://app.notion.com/p/rbac-users-findMany-take-join-3c0dd207a825819e96eaeab61fd95f47
+    title: rbac/users — findMany без take и без пагинации: весь ростер компании одним ответом, с двумя join
+    title_hits: [('ростер', ['ростер'])]
+    body_hits: [('\\bclaude\\b', ['claude'])]
+    comments_hits: []
+    snippet_body: дый со своим вложенным include). Нарушает правило проекта (.claude/rules/08-database-prisma.md, «findMany без take на таблицах
+    modules=backend security/auth | pr=medium | hb=0 | bid=None
+=== [bugs] закрыто | https://app.notion.com/p/Notion-integration-token-git-continue-mcpServers-notion-yaml-3badd207a825814aa636e562c40c903c
+    title: Notion integration token закоммичен в git (.continue/mcpServers/notion.yaml)
+    title_hits: [('\\bcontinue\\b', ['continue'])]
+    body_hits: [('\\bcouncil\\b', ['council', 'council']), ('ai[- ]council', ['ai-council']), ('\\bz\\.ai\\b', ['Z.AI']), ('\\bgemini\\b', ['Gemini']), ('\\bmcp\\b', ['MCP']), ('\\bclaude\\b', ['claude'])]
+    comments_hits: [('headroom', ['headroom']), ('\\bmcp\\b', ['MCP']), ('\\bcontinue\\b', ['continue', 'continue'])]
+    snippet_body: перевыпуска подменить значение в .continue/.env и в .claude/council/.notion-key (оба gitignored, chmod 600). - Решить, нужна ли
+    modules=ai-tooling/mcp security/auth | pr=high | hb=0 | bid=None
+=== [bugs] закрыто | https://app.notion.com/p/DAMS-RAG-stale-3badd207a8258131930ad15771ee57bc
+    title: DAMS RAG: срез индекса молча выпадает из поиска после пометки stale
+    title_hits: [('\\bdams\\b', ['DAMS']), ('\\brag\\b', ['RAG'])]
+    body_hits: [('\\bконсилиум', ['КОНСИЛИУМ', 'консилиум']), ('\\bcouncil\\b', ['Council', 'council']), ('ai[- ]council', ['AI Council', 'ai-council']), ('\\bverifier\\b', ['verifier']), ('верификатор', ['Верификатор']), ('\\bdams\\b', ['DAMS', 'DAMS'])]
+    comments_hits: [('\\bконсилиум', ['консилиум', 'Консилиум']), ('\\bverifier\\b', ['verifier']), ('\\bdams\\b', ['dams', 'DAMS']), ('\\bclaude\\b', ['claude'])]
+    snippet_body: личимо от «ничего релевантного не нашлось». ПОСЛЕДСТВИЕ ДЛЯ КОНСИЛИУМА. Верификатор AI Council на фильтре status='active' объявля
+    modules=ai-tooling/mcp ops/ci | pr=critical | hb=0 | bid=None

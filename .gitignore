@@ -72,3 +72,12 @@ __pycache__/
 .pytest_cache/
 eval/nerve/state/
 eval/swarm/state/
+
+# process layer: instance runtime (never the product itself)
+.claude/memory/session/
+.claude/settings.local.json
+.claude/settings.local.json.bak-*
+.claude/skill-observations/
+.claude/scheduled_tasks.lock
+CLAUDE.local.md
+.ai/tmp/

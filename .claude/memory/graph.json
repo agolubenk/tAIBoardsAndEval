@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "comment": "Temporal artifact graph: зависимости между чанками. При изменении узла `to` — просмотреть зависимые `from` (needs_review). Автоматизация каскадной инвалидации — V2 (chunk_update.py), пока граф справочный.",
+  "edges": [
+    {
+      "from": "domain-telegram",
+      "to": "arch-security",
+      "relation": "depends_on",
+      "reason": "SSE ticket auth, ownership lock паттерны"
+    },
+    {
+      "from": "domain-telegram",
+      "to": "arch-connect-rpc",
+      "relation": "implemented_via",
+      "reason": "telegram.proto / telegram-sessions.proto — отправка через Connect"
+    },
+    {
+      "from": "domain-recruiting",
+      "to": "arch-connect-rpc",
+      "relation": "implemented_via",
+      "reason": "candidates/vacancies/applications через Connect RPC"
+    },
+    {
+      "from": "domain-recruiting",
+      "to": "integrations-huntflow",
+      "relation": "depends_on",
+      "reason": "ATS sync, migration runs, daily limit"
+    },
+    {
+      "from": "domain-recruiting",
+      "to": "integrations-hh",
+      "relation": "depends_on",
+      "reason": "hh-sync очередь, alias rabota.by"
+    },
+    {
+      "from": "arch-agents",
+      "to": "arch-security",
+      "relation": "depends_on",
+      "reason": "HITL approval, хэширование MCP-ключей"
+    },
+    {
+      "from": "arch-agents",
+      "to": "arch-db",
+      "relation": "uses",
+      "reason": "BullMQ jobs пишут через PrismaWrite; queue-Redis отдельный"
+    },
+    {
+      "from": "arch-realtime",
+      "to": "arch-security",
+      "relation": "depends_on",
+      "reason": "SSE ticket auth — канон в security"
+    },
+    {
+      "from": "domain-mobile",
+      "to": "arch-security",
+      "relation": "depends_on",
+      "reason": "ticket handoff, SecureTokenStore, refresh в JSON-теле для native"
+    },
+    {
+      "from": "domain-mobile",
+      "to": "arch-connect-rpc",
+      "relation": "implemented_via",
+      "reason": "KMP Connect RPC клиент, флаг USE_CONNECT_RPC"
+    }
+  ],
+  "updated_at": "2026-10-08"
+}

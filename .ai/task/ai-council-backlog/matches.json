@@ -1,0 +1,2543 @@
+[
+ {
+  "verdict": "core",
+  "card_id": "3c1dd207-a825-80db-9c71-c47306b8dfa6",
+  "db": "tasks",
+  "title": "Функциональность в рекрутинге background check",
+  "url": "https://app.notion.com/p/background-check-3c1dd207a82580db9c71c47306b8dfa6",
+  "status": "задача от пользователя",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp",
+   "recruiting/ats",
+   "frontend",
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 1,
+    "sample": [
+     "консилиум"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "\\bcouncil\\b",
+    "count": 1,
+    "sample": [
+     "Council"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Пользователь нажимает кнопку и в фоне система собирает информацию о кандидате (все соцсети, поиск и сравнение на принадлежность в других источниках, поведение, комментарии, подписки, репосты, существование указанных компаний и принадлежность их тем или иным регионам, контакты для связи)\nДалее система резюмирует и аккумулирует данные, оценивает риски (параметры рисков задаются в настройках), предлагает действия по кандидату (задается в настройках)"
+ },
+ {
+  "verdict": "core",
+  "card_id": "3bfdd207-a825-8022-b059-c08ce101d2be",
+  "db": "tasks",
+  "title": "Поиск продуктового развития",
+  "url": "https://app.notion.com/p/3bfdd207a8258022b059c08ce101d2be",
+  "status": "задача от пользователя",
+  "priority": "P3",
+  "severity": null,
+  "task_type": "idea",
+  "modules": [
+   "frontend",
+   "backend",
+   "telegram",
+   "extension",
+   "mobile",
+   "ai-tooling/mcp",
+   "security/auth",
+   "db/queues",
+   "realtime",
+   "ops/ci",
+   "recruiting/ats",
+   "huntflow",
+   "hh.ru",
+   "i18n",
+   "ux",
+   "docs"
+  ],
+  "tags": [
+   "найдено-консилиумом"
+  ],
+  "half_baked": true,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 22,
+    "sample": [
+     "Консилиум",
+     "консилиум",
+     "консилиум"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "верификатор",
+    "count": 3,
+    "sample": [
+     "верификатор",
+     "верификатор",
+     "верификатор"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "\\bnotion[- ]sync\\b",
+    "count": 3,
+    "sample": [
+     "notion-sync",
+     "Notion-sync",
+     "notion-sync"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 2,
+    "sample": [
+     "ai-tooling",
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 9,
+    "sample": [
+     "MCP",
+     "mcp",
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 7,
+    "sample": [
+     "claude",
+     "claude",
+     "claude"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\blearning\\b",
+    "count": 2,
+    "sample": [
+     "learning",
+     "learning"
+    ]
+   }
+  ],
+  "body_first_600": "Необходимо проанализировать весь продукт и выписать всю функциональность и возможности всего продукта с разделением по HR-направлениям (модулям) а также их применимости в рамках встроенных и планируемых интеграций, автоматизаций, самих процессов. \nТакже отдельной таблицей необходимо указать насколько гибким, масштабируемым и адаптивным под любые процессы, принципы, подходы, фреймворки, практики и методологии является тот или иной блок/модуль. И дополнительным столбцом чего не хватает в рамках стандартных/классических и общепринятых процессов HR.\n# Продуктовая карта HR Helper: функциональность,"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3bcdd207-a825-8129-94bb-f22661d651b1",
+  "db": "tasks",
+  "title": "hh.ru автоматизации: исходящие действия падают молча — нет ни журнала выполнения, ни сигнала в UI",
+  "url": "https://app.notion.com/p/hh-ru-UI-3bcdd207a825812994bbf22661d651b1",
+  "status": "задача от пользователя",
+  "priority": "P1",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "hh.ru",
+   "backend",
+   "frontend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-JB-2",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "## Откуда взялось\nНайдено 2026-08-14 при закрытии INT-JB-1.1/1.2. Исходный вопрос был уже: «/applicant_comments/* требует платного доступа работодателя — что будет без него?». Проверка показала, что платный доступ — не проблема, а частный случай более общего пробела.\n## Вопрос про платный доступ — закрыт\nДоступ уже есть и, скорее всего, покрывает комментарии. GET /resumes/{id} (hh-openapi-spec.yml:22013-22015) требует того же самого «платного доступа для работодателя», что и /applicant_comments/* (:22676), а этот эндпоинт у нас работает в бою: импорт резюме идёт через него (hh-remote.util.ts:3"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3badd207-a825-8106-8394-df91c30a5ab0",
+  "db": "tasks",
+  "title": "MI-11: Резюмирование по промпту",
+  "url": "https://app.notion.com/p/MI-11-3badd207a82581068394df91c30a5ab0",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MI-11",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bollama\\b",
+    "count": 1,
+    "sample": [
+     "ollama"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bgemini\\b",
+    "count": 1,
+    "sample": [
+     "gemini"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 2,
+    "sample": [
+     "claude",
+     "Claude"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "промпт",
+    "count": 3,
+    "sample": [
+     "промпт",
+     "промпт",
+     "промпт"
+    ]
+   }
+  ],
+  "body_first_600": "Перенос управляемого промптом резюмирования (есть в обоих прототипах) через AiIntegrationProviderRegistryService (openai/claude/gemini/groq/zai/ollama — существующий реестр, новый провайдер заводить не требуется).\nОриентир качества — briefme (контекстный Handlebars-темплейт, структурированный JSON-вывод), не transcribe-local — подтверждено владельцем: briefme показал себя заметно лучше по качеству. Портировать паттерн промпт-инжиниринга, не Python/Claude-only реализацию.\nЗависит от: MI-6."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3badd207-a825-8116-9a64-c74874dda50d",
+  "db": "tasks",
+  "title": "MI-14: Событие завершения обработки → Workflow Engine trigger",
+  "url": "https://app.notion.com/p/MI-14-Workflow-Engine-trigger-3badd207a82581169a64c74874dda50d",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MI-14",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Подтверждено владельцем: «динамические связи и выгрузки» — это триггер существующего Workflow Engine, не отдельный интеграционный слой (как захардкоженный ClickUp+Google Calendar в briefme).\nЗавершение обработки встречи (транскрипт+резюме готовы) → событие → пользователь собирает цепочку (уведомление / таск в ClickUp-Notion / привязка к карточке кандидата / дайджест в Telegram) в уже существующем workflow-конструкторе (AgentInvokerService).\nЗависит от: MI-11, MI-13."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3badd207-a825-8154-9422-cdce7ac94315",
+  "db": "tasks",
+  "title": "MI-6: STT-интеграция — общий whisper + fast/ideal профили + WER-гейт",
+  "url": "https://app.notion.com/p/MI-6-STT-whisper-fast-ideal-WER-3badd207a82581549422cdce7ac94315",
+  "status": "прожаренные явные задачи",
+  "priority": "P1",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MI-6",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Переиспользовать продовый whisper (faster-whisper/speaches, infra/docker/docker-compose.yml) — не отдельный whisper.cpp/vasper-контейнер.\nВнешняя зависимость: карточка TG-STT-1 (вынос InterviewCopilotWhisperService из modules/interviews/ в нейтральный common/stt/SttModule) — с Meeting Intelligence это уже 3-й потребитель (interviews, telegram, meeting-intelligence) одного клиента из разных доменных модулей → рекомендация поднять приоритет TG-STT-1, он теперь предусловие, не «желательно».\nДобавить второй модельный профиль (fast/ideal) в том же сервисе + калибровочный набор + WER-бенчмарк как яв"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3badd207-a825-81a1-890b-e1bd35021839",
+  "db": "tasks",
+  "title": "MI-13: Мульти-рубрика скоринг",
+  "url": "https://app.notion.com/p/MI-13-3badd207a82581a1890be1bd35021839",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MI-13",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brubric\\b",
+    "count": 1,
+    "sample": [
+     "rubric"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "рубрик",
+    "count": 3,
+    "sample": [
+     "рубрик",
+     "рубрик",
+     "рубрик"
+    ]
+   }
+  ],
+  "body_first_600": "Обобщить rubric-scoring transcribe-local (src/routes/rubrics.js: весовые критерии + system prompt + quote-citation JSON) под несколько именованных рубрик на компанию — не одна фиксированная рубрика.\nЗависит от: MI-6."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3badd207-a825-81aa-97ab-ee2497d124cd",
+  "db": "tasks",
+  "title": "MI-12 (spike→feature): Резюмирование «по сути» (auto-detect)",
+  "url": "https://app.notion.com/p/MI-12-spike-feature-auto-detect-3badd207a82581aa97abee2497d124cd",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MI-12",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "промпт",
+    "count": 2,
+    "sample": [
+     "промпт",
+     "промпт"
+    ]
+   }
+  ],
+  "body_first_600": "Новая разработка — ни в одном прототипе не реализовано. Система сама определяет формат/фокус резюме без явного промпта пользователя.\nНужен spike на подход: классификация типа встречи → выбор темплейта, либо мета-промпт, определяющий структуру на лету.\nЗависит от: MI-11."
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-812d-b0a5-f26fd54d8ee8",
+  "db": "tasks",
+  "title": "PERF-SSE-1 — свип SSE-каналов + единый helper",
+  "url": "https://app.notion.com/p/PERF-SSE-1-SSE-helper-3b9dd207a825812db0a5f26fd54d8ee8",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ops/ci"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "PERF-SSE-1",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8134-a8f4-fcdf3a04b316",
+  "db": "tasks",
+  "title": "AGT-ENV-3 — сверка реестров + registry-gate",
+  "url": "https://app.notion.com/p/AGT-ENV-3-registry-gate-3b9dd207a8258134a8f4fcdf3a04b316",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "AGT-ENV-3",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-817d-bf89-eed46ce473df",
+  "db": "tasks",
+  "title": "MKT-7 — white-label Marketplace",
+  "url": "https://app.notion.com/p/MKT-7-white-label-Marketplace-3b9dd207a825817dbf89eed46ce473df",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "MKT-7",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8127-b024-efe38bd9c526",
+  "db": "tasks",
+  "title": "RAG-QR-1..4 — Query Rewriter",
+  "url": "https://app.notion.com/p/RAG-QR-1-4-Query-Rewriter-3b9dd207a8258127b024efe38bd9c526",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "docs"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "RAG-QR-1..4",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 2,
+    "sample": [
+     "RAG",
+     "rag"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-81b6-a629-d5a001d7be63",
+  "db": "tasks",
+  "title": "[WIKI] Phase 7 — AI-чат по вики (ModuleChatContext.WIKI) + MCP-инструмент",
+  "url": "https://app.notion.com/p/WIKI-Phase-7-AI-ModuleChatContext-WIKI-MCP-3b9dd207a82581b6a629d5a001d7be63",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "docs"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "WIKI",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "MCP"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8169-9eff-e4c21fcf3f7a",
+  "db": "tasks",
+  "title": "[WIKI] Phase 0 — быстрые победы",
+  "url": "https://app.notion.com/p/WIKI-Phase-0-3b9dd207a82581699effe4c21fcf3f7a",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "docs"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "WIKI",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "pgvector",
+    "count": 1,
+    "sample": [
+     "Pgvector"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-81e3-8d3c-d3ba684078a0",
+  "db": "tasks",
+  "title": "[FAB] Phase 11 — MCP tools (FAB-INT-1), последняя backend-фаза трека",
+  "url": "https://app.notion.com/p/FAB-Phase-11-MCP-tools-FAB-INT-1-backend-3b9dd207a82581e38d3cd3ba684078a0",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "FAB",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 3,
+    "sample": [
+     "MCP",
+     "MCP",
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-81a3-b357-f7c78a5e1e41",
+  "db": "tasks",
+  "title": "Huntflow migration — выбор ИИ-модели для парсинга резюме при переносе кандидатов",
+  "url": "https://app.notion.com/p/Huntflow-migration-3b9dd207a82581a3b357f7c78a5e1e41",
+  "status": "завершённые",
+  "priority": null,
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "recruiting/ats"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bollama\\b",
+    "count": 1,
+    "sample": [
+     "Ollama"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8165-b43a-d563736d17b6",
+  "db": "tasks",
+  "title": "LEGACY: Вывод легаси (бывш. LEGACY_RETIREMENT.md)",
+  "url": "https://app.notion.com/p/LEGACY-LEGACY_RETIREMENT-md-3b9dd207a8258165b43ad563736d17b6",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "telegram",
+   "security/auth",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "LEGACY",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 1,
+    "sample": [
+     "RAG"
+    ]
+   }
+  ],
+  "body_first_600": "LEGACY-1 — local-GramJS путь Telegram (auth остаётся на GramJS осознанно):\n- Phase 0 (bake): 2–4 недели наблюдения graceful resharding в проде без инцидентов (запущено 2026-07-03).\n- Phase 1 (код): закрыто — sendMessageDirect→SM, folder-unread + downloadCustomEmoji, маппер GetDialogsPage, DownloadPeerAvatar/EvictSession RPC, realtime на холодном пуле (2026-07-24). Остаток: поштучная чистка «точечных ops».\n- Phase 2: вывод fallback-механики (kill-switch TELEGRAM_SESSION_MANAGER=0 жив до Phase 3). Phase 3: чистка мёртвых GramJS-ветвей + ревизия telegram-ingest-backfill.service.ts. Phase 4: ✅ TG-"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81ae-8d0e-d729ef848bf7",
+  "db": "tasks",
+  "title": "AGT-ENV: Агентная система — архитектурные gaps (бывш. AGENT_SYSTEM.md §21–22)",
+  "url": "https://app.notion.com/p/AGT-ENV-gaps-AGENT_SYSTEM-md-21-22-3b9dd207a82581ae8d0ed729ef848bf7",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "ai-tooling/mcp",
+   "db/queues"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "AGT-ENV",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Справочник: docs/agents/ARCHITECTURE.md + CATALOG.md."
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-81b9-99eb-ff103b8edc5d",
+  "db": "tasks",
+  "title": "INTVW-VOICE: Верификация участников по голосовому отпечатку (Phase 2, P3)",
+  "url": "https://app.notion.com/p/INTVW-VOICE-Phase-2-P3-3b9dd207a82581b999ebff103b8edc5d",
+  "status": "прожаренные явные задачи",
+  "priority": "P3",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "telegram",
+   "huntflow",
+   "extension",
+   "db/queues"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INTVW-VOICE",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "эмбеддинг",
+    "count": 1,
+    "sample": [
+     "эмбеддинг"
+    ]
+   }
+  ],
+  "body_first_600": "Спека: ../specs/offline-interview-recording.md §8. Диаризация + cosine-similarity сопоставление голосовых эмбеддингов. Кандидат никогда не регистрируется биометрически — сегменты не совпавшие ни с одним зарегистрированным интервьюером помечаются «кандидат» методом исключения.\nСм. также: инвентаризация linkedin-applicants/* (32 вызова / 14 эндпоинтов, namespace никогда не существовал в backend v2) — docs/plans/BACKLOG.md, строка 1179."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8119-adbf-ed935cb47654",
+  "db": "tasks",
+  "title": "PLAT-CONC: Многопоточность / масштабирование Node.js — оценка вариантов (P3, запрос владельца 2026-08-04)",
+  "url": "https://app.notion.com/p/PLAT-CONC-Node-js-P3-2026-0-3b9dd207a8258119adbfed935cb47654",
+  "status": "прожаренные явные задачи",
+  "priority": "P3",
+  "severity": null,
+  "task_type": "spike",
+  "modules": [
+   "telegram",
+   "huntflow",
+   "ai-tooling/mcp",
+   "security/auth"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "PLAT-CONC",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Короткий ответ: rewrite на другой язык не оправдан ни сейчас, ни в обозримой перспективе — платформа уже использует правильные для Node доступные средства (горизонтальные реплики + очереди), и ни один задокументированный в этом репо перф-баг не имел «однопоточность» корневой причиной. Ниже — по каждому доступному рычагу, с опорой на то, что реально в коде/инфре на 2026-08-04, не на общие рассуждения.\nФакт-база:\n- apps/backend/src/app/main.ts:47-60 — один Node-процесс = HTTP API + ВСЕ @Processor BullMQ-воркеры одновременно (docker-compose backend); isWorkerOnly() (bootstrap-env.ts:18-20) — отде"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8141-bb98-c6e53c4823c2",
+  "db": "tasks",
+  "title": "PLAT-SVC: Разбиение на отдельные сервисы — оценка (нужно ли и насколько рисково)",
+  "url": "https://app.notion.com/p/PLAT-SVC-3b9dd207a8258141bb98c6e53c4823c2",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "security/auth",
+   "db/queues",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "PLAT-SVC",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bllm\\b",
+    "count": 1,
+    "sample": [
+     "LLM"
+    ]
+   }
+  ],
+  "body_first_600": "Короткий ответ: сейчас — не нужно, кроме точечных случаев. Риск высокий, выгода на текущем масштабе отрицательная. Ниже обоснование, чтобы к вопросу не возвращаться на ощущениях.\nПротив разбиения прямо сейчас:\n- Одна БД с 344 моделями и плотными FK. Границы сервисов проходят по данным, а не по коду. Разрезание потребует разрыва FK, дублирования справочников и распределённых транзакций там, где сейчас честный $transaction (в коде 145 вызовов). Это самая дорогая и самая необратимая часть.\n- Транзакционные инварианты уже опираются на монолит. Пример из этой сессии: LIFE-DUE-1 пишет уведомления и "
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-815c-b2b3-e47c04631741",
+  "db": "tasks",
+  "title": "INT-MSG: Мессенджеры",
+  "url": "https://app.notion.com/p/INT-MSG-3b9dd207a825815cb2b3e47c04631741",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-MSG",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8195-8cc1-e80439d27b65",
+  "db": "tasks",
+  "title": "INT-AUT: Automation-платформы",
+  "url": "https://app.notion.com/p/INT-AUT-Automation-3b9dd207a82581958cc1e80439d27b65",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-AUT",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8104-9ee2-c5d0827a01b9",
+  "db": "tasks",
+  "title": "INT-JB-1: hh.ru — статусы, комментарии, шаблоны (план 2026-08-09)",
+  "url": "https://app.notion.com/p/INT-JB-1-hh-ru-2026-08-09-3b9dd207a82581049ee2c5d0827a01b9",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "hh.ru",
+   "security/auth",
+   "recruiting/ats"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-JB-1",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bcontinue\\b",
+    "count": 1,
+    "sample": [
+     "continue"
+    ]
+   }
+  ],
+  "body_first_600": "Расширяет прежнюю формулировку INT-JB-1 («расширить employer API») тремя находками из docs/FIX.md (репорт владельца 2026-08-06): статус-синхронизация ограничена сценарием импорта/ретроактивного скана, комментарии с hh.ru не синхронизируются вообще (только локальный activity-log), три независимых, частично сломанных пути для шаблонов сообщений. Порядок и объём — решения владельца 2026-08-09 (прожарка). Полная диагностика — docs/FIX.md.\nСтатусы, исходящие — без изменений. Push статуса в hh.ru остаётся ТОЛЬКО через настроенные правила-автоматизации (hh_change_status/hh_send_message) — обычная сме"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8105-902b-d35d01edc9b2",
+  "db": "tasks",
+  "title": "AGT: AI Agents",
+  "url": "https://app.notion.com/p/AGT-AI-Agents-3b9dd207a8258105902bd35d01edc9b2",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "hh.ru",
+   "ai-tooling/mcp",
+   "recruiting/ats",
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "AGT",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Архитектура: docs/roadmap/phase-agents.md (фазы G–M закрыты) · ../specs/agents-system-vision.md (design vision, ~35% реализовано) · ../specs/agent-registry-and-agents.md (что фактически работает в коде)."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8108-840a-d4306d3e119b",
+  "db": "tasks",
+  "title": "AGT-CHANNEL: AGT-CHANNEL — Channel agents",
+  "url": "https://app.notion.com/p/AGT-CHANNEL-AGT-CHANNEL-Channel-agents-3b9dd207a8258108840ad4306d3e119b",
+  "status": "прожаренные явные задачи",
+  "priority": "P1",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "hh.ru",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "AGT-CHANNEL",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Scaffold (39 агентов) — см. архив · docs/agents/channel-agents.json"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-812a-be6b-ee8b47fdf85d",
+  "db": "tasks",
+  "title": "INT-JB: Job Boards",
+  "url": "https://app.notion.com/p/INT-JB-Job-Boards-3b9dd207a825812abe6bee8b47fdf85d",
+  "status": "прожаренные явные задачи",
+  "priority": "P1",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "hh.ru",
+   "ai-tooling/mcp",
+   "recruiting/ats"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-JB",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8132-810b-f864d120ebf6",
+  "db": "tasks",
+  "title": "App Marketplace + Plugin API",
+  "url": "https://app.notion.com/p/App-Marketplace-Plugin-API-3b9dd207a8258132810bf864d120ebf6",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Фазовые планы: docs/roadmap/phase-e.md (Plugin API OAuth2 + Webhook Bus), docs/roadmap/phase-f.md (White-label Marketplace · A2A · Ecosystem Agents; MKT-7 white-label закрыт 2026-07-27, см. DONE.md §Agentic) — оба статуса в самих файлах устарели, см. §Живые планы в roadmap/README.md. Статус (актуализация 2026-07-14): бо́льшая часть реализована — метка «Фаза E (Q1 2027)» была устаревшей; в коде инлайн-комментарии ссылаются на PLUG-2/PLUG-5/MKT-3/MKT-6 как выполненные."
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8136-a138-de4173409684",
+  "db": "tasks",
+  "title": "MCP Server",
+  "url": "https://app.notion.com/p/MCP-Server-3b9dd207a8258136a138de4173409684",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp",
+   "security/auth",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 6,
+    "sample": [
+     "MCP",
+     "mcp",
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Фазовый план: docs/roadmap/phase-e.md (статус в файле устарел — см. §Живые планы в roadmap/README.md, ядро уже реализовано). Статус (актуализация 2026-07-14): ядро реализовано — метка «Фаза D (Q4 2026)» была устаревшей. В коде (modules/mcp/): auth guard (Bearer, ключи-хэши), SSE-ticket, API keys, HITL-гейт, observability, mcp-tool-executor.service.ts. Реально открыто: тонкий tool-каталог — всего 4 инструмента — запись устарела, исправлено 2026-07-27. Каталог уже унифицирован: MCP_TOOLS генерируется из общего PLATFORM_TOOL_CATALOG, MCP отдаёт 27 инструментов (не 4), непокрытых хендлерами — 0 (r"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81b0-bb9f-cd6e97249436",
+  "db": "tasks",
+  "title": "WFC: Workflow Chat Layer — открытые хвосты",
+  "url": "https://app.notion.com/p/WFC-Workflow-Chat-Layer-3b9dd207a82581b0bb9fcd6e97249436",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "huntflow",
+   "ai-tooling/mcp",
+   "security/auth"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "WFC",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 6,
+    "sample": [
+     "MCP",
+     "MCP",
+     "MCP"
+    ]
+   }
+  ],
+  "body_first_600": "#### Фактическое состояние WFC-19/20 (аудит кода 2026-07-27)\nWFC-20 — половина закрыта, и это не было отражено. MCP_TOOLS больше не хардкод: он генерируется из единого PLATFORM_TOOL_CATALOG (packages/types/src/platform-tools/catalog.ts) функцией buildMcpToolsFromCatalog() — тот же каталог читает и чат (ToolRegistryService, listPlatformTools({channel:'workflow_chat'})). В каталоге 41 инструмент, из них 27 с mcpAlias видны в MCP (запись «всего 4 инструмента» в §MCP Server устарела — исправлена). Есть runtime-гейт покрытия: McpToolExecutorService.onModuleInit() логирует каталожные инструменты без"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81c1-80a3-e78357f1f2c8",
+  "db": "tasks",
+  "title": "AGNT-MKT: AGNT-MKT — Маркетплейс агентов",
+  "url": "https://app.notion.com/p/AGNT-MKT-AGNT-MKT-3b9dd207a82581c180a3e78357f1f2c8",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "AGNT-MKT",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81c2-8899-cd9b38cd1cfa",
+  "db": "tasks",
+  "title": "INT-DOC: Документы и хранилище",
+  "url": "https://app.notion.com/p/INT-DOC-3b9dd207a82581c28899cd9b38cd1cfa",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp",
+   "recruiting/ats"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-DOC",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81c3-9270-ebcdc13221f5",
+  "db": "tasks",
+  "title": "Внешние ATS-интеграции — Huntflow · hh.ru",
+  "url": "https://app.notion.com/p/ATS-Huntflow-hh-ru-3b9dd207a82581c39270ebcdc13221f5",
+  "status": "прожаренные явные задачи",
+  "priority": "P3",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "hh.ru",
+   "huntflow",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "MVP + Huntflow Agent Layer (INT-HF-AG-1..6, концепт — ../specs/huntflow-agent-layer.md) — см. архив · docs/api/README.md"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81d9-b447-c2cbf1b8f040",
+  "db": "tasks",
+  "title": "INT-CAL-4: Outlook/Exchange — план (2026-08-06, код не писался — см. обоснование)",
+  "url": "https://app.notion.com/p/INT-CAL-4-Outlook-Exchange-2026-08-06-3b9dd207a82581d9b447c2cbf1b8f040",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "spike",
+  "modules": [
+   "ai-tooling/mcp",
+   "security/auth",
+   "db/queues",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-CAL-4",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Почему план, а не scaffold-код (в отличие от INT-CAL-3/Zoom, который реализован полностью): Outlook — это не «одна функция создания встречи» (как Zoom Server-to-Server), а полноценный ВТОРОЙ календарный провайдер, симметричный modules/integrations/google/ (11 файлов: OAuth config, token exchange, encrypted per-user token storage, connection service, controller, calendar-events CRUD). Такой объём кода без единой возможности его проверить (нет Azure app registration в этом окружении — сам blocker, не гипотеза) означал бы несколько сотен строк, ни одна из которых не была бы живьём протестирована "
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8155-8884-f62cf0ae4c97",
+  "db": "tasks",
+  "title": "WIKI: Переработка вики (референс docmost, план 2026-07-29)",
+  "url": "https://app.notion.com/p/WIKI-docmost-2026-07-29-3b9dd207a82581558884f62cf0ae4c97",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "telegram",
+   "huntflow",
+   "extension",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "WIKI",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 1,
+    "sample": [
+     "RAG"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Спека: ../specs/wiki-rework.md · Фазы: ../roadmap/phase-wiki-rework.md. Крупнейший по объёму трек в текущем бэклоге — сопоставим с [FAB]/C&B. Архитектура зафиксирована владельцем: полный CRDT (Hocuspocus+Yjs, отдельный деплоймый процесс), полный page-level ACL поверх групп, без публичных ссылок (осознанно не строим). Разделение единой/компанейской вики и RAG-статьи — существующие принципы, не пересматриваются, только дополняются.\n…[обрезано, полный текст — docs/plans/BACKLOG.md, строка 470]"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-815d-bbfa-f46bb8c27516",
+  "db": "tasks",
+  "title": "TG-AI-CHECK: Проверка сообщения ИИ на ошибки (орфография/пунктуация) перед отправкой (новое, запрос владельца 2026-08-07)",
+  "url": "https://app.notion.com/p/TG-AI-CHECK--3b9dd207a825815dbbfaf46bb8c27516",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "db/queues",
+   "realtime",
+   "i18n"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "TG-AI-CHECK",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bollama\\b",
+    "count": 1,
+    "sample": [
+     "Ollama"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bgemini\\b",
+    "count": 1,
+    "sample": [
+     "Gemini"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 2,
+    "sample": [
+     "Claude",
+     "claude"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "промпт",
+    "count": 1,
+    "sample": [
+     "промпт"
+    ]
+   }
+  ],
+  "body_first_600": "Не смысловой rewrite/тон-эдит (это уже реализовано — telegram-ai-suggestion.service.ts, панель TgAiPanel.tsx/TelegramAiPanelBody.tsx, промпт TELEGRAM_AI_PANEL_REGENERATE_INSTRUCTION). Новая функция — узкая: только орфография и пунктуация, язык определяется автоматически по основному сообщению, смысл/тон/язык не меняются. Результат — explicit diff «было → стало» с ручным одобрением, не auto-apply.\nПереиспользование инфраструктуры (DRY — не строить с нуля):\n- AI-провайдеры (OpenAI/Claude/Gemini/Groq/Zai/Ollama) + очередь-паттерн — по образцу telegram-ai-suggestion.service.ts (TG_COMMUNICATION_ST"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-81d9-86d9-dd33768af0a3",
+  "db": "tasks",
+  "title": "TG-RAG-VAC: Автоматическая RAG-база по вакансии + определение вакансии по фамилии кандидата (новое, запрос владельца 2026-08-10)",
+  "url": "https://app.notion.com/p/TG-RAG-VAC-RAG--3b9dd207a82581d986d9dd33768af0a3",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "telegram",
+   "recruiting/ats",
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "TG-RAG-VAC",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 6,
+    "sample": [
+     "RAG",
+     "RAG",
+     "rag"
+    ]
+   }
+  ],
+  "body_first_600": "Не с нуля — переиспользует существующую конвенцию relatedApp: vacancy:N (WikiRagChunk, wikiRelatedAppUtils.ts), которую INTVW-EXT-6 уже подключил для Interview Copilot (InterviewCopilotRagContextService.loadWikiSnippets, закрыто 2026-08-06) — но там наполнение и выбор вакансии полностью ручные (HR вручную тегирует существующую wiki-статью через VacancySelect в редакторе). ИИ-панель Telegram сейчас использует ОДИН плоский корпус (TELEGRAM_WIKI_RELATED_APP='telegram', telegram-rag.util.ts) без привязки к вакансии вообще. Два новых требования владельца: (1) автоматическое СОЗДАНИЕ вакансия-специф"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-8126-aaee-c4e7cdaf9126",
+  "db": "tasks",
+  "title": "Очередь трека (фазы — в роадмапе)",
+  "url": "https://app.notion.com/p/3b9dd207a8258126aaeec4e7cdaf9126",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "extension",
+   "ai-tooling/mcp",
+   "security/auth",
+   "db/queues"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Phase 1 (ядро Goal Fabric: FAB-0, GF-CORE-1..4) закрыта полностью 2026-07-22. Phase 2 check-in кластер (GF-CI-2,3,4) и Phase 3 automation-events (GF-AUTO-1) закрыты 2026-07-22. Resource Fabric ядро (RF-1) и Work Fabric ядро (WF-1) закрыты 2026-07-19/20.\nЗакрыто: FAB-0, GF-CORE-1..4, GF-MIG-1,2, GF-MIG-3 (Part A, Part B, Part 3b), GF-CI-1..4, GF-MEAS-1..4, GF-AUTO-1, RF-1, Phase 18 (Docs) — см. docs/plans/DONE.md §[FAB].\n…[обрезано, полный текст — docs/plans/BACKLOG.md, строка 250]"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-812c-b1ab-c94eae649bdf",
+  "db": "tasks",
+  "title": "REF: Referral Program — People Success",
+  "url": "https://app.notion.com/p/REF-Referral-Program-People-Success-3b9dd207a825812cb1abc94eae649bdf",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "feature",
+  "modules": [
+   "ai-tooling/mcp",
+   "recruiting/ats",
+   "ux"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "REF",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "Спека: docs/specs/referral-program-people-success.md · MVP (REF-1..8) закрыт — см. архив\nГибкая реферальная программа: scope по специализациям/направлениям, audience exclude, custom fields, wiki publish, tracking, profile «Мои заявки», отчёты, связь ATS ↔ milestones ↔ bonus."
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8156-af14-f4c9f028d6fe",
+  "db": "tasks",
+  "title": "SURV: Survey Engine — платформенный движок опросников",
+  "url": "https://app.notion.com/p/SURV-Survey-Engine-3b9dd207a8258156af14f4c9f028d6fe",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "telegram",
+   "extension",
+   "db/queues",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "SURV",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\blearning\\b",
+    "count": 1,
+    "sample": [
+     "learning"
+    ]
+   }
+  ],
+  "body_first_600": "Новый самостоятельный технический модуль (вне People Success), Phase 1 — apps/backend/src/modules/survey-engine/, фронтенд /survey-engine/*, сайдбар «Survey Engine». По мотивам Section V untracked-черновика ../specs/onboarding-survey-master.md (Employee Lifecycle/Competency Framework/Benchmark Engine/Alumni из того же документа — не в скоупе, см. ниже). Фрагментация трёх существующих опросных движков (learning-surveys, onboarding-nps, pr-mgr-survey) зафиксирована в docs/FIX.md.\n…[обрезано, полный текст — docs/plans/BACKLOG.md, строка 164]"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81fd-ae20-fcffa177221c",
+  "db": "tasks",
+  "title": "FAB: Frameworkless Goals · Resources · Projects (Goal/Resource/Work Fabric)",
+  "url": "https://app.notion.com/p/FAB-Frameworkless-Goals-Resources-Projects-Goal-Resource-Work-Fabric-3b9dd207a82581fdae20fcffa177221c",
+  "status": "прожаренные явные задачи",
+  "priority": "P2",
+  "severity": null,
+  "task_type": "refactor",
+  "modules": [
+   "ai-tooling/mcp",
+   "security/auth",
+   "db/queues",
+   "realtime"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "FAB",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 2,
+    "sample": [
+     "mcp",
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "План 2026-07-18 · старт реализации 2026-07-19. Источник — проработка docs/Frameworkless Goals&Resources and Projects.md; исполняемый роадмап — docs/roadmap/phase-goal-work-fabric.md. 2026-07-20: роадмап пересобран с построчным аудитом нереализованного (§2.4), гэпом по сайдбару (§6) и чек-листом полного cutover OKR→Goal Fabric / Projects→Work Fabric (§7) — GF-MIG-1,2 ниже отражают реальный (не намеренный) статус: адаптер написан и протестирован, но выключен флагом и ни разу не запускался на данных.\nСуть: OKR/KPI/SLA/probation/project — не типы системы, а preset-схемы единого мета-ядра (schema/r"
+ },
+ {
+  "verdict": "core",
+  "card_id": "3c0dd207-a825-819e-96ea-eab61fd95f47",
+  "db": "bugs",
+  "title": "rbac/users — findMany без take и без пагинации: весь ростер компании одним ответом, с двумя join",
+  "url": "https://app.notion.com/p/rbac-users-findMany-take-join-3c0dd207a825819e96eaeab61fd95f47",
+  "status": "открыто",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "backend",
+   "security/auth"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "ростер",
+    "count": 1,
+    "sample": [
+     "ростер"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "## Что найдено\nRbacUserAssignmentsRepository.findCompanyUsersWithRbac (apps/backend/src/modules/rbac/rbac-user-assignments.repository.ts:37) — findMany без take, без cursor, без select, с двумя include (rbacUserRoles и rbacGroupMembers, каждый со своим вложенным include).\nНарушает правило проекта (.claude/rules/08-database-prisma.md, «findMany без take на таблицах с потенциально большим объёмом — запрещён»). Отдаётся весь TenantUser целиком, включая profileExtrasJson — тот самый тяжёлый JSON, ради которого в правиле есть отдельный пункт про явный select.\n## Почему это не лечится простым take: "
+ },
+ {
+  "verdict": "core",
+  "card_id": "3badd207-a825-814a-a636-e562c40c903c",
+  "db": "bugs",
+  "title": "Notion integration token закоммичен в git (.continue/mcpServers/notion.yaml)",
+  "url": "https://app.notion.com/p/Notion-integration-token-git-continue-mcpServers-notion-yaml-3badd207a825814aa636e562c40c903c",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "high",
+  "task_type": null,
+  "modules": [
+   "ai-tooling/mcp",
+   "security/auth"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bcouncil\\b",
+    "count": 2,
+    "sample": [
+     "council",
+     "council"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "ai[- ]council",
+    "count": 1,
+    "sample": [
+     "ai-council"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "headroom",
+    "count": 1,
+    "sample": [
+     "headroom"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bz\\.ai\\b",
+    "count": 1,
+    "sample": [
+     "Z.AI"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bgemini\\b",
+    "count": 1,
+    "sample": [
+     "Gemini"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 3,
+    "sample": [
+     "MCP",
+     "MCP",
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bcontinue\\b",
+    "count": 14,
+    "sample": [
+     "continue",
+     "continue",
+     "Continue"
+    ]
+   }
+  ],
+  "body_first_600": "## Что произошло\nФайл .continue/mcpServers/notion.yaml был отслеживаемым в git и содержал internal integration token Notion открытым текстом в OPENAPI_MCP_HEADERS ({\"Authorization\":\"Bearer ntn_…\"}). Обнаружено 2026-08-13 при переработке Continue-конфига.\nТокен даёт полный доступ интеграции к расшаренным страницам и базам борда (чтение, создание страниц, комментарии, properties, тело, архивация).\n## Что уже сделано\n- Файл удалён из рабочего дерева (git rm), MCP-блоки перенесены в .continue/config.yaml.\n- Токен теперь берётся из ${{ secrets.NOTION_API_KEY }} → .continue/.env (gitignored, .gitign"
+ },
+ {
+  "verdict": "core",
+  "card_id": "3badd207-a825-8131-930a-d15771ee57bc",
+  "db": "bugs",
+  "title": "DAMS RAG: срез индекса молча выпадает из поиска после пометки stale",
+  "url": "https://app.notion.com/p/DAMS-RAG-stale-3badd207a8258131930ad15771ee57bc",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "ai-tooling/mcp",
+   "ops/ci"
+  ],
+  "tags": [
+   "dams",
+   "найдено-консилиумом"
+  ],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 7,
+    "sample": [
+     "КОНСИЛИУМ",
+     "консилиум",
+     "консилиум"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "\\bcouncil\\b",
+    "count": 3,
+    "sample": [
+     "Council",
+     "council",
+     "Council"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "ai[- ]council",
+    "count": 3,
+    "sample": [
+     "AI Council",
+     "ai-council",
+     "AI Council"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "\\bverifier\\b",
+    "count": 2,
+    "sample": [
+     "verifier",
+     "verifier"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "верификатор",
+    "count": 1,
+    "sample": [
+     "Верификатор"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bdams\\b",
+    "count": 6,
+    "sample": [
+     "DAMS",
+     "DAMS",
+     "DAMS"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 2,
+    "sample": [
+     "RAG",
+     "rag"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 4,
+    "sample": [
+     "claude",
+     "claude",
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "Найдено 2026-08-12 при сборке AI Council (docs/specs/ai-council.md).\nСИМПТОМ. После правки schema.prisma PostToolUse-хук пометил все 438 документов prisma_model как status='stale'. dams_common.search() фильтрует WHERE d.status='active', поэтому поиск по Prisma-моделям возвращал НОЛЬ результатов для любого запроса — и в rag_query.py, и в UserPromptSubmit-хуке, и у всего, что строится поверх DAMS.\nПОЧЕМУ ЭТО ТИХО. Хук печатает подсказку «Обновить срез: index_rebuild.py --type X», но ничто её не выполняет и не отслеживает. Между правкой файла и ручным rebuild целый класс документов невидим, при э"
+ },
+ {
+  "verdict": "core",
+  "card_id": "3badd207-a825-8076-977d-de8c75dfc5e3",
+  "db": "bugs",
+  "title": "Баг Telegram",
+  "url": "https://app.notion.com/p/Telegram-3badd207a8258076977dde8c75dfc5e3",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "high",
+  "task_type": null,
+  "modules": [
+   "telegram",
+   "frontend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": null,
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 3,
+    "sample": [
+     "Консилиум",
+     "консилиум",
+     "консилиум"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "верификатор",
+    "count": 1,
+    "sample": [
+     "Верификатор"
+    ]
+   }
+  ],
+  "evidence_eco": [],
+  "body_first_600": "Не удалось открыть страницу\nПроизошла ошибка при загрузке или отображении маршрута.\nCannot read properties of undefined (reading 'length')\nТехнические детали (stack)\n```\nTypeError: Cannot read properties of undefined (reading 'length')\n    at http://localhost:3000/src/pages/authorized/integrations/telegram/TelegramPeerInfoModal.tsx:1019:43\n    at Array.map (<anonymous>)\n    at TelegramPeerInfoModal (http://localhost:3000/src/pages/authorized/integrations/telegram/TelegramPeerInfoModal.tsx:1004:110)\n    at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-WMD6HNFV.js?v=f27ba7"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b9dd207-a825-8180-9715-d8bcd22c9a58",
+  "db": "bugs",
+  "title": "npm audit — 9 находок risk-accepted (multer/platform-express high, tar via grpc-tools, hono/prisma/uuid/exceljs moderate)",
+  "url": "https://app.notion.com/p/npm-audit-9-risk-accepted-multer-platform-express-high-tar-via-grpc-tools-hono-prisma-u-3b9dd207a82581809715d8bcd22c9a58",
+  "status": "открыто",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "security/auth",
+   "ops/ci"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "Инкремент — npm audit",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 2,
+    "sample": [
+     "claude",
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": ""
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b9dd207-a825-81ed-a0a0-e1d7e90a1baa",
+  "db": "bugs",
+  "title": "Оценить полезность инструмента agent-reach для сорсинга/HRPR (переиспользуемо для разных платформ)",
+  "url": "https://app.notion.com/p/agent-reach-HRPR-3b9dd207a82581eda0a0e1d7e90a1baa",
+  "status": "открыто",
+  "priority": null,
+  "severity": "low",
+  "task_type": null,
+  "modules": [
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "agent-reach evaluation",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 2,
+    "sample": [
+     "MCP",
+     "mcp"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "Claude"
+    ]
+   }
+  ],
+  "body_first_600": "## 🎯 Цель задачи (для любого исполнителя — человека или ИИ)\nОпределить: стоит ли подключать open-source инструмент Agent Reach к нашим HR-агентам (сорсинг кандидатов, HRPR-коммуникации) как «слой доступа в интернет» — чтение соцсетей/сайтов/YouTube/GitHub без ручной настройки каждого канала под каждого агента.\n## 📦 Что такое Agent Reach (кратко и по-человечески)\nЭто не парсер и не свой SDK, а «прошивка» для AI-агента (Claude Code, Cursor и т.п.), которая одной командой ставит и следит за набором готовых CLI-инструментов чтения интернета:\n- Веб-страницы (Jina Reader) — без ключей.\n- YouTube — с"
+ },
+ {
+  "verdict": "module",
+  "card_id": "3b8dd207-a825-8135-a391-c0fe4be707cc",
+  "db": "bugs",
+  "title": "Workflow Run Detail: logsJson шумит весьнакопленным контекстом вместо input узла; более детальный AgentRunLog не связан с UI",
+  "url": "https://app.notion.com/p/Workflow-Run-Detail-logsJson-input-Ag-3b8dd207a8258135a391c0fe4be707cc",
+  "status": "открыто",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "backend",
+   "ai-tooling/mcp"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "Workflow Run Detail logsJson context noise (partial)",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "ai[- ]tooling",
+    "count": 1,
+    "sample": [
+     "ai-tooling"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 1,
+    "sample": [
+     "mcp"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 ОТКРЫТО 2026-07-28, частично закрыто 2026-07-28 (тот же репорт: «где логирование и вывод этапов и действий», Run Detail нечитаем) — остаток открыт. «Вход» каждого узла в logsJson (WorkflowRunnerService.traverseFrom) — это весь накопленный контекст на момент обхода (sanitizeForLog({...context})), НЕ то, что конкретно потребил этот узел — отсюда повторяющийся один и тот же блок на каждом шаге в дампе пользователя; не исправлено (общий механизм traverseFrom, затрагивает все типы узлов). Более детальный трейс реально существует — каждый вызов агента пишет в AutomationRunLog через AgentRunLogServ"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-818e-85ae-f98eaeba7d13",
+  "db": "bugs",
+  "title": "«Пользователи компании» — fake save в react-query кэш (бэкенд НЕ источник правды); интервьюеры — дубль доступа к вакансиям, к удалению",
+  "url": "https://app.notion.com/p/fake-save-react-query-3b8dd207a825818e85aef98eaeba7d13",
+  "status": "открыто",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "frontend",
+   "recruiting/ats"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "Mock-only pages passing as real (Interviewers, Company Users)",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 ОТКРЫТО 2026-08-04 (жалоба владельца: «не везде источником правды является бэкенд»), первый честный проход — 2 новых конкретных инстанса найдены и подтверждены сверх уже задокументированных, полное закрытие требует отдельного аудиторского захода. Шаблон бага уже дважды задокументирован в этом файле: SourcingSourcesPage.tsx — client-state-only антидетект-тумблеры — закрыт 2026-07-30; WikiDetailHistory.tsx — вкладка «История» вики читает статичный хардкод — всё ещё открыт, обнаружен 2026-07-29. 1. /interviewers (Рекрутинг → Интервьюеры) — вся CRUD-страница на 100% client-state, ноль обращений "
+ },
+ {
+  "verdict": "core",
+  "card_id": "3b8dd207-a825-8199-86ea-c2f66db088d3",
+  "db": "bugs",
+  "title": "Безопасность файлового контура: гейт стоит в 4 точках из 15, единой точки контроля нет — каждый новый upload стартует незащищённым",
+  "url": "https://app.notion.com/p/4-15-upload-3b8dd207a825819986eac2f66db088d3",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "high",
+  "task_type": null,
+  "modules": [
+   "security/auth",
+   "backend"
+  ],
+  "tags": [
+   "найдено-консилиумом"
+  ],
+  "half_baked": false,
+  "backlog_id": "OOXML external-ref scanner gap (HR Documents / absence attachments)",
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 3,
+    "sample": [
+     "Консилиум",
+     "консилиум",
+     "консилиум"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "\\bcouncil\\b",
+    "count": 4,
+    "sample": [
+     "council",
+     "council",
+     "council"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "ai[- ]council",
+    "count": 4,
+    "sample": [
+     "ai-council",
+     "ai-council",
+     "ai-council"
+    ]
+   },
+   {
+    "group": "core",
+    "pattern": "верификатор",
+    "count": 2,
+    "sample": [
+     "Верификатор",
+     "верификатор"
+    ]
+   }
+  ],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bmcp\\b",
+    "count": 3,
+    "sample": [
+     "MCP",
+     "MCP",
+     "MCP"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 3,
+    "sample": [
+     "claude",
+     "CLAUDE",
+     "CLAUDE"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\bcontinue\\b",
+    "count": 3,
+    "sample": [
+     "continue",
+     "continue",
+     "continue"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "облачн",
+    "count": 3,
+    "sample": [
+     "облачн",
+     "облачн",
+     "облачн"
+    ]
+   }
+  ],
+  "body_first_600": "Переписано ребром 2026-08-15 по решению владельца. Прежняя формулировка («сканер не подключён к HR Documents и вложениям заявок на отсутствие») описывала 2 пробела. Аудит показал: пробелов 11, и дело не в них, а в отсутствии единой точки контроля. Прежний текст — в истории страницы.\n## Цель\nОбеспечить безопасность файлового контура целиком: приём, хранение, обработку и отдачу файлов из любых источников. Не «дозакрыть два эндпоинта», а сделать так, чтобы новый путь загрузки физически не мог появиться незащищённым.\n## Факты аудита (2026-08-15)\n15 контроллеров принимают файлы (FileInterceptor/Fil"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-81bc-b8a2-f4da665959ce",
+  "db": "bugs",
+  "title": "ListUserNotifications refresh-storm — 2-3 полных sweep в первые 20-25с после mount, секвенциальный prune в for-loop",
+  "url": "https://app.notion.com/p/ListUserNotifications-refresh-storm-2-3-sweep-20-25-mount-p-3b8dd207a82581bcb8a2f4da665959ce",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "high",
+  "task_type": null,
+  "modules": [
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "ListUserNotifications refresh-storm",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🟠 Открыто 2026-08-04 (жалоба владельца: «некоторые запросы стреляются на фронт по нескольку раз и выполняются по нескольку раз, с большой задержкой», пример ListUserNotifications; запрошен end-to-end ревью на подобные проблемы). Корень найдена и исправлена, часть смежных находок оставлена открытой. ListUserNotifications — Connect RPC над тем же UserNotificationsService.getForUser(), что и REST-эквивалент. Фронтенд-хук был корректно настроен (одиначка монта, стабильный queryKey, правильный staleTime/refetchInterval по .claude/rules/03-frontend.md); React 18 StrictMode double-invoke тоже не исто"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-8139-9f6b-e0b185b4803a",
+  "db": "bugs",
+  "title": "Dev Postgres расходится с историей миграций — migrate dev требует деструктивный reset",
+  "url": "https://app.notion.com/p/Dev-Postgres-migrate-dev-reset-3b8dd207a82581399f6be0b185b4803a",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "db/queues",
+   "ops/ci"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "Dev Postgres migration drift",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 4,
+    "sample": [
+     "CLAUDE",
+     "claude",
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 Найдено 2026-07-31 ([FAB] Phase 1, попытка npx prisma migrate dev --name fab_phase1_shared_infra): dev Postgres расходился с историей миграций, требует деструктивного prisma migrate reset. И migrate dev, и migrate dev --create-only отказываются выполняться, ссылаясь на изменённую миграцию (20260710150000_add_survey_engine) плюс drift по 4 несвязанным таблицам (индексы на candidate_applications, company_finance_exchange_rate_snapshots, tenant_recruiting_staff_domains, tenant_vacancy_salary_bands) — вероятно, побочный эффект параллельной работы в одном общем dev-контейнере. Не исправлено (дест"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-818b-9dea-d6be54dc00ff",
+  "db": "bugs",
+  "title": "Telegram: редактирование сообщения теряет форматирование (bold/italic/ссылки)",
+  "url": "https://app.notion.com/p/Telegram-bold-italic-3b8dd207a825818b9dead6be54dc00ff",
+  "status": "открыто",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "telegram",
+   "frontend"
+  ],
+  "tags": [],
+  "half_baked": true,
+  "backlog_id": "Telegram edit-message formatting",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 Найдено 2026-07-18 (при перепроверке TG-FMT-1), подтверждено открытым 2026-07-21, сознательно не исправлено дважды: редактирование Telegram-сообщения не восстанавливает исходное форматирование. handleStartEdit в обоих композерах заполняет поле редактирования через div.textContent = msg.text — теряет жирный/курсив/ссылки-форматирование, только plain-текст. msg.entities есть в DTO, но корректный конвертер text+entities → composer-совместимый sanitized HTML пришлось бы строить отдельно, зеркально словарю тегов telegramComposerSerialize.ts (другая цель, чем у renderTelegramMessageHtml, который т"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-819c-b2d0-e9d9a27286f1",
+  "db": "bugs",
+  "title": "tsx/esbuild сломан в dev-контейнере backend (arm64) — npm run seed молча ломается",
+  "url": "https://app.notion.com/p/tsx-esbuild-dev-backend-arm64-npm-run-seed-3b8dd207a825819cb2d0e9d9a27286f1",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "ops/ci",
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "tsx/esbuild container issue (arm64)",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "headroom",
+    "count": 1,
+    "sample": [
+     "headroom"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 Найдено 2026-07-29 (в том же заходе, что и соседние пункты про миграции): tsx сломан внутри dev-стек-контейнера backend-backend-1 — Error: The package \"@esbuild/linux-arm64\" could not be found. Силентно ломает задокументированную конвенцию npm run seed (tsx prisma/seed.ts) для любого, кто exec'ится в этот конкретный образ/контейнер. Временный обход (переписать через CommonJS + require скомпилированного dist/, тот же паттерн, что уже используется в apps/backend/scripts/export-openapi.cjs) сработал, но сам путь tsx/.ts в этом образе не работает для новых разработчиков. Не чинил (вне скопа) — т"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-81c2-ad1c-e65300a7a651",
+  "db": "bugs",
+  "title": "OnlyOffice Document Server специфицирован, но никогда не развёрнут — doc/ppt/pptx-превью и legacy-конвертация фактически неактивны",
+  "url": "https://app.notion.com/p/OnlyOffice-Document-Server-doc-ppt-pptx-legacy-3b8dd207a82581c2ad1ce65300a7a651",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "medium",
+  "task_type": null,
+  "modules": [
+   "docs",
+   "backend",
+   "ops/ci"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "OnlyOffice Document Server not deployed",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 1,
+    "sample": [
+     "CLAUDE"
+    ]
+   }
+  ],
+  "body_first_600": "🟡 Открыто 2026-07-22: OnlyOffice Document Server специфицирован (docs/specs/hr-document-management.md), но никогда не развёрнут ни в одном docker-compose/.env окружении. Найдено при реализации doc/ppt/pptx-превью для Telegram — server-side путь конвертации (JWT-подписанный запрос к ConvertService.ashx, presigned MinIO URL) уже был закодирован, но неактивен с самого начала (if (!ooUrl) {warn; return} тихий no-op). Новый TelegramDocumentPreviewService зеркально повторяет рабочий паттерн синхронно; когда OnlyOffice не развёрнут, возвращает явный 503 (фронт деградирует до «превью недоступен» + кно"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-8155-8be9-f08178d967ae",
+  "db": "bugs",
+  "title": "hh.ru: нельзя использовать шаблоны сообщений hh.ru; локальная подстановка плейсхолдеров работает только частично",
+  "url": "https://app.notion.com/p/hh-ru-hh-ru-3b8dd207a82581558be9f08178d967ae",
+  "status": "в работе",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "hh.ru",
+   "backend",
+   "frontend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-JB-1.3/1.4/1.5",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 1,
+    "sample": [
+     "RAG"
+    ]
+   }
+  ],
+  "body_first_600": "🔴 hh.ru-интеграция: нельзя использовать шаблоны сообщений САМОГО hh.ru при отправке кандидату; локальная подстановка плейсхолдеров (ФИО/вакансия/контакты рекрутера) — работает частично, только внутри редактора правил, и без вакансии. Три независимых, несвязанных между собой пути с разными недостатками. (1) Пикер «Выбрать шаблон hh.ru…» в AutomationActionRow.tsx:168-181,195-213 — гарантированно пуст всегда, не «иногда падает»: hhGetMessageTemplates() (hh-remote.util.ts:587-605) дёргает GET {apiBase}/message_templates — но документированный эндпоинт hh.ru (docs/api/hh-openapi-spec.yml:23722-2376"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-81b4-bf90-cef77ecc9117",
+  "db": "bugs",
+  "title": "hh.ru: синхронизация статусов не live (только на момент импорта), синхронизации комментариев не существует",
+  "url": "https://app.notion.com/p/hh-ru-live-3b8dd207a82581b4bf90cef77ecc9117",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "hh.ru",
+   "backend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "INT-JB-1.1/1.2",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bcontinue\\b",
+    "count": 2,
+    "sample": [
+     "continue",
+     "continue"
+    ]
+   }
+  ],
+  "body_first_600": "🔴 hh.ru-интеграция, вкладка «Автоматизации» (/integrations/hh?...&tab=automations): синхронизация статусов — не живая, только «на момент импорта»; синхронизация комментариев с hh.ru — не существует вообще. Вкладка целиком — правила (HhAutomationRuleCard) + редактор правила (AutomationDialog.tsx) с триггерами (on_new_response/on_repeat_response/on_hh_status_change) и действиями (HH_ACTION_OPTIONS: set_ats_stage[_if_first], add_tag, skip_if_exists, create_new_application, add_ats_comment, hh_change_status, hh_send_message). Статусы: hh_change_status/hh_send_message реально бьют в hh.ru API (hhCh"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-81c2-8867-d85b78e1f7c7",
+  "db": "bugs",
+  "title": "Telegram: ссылка Google Docs без кнопки-ссылки — часть закрыта, часть открыта (непокрытые entity-спаны)",
+  "url": "https://app.notion.com/p/Telegram-Google-Docs-entity-3b8dd207a82581c28867d85b78e1f7c7",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "telegram",
+   "frontend"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "Telegram Google Docs link button",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 2,
+    "sample": [
+     "claude",
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🔴 Telegram-чаты (/telegram/chats?...&chat=<id>): ссылка Google Docs в тексте сообщения кандидата не получила кнопку-ссылку справа от бабла — находка (1) закрыта 2026-08-08, находка (3) остаётся открытой. Находка (1), закрыто: кнопка (.messageActionsFloat, управляется host-allowlist регэкспами в telegramChatUtils.ts) детерминированно не появлялась для docs.google.com — PORTFOLIO_LINK_RE включал drive.google.com (Google Drive), но не docs.google.com (Google Docs). Добавлен docs\\.google\\.com рядом с существующим drive\\.google\\.com (мирроринг паттерна) — см. docs/plans/DONE.md §Telegram (баги). На"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-81bb-b996-e34e5fc880e6",
+  "db": "bugs",
+  "title": "Wiki: docmost-редизайн (icon/emoji picker, Spaces, sidebar-дерево, избранное, темплейты) — расписано, не начато",
+  "url": "https://app.notion.com/p/Wiki-docmost-icon-emoji-picker-Spaces-sidebar-3b8dd207a82581bbb996e34e5fc880e6",
+  "status": "на ревью",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "frontend",
+   "ux",
+   "docs"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "WIKI-8.1..8.6 (см. BACKLOG.md §[WIKI])",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bdams\\b",
+    "count": 1,
+    "sample": [
+     "DAMS"
+    ]
+   },
+   {
+    "group": "eco",
+    "pattern": "\\brag\\b",
+    "count": 12,
+    "sample": [
+     "RAG",
+     "RAG",
+     "RAG"
+    ]
+   }
+  ],
+  "body_first_600": "🔴 Wiki (/wiki) — визуальный/функциональный редизайн под docmost-паттерн (полный emoji/icon-пикер страницы вместо текущих 12 хардкод-эмодзи) + перенос лучшего из outline/outline (левый сайдбар с деревом страниц, избранное, домашняя вики-страница, темплейты) с учётом уже существующей RAG-специфики модуля. Детальный план ниже — работа НЕ начата, только исследование и проектирование по прямой инструкции владельца («не делать сломя голову»).\n✅ Расписано и спланировано 2026-08-09 (прожарка с владельцем по этой находке) — разбито на PR1-PR6 (WIKI-8.1..8.6), scope и архитектурные решения (префикс-конв"
+ },
+ {
+  "verdict": "core",
+  "card_id": "3b8dd207-a825-81da-aa16-d3742c53f877",
+  "db": "bugs",
+  "title": "Link Builder: автозакрытие короткой ссылки после редиректа — нужно продуктовое решение",
+  "url": "https://app.notion.com/p/Link-Builder-3b8dd207a82581daaa16d3742c53f877",
+  "status": "открыто",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "backend",
+   "frontend",
+   "ux"
+  ],
+  "tags": [
+   "найдено-консилиумом"
+  ],
+  "half_baked": false,
+  "backlog_id": "Link Builder auto-close",
+  "evidence_core": [
+   {
+    "group": "core",
+    "pattern": "\\bконсилиум",
+    "count": 3,
+    "sample": [
+     "Консилиум",
+     "консилиум",
+     "консилиум"
+    ]
+   }
+  ],
+  "evidence_eco": [],
+  "body_first_600": "🔴 Link Builder (/link-builder)\nЗапрошенная фича — автозакрытие страницы короткой ссылки после редиректа — требует уточнения перед реализацией, не однострочный фикс. Текущее поведение: ShortLinkRedirectPage.tsx:18 делает window.location.replace(...) (та же вкладка навигируется прочь, скрипт страницы больше не выполняется до закрытия); backend-интерстишл (link-redirect.service.ts:111-129, показывается только если link.showIntermediatePage) — кнопка «Перейти» + таймер-редирект, тоже без window.close() где-либо. Проблема по существу: window.close() по спецификации браузеров работает ТОЛЬКО для вкл"
+ },
+ {
+  "verdict": "eco",
+  "card_id": "3b8dd207-a825-80ca-9dd7-de90dbbefdce",
+  "db": "bugs",
+  "title": "Survey Engine builder: 23 типа вопроса без per-type UI-настроек конфига (часть B)",
+  "url": "https://app.notion.com/p/Survey-Engine-builder-23-per-type-UI-B-3b8dd207a82580ca9dd7de90dbbefdce",
+  "status": "закрыто",
+  "priority": null,
+  "severity": "critical",
+  "task_type": null,
+  "modules": [
+   "frontend",
+   "ux"
+  ],
+  "tags": [],
+  "half_baked": false,
+  "backlog_id": "SURV-BUILDER-2 (per-type config, часть B); часть A (enum-drift) закрыта 2026-08-08",
+  "evidence_core": [],
+  "evidence_eco": [
+   {
+    "group": "eco",
+    "pattern": "\\bclaude\\b",
+    "count": 2,
+    "sample": [
+     "claude",
+     "claude"
+    ]
+   }
+  ],
+  "body_first_600": "🔴 Survey Engine builder (/survey-engine/builder?surveyId=...) — ни один из 23 типов вопроса не имеет настроек в builder UI вообще (часть B; часть A, enum-drift, закрыта — см. «Сделано» ниже). Единственная панель настроек вопроса — QuestionInspector.tsx (собственный doc-комментарий честно признаёт объём: «title/type/healthComponent/required/alert-правило»); ветвления по type нет вообще. Реальный контракт конфига на бэкенде — packages/dto/src/schemas/survey-engine.schema.ts:24-47 (SurveyQuestionConfigSchema): options[] (choice-семейство, max 50), allowOther, min/max, minLabel/maxLabel, placehold"
+ }
+]

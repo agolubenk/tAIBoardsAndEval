@@ -1,0 +1,33 @@
+name: layer CI
+
+on:
+  push:
+    branches: [board-agents, main]
+    paths: [".claude/**", "eval/tools/**", ".github/workflows/layer-ci.yml"]
+  pull_request:
+    paths: [".claude/**", "eval/tools/**", ".github/workflows/layer-ci.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: layer-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  kit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Hook and script tests
+        run: |
+          set -e
+          for t in .claude/hooks/test_*.py .claude/scripts/test_*.py; do
+            echo "== $t"
+            python3 "$t"
+          done

@@ -1,0 +1,250 @@
+name: Local Ollama
+version: 1.0.0
+schema: v1
+
+models:
+  # ============================================================
+  # ACTIVE LOCAL STACK
+  # ============================================================
+  # Бесплатная cloud-модель Z.ai:
+  # быстрый text/code/agent fallback без загрузки локальных Qwen/Kimi.
+  # Ключ — General-контур (бесплатный ярус glm-4.7-flash), не подписка:
+  # на Coding-эндпоинте эта модель стабильно даёт 429 (правило 04-model-rotation).
+  - name: GLM 4.7 Flash — Free API
+    provider: openai
+    apiBase: https://api.z.ai/api/paas/v4/
+    apiKey: ${{ secrets.ZAI_GENERAL_API_KEY }}
+    model: glm-4.7-flash
+    roles:
+      - chat
+      - edit
+      - apply
+    capabilities:
+      - tool_use
+    defaultCompletionOptions:
+      contextLength: 65654
+      maxTokens: 4096
+      temperature: 0.15
+    requestOptions:
+      timeout: 120000
+
+  # Основная локальная рабочая модель:
+  # чат, edit/apply, Agent mode, UI/скриншоты/документы.
+  - name: GLM-4.6V Flash 9B — Local Vision 24k
+    provider: ollama
+    model: glm46v:24k
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+      - edit
+      - apply
+    capabilities:
+      - image_input
+      - tool_use
+    defaultCompletionOptions:
+      contextLength: 80000
+      maxTokens: 4096
+      temperature: 0.2
+    requestOptions:
+      timeout: 300000
+
+  # Быстрый локальный текстовый помощник.
+  # Оставлен активным как ручной выбор для быстрых коротких задач.
+  - name: GLM 4 — Fast Local
+    provider: ollama
+    model: glm4:latest
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+      - edit
+      - apply
+    capabilities:
+      - tool_use
+    defaultCompletionOptions:
+      contextLength: 16384
+      maxTokens: 2048
+      temperature: 0.1
+    requestOptions:
+      timeout: 180000
+
+  # Локальная embedding-модель для codebase retrieval.
+  - name: Nomic Embed — Local
+    provider: ollama
+    model: nomic-embed-text:latest
+    apiBase: http://localhost:11434
+    roles:
+      - embed
+
+  # ============================================================
+  # ACTIVE CLOUD ASSISTANCE
+  # ============================================================
+
+  # Единственная autocomplete-модель.
+  # Она заменяет локальный GLM autocomplete, чтобы не поднимать
+  # VLM 24k на каждую inline-подсказку.
+  # Единственная autocomplete-модель — ЛОКАЛЬНЫЙ FIM.
+  # История: облачный GLM-4.7 тут не работал в принципе — у Z.AI нет /completions
+  # (FIM) эндпоинта, Continue получал 404 (2026-10-29). tiel-coder — единственная
+  # локальная модель с <|fim_*|>-токенами; отдельный тег tiel-coder-fim несёт FIM-
+  # шаблон (копия официального qwen2.5-coder), по нему Continue сам включает FIM.
+  # Создание: npm run ollama:tiel-coder (infra/scripts/dev-ai/ollama-setup-tiel-coder.sh).
+  # ЦЕНА на 24-ГБ машине: ~16 ГБ под веса. Холодная загрузка 7–10 с (первая подсказка
+  # после простоя может опоздать — modelTimeout покрывает), тёплая ~0.8 с. Когда
+  # консилиум держит L-модель (17–19 ГБ VRAM) — автокомплит просто ждёт таймаут.
+  - name: Tiel-Coder FIM — Local Autocomplete
+    provider: ollama
+    model: tiel-coder-fim:latest
+    apiBase: http://localhost:11434
+    roles:
+      - autocomplete
+    defaultCompletionOptions:
+      temperature: 0.05
+      maxTokens: 64
+    autocompleteOptions:
+      maxPromptTokens: 1536
+      debounceDelay: 350
+      modelTimeout: 15000
+      maxSuffixPercentage: 0.2
+      prefixPercentage: 0.55
+      onlyMyCode: true
+      useCache: true
+      useImports: true
+      useRecentlyEdited: true
+    requestOptions:
+      timeout: 30000
+
+  # Экспериментальная LLM-переоценка контекста.
+  # Может не работать как native rerank, потому что GLM-4.7 —
+  # генеративная модель, а не специализированный rerank endpoint.
+  # Починено 2026-10-29: опечатка hhttps://, plaintext-ключ → секрет, путь /v4 (был 404).
+  - name: GLM-4.7 FlashX — LLM Rerank Experimental
+    provider: openai
+    apiBase: https://api.z.ai/api/paas/v4/
+    apiKey: ${{ secrets.ZAI_GENERAL_API_KEY }}
+    model: glm-4.7-flashx
+    roles:
+      - rerank
+    requestOptions:
+      timeout: 60000
+      headers:
+        x-headroom-base-url: https://api.z.ai/api/coding/paas/v1
+        x-headroom-original-path: /chat/completions
+
+  # ============================================================
+  # DISABLED LOCAL MODELS — PRESERVED FOR LATER
+  # ============================================================
+
+  # - name: Qwen3 Coder 30B — primary
+  #   provider: ollama
+  #   model: qwen3-coder:30b-a3b-q4_K_M
+  #   apiBase: http://localhost:11434
+  #   roles:
+  #     - chat
+  #     - edit
+  #     - apply
+  #   capabilities:
+  #     - tool_use
+  #   defaultCompletionOptions:
+  #     contextLength: 32768
+  #     maxTokens: 4096
+  #     temperature: 0.15
+  #   requestOptions:
+  #     timeout: 300000
+
+  # - name: Qwen3.6 27B — reasoning
+  #   provider: ollama
+  #   model: qwen3.6:27b-q4_K_M
+  #   apiBase: http://localhost:11434
+  #   roles:
+  #     - chat
+  #     - edit
+  #   defaultCompletionOptions:
+  #     contextLength: 32768
+  #     maxTokens: 4096
+  #     temperature: 0.2
+  #   requestOptions:
+  #     timeout: 300000
+
+  # - name: Kimi VL A3B Thinking — Local Vision 24k
+  #   provider: ollama
+  #   model: kimi-vl:24k
+  #   apiBase: http://localhost:11434
+  #   roles:
+  #     - chat
+  #     - edit
+  #     - apply
+  #   capabilities:
+  #     - image_input
+  #     - tool_use
+  #   defaultCompletionOptions:
+  #     contextLength: 24576
+  #     maxTokens: 4096
+  #     temperature: 0.2
+  #   requestOptions:
+  #     timeout: 300000
+
+  # - name: Qwen2.5 Coder 1.5B — Local Autocomplete
+  #   provider: ollama
+  #   model: qwen2.5-coder:1.5b
+  #   apiBase: http://localhost:11434
+  #   roles:
+  #     - autocomplete
+  #   defaultCompletionOptions:
+  #     temperature: 0.05
+  #     maxTokens: 256
+  #   autocompleteOptions:
+  #     maxPromptTokens: 1024
+  #     debounceDelay: 550
+  #     modelTimeout: 4000
+  #     maxSuffixPercentage: 0.15
+  #     prefixPercentage: 0.55
+  #     onlyMyCode: true
+  #     useCache: true
+  #     useImports: true
+  #     useRecentlyEdited: true
+
+  # ============================================================
+  # DISABLED CLOUD GLM ROUTING — PRESERVED FOR LATER
+  # ============================================================
+
+  # - name: GLM 5.3 — primary
+  #   provider: openai
+  #   apiBase: http://127.0.0.1:8787/p/continue-zai-coding/
+  #   apiKey: ${{ secrets.ZAI_API_KEY }}  # старый утёкший ключ удалён 2026-10-29
+  #   model: glm-5.3
+  #   roles:
+  #     - chat
+  #     - edit
+  #     - apply
+  #   capabilities:
+  #     - tool_use
+  #   defaultCompletionOptions:
+  #     contextLength: 200000
+  #     maxTokens: 16000
+  #     temperature: 0.15
+  #   requestOptions:
+  #     timeout: 180000
+  #     headers:
+  #       x-headroom-base-url: https://api.z.ai/api/coding/paas/v4
+  #       x-headroom-original-path: /chat/completions
+
+  # - name: GLM 5.2 — fallback
+  #   provider: openai
+  #   apiBase: http://127.0.0.1:8787/p/continue-zai-coding/
+  #   apiKey: ${{ secrets.ZAI_API_KEY }}  # старый утёкший ключ удалён 2026-10-29
+  #   model: glm-5.2
+  #   roles:
+  #     - chat
+  #     - edit
+  #     - apply
+  #   capabilities:
+  #     - tool_use
+  #   defaultCompletionOptions:
+  #     contextLength: 200000
+  #     maxTokens: 8000
+  #     temperature: 0.1
+  #   requestOptions:
+  #     timeout: 120000
+  #     headers:
+  #       x-headroom-base-url: https://api.z.ai/api/coding/paas/v4
+  #       x-headroom-original-path: /chat/completions
