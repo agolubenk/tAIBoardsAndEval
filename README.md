@@ -8,7 +8,7 @@ queue, the bot and "merge = deploy" look as before.
 | Part | Path | What it is |
 |---|---|---|
 | **tAI-Boards** | [`boards/`](boards/) | Where the work lives: kanban for agents first and people second. Task forest (trees, branches, sectors, felling, seeds), leases with fencing tokens, work state written after every step, agent fields on cards (`branch`, `pullRequests`, `contextPack`, `tokens`, `costUsd`), an approval matrix (agents bring a card to "review" at most), per-product data segmentation, history with rollback, Notion import, claude-mem binding, a token-cheap MCP. Spec — [`boards/docs/`](boards/docs/README.md). |
-| **eval** | [`eval/`](eval/) | How the team works cheaply: the economy model (calls × context × price + cold rewrites + output) and mechanisms P1–P11 — role genomes (`claude --settings`), handoff capsules (`contextPack`), the Nerve watchdog (wakes a session only when it must act), the swarm (routine on cheap models behind an egress filter), wake/cost anatomy and measurements. |
+| **eval** | [`eval/`](eval/) | How the team works cheaply: the economy model (calls × context × price + cold rewrites + output) and mechanisms P1–P11 — role genomes (`claude --settings`), handoff capsules (`contextPack`), the Nerve watchdog (wakes a session only when it must act), the swarm (routine on cheap models behind an egress filter), wake/cost anatomy and measurements. The layer evolves itself ([`eval/evolve/`](eval/evolve/README.md)): versions every skill/rule/prompt on change, prices the always-loaded context per role, finds repeated facts, picks between versions by a blind judge (quality first, then tokens), never re-asks a decided question, and keeps descendants on a short focus list with their own lineage id. |
 | **Control & AI tooling** | [`infra/`](infra/CLAUDE.md) | Services the process runs on: AI council (model lenses for adversarial review, daily plan, review of "on review" cards), owner queue (MCP `oq_*`, Telegram bot, ops console), shared MCP hub, LLM gateway with key/model rotation, context compression. |
 | **Process layer** | [`process/`](process/README.md), `.claude/`, `.continue/`, `.agents/`, `.windsurf/`, `.ai/`, [`docs/`](docs/README.md) | The team operating layer: role launch prompts, operating model, Never/Always rules, specialist subagents, hooks, skills, knowledge chunks, task-case templates, worktree workflow, closed-items log. |
 
@@ -59,7 +59,7 @@ Laying the layer over another project — [`process/README.md`](process/README.m
 
 ```
 boards/        tAI-Boards — pnpm workspace (apps/api, apps/web, packages/*); docs/ spec, architecture, implementation log; tools/ stand probes
-eval/          python-stdlib pipeline: nerve/, swarm/, pipeline/ (capsules, genome, reflex), tools/, data/, reports/
+eval/          python-stdlib pipeline: nerve/, swarm/, pipeline/ (capsules, genome, reflex), evolve/ (versions, budgets, A/B), tools/, data/, reports/
 infra/         ai-council/, owner-queue-mcp/, owner-queue-bot/, ops-console/, mcp-hub/, llm-gateway/, headroom/, scripts/
 process/       role prompts, operating model, overlay guide, TRANSFER.md (where things came from)
 docs/          specs/, plans/ (closed-items log), guides/ (how-tos), integrations/ (external solutions analysis), ai/, ops/
@@ -92,7 +92,10 @@ Third-party foundations:
   complements tAIBE — measured before and after — never to replace a part or leave it at the same level. Under
   review: oh-my-openagent, cognee, agno, warp, ai-memory, i-have-adhd, codebase-memory-mcp, openproject. Taken so far:
   **[OpenProject](https://github.com/opf/openproject)** (GPLv3) — the idea of validating the relation graph on write
-  (no subtask cycles) → `boards/apps/api/src/task-relation/` (idea only, no code).
+  (no subtask cycles) → `boards/apps/api/src/task-relation/` (idea only, no code);
+  **[i-have-adhd](https://github.com/ayghri/i-have-adhd)** (MIT) — blind pairwise A/B judging of skill versions →
+  `eval/evolve/ab.py` (idea, own code); **[agno](https://github.com/agno-agi/agno)** (Apache-2.0) — untrusted text
+  between fences with a per-call random nonce → the same judge (idea, own code).
 - The MCP hub runs [1mcp](https://github.com/1mcp-app/agent); the AI council and the gateway use local
   [Ollama](https://ollama.com) models and hosted providers (GLM Z.AI, OpenRouter) through their public APIs.
 

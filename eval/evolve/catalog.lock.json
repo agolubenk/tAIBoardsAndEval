@@ -1,0 +1,603 @@
+{
+ "version": 1,
+ "note": "written by eval/evolve/catalog.py --write; budgets are a ratchet: raise one only on purpose",
+ "budget": {
+  "(none)": 7850,
+  "backend": 5350,
+  "boards": 5200,
+  "coord": 5200,
+  "frontend": 6550,
+  "plan": 5350,
+  "release": 5400
+ },
+ "artifacts": {
+  ".claude/agents/agent-engineer.md": {
+   "kind": "agent",
+   "sha": "7fae682f0327",
+   "tokens": 1041,
+   "v": 1
+  },
+  ".claude/agents/architecture-expert.md": {
+   "kind": "agent",
+   "sha": "80d11818ad84",
+   "tokens": 1007,
+   "v": 1
+  },
+  ".claude/agents/backend-expert.md": {
+   "kind": "agent",
+   "sha": "805fca66d90c",
+   "tokens": 1060,
+   "v": 1
+  },
+  ".claude/agents/code-reviewer.md": {
+   "kind": "agent",
+   "sha": "a4d3ce07c425",
+   "tokens": 1354,
+   "v": 1
+  },
+  ".claude/agents/frontend-expert.md": {
+   "kind": "agent",
+   "sha": "a80c85be6129",
+   "tokens": 911,
+   "v": 1
+  },
+  ".claude/agents/log-triager.md": {
+   "kind": "agent",
+   "sha": "1a315668af5c",
+   "tokens": 499,
+   "v": 1
+  },
+  ".claude/agents/performance-expert.md": {
+   "kind": "agent",
+   "sha": "fe0541c097cd",
+   "tokens": 788,
+   "v": 1
+  },
+  ".claude/agents/scout.md": {
+   "kind": "agent",
+   "sha": "134d07f7ddcf",
+   "tokens": 621,
+   "v": 1
+  },
+  ".claude/agents/security-expert.md": {
+   "kind": "agent",
+   "sha": "a80e1ab4baa1",
+   "tokens": 865,
+   "v": 1
+  },
+  ".claude/agents/telegram-expert.md": {
+   "kind": "agent",
+   "sha": "5a9393158fca",
+   "tokens": 1865,
+   "v": 1
+  },
+  ".claude/commands/init-parallel-worktrees.md": {
+   "kind": "command",
+   "sha": "d9cbf14d0962",
+   "tokens": 506,
+   "v": 1
+  },
+  ".claude/commands/init-worktree.md": {
+   "kind": "command",
+   "sha": "e72660edeb78",
+   "tokens": 991,
+   "v": 1
+  },
+  ".claude/hooks/context-threshold.py": {
+   "kind": "hook",
+   "sha": "f0caca9b07a6",
+   "tokens": 2997,
+   "v": 1
+  },
+  ".claude/hooks/post-session.py": {
+   "kind": "hook",
+   "sha": "13523ee7131b",
+   "tokens": 2037,
+   "v": 1
+  },
+  ".claude/hooks/post-tool-use-lint.py": {
+   "kind": "hook",
+   "sha": "36b33cae799c",
+   "tokens": 683,
+   "v": 1
+  },
+  ".claude/hooks/post-tool-use.py": {
+   "kind": "hook",
+   "sha": "d1af4c89a5a3",
+   "tokens": 958,
+   "v": 1
+  },
+  ".claude/hooks/pre-tool-use-wt-deps.sh": {
+   "kind": "hook",
+   "sha": "ca9ed202fa92",
+   "tokens": 696,
+   "v": 1
+  },
+  ".claude/hooks/stop-catalog.py": {
+   "kind": "hook",
+   "sha": "476dd0cc4af5",
+   "tokens": 646,
+   "v": 1
+  },
+  ".claude/hooks/stop-dams-reindex.py": {
+   "kind": "hook",
+   "sha": "68324aa42880",
+   "tokens": 818,
+   "v": 1
+  },
+  ".claude/hooks/stop-typecheck-gate.py": {
+   "kind": "hook",
+   "sha": "7ce8e8e25b88",
+   "tokens": 2049,
+   "v": 1
+  },
+  ".claude/hooks/user-prompt-submit.py": {
+   "kind": "hook",
+   "sha": "bf655cd6c484",
+   "tokens": 6090,
+   "v": 1
+  },
+  ".claude/rules/00-antipatterns.md": {
+   "kind": "rule",
+   "sha": "02e7ab0aed9d",
+   "tokens": 494,
+   "v": 1
+  },
+  ".claude/rules/00-task-ingress.md": {
+   "kind": "rule",
+   "sha": "5fbfc034df1e",
+   "tokens": 817,
+   "v": 1
+  },
+  ".claude/rules/01-base.md": {
+   "kind": "rule",
+   "sha": "e44f6aea1943",
+   "tokens": 1101,
+   "v": 1
+  },
+  ".claude/rules/02-backend.md": {
+   "kind": "rule",
+   "sha": "2f264c0a7e7e",
+   "tokens": 826,
+   "v": 1
+  },
+  ".claude/rules/03-frontend.md": {
+   "kind": "rule",
+   "sha": "acac956eb735",
+   "tokens": 5761,
+   "v": 1
+  },
+  ".claude/rules/04-type-safety.md": {
+   "kind": "rule",
+   "sha": "e2faed3ef8a9",
+   "tokens": 635,
+   "v": 1
+  },
+  ".claude/rules/05-security.md": {
+   "kind": "rule",
+   "sha": "1d6e7d75ef6a",
+   "tokens": 1889,
+   "v": 1
+  },
+  ".claude/rules/06-testing.md": {
+   "kind": "rule",
+   "sha": "1a0b820d06f8",
+   "tokens": 985,
+   "v": 1
+  },
+  ".claude/rules/07-worktrees.md": {
+   "kind": "rule",
+   "sha": "52bfa07a60ff",
+   "tokens": 1154,
+   "v": 1
+  },
+  ".claude/rules/08-database-prisma.md": {
+   "kind": "rule",
+   "sha": "4dc218e805e3",
+   "tokens": 2362,
+   "v": 1
+  },
+  ".claude/rules/09-cache-redis.md": {
+   "kind": "rule",
+   "sha": "1d7bd03ddb6c",
+   "tokens": 1436,
+   "v": 1
+  },
+  ".claude/rules/10-db-topology.md": {
+   "kind": "rule",
+   "sha": "e84bdffeee43",
+   "tokens": 1729,
+   "v": 1
+  },
+  ".claude/rules/11-integrations-huntflow.md": {
+   "kind": "rule",
+   "sha": "5e3aee026350",
+   "tokens": 349,
+   "v": 1
+  },
+  ".claude/rules/12-integrations-hh.md": {
+   "kind": "rule",
+   "sha": "248bc33bbc05",
+   "tokens": 307,
+   "v": 1
+  },
+  ".claude/rules/13-agents-mcp.md": {
+   "kind": "rule",
+   "sha": "ce173af12965",
+   "tokens": 2979,
+   "v": 1
+  },
+  ".claude/rules/14-realtime.md": {
+   "kind": "rule",
+   "sha": "a2b4852eafd7",
+   "tokens": 5477,
+   "v": 1
+  },
+  ".claude/rules/15-mobile.md": {
+   "kind": "rule",
+   "sha": "029bed92d3f3",
+   "tokens": 1031,
+   "v": 1
+  },
+  ".claude/rules/16-telegram.md": {
+   "kind": "rule",
+   "sha": "a5b64ff60123",
+   "tokens": 6346,
+   "v": 1
+  },
+  ".claude/rules/17-notion-board.md": {
+   "kind": "rule",
+   "sha": "fd242c69a999",
+   "tokens": 2292,
+   "v": 1
+  },
+  ".claude/rules/90-team-t3.md": {
+   "kind": "rule",
+   "sha": "0c1330347953",
+   "tokens": 193,
+   "v": 1
+  },
+  ".claude/skills/animate-expo/SKILL.md": {
+   "kind": "skill",
+   "sha": "9a01a91701e6",
+   "tokens": 5099,
+   "v": 1
+  },
+  ".claude/skills/animate/SKILL.md": {
+   "kind": "skill",
+   "sha": "b8ede1612704",
+   "tokens": 3379,
+   "v": 1
+  },
+  ".claude/skills/animation-vocabulary/SKILL.md": {
+   "kind": "skill",
+   "sha": "40d2b27adfdf",
+   "tokens": 3807,
+   "v": 1
+  },
+  ".claude/skills/apple-design/SKILL.md": {
+   "kind": "skill",
+   "sha": "77bb63b7043b",
+   "tokens": 6563,
+   "v": 1
+  },
+  ".claude/skills/ask-sonner/SKILL.md": {
+   "kind": "skill",
+   "sha": "39f3ee185b3a",
+   "tokens": 2056,
+   "v": 1
+  },
+  ".claude/skills/db-migration/SKILL.md": {
+   "kind": "skill",
+   "sha": "b5a8906f1b7b",
+   "tokens": 406,
+   "v": 1
+  },
+  ".claude/skills/delegated-worktree-task/SKILL.md": {
+   "kind": "skill",
+   "sha": "9e59509cefab",
+   "tokens": 1117,
+   "v": 1
+  },
+  ".claude/skills/emil-design-eng/SKILL.md": {
+   "kind": "skill",
+   "sha": "ffbe68e6007f",
+   "tokens": 7738,
+   "v": 1
+  },
+  ".claude/skills/find-animation-opportunities/SKILL.md": {
+   "kind": "skill",
+   "sha": "d52a377819b8",
+   "tokens": 2790,
+   "v": 1
+  },
+  ".claude/skills/fix-security-vulnerabilities-with-strix/SKILL.md": {
+   "kind": "skill",
+   "sha": "3396bb754991",
+   "tokens": 1645,
+   "v": 1
+  },
+  ".claude/skills/grill-task/SKILL.md": {
+   "kind": "skill",
+   "sha": "be254c8d2ce1",
+   "tokens": 1542,
+   "v": 1
+  },
+  ".claude/skills/hr-domain/SKILL.md": {
+   "kind": "skill",
+   "sha": "549afcf684f9",
+   "tokens": 177,
+   "v": 1
+  },
+  ".claude/skills/improve-animations/SKILL.md": {
+   "kind": "skill",
+   "sha": "739624474644",
+   "tokens": 2338,
+   "v": 1
+  },
+  ".claude/skills/incident-debug/SKILL.md": {
+   "kind": "skill",
+   "sha": "96bfd2f8d096",
+   "tokens": 845,
+   "v": 1
+  },
+  ".claude/skills/mobile-native/SKILL.md": {
+   "kind": "skill",
+   "sha": "888b7651d66d",
+   "tokens": 4804,
+   "v": 1
+  },
+  ".claude/skills/nestjs-service/SKILL.md": {
+   "kind": "skill",
+   "sha": "20ee0d01545c",
+   "tokens": 583,
+   "v": 1
+  },
+  ".claude/skills/penetration-testing-with-strix/SKILL.md": {
+   "kind": "skill",
+   "sha": "8dcb25a381ca",
+   "tokens": 2335,
+   "v": 1
+  },
+  ".claude/skills/pick-ui-library/SKILL.md": {
+   "kind": "skill",
+   "sha": "9ffe141a8c3d",
+   "tokens": 1356,
+   "v": 1
+  },
+  ".claude/skills/pr-review/SKILL.md": {
+   "kind": "skill",
+   "sha": "33e596a19ac0",
+   "tokens": 666,
+   "v": 1
+  },
+  ".claude/skills/prototype/SKILL.md": {
+   "kind": "skill",
+   "sha": "2a3dacac8c34",
+   "tokens": 2221,
+   "v": 1
+  },
+  ".claude/skills/react-feature/SKILL.md": {
+   "kind": "skill",
+   "sha": "ad9dd688d6d5",
+   "tokens": 910,
+   "v": 1
+  },
+  ".claude/skills/release-check/SKILL.md": {
+   "kind": "skill",
+   "sha": "3b85d0e6b8e9",
+   "tokens": 2411,
+   "v": 1
+  },
+  ".claude/skills/repo-restructure/SKILL.md": {
+   "kind": "skill",
+   "sha": "3291da1dd08b",
+   "tokens": 1031,
+   "v": 1
+  },
+  ".claude/skills/review-animations/SKILL.md": {
+   "kind": "skill",
+   "sha": "e86984eb410e",
+   "tokens": 2385,
+   "v": 1
+  },
+  ".claude/skills/security-check/SKILL.md": {
+   "kind": "skill",
+   "sha": "7ae4599f6169",
+   "tokens": 483,
+   "v": 1
+  },
+  ".claude/skills/successor-handoff/SKILL.md": {
+   "kind": "skill",
+   "sha": "b37a97a77c42",
+   "tokens": 2527,
+   "v": 1
+  },
+  ".claude/skills/task-observer/SKILL.md": {
+   "kind": "skill",
+   "sha": "4ac0cd7519a5",
+   "tokens": 7226,
+   "v": 1
+  },
+  ".claude/skills/write-swift/SKILL.md": {
+   "kind": "skill",
+   "sha": "16a4b6adb74e",
+   "tokens": 12100,
+   "v": 1
+  },
+  "CLAUDE.md": {
+   "kind": "card",
+   "sha": "4824be93a649",
+   "tokens": 1638,
+   "v": 1
+  },
+  "boards/CLAUDE.md": {
+   "kind": "card",
+   "sha": "84052d79f66a",
+   "tokens": 88,
+   "v": 1
+  },
+  "docs/CLAUDE.md": {
+   "kind": "card",
+   "sha": "aeb3783589a5",
+   "tokens": 1474,
+   "v": 1
+  },
+  "docs/plans/CLAUDE.md": {
+   "kind": "card",
+   "sha": "e6a7699d71bd",
+   "tokens": 1191,
+   "v": 1
+  },
+  "docs/specs/CLAUDE.md": {
+   "kind": "card",
+   "sha": "0b9aedd4547c",
+   "tokens": 950,
+   "v": 1
+  },
+  "eval/pipeline/genome/roles.json": {
+   "kind": "genome",
+   "sha": "d99665ed274c",
+   "tokens": 1101,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/COMMON.md": {
+   "kind": "prompt",
+   "sha": "c4aeea1452c6",
+   "tokens": 984,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/README.md": {
+   "kind": "prompt",
+   "sha": "9ebc6311ba16",
+   "tokens": 3060,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/RELAUNCH-TERMINAL.md": {
+   "kind": "prompt",
+   "sha": "218372b426da",
+   "tokens": 974,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/T-BOARDS.md": {
+   "kind": "prompt",
+   "sha": "cfb59f5597dc",
+   "tokens": 2372,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/TRANSITION.md": {
+   "kind": "prompt",
+   "sha": "20b30be5eec1",
+   "tokens": 1624,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/1-coord.md": {
+   "kind": "prompt",
+   "sha": "91100eee157a",
+   "tokens": 2035,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/2-plan.md": {
+   "kind": "prompt",
+   "sha": "d1e37b1ea950",
+   "tokens": 1569,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/3-frontend.md": {
+   "kind": "prompt",
+   "sha": "a34a117ee29d",
+   "tokens": 1442,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/4-backend.md": {
+   "kind": "prompt",
+   "sha": "ffa2246f96c0",
+   "tokens": 1620,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/5-release.md": {
+   "kind": "prompt",
+   "sha": "63f2d799ce82",
+   "tokens": 2709,
+   "v": 1
+  },
+  "eval/prompts/launch-3010/roles/6-boards.md": {
+   "kind": "prompt",
+   "sha": "978db42b3aaf",
+   "tokens": 2439,
+   "v": 1
+  },
+  "eval/prompts/lens-1-correctness.md": {
+   "kind": "prompt",
+   "sha": "1081fcd2c55c",
+   "tokens": 763,
+   "v": 1
+  },
+  "eval/prompts/lens-2-resources-product.md": {
+   "kind": "prompt",
+   "sha": "587c4752138f",
+   "tokens": 832,
+   "v": 1
+  },
+  "eval/prompts/lens-3-kimi.md": {
+   "kind": "prompt",
+   "sha": "fa3b33bf5b11",
+   "tokens": 1273,
+   "v": 1
+  },
+  "infra/CLAUDE.md": {
+   "kind": "card",
+   "sha": "96ac1f352ec3",
+   "tokens": 1560,
+   "v": 1
+  },
+  "infra/ai-council/CLAUDE.md": {
+   "kind": "card",
+   "sha": "9084a7335366",
+   "tokens": 2300,
+   "v": 1
+  },
+  "infra/ops-console/CLAUDE.md": {
+   "kind": "card",
+   "sha": "ca23606ffbf7",
+   "tokens": 890,
+   "v": 1
+  },
+  "process/model/CLAUDE.md": {
+   "kind": "card",
+   "sha": "435d27f6410c",
+   "tokens": 4678,
+   "v": 1
+  },
+  "process/prompts/SUCCESSOR-PROMPT-1-QUEUE.md": {
+   "kind": "prompt",
+   "sha": "d46cea4d7235",
+   "tokens": 11064,
+   "v": 1
+  },
+  "process/prompts/SUCCESSOR-PROMPT-2-CONTROL.md": {
+   "kind": "prompt",
+   "sha": "3315a9a7446f",
+   "tokens": 19812,
+   "v": 1
+  },
+  "process/prompts/SUCCESSOR-PROMPT-3-F5.md": {
+   "kind": "prompt",
+   "sha": "a302d713f9c3",
+   "tokens": 4032,
+   "v": 1
+  },
+  "process/prompts/SUCCESSOR-PROMPT-3-OWNER-QUEUE.md": {
+   "kind": "prompt",
+   "sha": "4dee2223fed8",
+   "tokens": 2356,
+   "v": 1
+  },
+  "process/prompts/SUCCESSOR-PROMPT.md": {
+   "kind": "prompt",
+   "sha": "47d5b3f097f8",
+   "tokens": 4120,
+   "v": 1
+  }
+ }
+}

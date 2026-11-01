@@ -36,3 +36,5 @@ jobs:
           python3 -I eval/pipeline/genome/build.py --check
       - name: swarm tests
         run: python3 -I -m unittest discover -s eval/swarm -p 'test_*.py'
+      - name: evolution toolkit tests (catalog, dupes, A/B)
+        run: python3 -I -m unittest discover -s eval/evolve -p 'test_*.py'

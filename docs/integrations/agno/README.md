@@ -3,6 +3,8 @@
 > **Статус (2026-11-01):** 🔍 разобран (2026-11-01), прочитан коммит
 > [`a9ea2b4`](https://github.com/agno-agi/agno/tree/a9ea2b48b4d9bc5cfdea10d39ab5b8de66343a5f) (2026-10-30). Источник —
 > [agno-agi/agno](https://github.com/agno-agi/agno). Индекс и правила — [`../README.md`](../README.md).
+> **Взято (01.11):** принцип nonce-фенса — в судье A/B `eval/evolve/ab.py` (свежий nonce на каждый вызов, судье сказано,
+> что текст в фенсах — данные). Код не копировался. Не сделано: `infra/ai-council/review_prompts.py`, блокнот.
 
 ## Что это
 
